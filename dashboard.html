@@ -73,9 +73,21 @@
     .alert p { margin: 0; }
     .alert-error   { background-color: #fde8e8; border-left: 4px solid #c0392b; color: #7b241c; }
     .alert-warning { background-color: #fef9e7; border-left: 4px solid #d4ac0d; color: #7d6608; }
-    .alert-success { background-color: #e9f7ef; border-left: 4px solid #1e8449; color: #1a5276; }
-    .section-label { font-size: 1.05rem; font-weight: 700; color: #2B1B17; margin-bottom: 0.5rem; }
     .quota-badge { background: #2B1B17; color: #fff; padding: 2px 8px; border-radius: 12px; font-size: 0.85rem; margin-left: 10px; }
+    
+    /* ─── COOL LOADING ANIMATIONS ─── */
+    .spinner {
+      width: 48px; height: 48px;
+      border: 5px solid rgba(43,27,23,0.1);
+      border-left-color: #4A322B;
+      border-radius: 50%;
+      animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      margin: 0 auto 15px auto;
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .loading-container { text-align: center; padding: 2rem; background: #fff; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); margin-bottom: 1.5rem; }
+    .loading-text { font-weight: 700; font-size: 1.1rem; color: #2B1B17; animation: pulse 1.5s ease-in-out infinite; }
+    @keyframes pulse { 50% { opacity: 0.4; } }
   </style>
 </head>
 <body>
@@ -140,7 +152,8 @@ const PLAN_LIMITS = {
   free: { informe: 0, investigacion: 0 },
   basic: { informe: 1, investigacion: 2 },
   student: { informe: 3, investigacion: 5 },
-  premium: { informe: 5, investigacion: 15 }
+  premium: { informe: 5, investigacion: 15 },
+  admin: { informe: '∞', investigacion: '∞' }
 };
 
 // ═══════════════════════════════════════════
@@ -171,13 +184,36 @@ async function loadUserData() {
   }
 }
 
+// Admin Mode Click Handler
+let profileClicks = 0;
+let clickTimer = null;
+document.getElementById('user-email').addEventListener('click', () => {
+  profileClicks++;
+  clearTimeout(clickTimer);
+  if (profileClicks >= 3) {
+    profileClicks = 0;
+    const pwd = prompt("Código de acceso Admin:");
+    if (pwd === "50025002") {
+       userData.plan = "admin";
+       updateQuotaBadges();
+       showToast("Modo Admin Activado. Usos infinitos.", "success");
+    } else if (pwd) {
+       showToast("Código incorrecto.", "error");
+    }
+  } else {
+    clickTimer = setTimeout(() => profileClicks = 0, 1000);
+  }
+});
+
 function updateQuotaBadges() {
   const limits = PLAN_LIMITS[userData.plan] || PLAN_LIMITS.free;
-  document.getElementById('quota-inv').textContent = `${userData.usage_investigacion}/${limits.investigacion}`;
-  document.getElementById('quota-inf').textContent = `${userData.usage_informe}/${limits.informe}`;
+  document.getElementById('quota-inv').textContent = userData.plan === 'admin' ? '∞' : `${userData.usage_investigacion}/${limits.investigacion}`;
+  document.getElementById('quota-inf').textContent = userData.plan === 'admin' ? '∞' : `${userData.usage_informe}/${limits.informe}`;
 }
 
 async function checkAndConsumeQuota(modo) {
+  if (userData.plan === 'admin') return true;
+
   const dbField = modo === 'Investigacion' ? 'usage_investigacion' : 'usage_informe';
   const limits = PLAN_LIMITS[userData.plan] || PLAN_LIMITS.free;
   const limit = modo === 'Investigacion' ? limits.investigacion : limits.informe;
@@ -311,16 +347,15 @@ async function analizarImagen(modo) {
   const btn   = document.getElementById('btn-scan-' + modo);
   const msgEl = document.getElementById('msg-' + modo);
   btn.disabled = true;
-  btn.textContent = '⏳ La IA está leyendo los conceptos...';
-  msgEl.innerHTML = '';
+  showCoolLoading('msg-' + modo, 'La IA está leyendo los conceptos...');
 
   const prompt =
     "Analiza detalladamente esta imagen de una asignación escolar o universitaria.\n\n" +
     "REGLAS CRÍTICAS DE EXTRACCIÓN:\n" +
-    "1. Descarta por completo cualquier dato administrativo, fechas de entrega, ponderaciones, " +
-    "modalidades, palabras como 'defensas', 'informe escrito', 'evaluación', o nombres de materias.\n" +
+    "1. Descarta por completo cualquier dato administrativo, fechas de entrega, ponderaciones.\n" +
     "2. Identifica cuál es el TEMA central de la hoja.\n" +
-    "3. Toma cada uno de los subpuntos y fusiónalos lógicamente con el tema central.\n\n" +
+    "3. Toma cada uno de los subpuntos y fusiónalos lógicamente con el tema central.\n" +
+    "4. REGLA ESTRICTA: NO USES PARENTESIS '()'. Si el texto original tiene paréntesis, saca su contenido y conviértelo en un punto separado o intégralo de forma natural, pero elimina el símbolo.\n\n" +
     "Devuelve exactamente una lista de temas separada por comas, sin preámbulos ni títulos.";
 
   try {
@@ -335,8 +370,11 @@ async function analizarImagen(modo) {
     }
     state.temas[modo] = contenido.split(',').map(t => t.trim()).filter(Boolean);
     renderTemas(modo);
-    showToast('🚀 ¡Temas leídos de forma exitosa!');
+    hideCoolLoading('msg-' + modo);
+    showToast('🚀 ¡Temas leídos! Generando documento...');
+    await generarDocumento(modo);
   } catch(e) {
+    hideCoolLoading('msg-' + modo);
     msgEl.innerHTML = `<div class="alert alert-error"><p>❌ Error analizando la imagen: ${e.message}</p></div>`;
   } finally {
     btn.disabled = false;
@@ -358,26 +396,15 @@ async function cargarTemas(modo) {
   }
   
   btn.disabled = true;
-  btn.textContent = '⏳ Organizando temas...';
-  msgEl.innerHTML = '';
+  showCoolLoading('msg-' + modo, 'Organizando temas con IA...');
 
   const prompt = 
-    "Actúa como un experto analizador de texto. Toma el texto proporcionado (que contiene temas y subtemas desordenados, con saltos de línea rotos y paréntesis) y conviértelo en una LISTA SEPARADA POR COMAS de temas individuales y completos.\n\n" +
+    "Actúa como un experto analizador de texto. Toma el texto proporcionado y conviértelo en una LISTA SEPARADA POR COMAS de temas individuales y completos.\n\n" +
     "INSTRUCCIONES ESTRICTAS:\n" +
-    "1. Si un tema principal contiene subtemas entre paréntesis o en saltos de línea, EXTRAE cada subtema y conviértelo en un tema independiente que incluya el contexto del tema principal.\n" +
-    "2. NO dejes paréntesis con pedazos de texto roto como 'meteoritos y polvo cósmico)'. Elimina los paréntesis integrando las palabras en un título lógico.\n" +
+    "1. EXTRAE subtemas y conviértelos en temas independientes.\n" +
+    "2. REGLA ESTRICTA: NO USES PARENTESIS '()'. Si el texto original tiene paréntesis, saca su contenido y conviértelo en un punto separado o intégralo de forma natural, pero elimina el símbolo.\n" +
     "3. 'geosfera' y 'biosfera' DEBEN separarse en temas distintos aunque vengan juntos en el texto.\n" +
-    "4. Cosas pequeñas y relacionadas como 'meteoritos' y 'polvo cósmico' pueden agruparse lógicamente en un solo tema.\n" +
-    "5. Tu respuesta debe ser ÚNICAMENTE la lista separada por comas.\n\n" +
-    "EJEMPLO DE ENTRADA:\n" +
-    "Componentes del Sistema Solar (el Sol\n" +
-    "planetas\n" +
-    "asteroides\n" +
-    "meteoritos y polvo cósmico)\n" +
-    "Estructura del planeta Tierra (atmósfera\n" +
-    "geosfera y biosfera)\n\n" +
-    "EJEMPLO DE SALIDA ESPERADA:\n" +
-    "El Sol como componente del Sistema Solar, Planetas del Sistema Solar, Asteroides del Sistema Solar, Meteoritos y polvo cósmico del Sistema Solar, Atmósfera del planeta Tierra, Geosfera del planeta Tierra, Biosfera del planeta Tierra\n\n" +
+    "4. Tu respuesta debe ser ÚNICAMENTE la lista separada por comas.\n\n" +
     "TEXTO A ANALIZAR:\n" + entrada;
 
   try {
@@ -388,8 +415,11 @@ async function cargarTemas(modo) {
     }
     state.temas[modo] = contenido.split(',').map(t => t.trim()).filter(Boolean);
     renderTemas(modo);
-    showToast('✅ Temas organizados y guardados.');
+    hideCoolLoading('msg-' + modo);
+    showToast('✅ Temas organizados. Generando documento...');
+    await generarDocumento(modo);
   } catch(e) {
+    hideCoolLoading('msg-' + modo);
     msgEl.innerHTML = `<div class="alert alert-error"><p>❌ Error procesando el texto: ${e.message}</p></div>`;
   } finally {
     btn.disabled = false;
@@ -405,6 +435,7 @@ const PALABRAS_PROHIBIDAS = ["4to año","lunes","martes","miércoles","jueves","
 function limpiarTemas(temas) {
   return temas
     .map(t => t.replace(/^\d+[\s\.\:\-\"\']*/, '').trim().replace(/^["']|["']$/g, ''))
+    .map(t => t.replace(/[()]/g, '')) // Extra strict parentheses removal
     .filter(t => t && !PALABRAS_PROHIBIDAS.some(p => t.toLowerCase().includes(p)));
 }
 
@@ -482,7 +513,8 @@ async function generarDocumento(modo) {
         : " No uses listas, redacta completamente en párrafos continuos y fluidos.";
       systemInstruction = (
         `Eres un académico e investigador experto. Desarrolla el punto solicitado con rigurosidad.\n` +
-        `REGLA CRÍTICA DE CONTEXTO: Tu respuesta debe centrarse TOTAL Y EXCLUSIVAMENTE en Venezuela y su relación directa con el título '${tema}'. Está prohibido hablar de otros países o continentes de forma genérica.\n` +
+        `REGLA CRÍTICA DE CONTEXTO: Tu respuesta debe centrarse TOTAL Y EXCLUSIVAMENTE en Venezuela y su relación directa con el título '${tema}'. Está prohibido hablar de otros países o continentes genéricos.\n` +
+        `REGLA DE VARIABILIDAD (Anti-Plagio): Formula la redacción de forma completamente impredecible y original cada vez. Cambia la estructura gramatical, usa sinónimos ricos y altera el orden de los subtemas para que cada generación sea un texto único que no pueda ser asociado por similitud a otras respuestas de la IA.\n` +
         `REGLA CRÍTICA DE EXTENSIÓN: El texto completo debe tener obligatoriamente ${rango}. Mantén un equilibrio preciso.\n` +
         `No incluyas títulos en tu respuesta. Prohibido usar el signo de punto y coma (;). No repitas ideas ni frases.\n` +
         `MINÚSCULAS Y MAYÚSCULAS: Todo el texto regular debe ir en minúsculas, EXCEPTO la primera letra de cada oración y nombres propios.\n` +
@@ -491,14 +523,15 @@ async function generarDocumento(modo) {
     } else {
       systemInstruction = (
         `Eres un analista de datos e historiador experto. Desarrolla un informe corporativo de alta calidad sobre el punto específico: '${tema}'.\n` +
-        `REGLA CRÍTICA DE CONTEXTO GEOGRÁFICO: Todo el contenido debe desarrollarse dentro del marco geográfico e histórico de VENEZUELA. Queda prohibido desviarse a hablar de la Amazonía de Brasil, crisis globales de EE.UU. o el cambio climático general de forma aislada.\n` +
-        `REGLA DE EXTENSIÓN ESTABLE: Todo el texto de este punto debe tener un desarrollo equilibrado de entre 200 y 240 palabras (ni más, ni menos). Asegura un largo uniforme en todos los puntos.\n` +
+        `REGLA CRÍTICA DE CONTEXTO GEOGRÁFICO: Todo el contenido debe desarrollarse dentro del marco de VENEZUELA. Queda prohibido hablar de la Amazonía de Brasil o crisis globales de EE.UU.\n` +
+        `REGLA DE VARIABILIDAD (Anti-Plagio): Genera un patrón de escritura completamente distinto y fresco cada vez que ejecutes esta instrucción. Evita estructuras repetitivas, varía los verbos de inicio, la puntuación y el orden lógico de los datos para garantizar originalidad absoluta.\n` +
+        `REGLA DE EXTENSIÓN ESTABLE: Todo el texto de este punto debe tener un desarrollo equilibrado de entre 200 y 240 palabras (ni más, ni menos).\n` +
         `REGLAS ESTRUCTURALES:\n` +
-        `1. Incluye datos numéricos, porcentajes o estimaciones realistas aplicados exclusivamente a Venezuela.\n` +
-        `2. Menciona acontecimientos clave locales con sus años o períodos históricos respectivos.\n` +
-        `3. Prohibido terminantemente repetir párrafos, oraciones o ideas. Cada línea debe aportar valor nuevo.\n` +
+        `1. Incluye datos numéricos o estimaciones aplicados exclusivamente a Venezuela.\n` +
+        `2. Menciona acontecimientos clave locales con sus años respectivos.\n` +
+        `3. Prohibido repetir párrafos, oraciones o ideas. Cada línea debe aportar valor nuevo.\n` +
         `4. Prohibido usar el signo de punto y coma (;).\n` +
-        `5. Organiza la información combinando un párrafo narrativo fluido con un bloque analítico de viñetas (•) que detalle hechos específicos.`
+        `5. Organiza la información combinando un párrafo narrativo con un bloque de viñetas (•).`
       );
     }
 

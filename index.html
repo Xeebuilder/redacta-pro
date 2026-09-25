@@ -55,6 +55,10 @@
       box-shadow: 0 8px 24px rgba(74,50,43,0.3); transition: transform 0.2s;
     }
     .hero-btn:hover { transform: translateY(-3px); }
+    .global-counter { margin-top: 3rem; animation: fadeUp 1s ease-out; }
+    .global-counter h2 { font-size: 3rem; font-weight: 800; color: #4A322B; line-height: 1; }
+    .global-counter p { font-size: 1rem; opacity: 0.7; font-weight: 600; margin-top: 0.5rem; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
     /* ─── FEATURES ─── */
     .features { padding: 4rem 2rem; background-color: #FAF8F5; border-top: 1px solid rgba(43,27,23,0.1); border-bottom: 1px solid rgba(43,27,23,0.1); }
@@ -135,6 +139,10 @@
     <h1>Automatiza tu Redacción Académica y Corporativa</h1>
     <p>RedactaPro transforma imágenes de asignaciones o listas de temas en documentos estructurados, con formato perfecto y listos para entregar. Adiós al formato desordenado.</p>
     <button class="hero-btn" onclick="openAuthModal()">Comenzar Gratis</button>
+    <div class="global-counter">
+      <h2 id="hero-counter">430+</h2>
+      <p>Documentos generados y exportados</p>
+    </div>
   </section>
 
   <section id="features" class="features">
