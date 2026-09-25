@@ -134,6 +134,17 @@
 <div id="toast"></div>
 
 <script>
+function showCoolLoading(elementId, text) {
+  document.getElementById(elementId).innerHTML = `
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <div class="loading-text">${text}</div>
+    </div>
+  `;
+}
+function hideCoolLoading(elementId) {
+  document.getElementById(elementId).innerHTML = '';
+}
 // ═══════════════════════════════════════════
 // STATE & CONFIG
 // ═══════════════════════════════════════════
