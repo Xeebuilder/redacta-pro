@@ -292,6 +292,29 @@ firebase.auth().onAuthStateChanged(async (user) => {
   // Load User Data & Limits
   await loadUserData();
 
+  // CHECK FOR ADMIN REVOKE ACTION
+  const urlParams = new URLSearchParams(window.location.search);
+  const revokeEmail = urlParams.get('revoke_email');
+  if (revokeEmail) {
+    if (userData.plan === 'admin') {
+      try {
+        const snap = await firebase.firestore().collection('users').where('email', '==', revokeEmail).get();
+        if (!snap.empty) {
+          snap.forEach(doc => doc.ref.update({ plan: 'free' }));
+          showAlert(`La suscripción de ${revokeEmail} ha sido revocada.`, "¡Usuario Bloqueado!");
+        } else {
+          showAlert(`No se encontró el usuario ${revokeEmail} en la base de datos.`, "Error");
+        }
+      } catch(e) {
+        showAlert('Error al procesar: ' + e.message, "Error");
+      }
+    } else {
+      showAlert("No tienes permisos de administrador para realizar esta acción.", "Acceso Denegado");
+    }
+    // Clean URL
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+
   renderGenerator('Investigacion');
   renderGenerator('Informe');
 });
