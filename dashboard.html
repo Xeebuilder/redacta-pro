@@ -187,11 +187,20 @@ firebase.auth().onAuthStateChanged(async (user) => {
   renderGenerator('Informe');
 });
 
+let userData = { plan: 'free', usage_informe: 0, usage_investigacion: 0 }; // Default fallback
+
 async function loadUserData() {
-  const doc = await firebase.firestore().collection('users').doc(currentUser.uid).get();
-  if (doc.exists) {
-    userData = doc.data();
+  try {
+    const doc = await firebase.firestore().collection('users').doc(currentUser.uid).get();
+    if (doc.exists) {
+      userData = doc.data();
+    } else {
+      // Create it if it doesn't exist (for old users)
+      await firebase.firestore().collection('users').doc(currentUser.uid).set(userData);
+    }
     updateQuotaBadges();
+  } catch(e) {
+    console.error("Error cargando perfil:", e);
   }
 }
 
@@ -217,12 +226,14 @@ document.getElementById('user-email').addEventListener('click', () => {
 });
 
 function updateQuotaBadges() {
+  if (!userData) return;
   const limits = PLAN_LIMITS[userData.plan] || PLAN_LIMITS.free;
   document.getElementById('quota-inv').textContent = userData.plan === 'admin' ? '∞' : `${userData.usage_investigacion}/${limits.investigacion}`;
   document.getElementById('quota-inf').textContent = userData.plan === 'admin' ? '∞' : `${userData.usage_informe}/${limits.informe}`;
 }
 
 async function checkAndConsumeQuota(modo) {
+  if (!userData) return false;
   if (userData.plan === 'admin') return true;
 
   const dbField = modo === 'Investigacion' ? 'usage_investigacion' : 'usage_informe';
