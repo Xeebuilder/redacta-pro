@@ -422,8 +422,9 @@
   });
 
   async function seleccionarPlan(nombre, usdPrice) {
+    pendingPlan = { nombre, usd: usdPrice };
+    
     if (!currentUser) {
-      pendingPlan = { nombre, usd: usdPrice };
       openAuthModal();
       return;
     }
