@@ -88,7 +88,43 @@
     .loading-container { text-align: center; padding: 2rem; background: #fff; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); margin-bottom: 1.5rem; }
     .loading-text { font-weight: 700; font-size: 1.1rem; color: #2B1B17; animation: pulse 1.5s ease-in-out infinite; }
     @keyframes pulse { 50% { opacity: 0.4; } }
+
+    /* ─── CUSTOM MODALS ─── */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(43,27,23,0.6); backdrop-filter: blur(5px);
+      display: none; justify-content: center; align-items: center; z-index: 9999;
+    }
+    .modal {
+      background: #FAF8F5; padding: 2.5rem; border-radius: 20px; width: 90%; max-width: 420px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2); text-align: center;
+      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popIn { 0% { transform: scale(0.8) translateY(20px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
+    .modal h3 { font-size: 1.8rem; margin-bottom: 1rem; color: #2B1B17; font-weight: 800; }
+    .modal p { font-size: 1.05rem; margin-bottom: 2rem; opacity: 0.8; line-height: 1.5; }
+    .modal-input {
+      width: 100%; padding: 1rem; margin-bottom: 1.5rem; border-radius: 12px;
+      border: 2px solid rgba(43,27,23,0.1); font-size: 1.2rem; text-align: center;
+      transition: border-color 0.2s; background: #fff;
+    }
+    .modal-input:focus { border-color: #2B1B17; outline: none; }
+    .modal-buttons { display: flex; gap: 12px; }
+    .btn-secondary {
+      flex: 1; background: #EAE2D5; color: #2B1B17; border: none; padding: 1rem;
+      border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 1rem;
+    }
+    .btn-secondary:hover { background: #dcd2c3; }
+    .btn-primary {
+      flex: 1; background: #2B1B17; color: #fff; border: none; padding: 1rem;
+      border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 1rem;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(43,27,23,0.3); }
+
+    /* ─── ENHANCED GENERATION PROGRESS ─── */
+    .magic-text { font-size: 0.95rem; opacity: 0.7; font-style: italic; margin-top: 5px; color: #4A322B; }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
 
@@ -133,6 +169,28 @@
 </div>
 <div id="toast"></div>
 
+<!-- CUSTOM ALERT MODAL -->
+<div class="modal-overlay" id="custom-alert-overlay">
+  <div class="modal">
+    <h3 id="custom-alert-title">Aviso</h3>
+    <p id="custom-alert-msg"></p>
+    <button class="btn-primary" style="width:100%" onclick="document.getElementById('custom-alert-overlay').style.display='none'">Aceptar</button>
+  </div>
+</div>
+
+<!-- CUSTOM PROMPT MODAL -->
+<div class="modal-overlay" id="custom-prompt-overlay">
+  <div class="modal">
+    <h3 id="custom-prompt-title">Ingreso</h3>
+    <p id="custom-prompt-msg" style="display:none;"></p>
+    <input type="password" id="custom-prompt-input" class="modal-input" placeholder="Escribe aquí..." />
+    <div class="modal-buttons">
+      <button class="btn-secondary" onclick="document.getElementById('custom-prompt-overlay').style.display='none'">Cancelar</button>
+      <button class="btn-primary" id="custom-prompt-submit">Confirmar</button>
+    </div>
+  </div>
+</div>
+
 <script>
 function showCoolLoading(elementId, text) {
   document.getElementById(elementId).innerHTML = `
@@ -144,6 +202,34 @@ function showCoolLoading(elementId, text) {
 }
 function hideCoolLoading(elementId) {
   document.getElementById(elementId).innerHTML = '';
+}
+
+function showAlert(message, title = "Aviso") {
+  document.getElementById('custom-alert-title').textContent = title;
+  document.getElementById('custom-alert-msg').textContent = message;
+  document.getElementById('custom-alert-overlay').style.display = 'flex';
+}
+
+function showPrompt(message, callback) {
+  document.getElementById('custom-prompt-title').textContent = message;
+  const input = document.getElementById('custom-prompt-input');
+  input.value = '';
+  document.getElementById('custom-prompt-overlay').style.display = 'flex';
+  
+  const submitBtn = document.getElementById('custom-prompt-submit');
+  const newSubmit = submitBtn.cloneNode(true);
+  submitBtn.parentNode.replaceChild(newSubmit, submitBtn);
+  
+  newSubmit.addEventListener('click', () => {
+    document.getElementById('custom-prompt-overlay').style.display = 'none';
+    callback(input.value);
+  });
+  
+  // Enter key support
+  input.onkeypress = (e) => {
+    if(e.key === 'Enter') newSubmit.click();
+  };
+  input.focus();
 }
 // ═══════════════════════════════════════════
 // STATE & CONFIG
@@ -211,14 +297,15 @@ document.getElementById('user-email').addEventListener('click', () => {
   clearTimeout(clickTimer);
   if (profileClicks >= 3) {
     profileClicks = 0;
-    const pwd = prompt("Código de acceso Admin:");
-    if (pwd === "50025002") {
-       userData.plan = "admin";
-       updateQuotaBadges();
-       showToast("Modo Admin Activado. Usos infinitos.", "success");
-    } else if (pwd) {
-       showToast("Código incorrecto.", "error");
-    }
+    showPrompt("Código de acceso Admin:", (pwd) => {
+      if (pwd === "50025002") {
+         userData.plan = "admin";
+         updateQuotaBadges();
+         showToast("Modo Admin Activado. Usos infinitos.", "success");
+      } else if (pwd) {
+         showToast("Código incorrecto.", "error");
+      }
+    });
   } else {
     clickTimer = setTimeout(() => profileClicks = 0, 1000);
   }
@@ -240,7 +327,7 @@ async function checkAndConsumeQuota(modo) {
   const limit = modo === 'Investigacion' ? limits.investigacion : limits.informe;
 
   if (userData[dbField] >= limit) {
-    alert(`Has alcanzado el límite de tu plan (${userData.plan}) para ${modo}. Por favor actualiza tu suscripción en el panel.`);
+    showAlert(`Has alcanzado el límite de tu plan (${userData.plan}) para ${modo}. Por favor actualiza tu suscripción en el panel.`, "Límite Alcanzado");
     return false;
   }
 
@@ -510,11 +597,23 @@ async function generarDocumento(modo) {
   barEl.style.width = '0%';
 
   const bloques = [];
+  const magicPhrases = [
+    "Buscando fuentes de alta fidelidad...",
+    "Estructurando redacción perfecta...",
+    "Aplicando algoritmos anti-plagio...",
+    "Ajustando el tono académico...",
+    "Eliminando inconsistencias..."
+  ];
 
   for (let i = 0; i < temasFin.length; i++) {
     const tema   = temasFin[i];
     const numero = i + 1;
-    statusEl.textContent = `⏳ Procesando [${numero}/${temasFin.length}]: ${tema}`;
+    const phrase = magicPhrases[i % magicPhrases.length];
+    
+    statusEl.innerHTML = `
+      <strong>⏳ Procesando [${numero}/${temasFin.length}]:</strong> ${tema}
+      <div class="magic-text">✨ ${phrase}</div>
+    `;
     barEl.style.width = `${Math.round((i / temasFin.length) * 100)}%`;
 
     let tClean = tema.replace(/•/g, '').trim();
@@ -598,8 +697,16 @@ async function generarDocumento(modo) {
   }
 
   barEl.style.width = '100%';
-  statusEl.textContent = '🎉 ¡El informe ha sido completado con éxito total!';
+  statusEl.innerHTML = '<strong>🎉 ¡El informe ha sido completado con éxito total!</strong>';
   genBtn.disabled = false;
+  
+  if (typeof confetti === 'function') {
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 }
+    });
+  }
 
   if (bloques.length) {
     try {
