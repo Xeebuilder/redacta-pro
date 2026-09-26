@@ -207,7 +207,7 @@
     
     <div style="background: #EAE2D5; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem;">
       <h4 style="margin:0; color:#2B1B17; font-size:1.2rem;">Asignacion_<span id="download-modo-text"></span>.docx</h4>
-      <p style="margin: 5px 0 0 0; font-size: 0.9rem; opacity: 0.7;">Formato Word • Anti-plagio activado</p>
+      <p style="margin: 5px 0 0 0; font-size: 0.9rem; opacity: 0.7;">Formato Word • Lista para entregar</p>
     </div>
     
     <div id="download-btn-container" style="margin-bottom: 10px;"></div>
@@ -415,23 +415,23 @@ async function geminiChat(parts, systemInstruction = null) {
 function renderGenerator(modo) {
   const container = document.getElementById('gen-' + modo);
   container.innerHTML = `
-    <div class="section-label">🛠️ Método de entrada</div>
-    <div class="radio-group">
+    <div class="section-label fade-in-up" style="animation-delay: 0.1s">🛠️ Método de entrada</div>
+    <div class="radio-group fade-in-up" style="animation-delay: 0.2s">
       <label><input type="radio" name="mode-${modo}" value="scan" checked onchange="setMode('${modo}','scan')"/> Mediante una Imagen Scan</label>
       <label><input type="radio" name="mode-${modo}" value="text" onchange="setMode('${modo}','text')"/> Mediante Texto Manual</label>
     </div>
 
-    <div id="scan-panel-${modo}">
+    <div id="scan-panel-${modo}" class="fade-in-up" style="animation-delay: 0.3s">
       <div class="file-drop" onclick="document.getElementById('file-${modo}').click()">
         <input type="file" id="file-${modo}" accept=".jpg,.jpeg,.png" onchange="handleFileUpload(event,'${modo}')"/>
         <div class="file-drop-icon">📂</div>
         <p>Arrastra o haz clic para seleccionar la captura de tu asignación (JPG, PNG)</p>
       </div>
-      <img id="preview-${modo}" class="preview-img" alt="Vista previa"/>
-      <button class="btn" id="btn-scan-${modo}" style="display:none;" onclick="analizarImagen('${modo}')">✨ Analizar y Estructurar Asignación</button>
+      <img id="preview-${modo}" class="preview-img smooth-show" alt="Vista previa"/>
+      <button class="btn fade-in-up" id="btn-scan-${modo}" style="display:none;" onclick="analizarImagen('${modo}')">✨ Analizar y Estructurar Asignación</button>
     </div>
 
-    <div id="text-panel-${modo}" style="display:none;">
+    <div id="text-panel-${modo}" style="display:none;" class="smooth-show">
       <label for="txt-${modo}">Pega o escribe la lista de temas (separados por comas):</label>
       <textarea id="txt-${modo}" rows="4" placeholder="Ej: Concepto y características de las células, Leyes de Mendel en la genética moderna"></textarea>
       <button class="btn" onclick="cargarTemas('${modo}')">⚙️ Cargar Temas</button>
@@ -465,10 +465,21 @@ function handleFileUpload(event, modo) {
   const reader = new FileReader();
   reader.onload = (e) => {
     state.imageB64[modo] = e.target.result.split(',')[1];
+    
     const img = document.getElementById('preview-' + modo);
+    const btn = document.getElementById('btn-scan-' + modo);
+    
+    // Reset animation
+    img.style.animation = 'none';
+    btn.style.animation = 'none';
+    img.offsetHeight; // trigger reflow
+    
     img.src = e.target.result;
     img.style.display = 'block';
-    document.getElementById('btn-scan-' + modo).style.display = 'block';
+    btn.style.display = 'block';
+    
+    img.style.animation = 'fadeInUp 0.5s ease forwards';
+    btn.style.animation = 'fadeInUp 0.5s ease forwards';
   };
   reader.readAsDataURL(file);
 }
