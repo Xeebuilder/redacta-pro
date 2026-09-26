@@ -123,6 +123,13 @@
 
     /* ─── ENHANCED GENERATION PROGRESS ─── */
     .magic-text { font-size: 0.95rem; opacity: 0.7; font-style: italic; margin-top: 5px; color: #4A322B; }
+    
+    /* ─── SMOOTH ANIMATIONS ─── */
+    .fade-in-up { opacity: 0; animation: fadeInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    
+    .smooth-show { animation: fadeIn 0.5s ease forwards; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
@@ -188,6 +195,23 @@
       <button class="btn-secondary" onclick="document.getElementById('custom-prompt-overlay').style.display='none'">Cancelar</button>
       <button class="btn-primary" id="custom-prompt-submit">Confirmar</button>
     </div>
+  </div>
+</div>
+
+<!-- DOWNLOAD MODAL -->
+<div class="modal-overlay" id="download-modal-overlay">
+  <div class="modal" style="max-width: 450px;">
+    <div style="font-size: 4rem; margin-bottom: 15px;">🎉</div>
+    <h3 style="margin-bottom: 0.5rem; color:#2B1B17; font-weight:800;">¡Documento Listo!</h3>
+    <p style="opacity: 0.8; margin-bottom: 1.5rem;">Tu redacción ha sido estructurada y optimizada con éxito.</p>
+    
+    <div style="background: #EAE2D5; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem;">
+      <h4 style="margin:0; color:#2B1B17; font-size:1.2rem;">Asignacion_<span id="download-modo-text"></span>.docx</h4>
+      <p style="margin: 5px 0 0 0; font-size: 0.9rem; opacity: 0.7;">Formato Word • Anti-plagio activado</p>
+    </div>
+    
+    <div id="download-btn-container" style="margin-bottom: 10px;"></div>
+    <button class="btn-secondary" style="width: 100%; font-size: 1rem;" onclick="document.getElementById('download-modal-overlay').style.display='none'">Cerrar ventana</button>
   </div>
 </div>
 
@@ -297,11 +321,12 @@ document.getElementById('user-email').addEventListener('click', () => {
   clearTimeout(clickTimer);
   if (profileClicks >= 3) {
     profileClicks = 0;
-    showPrompt("Código de acceso Admin:", (pwd) => {
+    showPrompt("Código de acceso Admin:", async (pwd) => {
       if (pwd === "50025002") {
          userData.plan = "admin";
+         await firebase.firestore().collection('users').doc(currentUser.uid).update({ plan: 'admin' });
          updateQuotaBadges();
-         showToast("Modo Admin Activado. Usos infinitos.", "success");
+         showAlert("Modo Admin activado exitosamente. Tu cuenta ahora tiene acceso infinito y de por vida.", "¡Felicidades!");
       } else if (pwd) {
          showToast("Código incorrecto.", "error");
       }
@@ -552,15 +577,20 @@ function renderTemas(modo) {
   const cont     = document.getElementById('temas-container-' + modo);
   const genSec   = document.getElementById('generate-section-' + modo);
   if (!temasFin.length) {
-    cont.innerHTML = '<div class="alert alert-warning">⚠️ No se detectaron temas válidos para redactar.</div>';
+    cont.innerHTML = '<div class="alert alert-warning fade-in-up">⚠️ No se detectaron temas válidos para redactar.</div>';
     genSec.style.display = 'none';
     return;
   }
-  let html = '<div class="card"><h3>📋 Puntos identificados para desarrollo:</h3>';
-  for (const t of temasFin) html += `<div class="tema-badge">${t}</div>`;
+  
+  let html = '<div class="card smooth-show"><h3>📋 Puntos identificados para desarrollo:</h3>';
+  temasFin.forEach((t, i) => {
+    html += `<div class="tema-badge fade-in-up" style="animation-delay: ${i * 0.08}s">${t}</div>`;
+  });
   html += '</div>';
+  
   cont.innerHTML = html;
   genSec.style.display = 'block';
+  genSec.classList.add('smooth-show');
 }
 
 // ═══════════════════════════════════════════
@@ -760,14 +790,31 @@ async function buildAndDownloadDocx(bloques, modo, downloadSec) {
   const blob = await Packer.toBlob(doc);
   const url  = URL.createObjectURL(blob);
 
-  downloadSec.innerHTML = '';
+  // Show Download Modal instead of inline button
+  document.getElementById('download-modo-text').textContent = modo;
+  
+  const container = document.getElementById('download-btn-container');
+  container.innerHTML = ''; // Clear previous
+  
   const a = document.createElement('a');
   a.href = url;
   a.download = `Asignacion_${modo}.docx`;
-  a.className = 'btn-download';
-  a.textContent = '💾 DESCARGAR INFORME EN WORD (.DOCX)';
-  downloadSec.appendChild(a);
-  a.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  a.className = 'btn-primary';
+  a.style.display = 'block';
+  a.style.textDecoration = 'none';
+  a.style.fontSize = '1.2rem';
+  a.style.padding = '1.2rem';
+  a.innerHTML = '💾 Descargar Archivo';
+  
+  // Close modal when downloaded
+  a.onclick = () => {
+    setTimeout(() => {
+      document.getElementById('download-modal-overlay').style.display = 'none';
+    }, 1500);
+  };
+  
+  container.appendChild(a);
+  document.getElementById('download-modal-overlay').style.display = 'flex';
 }
 </script>
 </body>
