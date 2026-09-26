@@ -46,8 +46,10 @@
     /* ─── HERO ─── */
     .hero {
       text-align: center; padding: 6rem 2rem 4rem; max-width: 900px; margin: 0 auto;
+      animation: fadeIn 1s ease-out forwards;
     }
     .hero h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 1.5rem; line-height: 1.1; letter-spacing: -1px; }
+    .hero h1 span { color: #8C6A53; }
     .hero p { font-size: 1.25rem; margin-bottom: 2.5rem; opacity: 0.85; max-width: 700px; margin-left: auto; margin-right: auto; }
     .hero-btn {
       background-color: #4A322B; color: #fff; border: none; border-radius: 12px;
@@ -56,22 +58,25 @@
     }
     .hero-btn:hover { transform: translateY(-3px); }
     .global-counter { margin-top: 3rem; animation: fadeUp 1s ease-out; }
-    .global-counter h2 { font-size: 3rem; font-weight: 800; color: #4A322B; line-height: 1; }
+    .global-counter h2 { font-size: 3.5rem; font-weight: 800; color: #2B1B17; line-height: 1; }
     .global-counter p { font-size: 1rem; opacity: 0.7; font-weight: 600; margin-top: 0.5rem; }
+    
     @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     /* ─── FEATURES ─── */
     .features { padding: 4rem 2rem; background-color: #FAF8F5; border-top: 1px solid rgba(43,27,23,0.1); border-bottom: 1px solid rgba(43,27,23,0.1); }
     .features-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; max-width: 1100px; margin: 0 auto; }
-    .feature-card { flex: 1 1 300px; padding: 2rem; background: #fff; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.04); }
-    .feature-card h3 { font-size: 1.4rem; margin-bottom: 1rem; color: #2B1B17; }
-    .feature-card p { opacity: 0.8; }
-    .icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .feature-card { flex: 1 1 300px; padding: 2.5rem 2rem; background: #fff; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: transform 0.3s; }
+    .feature-card:hover { transform: translateY(-5px); }
+    .feature-card h3 { font-size: 1.4rem; margin-bottom: 1rem; color: #2B1B17; font-weight: 800; }
+    .feature-card p { opacity: 0.8; font-size: 1.05rem; }
+    .icon { font-size: 3rem; margin-bottom: 1rem; display: inline-block; }
 
     /* ─── PRICING ─── */
     .pricing { padding: 5rem 2rem; text-align: center; }
-    .pricing h2 { font-size: 2.5rem; margin-bottom: 1rem; }
-    .pricing > p { font-size: 1.1rem; opacity: 0.8; margin-bottom: 4rem; }
+    .pricing h2 { font-size: 2.5rem; margin-bottom: 1rem; font-weight: 800; }
+    .pricing > p { font-size: 1.15rem; opacity: 0.8; margin-bottom: 4rem; max-width: 600px; margin-left: auto; margin-right: auto; }
     .cards-container {
       display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; max-width: 1100px; margin: 0 auto;
     }
@@ -88,7 +93,7 @@
       position: absolute; top: -14px; right: 30px; background-color: #2B1B17;
       color: #fff; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: bold;
     }
-    .price-card h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .price-card h3 { font-size: 1.5rem; margin-bottom: 0.5rem; font-weight: 800; }
     .price { font-size: 3rem; font-weight: 800; margin-bottom: 1.5rem; }
     .price span { font-size: 1rem; font-weight: normal; opacity: 0.7; }
     .price-card ul { list-style: none; margin-bottom: 2.5rem; flex-grow: 1; }
@@ -137,38 +142,38 @@
   </nav>
 
   <section class="hero">
-    <h1>Automatiza tu Redacción Académica y Corporativa</h1>
-    <p>RedactaPro transforma imágenes de asignaciones o listas de temas en documentos estructurados, con formato perfecto y listos para entregar. Adiós al formato desordenado.</p>
-    <button class="hero-btn" onclick="openAuthModal()">Comenzar Gratis</button>
+    <h1>Crea Trabajos Académicos <span>100% Únicos</span> al Instante</h1>
+    <p>Sube la foto de tu asignación y deja que RedactaPro investigue y redacte por ti. Garantizamos originalidad absoluta: <strong>cero plagio, indetectable por IA.</strong></p>
+    <button class="hero-btn" onclick="document.getElementById('pricing').scrollIntoView({behavior: 'smooth'})">Ver Planes</button>
     <div class="global-counter">
       <h2 id="hero-counter">430+</h2>
-      <p>Documentos generados y exportados</p>
+      <p>Trabajos únicos entregados con éxito</p>
     </div>
   </section>
 
   <section id="features" class="features">
     <div class="features-container">
       <div class="feature-card">
-        <div class="icon">📸</div>
-        <h3>Escaneo Inteligente</h3>
-        <p>Sube una foto de la pizarra o asignación. Nuestra IA extrae y organiza los temas clave automáticamente, descartando ruido innecesario.</p>
+        <div class="icon">🛡️</div>
+        <h3>100% Anti-Plagio</h3>
+        <p>Cada trabajo se genera con palabras, estructuras y enfoques totalmente diferentes. Dos estudiantes pueden pedir el mismo tema y recibirán textos completamente distintos e indetectables.</p>
       </div>
       <div class="feature-card">
-        <div class="icon">📑</div>
-        <h3>Estructura Perfecta</h3>
-        <p>Genera informes extensos con análisis crítico y listas de investigación. Evitamos líneas huérfanas y títulos sueltos en tus hojas.</p>
+        <div class="icon">📸</div>
+        <h3>Escaneo Directo</h3>
+        <p>Solo tómale una foto a la tarea o a la pizarra del profesor. La Inteligencia Artificial extrae los temas clave y los desarrolla a profundidad al instante.</p>
       </div>
       <div class="feature-card">
         <div class="icon">💾</div>
-        <h3>Directo a Word</h3>
-        <p>Exporta todo tu trabajo estructurado con un clic directamente a formato `.docx`, listo para ser enviado sin ediciones adicionales.</p>
+        <h3>Descarga a Word</h3>
+        <p>Exporta tu trabajo con márgenes perfectos y estructura académica en formato `.docx`. Listo para imprimir o enviar, sin necesidad de copiar y pegar.</p>
       </div>
     </div>
   </section>
 
   <section id="pricing" class="pricing">
-    <h2>Planes a tu medida</h2>
-    <p>Elige el paquete que mejor se adapte a tu volumen de investigación.</p>
+    <h2>Invierte en tu tranquilidad</h2>
+    <p>Ahorra horas de investigación y garantiza la originalidad de tus trabajos académicos.</p>
     <div class="cards-container">
       
       <div class="price-card">
@@ -402,7 +407,12 @@
        errEl.textContent = `❌ Error procesando imagen: ${e.message}`;
        errEl.style.display = 'block';
     }
-  }  // Firebase listener
+  }  window.history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
+
+  let isLoginAction = false; // Track if auth change came from clicking the login button
+
+  // Firebase listener
   firebase.auth().onAuthStateChanged(async (user) => {
     if (user) {
       currentUser = user;
@@ -419,18 +429,19 @@
           if (pendingPlan) {
             seleccionarPlan(pendingPlan.nombre, pendingPlan.usd);
             pendingPlan = null;
-          } else {
+          } else if (isLoginAction) {
             document.getElementById('pricing').scrollIntoView({behavior: 'smooth'});
           }
         } else {
-          window.location.href = 'dashboard.html';
+          closeAuthModal();
+          if (isLoginAction) window.location.href = 'dashboard.html';
         }
       } else {
         closeAuthModal();
         if (pendingPlan) {
           seleccionarPlan(pendingPlan.nombre, pendingPlan.usd);
           pendingPlan = null;
-        } else {
+        } else if (isLoginAction) {
           document.getElementById('pricing').scrollIntoView({behavior: 'smooth'});
         }
       }
@@ -506,6 +517,7 @@
   }
 
   async function submitAuth() {
+    isLoginAction = true;
     const email = document.getElementById('email').value;
     const pass  = document.getElementById('password').value;
     const errEl = document.getElementById('auth-error');

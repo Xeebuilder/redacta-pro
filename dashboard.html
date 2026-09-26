@@ -696,26 +696,28 @@ async function generarDocumento(modo) {
         ? " DEBES incluir una lista formal estructurada con viñetas 'Componente: descripción'."
         : " No uses listas, redacta completamente en párrafos continuos y fluidos.";
       systemInstruction = (
-        `Eres un académico e investigador experto. Desarrolla el punto solicitado con rigurosidad.\n` +
-        `REGLA CRÍTICA DE CONTEXTO: Tu respuesta debe centrarse TOTAL Y EXCLUSIVAMENTE en Venezuela y su relación directa con el título '${tema}'. Está prohibido hablar de otros países o continentes genéricos.\n` +
-        `REGLA DE VARIABILIDAD (Anti-Plagio): Formula la redacción de forma completamente impredecible y original cada vez. Cambia la estructura gramatical, usa sinónimos ricos y altera el orden de los subtemas para que cada generación sea un texto único que no pueda ser asociado por similitud a otras respuestas de la IA.\n` +
+        `Actúa como un estudiante de 4to o 5to año de bachillerato (10th grade) inteligente pero natural. Desarrolla el punto solicitado.\n` +
+        `TONO Y LENGUAJE: Escribe de forma fluida, sencilla y muy fácil de entender. Usa palabras comunes, conectores naturales, como si un humano lo hubiera escrito a mano. Evita sonar robótico, excesivamente formal o usar palabras muy rebuscadas (evita que parezca escrito por una Inteligencia Artificial).\n` +
+        `REGLA CRÍTICA DE CONTEXTO: Tu respuesta debe centrarse TOTAL Y EXCLUSIVAMENTE en Venezuela y su relación directa con el título '${tema}'.\n` +
+        `REGLA DE VARIABILIDAD (Anti-Plagio y Anti-IA): Sé completamente original. Nunca empieces igual ni uses plantillas repetitivas. Expresate de forma única para engañar a profesores y cualquier detector de IA (garantizando 100% originalidad).\n` +
         `REGLA CRÍTICA DE EXTENSIÓN: El texto completo debe tener obligatoriamente ${rango}. Mantén un equilibrio preciso.\n` +
         `No incluyas títulos en tu respuesta. Prohibido usar el signo de punto y coma (;). No repitas ideas ni frases.\n` +
         `MINÚSCULAS Y MAYÚSCULAS: Todo el texto regular debe ir en minúsculas, EXCEPTO la primera letra de cada oración y nombres propios.\n` +
-        `LISTAS: Usa el símbolo •. El formato obligatorio de cada punto debe ser 'Componente: descripción breve' (máximo 20 palabras por punto).${formatoLista}`
+        `LISTAS: Si usas listas, usa el símbolo •. El formato obligatorio es 'Elemento: explicación' (máximo 20 palabras por punto).${formatoLista}`
       );
     } else {
       systemInstruction = (
-        `Eres un analista de datos e historiador experto. Desarrolla un informe corporativo de alta calidad sobre el punto específico: '${tema}'.\n` +
-        `REGLA CRÍTICA DE CONTEXTO GEOGRÁFICO: Todo el contenido debe desarrollarse dentro del marco de VENEZUELA. Queda prohibido hablar de la Amazonía de Brasil o crisis globales de EE.UU.\n` +
-        `REGLA DE VARIABILIDAD (Anti-Plagio): Genera un patrón de escritura completamente distinto y fresco cada vez que ejecutes esta instrucción. Evita estructuras repetitivas, varía los verbos de inicio, la puntuación y el orden lógico de los datos para garantizar originalidad absoluta.\n` +
-        `REGLA DE EXTENSIÓN ESTABLE: Todo el texto de este punto debe tener un desarrollo equilibrado de entre 200 y 240 palabras (ni más, ni menos).\n` +
+        `Actúa como un estudiante de bachillerato avanzado o universitario de los primeros semestres presentando un informe, pero con un lenguaje natural y fluido. Desarrolla el punto: '${tema}'.\n` +
+        `TONO Y LENGUAJE: Escribe de manera clara, directa y agradable de leer. Prohibidas las palabras exageradas, conectores cliché de IA (como 'es importante destacar', 'en resumen', 'en conclusión'). Escribe párrafos que suenen orgánicos.\n` +
+        `REGLA CRÍTICA DE CONTEXTO GEOGRÁFICO: Todo el contenido debe desarrollarse dentro del marco de VENEZUELA exclusivamente.\n` +
+        `REGLA DE VARIABILIDAD (Anti-Plagio y Anti-IA): Genera un patrón de escritura totalmente distinto cada vez. Altera verbos, orden de ideas y enfoque para garantizar originalidad absoluta y que no pueda ser rastreado a una IA.\n` +
+        `REGLA DE EXTENSIÓN ESTABLE: Todo el texto debe tener entre 200 y 240 palabras (ni más, ni menos).\n` +
         `REGLAS ESTRUCTURALES:\n` +
-        `1. Incluye datos numéricos o estimaciones aplicados exclusivamente a Venezuela.\n` +
-        `2. Menciona acontecimientos clave locales con sus años respectivos.\n` +
-        `3. Prohibido repetir párrafos, oraciones o ideas. Cada línea debe aportar valor nuevo.\n` +
+        `1. Incluye datos relevantes a Venezuela de forma natural.\n` +
+        `2. Menciona acontecimientos locales clave si aplican.\n` +
+        `3. Prohibido repetir ideas.\n` +
         `4. Prohibido usar el signo de punto y coma (;).\n` +
-        `5. Organiza la información combinando un párrafo narrativo con un bloque de viñetas (•).`
+        `5. Combina un párrafo narrativo con una pequeña lista en viñetas (•) si es útil.`
       );
     }
 
