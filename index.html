@@ -179,7 +179,7 @@
           <li>Extracción por imagen (Scan)</li>
           <li>Descarga directa a Word (.docx)</li>
         </ul>
-        <button class="btn-buy" onclick="openAuthModal()">Elegir Básico</button>
+        <button class="btn-buy" onclick="seleccionarPlan('Básico', 3)">Elegir Básico</button>
       </div>
 
       <div class="price-card popular">
@@ -192,7 +192,7 @@
           <li>Estructuración inteligente de listas</li>
           <li>Descarga directa a Word (.docx)</li>
         </ul>
-        <button class="btn-buy" onclick="openAuthModal()">Elegir Estudiante</button>
+        <button class="btn-buy" onclick="seleccionarPlan('Estudiante', 5)">Elegir Estudiante</button>
       </div>
 
       <div class="price-card">
@@ -204,7 +204,7 @@
           <li>Soporte técnico prioritario</li>
           <li>Acceso a futuras actualizaciones</li>
         </ul>
-        <button class="btn-buy" onclick="openAuthModal()">Elegir Premium</button>
+        <button class="btn-buy" onclick="seleccionarPlan('Premium', 10)">Elegir Premium</button>
       </div>
 
     </div>
@@ -223,15 +223,107 @@
     </div>
   </div>
 
+  <!-- PAYMENT MODAL -->
+  <div class="modal-overlay" id="payment-modal" style="display:none;">
+    <div class="modal" style="max-width: 450px; text-align: center;">
+      <div class="close-modal" onclick="document.getElementById('payment-modal').style.display='none'">✖</div>
+      <h3 style="margin-bottom: 0.5rem; color:#2B1B17;">Plan <span id="plan-name"></span></h3>
+      <p style="margin-bottom: 1.5rem; opacity: 0.8;">Para activar tu plan, realiza un Pago Móvil con los siguientes datos:</p>
+      
+      <div style="background: #EAE2D5; padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; text-align: left;">
+        <p style="margin: 0 0 10px 0;"><strong>🏦 Banco:</strong> Banesco (0134)</p>
+        <p style="margin: 0 0 10px 0;"><strong>📱 Teléfono:</strong> 0412 046 6522</p>
+        <p style="margin: 0;"><strong>🪪 Cédula:</strong> V-34176801</p>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <div style="font-size: 2.5rem; font-weight: 800; color: #2B1B17;" id="plan-bs">Calculando...</div>
+        <div style="font-size: 1.2rem; font-weight: normal; opacity: 0.5;" id="plan-usd">Calculando...</div>
+        <div style="font-size: 0.85rem; opacity: 0.4; margin-top: 5px;" id="tasa-bcv">Tasa BCV: Cargando...</div>
+      </div>
+
+      <button class="btn" style="width: 100%; font-size: 1.1rem; padding: 1rem; background: #25D366;" onclick="enviarWhatsApp()">✅ Ya realicé el pago</button>
+    </div>
+  </div>
+
 <script>
   let isLogin = true;
+  let currentUser = null;
+  let pendingPlan = null;
+  let userEmail = "";
 
   // Firebase listener
-  firebase.auth().onAuthStateChanged((user) => {
+  firebase.auth().onAuthStateChanged(async (user) => {
     if (user) {
-      window.location.href = 'dashboard.html';
+      currentUser = user;
+      userEmail = user.email;
+      const navBtn = document.getElementById('nav-user-btn');
+      navBtn.textContent = 'Mi Panel';
+      navBtn.onclick = () => { window.location.href = 'dashboard.html'; };
+
+      const doc = await firebase.firestore().collection('users').doc(user.uid).get();
+      if (doc.exists) {
+        const data = doc.data();
+        if (data.plan === 'free') {
+          closeAuthModal();
+          if (pendingPlan) {
+            seleccionarPlan(pendingPlan.nombre, pendingPlan.usd);
+            pendingPlan = null;
+          } else {
+            document.getElementById('pricing').scrollIntoView({behavior: 'smooth'});
+          }
+        } else {
+          window.location.href = 'dashboard.html';
+        }
+      } else {
+        closeAuthModal();
+        if (pendingPlan) {
+          seleccionarPlan(pendingPlan.nombre, pendingPlan.usd);
+          pendingPlan = null;
+        } else {
+          document.getElementById('pricing').scrollIntoView({behavior: 'smooth'});
+        }
+      }
+    } else {
+      currentUser = null;
+      document.getElementById('nav-user-btn').textContent = 'Iniciar Sesión';
+      document.getElementById('nav-user-btn').onclick = openAuthModal;
     }
   });
+
+  async function seleccionarPlan(nombre, usdPrice) {
+    if (!currentUser) {
+      pendingPlan = { nombre, usd: usdPrice };
+      openAuthModal();
+      return;
+    }
+    
+    document.getElementById('plan-name').textContent = nombre;
+    document.getElementById('plan-usd').textContent = `$${usdPrice}.00 USD`;
+    document.getElementById('plan-bs').textContent = `Calculando... Bs`;
+    document.getElementById('tasa-bcv').textContent = `Tasa BCV: Cargando...`;
+    document.getElementById('payment-modal').style.display = 'flex';
+    
+    try {
+      const res = await fetch('https://ve.dolarapi.com/v1/dolares/oficial');
+      const data = await res.json();
+      const tasa = data.promedio;
+      const bolivares = (usdPrice * tasa).toFixed(2);
+      
+      document.getElementById('plan-bs').textContent = `${bolivares} Bs.`;
+      document.getElementById('tasa-bcv').textContent = `Tasa BCV: ${tasa} Bs/$`;
+    } catch(e) {
+      document.getElementById('plan-bs').textContent = `Error de conexión`;
+      document.getElementById('tasa-bcv').textContent = `Intenta de nuevo más tarde`;
+    }
+  }
+
+  function enviarWhatsApp() {
+    const plan = document.getElementById('plan-name').textContent;
+    const msg = `Hola, acabo de realizar el Pago Móvil para el plan ${plan} de RedactaPro. Mi correo registrado es: ${userEmail}. Aquí adjunto mi comprobante:`;
+    const num = "584120466522";
+    window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`, '_blank');
+  }
 
   function openAuthModal() {
     document.getElementById('auth-modal').style.display = 'flex';
