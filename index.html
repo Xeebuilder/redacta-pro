@@ -321,15 +321,18 @@
     loadSec.style.display = 'block';
     errEl.style.display = 'none';
 
+    const todayStr = new Date().toLocaleDateString('es-VE', { day: '2-digit', month: '2-digit', year: 'numeric' });
     const prompt = `Analiza este comprobante de Pago Móvil venezolano.
+    La fecha actual de hoy es: ${todayStr}.
     VERIFICACIÓN ESTRICTA DE SEGURIDAD. Revisa minuciosamente que el texto de la imagen contenga TODO lo siguiente:
     1. Destino/Teléfono: Debe contener '04120466522' o '0412 046 6522'.
     2. Cédula: Debe contener '34176801' o '34.176.801'.
     3. Banco destino: 'Banesco' o '0134'.
     4. Monto: El pago DEBE decir exactamente ${pendingBsAmount} (Bolívares o Bs).
+    5. Fecha de Pago: La fecha del comprobante DEBE coincidir con hoy (${todayStr}) o máximo el día de ayer. Si la fecha dice el año 2026, es CORRECTA porque hoy estamos en 2026. No lo rechaces diciendo que es del futuro.
     
-    Si TODOS los datos coinciden a la perfección y es un comprobante exitoso válido, responde ÚNICAMENTE con la palabra: APROBADO.
-    Si falta ALGÚN dato, o el monto no es EXACTAMENTE ${pendingBsAmount}, responde ÚNICAMENTE con una frase corta del motivo del rechazo.`;
+    Si TODOS los datos solicitados coinciden a la perfección (incluyendo la fecha), responde ÚNICAMENTE con la palabra: APROBADO.
+    Si falta ALGÚN dato, el monto no es EXACTAMENTE ${pendingBsAmount}, o el pago es viejo, responde ÚNICAMENTE con una frase corta del motivo del rechazo.`;
 
     try {
        const result = await geminiChat([
