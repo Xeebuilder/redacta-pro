@@ -224,6 +224,16 @@
     </div>
   </div>
 
+  <!-- CUSTOM ALERT MODAL -->
+  <div class="modal-overlay" id="custom-alert-overlay" style="display:none; z-index: 9999;">
+    <div class="modal" style="max-width: 400px; text-align: center;">
+      <div style="font-size: 4rem; margin-bottom: 10px;">🎉</div>
+      <h3 style="margin-bottom: 0.5rem; color:#2B1B17;">¡Pago Verificado!</h3>
+      <p style="opacity: 0.8; margin-bottom: 1.5rem;" id="custom-alert-msg"></p>
+      <button class="btn" style="width: 100%; font-size: 1.1rem; padding: 1rem; background: #2B1B17;" id="custom-alert-btn">Comenzar a usar RedactaPro</button>
+    </div>
+  </div>
+
   <!-- PAYMENT MODAL -->
   <div class="modal-overlay" id="payment-modal" style="display:none;">
     <div class="modal" style="max-width: 450px; text-align: center;">
@@ -294,6 +304,15 @@
     const data = await res.json();
     if (!res.ok) throw new Error(data.error?.message || 'Error en Gemini API');
     return data.candidates[0].content.parts[0].text;
+  }
+
+  function showCustomAlert(msg, onConfirm) {
+    document.getElementById('custom-alert-msg').textContent = msg;
+    document.getElementById('custom-alert-overlay').style.display = 'flex';
+    document.getElementById('custom-alert-btn').onclick = () => {
+      document.getElementById('custom-alert-overlay').style.display = 'none';
+      if (onConfirm) onConfirm();
+    };
   }
 
   function handleVoucherUpload(event) {
@@ -368,8 +387,9 @@
            console.error("No se pudo enviar la alerta al admin:", e);
          }
          
-         alert('🎉 ¡Felicidades! La Inteligencia Artificial ha verificado tu pago y tu cuenta fue activada automáticamente.');
-         window.location.href = 'dashboard.html';
+         showCustomAlert('Felicidades, la Inteligencia Artificial validó tu pago exitosamente. Tu cuenta ha sido activada.', () => {
+           window.location.href = 'dashboard.html';
+         });
        } else {
          upSec.style.display = 'block';
          loadSec.style.display = 'none';
