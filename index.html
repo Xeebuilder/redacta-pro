@@ -242,7 +242,24 @@
         <div style="font-size: 0.85rem; opacity: 0.4; margin-top: 5px;" id="tasa-bcv">Tasa BCV: Cargando...</div>
       </div>
 
-      <button class="btn" style="width: 100%; font-size: 1.1rem; padding: 1rem; background: #25D366;" onclick="enviarWhatsApp()">✅ Ya realicé el pago</button>
+      <div id="payment-upload-section">
+        <div class="file-drop" onclick="document.getElementById('voucher-file').click()" style="border: 2px dashed rgba(43,27,23,0.3); border-radius: 12px; padding: 1.5rem; cursor: pointer; transition: 0.2s; background: #fff; margin-bottom: 10px;">
+          <input type="file" id="voucher-file" accept=".jpg,.jpeg,.png" style="display:none;" onchange="handleVoucherUpload(event)"/>
+          <div style="font-size: 2rem;">📸</div>
+          <p style="margin: 10px 0 0 0; font-weight: bold; color: #2B1B17;">Toca para subir tu comprobante</p>
+        </div>
+        <img id="voucher-preview" style="max-width: 100%; border-radius: 12px; margin-bottom: 10px; display: none;" />
+        <div id="voucher-error" style="color: #c0392b; margin-bottom: 10px; display: none; font-weight: bold;"></div>
+        
+        <button class="btn" id="btn-verify" style="width: 100%; font-size: 1.1rem; padding: 1rem; background: #2B1B17; margin-bottom: 10px; display: none;" onclick="verificarPago()">🔍 Verificar Pago Automáticamente</button>
+        <button class="btn-secondary" style="width: 100%; font-size: 0.95rem; padding: 0.8rem; background: transparent; border: 1px solid rgba(43,27,23,0.2); color: rgba(43,27,23,0.7);" onclick="enviarWhatsApp('ayuda')">No tengo el comprobante / Ayuda</button>
+      </div>
+
+      <div id="payment-loading" style="display:none; padding: 2rem 0;">
+        <div style="width: 40px; height: 40px; border: 4px solid rgba(43,27,23,0.1); border-top-color: #2B1B17; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 10px auto;"></div>
+        <p style="font-weight: bold; color: #2B1B17;">La Inteligencia Artificial está validando el comprobante de pago...</p>
+        <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+      </div>
     </div>
   </div>
 
@@ -251,8 +268,95 @@
   let currentUser = null;
   let pendingPlan = null;
   let userEmail = "";
+  
+  let voucherB64 = null;
+  let voucherMime = null;
+  let pendingBsAmount = null;
 
-  // Firebase listener
+  const GEMINI_MODEL = 'gemini-3.8-flash';
+  const apiKey = atob('QVEuQWI4Uk42SnBsdlYxX0F3RzdJYWVfWWlLZFpDTFlidFBvRUV0WEVjX2pWczdFRFFPaXc=');
+
+  async function geminiChat(parts, systemInstruction = null) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
+    const body = {
+      contents: [{ parts }],
+      generationConfig: { temperature: 0.1 }
+    };
+    if (systemInstruction) {
+      body.systemInstruction = { parts: [{ text: systemInstruction }] };
+    }
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error?.message || 'Error en Gemini API');
+    return data.candidates[0].content.parts[0].text;
+  }
+
+  function handleVoucherUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    voucherMime = file.type || 'image/jpeg';
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      voucherB64 = e.target.result.split(',')[1];
+      const img = document.getElementById('voucher-preview');
+      img.src = e.target.result;
+      img.style.display = 'block';
+      document.getElementById('btn-verify').style.display = 'block';
+      document.getElementById('voucher-error').style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  async function verificarPago() {
+    const upSec = document.getElementById('payment-upload-section');
+    const loadSec = document.getElementById('payment-loading');
+    const errEl = document.getElementById('voucher-error');
+    
+    upSec.style.display = 'none';
+    loadSec.style.display = 'block';
+    errEl.style.display = 'none';
+
+    const prompt = `Analiza este comprobante de Pago Móvil venezolano.
+    VERIFICACIÓN ESTRICTA DE SEGURIDAD. Revisa minuciosamente que el texto de la imagen contenga TODO lo siguiente:
+    1. Destino/Teléfono: Debe contener '04120466522' o '0412 046 6522'.
+    2. Cédula: Debe contener '34176801' o '34.176.801'.
+    3. Banco destino: 'Banesco' o '0134'.
+    4. Monto: El pago DEBE decir exactamente ${pendingBsAmount} (Bolívares o Bs).
+    
+    Si TODOS los datos coinciden a la perfección y es un comprobante exitoso válido, responde ÚNICAMENTE con la palabra: APROBADO.
+    Si falta ALGÚN dato, o el monto no es EXACTAMENTE ${pendingBsAmount}, responde ÚNICAMENTE con una frase corta del motivo del rechazo.`;
+
+    try {
+       const result = await geminiChat([
+         { text: prompt },
+         { inline_data: { mime_type: voucherMime, data: voucherB64 } }
+       ]);
+
+       if (result.includes('APROBADO')) {
+         const planMap = { 'Básico': 'basic', 'Estudiante': 'student', 'Premium': 'premium' };
+         const dbPlan = planMap[pendingPlan.nombre];
+         
+         await firebase.firestore().collection('users').doc(currentUser.uid).update({ plan: dbPlan });
+         
+         alert('🎉 ¡Felicidades! La Inteligencia Artificial ha verificado tu pago y tu cuenta fue activada automáticamente.');
+         window.location.href = 'dashboard.html';
+       } else {
+         upSec.style.display = 'block';
+         loadSec.style.display = 'none';
+         errEl.textContent = `❌ Rechazado: ${result}`;
+         errEl.style.display = 'block';
+       }
+    } catch(e) {
+       upSec.style.display = 'block';
+       loadSec.style.display = 'none';
+       errEl.textContent = `❌ Error procesando imagen: ${e.message}`;
+       errEl.style.display = 'block';
+    }
+  }  // Firebase listener
   firebase.auth().onAuthStateChanged(async (user) => {
     if (user) {
       currentUser = user;
@@ -298,6 +402,14 @@
       return;
     }
     
+    // Reset modal state
+    voucherB64 = null;
+    document.getElementById('voucher-preview').style.display = 'none';
+    document.getElementById('btn-verify').style.display = 'none';
+    document.getElementById('voucher-error').style.display = 'none';
+    document.getElementById('payment-upload-section').style.display = 'block';
+    document.getElementById('payment-loading').style.display = 'none';
+    
     document.getElementById('plan-name').textContent = nombre;
     document.getElementById('plan-usd').textContent = `$${usdPrice}.00 USD`;
     document.getElementById('plan-bs').textContent = `Calculando... Bs`;
@@ -309,6 +421,7 @@
       const data = await res.json();
       const tasa = data.promedio;
       const bolivares = (usdPrice * tasa).toFixed(2);
+      pendingBsAmount = bolivares;
       
       document.getElementById('plan-bs').textContent = `${bolivares} Bs.`;
       document.getElementById('tasa-bcv').textContent = `Tasa BCV: ${tasa} Bs/$`;
@@ -318,9 +431,14 @@
     }
   }
 
-  function enviarWhatsApp() {
+  function enviarWhatsApp(tipo) {
     const plan = document.getElementById('plan-name').textContent;
-    const msg = `Hola, acabo de realizar el Pago Móvil para el plan ${plan} de RedactaPro. Mi correo registrado es: ${userEmail}. Aquí adjunto mi comprobante:`;
+    let msg = '';
+    if (tipo === 'comprobante') {
+      msg = `Hola, acabo de realizar el Pago Móvil para el plan ${plan} de RedactaPro. Mi correo registrado es: ${userEmail}. Aquí adjunto mi comprobante:`;
+    } else {
+      msg = `Hola, intenté pagar el plan ${plan} con mi correo ${userEmail}, pero olvidé tomar captura / no tengo el voucher. Mis datos del Pago Móvil (Banco de origen y últimos 4 números de referencia) son: `;
+    }
     const num = "584120466522";
     window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`, '_blank');
   }
