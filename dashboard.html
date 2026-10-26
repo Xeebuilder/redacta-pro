@@ -12,12 +12,33 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
   <script src="firebase-config.js"></script>
 
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
   <style>
+    :root {
+      --bg-dark: #080B11;
+      --bg-card: rgba(16, 22, 34, 0.85);
+      --bg-card-hover: rgba(22, 30, 46, 0.95);
+      --border: rgba(139, 92, 246, 0.18);
+      --border-glow: rgba(6, 182, 212, 0.4);
+      --accent-violet: #8B5CF6;
+      --accent-cyan: #06B6D4;
+      --accent-gradient: linear-gradient(135deg, #8B5CF6 0%, #06B6D4 100%);
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background-color: #E5D8C8;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #2B1B17;
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(139, 92, 246, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.10) 0%, transparent 45%);
+      background-attachment: fixed;
+      font-family: var(--font-sans);
+      color: var(--text-main);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -25,115 +46,431 @@
     }
     
     .navbar {
-      width: 100%; background-color: #FAF8F5; padding: 1rem 2rem;
-      display: flex; justify-content: space-between; align-items: center;
-      border-bottom: 1px solid rgba(43,27,23,0.1); margin-bottom: 2rem;
+      width: 100%;
+      height: 74px;
+      background: rgba(8, 11, 17, 0.88);
+      backdrop-filter: blur(14px);
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      margin-bottom: 2rem;
     }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      object-fit: cover;
+      box-shadow: 0 0 16px rgba(139, 92, 246, 0.35);
+      background: #000;
+    }
+
+    .brand-text h1 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 0;
+      line-height: 1.15;
+    }
+
+    .brand-text span {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      letter-spacing: 0.6px;
+      display: block;
+      font-weight: 600;
+    }
+
     .user-info { display: flex; align-items: center; gap: 1rem; font-weight: 600; }
-    .btn-logout { background: transparent; border: 1px solid #2B1B17; padding: 0.4rem 1rem; border-radius: 6px; cursor: pointer; color: #2B1B17; font-weight: bold; }
     
-    #app { width: 100%; max-width: 740px; padding: 0 1rem 4rem; }
-    p, span, label, li { color: #2B1B17; }
-    .header-banner { background-color: #FAF8F5; border: 1px solid rgba(43,27,23,0.15); border-radius: 16px; padding: 2.2rem; text-align: center; margin-bottom: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
-    .banner-informe { border-left: 6px solid #4A322B !important; background-color: #FDFBF7; }
-    h1 { color: #2B1B17; font-weight: 800; margin-bottom: 0.5rem; }
-    h3 { color: #2B1B17; margin-bottom: 1rem; }
-    .card { background-color: #FAF8F5; border: 1px solid rgba(43,27,23,0.12); padding: 1.8rem; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.03); margin-bottom: 1.5rem; }
-    label { display: block; font-weight: 600; font-size: 1.05rem; margin-bottom: 0.5rem; color: #2B1B17; }
-    input[type="password"], input[type="text"], textarea { width: 100%; background-color: #FAF8F5; border: 1px solid rgba(43,27,23,0.2); border-radius: 10px; padding: 0.75rem 1rem; font-size: 1rem; color: #2B1B17; font-family: inherit; outline: none; transition: border-color 0.2s; }
-    input[type="password"]:focus, input[type="text"]:focus, textarea:focus { border-color: #2B1B17; }
+    .nav-link-hub {
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-gradient);
+      color: #fff;
+      padding: 7px 16px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      box-shadow: 0 2px 10px rgba(6, 182, 212, 0.3);
+      transition: all 0.2s;
+    }
+    .nav-link-hub:hover {
+      box-shadow: 0 4px 18px rgba(6, 182, 212, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .btn-logout {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      padding: 6px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: #f87171;
+      font-weight: 700;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+    .btn-logout:hover {
+      background: #ef4444;
+      color: #fff;
+    }
+    
+    #app { width: 100%; max-width: 880px; padding: 0 1rem 4rem; }
+    p, span, label, li { color: var(--text-main); }
+
+    .header-banner {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(6, 182, 212, 0.1));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+    .banner-informe {
+      border-left: 6px solid var(--accent-cyan) !important;
+    }
+
+    h1 { color: #fff; font-weight: 800; margin-bottom: 0.5rem; font-size: 1.7rem; }
+    h3 { color: #fff; margin-bottom: 1rem; }
+    
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 1.8rem;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      margin-bottom: 1.5rem;
+    }
+
+    label { display: block; font-weight: 600; font-size: 0.95rem; margin-bottom: 0.5rem; color: #cbd5e1; }
+    
+    input[type="password"], input[type="text"], textarea {
+      width: 100%;
+      background: rgba(8, 11, 17, 0.7);
+      border: 1px solid rgba(139, 92, 246, 0.25);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      font-size: 0.95rem;
+      color: #fff;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.2s;
+    }
+    input[type="password"]:focus, input[type="text"]:focus, textarea:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 12px rgba(6, 182, 212, 0.25);
+    }
     textarea { resize: vertical; }
-    .radio-group { background-color: #FAF8F5; border: 1px solid rgba(43,27,23,0.12); padding: 0.8rem 1.4rem; border-radius: 16px; box-shadow: 0 4px 14px rgba(0,0,0,0.02); margin-bottom: 1.5rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }
-    .radio-group label { display: flex; align-items: center; gap: 0.5rem; font-weight: 500; cursor: pointer; margin: 0; }
-    input[type="radio"] { accent-color: #2B1B17; width: 18px; height: 18px; }
-    .btn { background-color: #2B1B17; color: #FFFFFF; border: 2px solid #2B1B17; border-radius: 10px; padding: 0.65rem 1.5rem; font-weight: 600; font-size: 1rem; width: 100%; cursor: pointer; transition: all 0.25s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 4px 10px rgba(43,27,23,0.15); margin-top: 0.75rem; }
-    .btn:hover { background-color: #4A322B; border-color: #4A322B; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(43,27,23,0.25); }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-    .btn-download { background-color: #A4D8FF; color: #101D33; border: 2px solid #A4D8FF; border-radius: 10px; padding: 0.8rem; font-weight: 700; font-size: 1.05rem; width: 100%; cursor: pointer; box-shadow: 0 6px 20px rgba(164,216,255,0.35); transition: all 0.25s ease; margin-top: 1rem; text-decoration: none; display: block; text-align: center; }
-    .btn-download:hover { background-color: #2B1B17; border-color: #2B1B17; color: #FFFFFF; transform: translateY(-2px); }
-    .tabs { display: flex; gap: 4px; margin-bottom: 0; }
-    .tab-btn { background-color: #FAF8F5; color: #2B1B17; border: 1px solid rgba(43,27,23,0.12); border-bottom: none; border-radius: 10px 10px 0 0; padding: 0.6rem 1.5rem; font-weight: 600; font-size: 1.05rem; cursor: pointer; transition: all 0.2s; }
-    .tab-btn.active { background-color: #2B1B17; color: #FFFFFF; border-color: #2B1B17; }
+
+    .radio-group {
+      background: rgba(8, 11, 17, 0.6);
+      border: 1px solid var(--border);
+      padding: 0.9rem 1.4rem;
+      border-radius: 14px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+      margin-bottom: 1.5rem;
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .radio-group label { display: flex; align-items: center; gap: 0.5rem; font-weight: 500; cursor: pointer; margin: 0; color: #cbd5e1; }
+    input[type="radio"] { accent-color: var(--accent-cyan); width: 18px; height: 18px; }
+
+    .btn {
+      background: var(--accent-gradient);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 10px;
+      padding: 0.75rem 1.6rem;
+      font-weight: 700;
+      font-size: 1rem;
+      width: 100%;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+      margin-top: 0.75rem;
+    }
+    .btn:hover {
+      box-shadow: 0 6px 25px rgba(6, 182, 212, 0.45);
+      transform: translateY(-2px);
+    }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .btn-download {
+      background: var(--accent-gradient);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 10px;
+      padding: 0.9rem;
+      font-weight: 700;
+      font-size: 1.05rem;
+      width: 100%;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
+      transition: all 0.25s ease;
+      margin-top: 1rem;
+      text-decoration: none;
+      display: block;
+      text-align: center;
+    }
+    .btn-download:hover {
+      box-shadow: 0 8px 30px rgba(139, 92, 246, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .tabs { display: flex; gap: 6px; margin-bottom: 0; }
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: 12px 12px 0 0;
+      padding: 0.75rem 1.5rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: var(--bg-card);
+      color: #FFFFFF;
+      border-color: var(--accent-violet);
+      box-shadow: 0 -4px 14px rgba(139, 92, 246, 0.2);
+    }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
-    .tab-body { background-color: #FAF8F5; border: 1px solid rgba(43,27,23,0.12); border-radius: 0 16px 16px 16px; padding: 1.8rem; margin-bottom: 1.5rem; }
-    .tema-badge { background-color: #EAE2D5; border-left: 4px solid #2B1B17; padding: 0.8rem 1.2rem; border-radius: 6px; margin-bottom: 0.6rem; font-weight: 500; color: #2B1B17; font-size: 0.95rem; }
-    .file-drop { background-color: #FFFFFF; border: 2px dashed rgba(43,27,23,0.25); border-radius: 10px; padding: 1.5rem; text-align: center; cursor: pointer; transition: border-color 0.2s; margin-bottom: 0.75rem; }
-    .file-drop:hover { border-color: #2B1B17; }
+    .tab-body {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 0 16px 16px 16px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .tema-badge {
+      background: rgba(139, 92, 246, 0.12);
+      border-left: 4px solid var(--accent-cyan);
+      padding: 0.8rem 1.2rem;
+      border-radius: 8px;
+      margin-bottom: 0.6rem;
+      font-weight: 500;
+      color: #e2e8f0;
+      font-size: 0.95rem;
+    }
+
+    .file-drop {
+      background: rgba(8, 11, 17, 0.5);
+      border: 2px dashed rgba(139, 92, 246, 0.35);
+      border-radius: 14px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 0.75rem;
+    }
+    .file-drop:hover {
+      border-color: var(--accent-cyan);
+      background: rgba(6, 182, 212, 0.05);
+    }
     .file-drop input[type="file"] { display: none; }
-    .file-drop-icon { font-size: 2rem; margin-bottom: 0.5rem; }
-    .file-drop p { font-size: 0.95rem; opacity: 0.75; margin: 0; }
-    .preview-img { max-width: 100%; border-radius: 12px; border: 3px solid #2B1B17; box-shadow: 0 6px 18px rgba(0,0,0,0.08); margin: 0.75rem 0; display: none; }
-    .preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); gap: 12px; margin: 1rem 0; }
-    .preview-card { position: relative; height: 120px; border-radius: 12px; overflow: hidden; border: 2px solid #2B1B17; background: #FFFFFF; box-shadow: 0 4px 10px rgba(0,0,0,0.06); animation: popIn 0.3s ease forwards; }
+    .file-drop-icon { font-size: 2.2rem; margin-bottom: 0.5rem; }
+    .file-drop p { font-size: 0.95rem; opacity: 0.85; margin: 0; color: #cbd5e1; }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 12px;
+      margin: 1rem 0;
+    }
+    .preview-card {
+      position: relative;
+      height: 125px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid var(--accent-violet);
+      background: #080B11;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+      animation: popIn 0.3s ease forwards;
+    }
     .preview-card img { width: 100%; height: 100%; object-fit: cover; }
-    .preview-badge { position: absolute; bottom: 6px; left: 6px; background: rgba(43,27,23,0.85); color: #FFFFFF; font-size: 0.75rem; padding: 2px 7px; border-radius: 6px; font-weight: 700; backdrop-filter: blur(2px); }
-    .preview-remove { position: absolute; top: 6px; right: 6px; background: #c0392b; color: #FFFFFF; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; font-size: 11px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.3); transition: transform 0.2s; }
+    .preview-badge {
+      position: absolute;
+      bottom: 6px;
+      left: 6px;
+      background: rgba(8, 11, 17, 0.88);
+      color: #FFFFFF;
+      font-size: 0.75rem;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-weight: 700;
+      border: 1px solid var(--border-glow);
+    }
+    .preview-remove {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: #ef4444;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      cursor: pointer;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+      transition: transform 0.2s;
+    }
     .preview-remove:hover { transform: scale(1.15); }
-    .progress-wrap { background-color: #EAE2D5; border-radius: 999px; height: 10px; width: 100%; margin: 1rem 0; overflow: hidden; }
-    .progress-bar { background-color: #2B1B17; height: 100%; width: 0%; border-radius: 999px; transition: width 0.3s ease; }
-    .status-text { font-size: 0.95rem; font-weight: 500; color: #2B1B17; margin-bottom: 0.5rem; min-height: 1.5rem; }
-    #toast { position: fixed; bottom: 2rem; right: 2rem; background-color: #2B1B17; color: #FFFFFF; padding: 0.85rem 1.4rem; border-radius: 12px; font-weight: 600; font-size: 0.95rem; box-shadow: 0 8px 24px rgba(0,0,0,0.2); opacity: 0; transform: translateY(10px); transition: opacity 0.3s, transform 0.3s; z-index: 9999; pointer-events: none; }
+
+    .progress-wrap {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      height: 10px;
+      width: 100%;
+      margin: 1rem 0;
+      overflow: hidden;
+    }
+    .progress-bar {
+      background: var(--accent-gradient);
+      box-shadow: 0 0 12px rgba(6, 182, 212, 0.5);
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+    .status-text {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #cbd5e1;
+      margin-bottom: 0.5rem;
+      min-height: 1.5rem;
+    }
+
+    #toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: rgba(16, 22, 34, 0.95);
+      border: 1px solid var(--accent-cyan);
+      color: #FFFFFF;
+      padding: 0.85rem 1.4rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s, transform 0.3s;
+      z-index: 9999;
+      pointer-events: none;
+    }
     #toast.show { opacity: 1; transform: translateY(0); }
+
     .alert { border-radius: 10px; padding: 0.85rem 1.2rem; margin: 0.75rem 0; font-size: 0.95rem; font-weight: 500; }
     .alert p { margin: 0; }
-    .alert-error   { background-color: #fde8e8; border-left: 4px solid #c0392b; color: #7b241c; }
-    .alert-warning { background-color: #fef9e7; border-left: 4px solid #d4ac0d; color: #7d6608; }
-    .quota-badge { background: #2B1B17; color: #fff; padding: 2px 8px; border-radius: 12px; font-size: 0.85rem; margin-left: 10px; }
+    .alert-error   { background: rgba(239, 68, 68, 0.15); border-left: 4px solid #ef4444; color: #fca5a5; }
+    .alert-warning { background: rgba(245, 158, 11, 0.15); border-left: 4px solid #f59e0b; color: #fcd34d; }
     
-    /* ─── COOL LOADING ANIMATIONS ─── */
+    .quota-badge {
+      background: var(--accent-gradient);
+      color: #fff;
+      padding: 3px 9px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      margin-left: 8px;
+      font-weight: 700;
+      box-shadow: 0 0 8px rgba(6, 182, 212, 0.3);
+    }
+    
     .spinner {
-      width: 48px; height: 48px;
-      border: 5px solid rgba(43,27,23,0.1);
-      border-left-color: #4A322B;
+      width: 44px; height: 44px;
+      border: 3px solid rgba(139, 92, 246, 0.2);
+      border-top-color: var(--accent-cyan);
       border-radius: 50%;
-      animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      animation: spin 0.8s linear infinite;
       margin: 0 auto 15px auto;
     }
     @keyframes spin { 100% { transform: rotate(360deg); } }
-    .loading-container { text-align: center; padding: 2rem; background: #fff; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); margin-bottom: 1.5rem; }
-    .loading-text { font-weight: 700; font-size: 1.1rem; color: #2B1B17; animation: pulse 1.5s ease-in-out infinite; }
+    .loading-container {
+      text-align: center;
+      padding: 2rem;
+      background: rgba(8, 11, 17, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      margin-bottom: 1.5rem;
+    }
+    .loading-text { font-weight: 600; font-size: 1.05rem; color: var(--text-muted); animation: pulse 1.5s ease-in-out infinite; }
     @keyframes pulse { 50% { opacity: 0.4; } }
 
-    /* ─── CUSTOM MODALS ─── */
+    /* Modals */
     .modal-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(43,27,23,0.6); backdrop-filter: blur(5px);
+      background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px);
       display: none; justify-content: center; align-items: center; z-index: 9999;
     }
     .modal {
-      background: #FAF8F5; padding: 2.5rem; border-radius: 20px; width: 90%; max-width: 420px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.2); text-align: center;
-      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      background: #0f1422;
+      border: 1px solid var(--border-glow);
+      padding: 2.2rem;
+      border-radius: 18px;
+      width: 90%;
+      max-width: 430px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      text-align: center;
+      color: #fff;
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
     @keyframes popIn { 0% { transform: scale(0.8) translateY(20px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
-    .modal h3 { font-size: 1.8rem; margin-bottom: 1rem; color: #2B1B17; font-weight: 800; }
-    .modal p { font-size: 1.05rem; margin-bottom: 2rem; opacity: 0.8; line-height: 1.5; }
+    .modal h3 { font-size: 1.6rem; margin-bottom: 0.8rem; color: #fff; font-weight: 800; }
+    .modal p { font-size: 0.95rem; margin-bottom: 1.8rem; color: var(--text-muted); line-height: 1.5; }
     .modal-input {
-      width: 100%; padding: 1rem; margin-bottom: 1.5rem; border-radius: 12px;
-      border: 2px solid rgba(43,27,23,0.1); font-size: 1.2rem; text-align: center;
-      transition: border-color 0.2s; background: #fff;
+      width: 100%; padding: 0.9rem; margin-bottom: 1.5rem; border-radius: 10px;
+      border: 1px solid rgba(139, 92, 246, 0.3); font-size: 1.1rem; text-align: center;
+      background: rgba(8, 11, 17, 0.8); color: #fff; outline: none;
     }
-    .modal-input:focus { border-color: #2B1B17; outline: none; }
+    .modal-input:focus { border-color: var(--accent-cyan); box-shadow: 0 0 12px rgba(6, 182, 212, 0.3); }
     .modal-buttons { display: flex; gap: 12px; }
     .btn-secondary {
-      flex: 1; background: #EAE2D5; color: #2B1B17; border: none; padding: 1rem;
-      border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 1rem;
+      flex: 1; background: rgba(255, 255, 255, 0.08); color: #cbd5e1;
+      border: 1px solid var(--border); padding: 0.9rem;
+      border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.95rem;
     }
-    .btn-secondary:hover { background: #dcd2c3; }
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.15); color: #fff; }
     .btn-primary {
-      flex: 1; background: #2B1B17; color: #fff; border: none; padding: 1rem;
-      border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 1rem;
+      flex: 1; background: var(--accent-gradient); color: #fff;
+      border: none; padding: 0.9rem; border-radius: 10px; font-weight: 700;
+      cursor: pointer; transition: 0.2s; font-size: 0.95rem;
+      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
     }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(43,27,23,0.3); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(6, 182, 212, 0.45); }
 
-    /* ─── ENHANCED GENERATION PROGRESS ─── */
-    .magic-text { font-size: 0.95rem; opacity: 0.7; font-style: italic; margin-top: 5px; color: #4A322B; }
-    
-    /* ─── SMOOTH ANIMATIONS ─── */
+    .magic-text { font-size: 0.92rem; color: var(--accent-cyan); font-style: italic; margin-top: 5px; }
     .fade-in-up { opacity: 0; animation: fadeInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    
     .smooth-show { animation: fadeIn 0.5s ease forwards; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   </style>
@@ -142,19 +479,17 @@
 <body>
 
 <nav class="navbar">
-  <div style="display:flex; align-items:center; gap:12px;">
-    <a href="index.html" title="Ir a Synapse Hub" style="display:flex; align-items:center; text-decoration:none;">
-      <img src="synapse-logo.jpg" alt="Synapse" style="width:36px; height:36px; border-radius:8px; object-fit:cover; box-shadow:0 0 10px rgba(139,92,246,0.3);">
-    </a>
-    <div>
-      <h2 style="margin:0; font-size:1.35rem; line-height:1.2;">RedactaPro</h2>
-      <span style="font-size:0.75rem; color:#8C6A53; font-weight:600;">Parte de Synapse Suite</span>
+  <div class="brand" onclick="window.location.href='index.html'">
+    <img src="synapse-logo.jpg" alt="Synapse" class="brand-logo">
+    <div class="brand-text">
+      <h1>SYNAPSE</h1>
+      <span>REDACTAPRO MODULE</span>
     </div>
   </div>
   <div class="user-info">
-    <a href="index.html" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg, #8B5CF6, #06B6D4); color:#fff; padding:7px 14px; border-radius:8px; font-weight:700; font-size:0.85rem; box-shadow:0 2px 10px rgba(6,182,212,0.3);">🧠 Synapse Hub</a>
-    <button id="admin-panel-btn" class="btn-logout" style="display:none; background:#8C6A53; color:#fff; border:none;" onclick="openAdminPanel()">Panel Admin</button>
-    <span id="user-email">Cargando...</span>
+    <a href="index.html" class="nav-link-hub">🧠 Synapse Hub</a>
+    <button id="admin-panel-btn" style="display:none; background:rgba(139,92,246,0.18); border:1px solid var(--accent-violet); color:#fff; border-radius:8px; padding:6px 14px; font-size:0.85rem; font-weight:700; cursor:pointer;" onclick="openAdminPanel()">Panel Admin</button>
+    <span id="user-email" style="font-size:0.85rem; color:var(--text-muted);">Cargando...</span>
     <button class="btn-logout" onclick="firebase.auth().signOut()">Salir</button>
   </div>
 </nav>
@@ -166,14 +501,14 @@
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('investigacion', this)">🔬 Modo Investigación <span id="quota-inv" class="quota-badge">0/0</span></button>
       <button class="tab-btn"        onclick="switchTab('informe', this)">📊 Modo Informe Complejo <span id="quota-inf" class="quota-badge">0/0</span></button>
-      <button class="tab-btn" id="tab-btn-admin" onclick="switchTab('admin', this)" style="background:#4A322B; color:#fff;">👑 Panel Admin & Pagos</button>
+      <button class="tab-btn" id="tab-btn-admin" onclick="switchTab('admin', this)" style="display:none; background:rgba(139,92,246,0.2); border-color:var(--accent-violet); color:#fff;">👑 Panel Admin & Pagos</button>
     </div>
 
     <div id="tab-investigacion" class="tab-panel active">
       <div class="tab-body">
-        <div class="header-banner" style="margin-bottom:1.2rem;">
+        <div class="header-banner" style="margin-bottom:1.5rem;">
           <h1>🔬 Módulo de Investigación Académica</h1>
-          <p style="font-size:1.1rem; font-weight:500; margin:0; opacity:.85;">Genera respuestas analíticas, compactas y fluidas.</p>
+          <p style="font-size:1.05rem; font-weight:500; margin:0; color:var(--text-muted);">Genera respuestas analíticas, compactas y estructuradas con citas académicas.</p>
         </div>
         <div id="gen-Investigacion"></div>
       </div>
@@ -181,9 +516,9 @@
 
     <div id="tab-informe" class="tab-panel">
       <div class="tab-body">
-        <div class="header-banner banner-informe" style="margin-bottom:1.2rem;">
-          <h1 style="color:#4A322B;">📊 Módulo de Informes Complejos</h1>
-          <p style="font-size:1.1rem; font-weight:500; margin:0; opacity:.85;">Redacción analítica y rigurosa de largo alcance.</p>
+        <div class="header-banner banner-informe" style="margin-bottom:1.5rem;">
+          <h1>📊 Módulo de Informes Complejos</h1>
+          <p style="font-size:1.05rem; font-weight:500; margin:0; color:var(--text-muted);">Redacción monográfica de largo alcance, marcos metodológicos y conclusiones.</p>
         </div>
         <div id="gen-Informe"></div>
       </div>
@@ -191,38 +526,38 @@
 
     <div id="tab-admin" class="tab-panel">
       <div class="tab-body">
-        <div class="header-banner" style="background: linear-gradient(135deg, #4A322B, #2B1B17); color: #fff; margin-bottom:1.5rem; padding: 1.5rem; border-radius: 12px;">
+        <div class="header-banner" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(6, 182, 212, 0.15)); border: 1px solid var(--border); margin-bottom:1.5rem; padding: 1.8rem; border-radius: 14px;">
           <h1 style="color:#fff; margin-bottom: 0.5rem;">👑 Panel de Control y Pagos (Admin)</h1>
-          <p style="font-size:1rem; opacity:0.9; margin:0;">Registro en tiempo real de todos los pagos verificados por la IA y gestión de usuarios.</p>
+          <p style="font-size:0.95rem; color:var(--text-muted); margin:0;">Registro en tiempo real de todos los pagos verificados por la IA y control de usuarios.</p>
         </div>
 
         <!-- TARJETA DE ESTADO ADMIN -->
-        <div style="background:#fff; border: 2px solid #2B1B17; border-radius: 12px; padding: 1.2rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div style="background:rgba(8,11,17,0.7); border: 1px solid var(--border-glow); border-radius: 14px; padding: 1.4rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
           <div>
-            <h4 style="margin:0; font-size:1.1rem; color:#2B1B17;">Cuenta Administradora: <span id="admin-account-display">maxrsilvagni@gmail.com</span></h4>
-            <p style="margin:5px 0 0 0; font-size:0.9rem; opacity:0.8;">Estado: <strong id="admin-status-display" style="color:#27ae60; font-size:1rem;">Modo Admin Infinito (∞)</strong></p>
+            <h4 style="margin:0; font-size:1.1rem; color:#fff;">Cuenta Administradora: <span id="admin-account-display" style="color:var(--accent-cyan);">maxrsilvagni@gmail.com</span></h4>
+            <p style="margin:5px 0 0 0; font-size:0.9rem; color:var(--text-muted);">Estado: <strong id="admin-status-display" style="color:#22c55e; font-size:1rem;">Modo Admin Infinito (∞)</strong></p>
           </div>
-          <button class="btn" style="width:auto; margin:0; padding:0.6rem 1.4rem; background:#2B1B17; font-weight:bold;" onclick="forzarModoAdmin()">⚡ Forzar Modo Infinito</button>
+          <button class="btn" style="width:auto; margin:0; padding:0.6rem 1.4rem;" onclick="forzarModoAdmin()">⚡ Forzar Modo Infinito</button>
         </div>
 
-        <div style="display:flex; gap:10px; margin-bottom: 1rem;">
-          <button class="btn" id="subtab-btn-pagos" style="flex:1; margin:0; background:#2B1B17; color:#fff;" onclick="switchAdminSubtab('pagos')">💰 Historial de Pagos Verificados</button>
-          <button class="btn" id="subtab-btn-usuarios" style="flex:1; margin:0; background:#EAE2D5; color:#2B1B17; border: 1px solid #2B1B17;" onclick="switchAdminSubtab('usuarios')">👥 Gestión de Usuarios</button>
+        <div style="display:flex; gap:10px; margin-bottom: 1.2rem;">
+          <button class="btn" id="subtab-btn-pagos" style="flex:1; margin:0; background:var(--accent-gradient); color:#fff;" onclick="switchAdminSubtab('pagos')">💰 Historial de Pagos Verificados</button>
+          <button class="btn" id="subtab-btn-usuarios" style="flex:1; margin:0; background:rgba(255,255,255,0.05); color:var(--text-muted); border: 1px solid var(--border);" onclick="switchAdminSubtab('usuarios')">👥 Gestión de Usuarios</button>
         </div>
 
         <!-- SECCIÓN PAGOS -->
-        <div id="admin-section-pagos" style="background:#fff; border-radius:12px; padding:1.2rem; box-shadow:0 4px 12px rgba(0,0,0,0.05); overflow-x:auto;">
+        <div id="admin-section-pagos" style="background:rgba(8,11,17,0.7); border:1px solid var(--border); border-radius:14px; padding:1.4rem; box-shadow:0 4px 12px rgba(0,0,0,0.3); overflow-x:auto;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-            <h3 style="margin:0;">Registro de Pagos Recibidos (IA)</h3>
-            <button class="btn" style="width:auto; margin:0; padding:0.4rem 0.8rem; font-size:0.85rem; background:#4A322B;" onclick="loadAdminPagos()">🔄 Actualizar Pagos</button>
+            <h3 style="margin:0; color:#fff;">Registro de Pagos Recibidos (IA)</h3>
+            <button class="btn" style="width:auto; margin:0; padding:0.5rem 1rem; font-size:0.85rem;" onclick="loadAdminPagos()">🔄 Actualizar Pagos</button>
           </div>
           <table style="width:100%; border-collapse: collapse; font-size: 0.95rem;">
             <thead>
-              <tr style="background:#FAF8F5; border-bottom: 2px solid #ddd;">
-                <th style="padding:10px; text-align:left;">Fecha</th>
-                <th style="padding:10px; text-align:left;">Usuario</th>
-                <th style="padding:10px; text-align:left;">Plan</th>
-                <th style="padding:10px; text-align:left;">Monto (Bs)</th>
+              <tr style="background:rgba(255,255,255,0.04); border-bottom: 1px solid rgba(255,255,255,0.1);">
+                <th style="padding:10px; text-align:left; color:var(--text-muted);">Fecha</th>
+                <th style="padding:10px; text-align:left; color:var(--text-muted);">Usuario</th>
+                <th style="padding:10px; text-align:left; color:var(--text-muted);">Plan</th>
+                <th style="padding:10px; text-align:left; color:var(--text-muted);">Monto (Bs)</th>
               </tr>
             </thead>
             <tbody id="admin-pagos-body"></tbody>
@@ -230,20 +565,20 @@
         </div>
 
         <!-- SECCIÓN USUARIOS -->
-        <div id="admin-section-usuarios" style="display:none; background:#fff; border-radius:12px; padding:1.2rem; box-shadow:0 4px 12px rgba(0,0,0,0.05); overflow-x:auto;">
+        <div id="admin-section-usuarios" style="display:none; background:rgba(8,11,17,0.7); border:1px solid var(--border); border-radius:14px; padding:1.4rem; box-shadow:0 4px 12px rgba(0,0,0,0.3); overflow-x:auto;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:10px;">
-            <h3 style="margin:0;">Control de Usuarios Registrados</h3>
+            <h3 style="margin:0; color:#fff;">Control de Usuarios Registrados</h3>
             <div style="display:flex; gap:8px;">
-              <button class="btn" style="width:auto; margin:0; padding:0.4rem 0.8rem; font-size:0.85rem; background:#c0392b; color:#fff;" onclick="manualResetAdmins()">🧹 Resetear otros Admins a Free</button>
-              <button class="btn" style="width:auto; margin:0; padding:0.4rem 0.8rem; font-size:0.85rem; background:#4A322B;" onclick="loadAdminUsuarios()">🔄 Actualizar Usuarios</button>
+              <button class="btn" style="width:auto; margin:0; padding:0.5rem 1rem; font-size:0.85rem; background:#c0392b; color:#fff;" onclick="manualResetAdmins()">🧹 Resetear otros Admins a Free</button>
+              <button class="btn" style="width:auto; margin:0; padding:0.5rem 1rem; font-size:0.85rem;" onclick="loadAdminUsuarios()">🔄 Actualizar Usuarios</button>
             </div>
           </div>
           <table style="width:100%; border-collapse: collapse; font-size: 0.95rem;">
             <thead>
-              <tr style="background:#FAF8F5; border-bottom: 2px solid #ddd;">
-                <th style="padding:10px; text-align:left;">Usuario</th>
-                <th style="padding:10px; text-align:left;">Plan Actual</th>
-                <th style="padding:10px; text-align:center;">Acciones</th>
+              <tr style="background:rgba(255,255,255,0.04); border-bottom: 1px solid rgba(255,255,255,0.1);">
+                <th style="padding:10px; text-align:left; color:var(--text-muted);">Usuario</th>
+                <th style="padding:10px; text-align:left; color:var(--text-muted);">Plan Actual</th>
+                <th style="padding:10px; text-align:center; color:var(--text-muted);">Acciones</th>
               </tr>
             </thead>
             <tbody id="admin-usuarios-body"></tbody>
@@ -282,17 +617,17 @@
 <!-- DOWNLOAD MODAL -->
 <div class="modal-overlay" id="download-modal-overlay">
   <div class="modal" style="max-width: 450px;">
-    <div style="font-size: 4rem; margin-bottom: 15px;">🎉</div>
-    <h3 style="margin-bottom: 0.5rem; color:#2B1B17; font-weight:800;">¡Documento Listo!</h3>
-    <p style="opacity: 0.8; margin-bottom: 1.5rem;">Tu redacción ha sido estructurada y optimizada con éxito.</p>
+    <div style="font-size: 3.5rem; margin-bottom: 15px;">🎉</div>
+    <h3 style="margin-bottom: 0.5rem; color:#fff; font-weight:800;">¡Documento Listo!</h3>
+    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Tu redacción ha sido estructurada y optimizada con éxito.</p>
     
-    <div style="background: #EAE2D5; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem;">
-      <h4 style="margin:0; color:#2B1B17; font-size:1.2rem;">Asignacion_<span id="download-modo-text"></span>.docx</h4>
-      <p style="margin: 5px 0 0 0; font-size: 0.9rem; opacity: 0.7;">Formato Word • Lista para entregar</p>
+    <div style="background: rgba(139, 92, 246, 0.12); border: 1px solid var(--border); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem;">
+      <h4 style="margin:0; color:#fff; font-size:1.2rem;">Asignacion_<span id="download-modo-text" style="color:var(--accent-cyan);"></span>.docx</h4>
+      <p style="margin: 5px 0 0 0; font-size: 0.88rem; color: var(--text-muted);">Formato Word • Normas Académicas • Listo para entregar</p>
     </div>
     
     <div id="download-btn-container" style="margin-bottom: 10px;"></div>
-    <button class="btn-secondary" style="width: 100%; font-size: 1rem;" onclick="document.getElementById('download-modal-overlay').style.display='none'">Cerrar ventana</button>
+    <button class="btn-secondary" style="width: 100%; font-size: 0.95rem;" onclick="document.getElementById('download-modal-overlay').style.display='none'">Cerrar ventana</button>
   </div>
 </div>
 
@@ -1056,16 +1391,16 @@ function switchAdminSubtab(subtab) {
   const btnPagos = document.getElementById('subtab-btn-pagos');
   const btnUsers = document.getElementById('subtab-btn-usuarios');
   if (subtab === 'pagos') {
-    btnPagos.style.background = '#2B1B17';
+    btnPagos.style.background = 'var(--accent-gradient)';
     btnPagos.style.color = '#fff';
-    btnUsers.style.background = '#EAE2D5';
-    btnUsers.style.color = '#2B1B17';
+    btnUsers.style.background = 'rgba(255, 255, 255, 0.05)';
+    btnUsers.style.color = 'var(--text-muted)';
     loadAdminPagos();
   } else {
-    btnUsers.style.background = '#2B1B17';
+    btnUsers.style.background = 'var(--accent-gradient)';
     btnUsers.style.color = '#fff';
-    btnPagos.style.background = '#EAE2D5';
-    btnPagos.style.color = '#2B1B17';
+    btnPagos.style.background = 'rgba(255, 255, 255, 0.05)';
+    btnPagos.style.color = 'var(--text-muted)';
     loadAdminUsuarios();
   }
 }
@@ -1125,37 +1460,37 @@ async function manualResetAdmins() {
 
 async function loadAdminPagos() {
   const tbody = document.getElementById('admin-pagos-body');
-  tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:1.5rem; opacity:0.7;">Cargando pagos...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:1.5rem; color:var(--text-muted);">Cargando pagos...</td></tr>';
   try {
     const snap = await firebase.firestore().collection('payments').orderBy('timestamp', 'desc').limit(50).get();
     if (snap.empty) {
-      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:1.5rem; opacity:0.7;">No hay pagos registrados aún en el sistema.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:1.5rem; color:var(--text-muted);">No hay pagos registrados aún en el sistema.</td></tr>';
       return;
     }
     let html = '';
     snap.forEach(doc => {
       const d = doc.data();
       const dateStr = d.fecha ? (new Date(d.fecha).toLocaleDateString() + ' ' + new Date(d.fecha).toLocaleTimeString()) : 'Reciente';
-      html += `<tr style="border-bottom: 1px solid #eee;">
-        <td style="padding:12px 10px;">${dateStr}</td>
-        <td style="padding:12px 10px;"><strong>${d.email}</strong></td>
-        <td style="padding:12px 10px;"><span class="quota-badge" style="background:#27ae60; margin:0;">${d.plan}</span></td>
-        <td style="padding:12px 10px; font-weight:bold; color:#2B1B17;">${d.monto_bs} Bs.</td>
+      html += `<tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+        <td style="padding:12px 10px; color:var(--text-muted);">${dateStr}</td>
+        <td style="padding:12px 10px; color:#fff;"><strong>${d.email}</strong></td>
+        <td style="padding:12px 10px;"><span class="quota-badge" style="background:var(--accent-gradient); margin:0;">${d.plan}</span></td>
+        <td style="padding:12px 10px; font-weight:bold; color:#22c55e;">${d.monto_bs} Bs.</td>
       </tr>`;
     });
     tbody.innerHTML = html;
   } catch(e) {
-    tbody.innerHTML = `<tr><td colspan="4" style="color:#c0392b; padding:10px;">Error cargando pagos: ${e.message}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="4" style="color:#ef4444; padding:10px;">Error cargando pagos: ${e.message}</td></tr>`;
   }
 }
 
 async function loadAdminUsuarios() {
   const tbody = document.getElementById('admin-usuarios-body');
-  tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:1.5rem; opacity:0.7;">Cargando usuarios...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:1.5rem; color:var(--text-muted);">Cargando usuarios...</td></tr>';
   try {
     const snap = await firebase.firestore().collection('users').limit(100).get();
     if (snap.empty) {
-      tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:1.5rem; opacity:0.7;">No hay usuarios registrados.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:1.5rem; color:var(--text-muted);">No hay usuarios registrados.</td></tr>';
       return;
     }
     let html = '';
@@ -1165,22 +1500,22 @@ async function loadAdminUsuarios() {
       const isThisOwner = email === 'maxrsilvagni@gmail.com';
       let isTempPremium = d.premium_until && d.premium_until > Date.now();
       let planDisplay = isThisOwner ? 'admin (propietario)' : (isTempPremium ? 'premium (temporal)' : (d.plan || 'free'));
-      let badgeColor = isThisOwner ? '#2B1B17' : ((planDisplay === 'premium' || isTempPremium) ? '#27ae60' : '#888');
+      let badgeColor = isThisOwner ? 'var(--accent-gradient)' : ((planDisplay === 'premium' || isTempPremium) ? '#22c55e' : '#64748b');
       
       let actionsHtml = isThisOwner 
-        ? `<span style="font-size:0.85rem; color:#888; font-weight:bold;">👑 Propietario</span>`
-        : `<button onclick="adminAction('${doc.id}', 'ban')" style="background:#c0392b; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; margin-right:6px; font-weight:bold;">Anular / Gratis</button>
-           <button onclick="adminAction('${doc.id}', 'premium7')" style="background:#f39c12; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:bold;">Regalar Premium (1 sem)</button>`;
+        ? `<span style="font-size:0.85rem; color:var(--accent-cyan); font-weight:bold;">👑 Propietario</span>`
+        : `<button onclick="adminAction('${doc.id}', 'ban')" style="background:#ef4444; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; margin-right:6px; font-weight:bold;">Anular / Gratis</button>
+           <button onclick="adminAction('${doc.id}', 'premium7')" style="background:#f59e0b; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:bold;">Regalar Premium (1 sem)</button>`;
 
-      html += `<tr style="border-bottom: 1px solid #eee;">
-        <td style="padding:12px 10px;">${d.email || doc.id}</td>
+      html += `<tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+        <td style="padding:12px 10px; color:#fff;">${d.email || doc.id}</td>
         <td style="padding:12px 10px;"><span class="quota-badge" style="background:${badgeColor}; margin:0;">${planDisplay}</span></td>
         <td style="padding:12px 10px; text-align:center;">${actionsHtml}</td>
       </tr>`;
     });
     tbody.innerHTML = html;
   } catch(e) {
-    tbody.innerHTML = `<tr><td colspan="3" style="color:#c0392b; padding:10px;">Error cargando usuarios: ${e.message}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="3" style="color:#ef4444; padding:10px;">Error cargando usuarios: ${e.message}</td></tr>`;
   }
 }
 
