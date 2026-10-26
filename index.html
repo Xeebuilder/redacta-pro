@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Synapse | Hub de Estudio & Investigación con IA</title>
+  <title>Synapse | La Suite de Estudio & Investigación con IA</title>
   <link rel="icon" type="image/jpeg" href="synapse-logo.jpg">
   
   <!-- Firebase SDK Compat -->
@@ -20,12 +20,17 @@
       --bg-card: #FAF8F5;
       --bg-white: #FFFFFF;
       --bg-subtle: #EAE2D5;
+      --bg-contrast: #241613;
       --color-primary: #2B1B17;
       --color-secondary: #4A322B;
       --color-accent: #8C6A53;
       --border-color: rgba(43, 27, 23, 0.12);
       --border-strong: #2B1B17;
-      --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
@@ -36,20 +41,22 @@
       display: flex;
       flex-direction: column;
       line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
     }
 
     /* ─── NAVBAR ─── */
     .navbar {
-      background-color: var(--bg-card);
-      padding: 1rem 2rem;
+      background-color: rgba(250, 248, 245, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 0.9rem 2.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid var(--border-color);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(43, 27, 23, 0.04);
     }
 
     .brand {
@@ -70,7 +77,7 @@
     }
 
     .brand-text h1 {
-      font-size: 1.45rem;
+      font-size: 1.4rem;
       font-weight: 800;
       letter-spacing: -0.5px;
       color: var(--color-primary);
@@ -81,42 +88,53 @@
     .brand-text span {
       font-size: 0.72rem;
       color: var(--color-accent);
-      letter-spacing: 0.5px;
+      letter-spacing: 0.8px;
       display: block;
       font-weight: 700;
+      text-transform: uppercase;
     }
 
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
-    .nav-btn {
+    .nav-link {
       background: none;
-      border: 1px solid transparent;
-      color: var(--color-primary);
-      padding: 0.5rem 1rem;
+      border: none;
+      color: var(--color-secondary);
+      padding: 0.5rem 0.9rem;
       border-radius: 8px;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      gap: 6px;
       text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
 
-    .nav-btn:hover {
-      background-color: rgba(43, 27, 23, 0.06);
+    .nav-link:hover {
+      color: var(--color-primary);
+      background-color: rgba(43, 27, 23, 0.05);
     }
 
-    .nav-btn.active {
-      background-color: var(--color-primary);
-      color: #FFFFFF;
+    .nav-btn-highlight {
+      background: var(--color-primary);
+      color: #FFFFFF !important;
       font-weight: 700;
-      box-shadow: 0 2px 8px rgba(43, 27, 23, 0.15);
+      padding: 0.5rem 1.1rem;
+      border-radius: 8px;
+      margin-left: 6px;
+      box-shadow: 0 2px 6px rgba(43, 27, 23, 0.15);
+      transition: all 0.2s;
+    }
+
+    .nav-btn-highlight:hover {
+      background: var(--color-secondary);
+      transform: translateY(-1px);
     }
 
     .nav-user {
@@ -130,16 +148,16 @@
       color: #FFFFFF;
       padding: 4px 12px;
       border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: bold;
+      font-size: 0.78rem;
+      font-weight: 700;
       letter-spacing: 0.5px;
     }
 
     .user-email-text {
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       color: var(--color-secondary);
       font-weight: 600;
-      max-width: 170px;
+      max-width: 150px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -148,10 +166,10 @@
     .btn-login-nav {
       background-color: var(--color-primary);
       color: #FFFFFF;
-      border: 2px solid var(--color-primary);
+      border: 1px solid var(--color-primary);
       border-radius: 8px;
-      padding: 0.5rem 1.4rem;
-      font-size: 0.92rem;
+      padding: 0.5rem 1.3rem;
+      font-size: 0.9rem;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.2s;
@@ -160,16 +178,16 @@
     .btn-login-nav:hover {
       background-color: var(--color-secondary);
       border-color: var(--color-secondary);
-      transform: translateY(-2px);
+      transform: translateY(-1px);
     }
 
     .btn-logout {
       background: transparent;
       border: 1px solid var(--color-primary);
       color: var(--color-primary);
-      padding: 0.4rem 1rem;
+      padding: 0.4rem 0.9rem;
       border-radius: 8px;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       cursor: pointer;
       font-weight: 700;
       transition: all 0.2s;
@@ -180,136 +198,322 @@
       color: #fff;
     }
 
-    /* ─── CONTAINER ─── */
+    /* ─── CORPORATE CONTAINER ─── */
     .container {
-      max-width: 1100px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 3rem 1.5rem;
-      flex: 1;
+      padding: 0 1.8rem;
       width: 100%;
     }
 
-    .tab-content {
-      display: none;
-      animation: fadeIn 0.3s ease;
+    .section-padding {
+      padding: 5rem 0;
     }
 
-    .tab-content.active {
-      display: block;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ─── HERO ─── */
-    .hero {
+    .section-header {
       text-align: center;
-      margin-bottom: 3.5rem;
-      animation: fadeIn 0.8s ease-out;
+      max-width: 760px;
+      margin: 0 auto 3.5rem auto;
     }
 
-    .hero-badge {
+    .section-badge {
       display: inline-block;
       background-color: var(--bg-card);
       border: 1px solid var(--border-color);
       border-radius: 20px;
-      padding: 6px 18px;
-      font-size: 0.88rem;
+      padding: 6px 16px;
+      font-size: 0.82rem;
       font-weight: 700;
-      color: var(--color-secondary);
-      margin-bottom: 1.2rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-    }
-
-    .hero h2 {
-      font-size: 3.2rem;
-      font-weight: 800;
-      line-height: 1.15;
-      margin-bottom: 1.2rem;
-      color: var(--color-primary);
-      letter-spacing: -1px;
-    }
-
-    .hero h2 span {
       color: var(--color-accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
     }
 
-    .hero p {
-      font-size: 1.2rem;
+    .section-header h2 {
+      font-size: 2.6rem;
+      font-weight: 800;
+      line-height: 1.2;
+      color: var(--color-primary);
+      letter-spacing: -0.5px;
+      margin-bottom: 1rem;
+    }
+
+    .section-header p {
+      font-size: 1.15rem;
       color: var(--color-secondary);
       opacity: 0.9;
-      max-width: 740px;
-      margin: 0 auto;
       line-height: 1.6;
     }
 
-    /* ─── SERVICE GRID ─── */
-    .service-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.8rem;
-      margin-bottom: 3rem;
+    /* ─── 1. HERO SECTION ─── */
+    .hero {
+      padding: 5.5rem 0 4rem 0;
+      text-align: center;
     }
 
-    .card {
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       background-color: var(--bg-card);
       border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 2.2rem 1.8rem;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.03);
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
+      border-radius: 30px;
+      padding: 7px 20px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--color-secondary);
+      margin-bottom: 1.8rem;
+      box-shadow: 0 2px 10px rgba(43, 27, 23, 0.04);
+    }
+
+    .hero h1 {
+      font-size: 3.6rem;
+      font-weight: 800;
+      line-height: 1.12;
+      margin-bottom: 1.4rem;
+      color: var(--color-primary);
+      letter-spacing: -1.2px;
+      max-width: 980px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero h1 span {
+      color: var(--color-accent);
+      font-style: italic;
+    }
+
+    .hero-desc {
+      font-size: 1.25rem;
+      color: var(--color-secondary);
+      max-width: 820px;
+      margin: 0 auto 2.5rem auto;
+      line-height: 1.65;
+    }
+
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 3.5rem;
+    }
+
+    .btn-hero-primary {
+      background-color: var(--color-primary);
+      color: #FFFFFF;
+      border: 2px solid var(--color-primary);
+      padding: 0.95rem 2.2rem;
+      border-radius: 10px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 14px rgba(43, 27, 23, 0.18);
+    }
+
+    .btn-hero-primary:hover {
+      background-color: var(--color-secondary);
+      border-color: var(--color-secondary);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(43, 27, 23, 0.28);
+    }
+
+    .btn-hero-secondary {
+      background-color: var(--bg-card);
+      color: var(--color-primary);
+      border: 1px solid var(--border-color);
+      padding: 0.95rem 2.2rem;
+      border-radius: 10px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    }
+
+    .btn-hero-secondary:hover {
+      background-color: var(--bg-subtle);
+      border-color: rgba(43, 27, 23, 0.25);
+      transform: translateY(-2px);
+    }
+
+    /* Trust Metrics Strip */
+    .metrics-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 2rem 2.5rem;
+      box-shadow: 0 10px 30px rgba(43, 27, 23, 0.04);
+      max-width: 1050px;
+      margin: 0 auto;
+    }
+
+    .metric-item {
+      text-align: center;
+      border-right: 1px solid var(--border-color);
+    }
+
+    .metric-item:last-child {
+      border-right: none;
+    }
+
+    .metric-number {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--color-primary);
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+
+    .metric-label {
+      font-size: 0.88rem;
+      color: var(--color-secondary);
+      font-weight: 600;
+      opacity: 0.9;
+    }
+
+    /* ─── 2. PRICING SECTION ─── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      align-items: stretch;
+      margin-bottom: 2.5rem;
+    }
+
+    .pricing-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 2.8rem 2.2rem;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      box-shadow: 0 8px 24px rgba(43, 27, 23, 0.03);
       position: relative;
+      transition: all 0.3s ease;
     }
 
-    .card:hover {
+    .pricing-card:hover {
       transform: translateY(-6px);
-      box-shadow: 0 14px 30px rgba(43, 27, 23, 0.08);
-      border-color: rgba(43, 27, 23, 0.25);
+      box-shadow: 0 16px 36px rgba(43, 27, 23, 0.08);
     }
 
-    .card-icon {
-      font-size: 2.2rem;
-      margin-bottom: 1.2rem;
-      width: 56px;
-      height: 56px;
-      border-radius: 14px;
-      background: var(--bg-subtle);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid rgba(43, 27, 23, 0.1);
+    .pricing-card.featured {
+      background: #FFFFFF;
+      border: 2px solid var(--color-primary);
+      box-shadow: 0 14px 40px rgba(43, 27, 23, 0.1);
+      transform: scale(1.03);
     }
 
-    .card h3 {
-      font-size: 1.4rem;
+    .pricing-card.featured:hover {
+      transform: scale(1.03) translateY(-6px);
+    }
+
+    .badge-featured {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--color-primary);
+      color: #FFFFFF;
+      font-size: 0.78rem;
       font-weight: 800;
-      margin-bottom: 0.6rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 5px 16px;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(43, 27, 23, 0.2);
+    }
+
+    .pricing-header h3 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--color-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .pricing-desc {
+      font-size: 0.92rem;
+      color: var(--color-secondary);
+      opacity: 0.85;
+      margin-bottom: 1.8rem;
+      min-height: 44px;
+    }
+
+    .pricing-amount {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .price-currency {
+      font-size: 1.6rem;
+      font-weight: 700;
       color: var(--color-primary);
     }
 
-    .card p {
+    .price-value {
+      font-size: 3.2rem;
+      font-weight: 800;
+      color: var(--color-primary);
+      line-height: 1;
+    }
+
+    .price-period {
       font-size: 0.95rem;
-      color: var(--color-secondary);
-      opacity: 0.88;
-      line-height: 1.55;
-      margin-bottom: 1.8rem;
+      color: var(--color-accent);
+      font-weight: 600;
+    }
+
+    .pricing-features {
+      list-style: none;
+      margin-bottom: 2.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
       flex: 1;
     }
 
-    .card-btn {
-      width: 100%;
-      padding: 0.8rem 1.4rem;
-      background-color: var(--color-primary);
-      border: 2px solid var(--color-primary);
-      border-radius: 10px;
-      color: #FFFFFF;
-      font-weight: 700;
+    .pricing-features li {
       font-size: 0.95rem;
+      color: var(--color-primary);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      line-height: 1.45;
+    }
+
+    .pricing-features li span.check {
+      color: #27ae60;
+      font-weight: 800;
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+
+    .btn-pricing {
+      width: 100%;
+      padding: 0.95rem 1.4rem;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -317,57 +521,236 @@
       gap: 8px;
       transition: all 0.2s ease;
       text-decoration: none;
+      border: 2px solid var(--color-primary);
     }
 
-    .card-btn:hover {
+    .btn-pricing.primary {
+      background-color: var(--color-primary);
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(43, 27, 23, 0.15);
+    }
+
+    .btn-pricing.primary:hover {
       background-color: var(--color-secondary);
       border-color: var(--color-secondary);
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(43, 27, 23, 0.2);
     }
 
-    .card-btn.secondary {
-      background-color: var(--bg-subtle);
-      border: 1px solid var(--color-primary);
+    .btn-pricing.outline {
+      background-color: transparent;
       color: var(--color-primary);
     }
 
-    .card-btn.secondary:hover {
+    .btn-pricing.outline:hover {
       background-color: var(--color-primary);
       color: #FFFFFF;
+      transform: translateY(-2px);
     }
 
-    /* ─── MODULE BOX ─── */
-    .module-box {
-      background-color: var(--bg-card);
+    .pricing-note {
+      text-align: center;
+      background: var(--bg-card);
       border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 2.2rem;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.03);
+      border-radius: 12px;
+      padding: 1.2rem 2rem;
+      font-size: 0.92rem;
+      color: var(--color-secondary);
       max-width: 860px;
       margin: 0 auto;
     }
 
-    .module-header {
-      margin-bottom: 2rem;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 1.2rem;
+    .pricing-note strong {
+      color: var(--color-primary);
     }
 
-    .module-header h2 {
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: var(--color-primary);
+    /* ─── 3. SERVICES SECTION ─── */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .service-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 2.6rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 24px rgba(43, 27, 23, 0.03);
+    }
+
+    .service-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 36px rgba(43, 27, 23, 0.08);
+      border-color: rgba(43, 27, 23, 0.25);
+    }
+
+    .service-top {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
+      margin-bottom: 1.5rem;
     }
 
-    .module-header p {
-      color: var(--color-secondary);
-      opacity: 0.85;
-      margin-top: 6px;
+    .service-icon-box {
+      width: 60px;
+      height: 60px;
+      border-radius: 14px;
+      background: var(--bg-subtle);
+      border: 1px solid rgba(43, 27, 23, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+
+    .service-meta-tag {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--color-accent);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 2px;
+    }
+
+    .service-top h3 {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: var(--color-primary);
+    }
+
+    .service-desc {
       font-size: 1rem;
+      color: var(--color-secondary);
+      line-height: 1.6;
+      margin-bottom: 1.8rem;
+      flex: 1;
+    }
+
+    .service-features-list {
+      list-style: none;
+      margin-bottom: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .service-features-list li {
+      font-size: 0.9rem;
+      color: var(--color-secondary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .service-features-list li::before {
+      content: "•";
+      color: var(--color-accent);
+      font-size: 1.3rem;
+      line-height: 1;
+    }
+
+    .btn-service {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0.85rem 1.6rem;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      width: 100%;
+    }
+
+    .btn-service.primary {
+      background-color: var(--color-primary);
+      color: #FFFFFF;
+      border: 2px solid var(--color-primary);
+    }
+
+    .btn-service.primary:hover {
+      background-color: var(--color-secondary);
+      border-color: var(--color-secondary);
+      transform: translateY(-2px);
+    }
+
+    .btn-service.secondary {
+      background-color: var(--bg-subtle);
+      color: var(--color-primary);
+      border: 1px solid var(--color-primary);
+    }
+
+    .btn-service.secondary:hover {
+      background-color: var(--color-primary);
+      color: #FFFFFF;
+      transform: translateY(-2px);
+    }
+
+    /* ─── 4. INTERACTIVE WORKSPACE (CONSOLAS) ─── */
+    .workspace-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 3.5rem 3rem;
+      box-shadow: 0 12px 36px rgba(43, 27, 23, 0.05);
+      margin-bottom: 4rem;
+    }
+
+    .workspace-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 2.5rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: none;
+      border: 1px solid transparent;
+      color: var(--color-secondary);
+      padding: 0.75rem 1.6rem;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab-btn:hover {
+      background-color: var(--bg-subtle);
+      color: var(--color-primary);
+    }
+
+    .tab-btn.active {
+      background-color: var(--color-primary);
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(43, 27, 23, 0.15);
+    }
+
+    .workspace-tool-panel {
+      display: none;
+      animation: fadeIn 0.35s ease;
+    }
+
+    .workspace-tool-panel.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .form-group {
@@ -387,7 +770,7 @@
       background-color: var(--bg-white);
       border: 1px solid rgba(43, 27, 23, 0.2);
       border-radius: 10px;
-      padding: 0.8rem 1rem;
+      padding: 0.85rem 1rem;
       color: var(--color-primary);
       font-size: 1rem;
       outline: none;
@@ -403,13 +786,13 @@
     .grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1rem;
+      gap: 1.2rem;
     }
 
     .btn-action {
       background-color: var(--color-primary);
       border: 2px solid var(--color-primary);
-      padding: 0.85rem 1.8rem;
+      padding: 0.95rem 2rem;
       border-radius: 10px;
       color: #FFFFFF;
       font-size: 1.05rem;
@@ -432,8 +815,8 @@
     }
 
     .output-area {
-      margin-top: 2rem;
-      padding-top: 1.5rem;
+      margin-top: 2.2rem;
+      padding-top: 1.8rem;
       border-top: 1px solid var(--border-color);
       display: none;
     }
@@ -456,7 +839,7 @@
 
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ─── QUIZ STYLES ─── */
+    /* Quiz styles */
     .question-card {
       background-color: var(--bg-white);
       border: 1px solid var(--border-color);
@@ -480,7 +863,7 @@
     }
 
     .option-item {
-      padding: 10px 14px;
+      padding: 11px 15px;
       background-color: var(--bg-card);
       border: 1px solid var(--border-color);
       border-radius: 8px;
@@ -493,28 +876,10 @@
       color: var(--color-primary);
     }
 
-    .option-item:hover {
-      background-color: var(--bg-subtle);
-    }
-
-    .option-item.selected {
-      background-color: var(--bg-subtle);
-      border-color: var(--color-primary);
-      font-weight: 700;
-    }
-
-    .option-item.correct {
-      background-color: #e8f8f0 !important;
-      border-color: #27ae60 !important;
-      color: #1e8449 !important;
-      font-weight: bold;
-    }
-
-    .option-item.incorrect {
-      background-color: #fde8e8 !important;
-      border-color: #c0392b !important;
-      color: #922b21 !important;
-    }
+    .option-item:hover { background-color: var(--bg-subtle); }
+    .option-item.selected { background-color: var(--bg-subtle); border-color: var(--color-primary); font-weight: 700; }
+    .option-item.correct { background-color: #e8f8f0 !important; border-color: #27ae60 !important; color: #1e8449 !important; font-weight: bold; }
+    .option-item.incorrect { background-color: #fde8e8 !important; border-color: #c0392b !important; color: #922b21 !important; }
 
     .explanation-box {
       margin-top: 10px;
@@ -527,11 +892,11 @@
       display: none;
     }
 
-    /* ─── FLASHCARDS 3D ─── */
+    /* Flashcards 3D */
     .flashcard-wrapper {
       perspective: 1000px;
-      max-width: 500px;
-      height: 300px;
+      max-width: 520px;
+      height: 310px;
       margin: 1.5rem auto;
       cursor: pointer;
     }
@@ -545,9 +910,7 @@
       transform-style: preserve-3d;
     }
 
-    .flashcard-inner.flipped {
-      transform: rotateY(180deg);
-    }
+    .flashcard-inner.flipped { transform: rotateY(180deg); }
 
     .flashcard-face {
       position: absolute;
@@ -564,15 +927,8 @@
       box-shadow: 0 8px 24px rgba(43, 27, 23, 0.08);
     }
 
-    .flashcard-front {
-      background: var(--bg-card);
-    }
-
-    .flashcard-back {
-      background: var(--bg-subtle);
-      border-color: var(--color-accent);
-      transform: rotateY(180deg);
-    }
+    .flashcard-front { background: var(--bg-card); }
+    .flashcard-back { background: var(--bg-subtle); border-color: var(--color-accent); transform: rotateY(180deg); }
 
     .flashcard-badge {
       font-size: 0.8rem;
@@ -604,39 +960,209 @@
       margin-top: 1.5rem;
     }
 
-    /* ─── ADMIN TABLE ─── */
-    .admin-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
-      font-size: 0.95rem;
+    /* ─── 5. ABOUT US SECTION ─── */
+    .about-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 3.5rem;
+      box-shadow: 0 10px 30px rgba(43, 27, 23, 0.04);
+      margin-bottom: 4rem;
     }
 
-    .admin-table th, .admin-table td {
-      padding: 12px 14px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
     }
 
-    .admin-table th {
-      background: var(--bg-subtle);
+    .about-text h3 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      line-height: 1.2;
       color: var(--color-primary);
-      font-weight: 700;
+      margin-bottom: 1.2rem;
     }
 
-    /* ─── AUTH MODAL ─── */
+    .about-text p {
+      font-size: 1.05rem;
+      color: var(--color-secondary);
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.2rem;
+    }
+
+    .pillar-box {
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.4rem;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .pillar-icon {
+      font-size: 1.8rem;
+      line-height: 1;
+    }
+
+    .pillar-box h4 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--color-primary);
+      margin-bottom: 4px;
+    }
+
+    .pillar-box p {
+      font-size: 0.92rem;
+      color: var(--color-secondary);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* ─── 6. FAQ & CONTACT SECTION ─── */
+    .split-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      margin-bottom: 4rem;
+    }
+
+    .faq-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.4rem 1.6rem;
+      margin-bottom: 1rem;
+      transition: all 0.2s;
+    }
+
+    .faq-question {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--color-primary);
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .faq-answer {
+      font-size: 0.95rem;
+      color: var(--color-secondary);
+      line-height: 1.6;
+    }
+
+    .contact-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 2.5rem;
+      box-shadow: 0 8px 24px rgba(43, 27, 23, 0.04);
+    }
+
+    .contact-card h3 {
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: var(--color-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .contact-card p {
+      font-size: 0.95rem;
+      color: var(--color-secondary);
+      margin-bottom: 1.8rem;
+    }
+
+    /* ─── 7. FOOTER CORPORATIVO ─── */
+    .footer {
+      background: var(--bg-contrast);
+      color: #FAF8F5;
+      padding: 4.5rem 0 2rem 0;
+      margin-top: auto;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .footer-brand h4 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.8rem;
+      color: #FAF8F5;
+    }
+
+    .footer-brand p {
+      font-size: 0.92rem;
+      color: #C8B9A6;
+      line-height: 1.6;
+      max-width: 320px;
+    }
+
+    .footer-col h5 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #FAF8F5;
+      margin-bottom: 1.2rem;
+      letter-spacing: 0.5px;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-links a {
+      color: #C8B9A6;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: #FFFFFF;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(250, 248, 245, 0.1);
+      padding-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      color: #A99A87;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    /* ─── MODAL & OVERLAYS ─── */
     .modal-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(43, 27, 23, 0.6);
-      backdrop-filter: blur(5px);
+      background: rgba(43, 27, 23, 0.65);
+      backdrop-filter: blur(6px);
       display: none;
       justify-content: center;
       align-items: center;
-      z-index: 1000;
+      z-index: 2000;
     }
 
     .modal-card {
@@ -645,8 +1171,8 @@
       border-radius: 20px;
       padding: 2.5rem;
       width: 90%;
-      max-width: 420px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      max-width: 440px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
       position: relative;
       text-align: center;
     }
@@ -702,14 +1228,34 @@
       text-align: left;
     }
 
-    /* ─── TOAST ─── */
+    /* Admin table */
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      font-size: 0.92rem;
+    }
+
+    .admin-table th, .admin-table td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .admin-table th {
+      background: var(--bg-subtle);
+      color: var(--color-primary);
+      font-weight: 700;
+    }
+
+    /* Toast */
     #toast {
       position: fixed;
       bottom: 2rem;
       right: 2rem;
       background-color: var(--color-primary);
       color: #FFFFFF;
-      padding: 0.85rem 1.4rem;
+      padding: 0.9rem 1.6rem;
       border-radius: 12px;
       font-weight: 600;
       font-size: 0.95rem;
@@ -717,263 +1263,578 @@
       display: none;
       z-index: 9999;
     }
+
+    /* Responsive */
+    @media (max-width: 980px) {
+      .hero h1 { font-size: 2.8rem; }
+      .metrics-strip { grid-template-columns: repeat(2, 1fr); gap: 1.2rem; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .pricing-card.featured { transform: none; }
+      .services-grid { grid-template-columns: 1fr; }
+      .about-grid { grid-template-columns: 1fr; }
+      .split-section { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .nav-links { display: none; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Top Navigation Bar -->
+  <!-- ─── NAVBAR CORPORATIVA ─── -->
   <header class="navbar">
-    <div class="brand" onclick="switchTab('hub')">
+    <a href="#inicio" class="brand">
       <img src="synapse-logo.jpg" alt="Synapse Logo" class="brand-logo">
       <div class="brand-text">
         <h1>SYNAPSE</h1>
-        <span>HUB ACADÉMICO & DE INVESTIGACIÓN</span>
+        <span>Academic & Research Suite</span>
       </div>
-    </div>
+    </a>
 
     <nav class="nav-links">
-      <button class="nav-btn active" id="btn-tab-hub" onclick="switchTab('hub')">🏠 Hub</button>
-      <a class="nav-btn" href="dashboard.html" title="Abrir generador RedactaPro">📝 RedactaPro</a>
-      <button class="nav-btn" id="btn-tab-exam" onclick="switchTab('exam')">🎯 Simulador Exámenes</button>
-      <button class="nav-btn" id="btn-tab-research" onclick="switchTab('research')">🔬 Deep Research</button>
-      <button class="nav-btn" id="btn-tab-flashcards" onclick="switchTab('flashcards')">⚡ Flashcards</button>
-      <button class="nav-btn" id="btn-tab-admin" style="display:none;" onclick="switchTab('admin')">👑 Panel Admin</button>
+      <a class="nav-link" href="#inicio">Inicio</a>
+      <a class="nav-link" href="#precios">Precios</a>
+      <a class="nav-link" href="#servicios">Servicios</a>
+      <a class="nav-link" href="#workspace">Consolas de Estudio</a>
+      <a class="nav-link" href="#nosotros">Sobre Nosotros</a>
+      <a class="nav-link" href="#contacto">Contacto</a>
+      <a class="nav-link nav-btn-highlight" href="dashboard.html" title="Abrir generador RedactaPro">📝 RedactaPro</a>
     </nav>
 
     <div class="nav-user">
-      <div id="user-logged-in-view" style="display:none; align-items:center; gap:12px;">
+      <button class="nav-btn-highlight" id="btn-admin-panel" style="display:none; background:#8C6A53; border:none; padding:6px 12px; font-size:0.85rem;" onclick="openAdminModal()">👑 Panel Admin</button>
+
+      <div id="user-logged-in-view" style="display:none; align-items:center; gap:10px;">
         <span class="badge-plan" id="user-plan-badge">Free</span>
         <span class="user-email-text" id="user-email-display">usuario</span>
         <button class="btn-logout" onclick="logoutUser()">Salir</button>
       </div>
+
       <div id="user-logged-out-view" style="display:flex; align-items:center; gap:8px;">
         <button class="btn-login-nav" onclick="openAuthModal('login')">Iniciar Sesión</button>
       </div>
     </div>
   </header>
 
-  <main class="container">
+  <!-- ─── 1. HERO SECTION ─── -->
+  <main>
+    <section class="hero container" id="inicio">
+      <div class="hero-badge">
+        <span>✦</span> El Estándar en Inteligencia Artificial Académica
+      </div>
+      <h1>El Ecosistema Inteligente para la <span>Excelencia Académica</span> e Investigación</h1>
+      <p class="hero-desc">
+        Synapse es la plataforma diseñada para universitarios, tesistas e investigadores. Centralizamos la generación rigurosa de documentos con normas académicas oficiales, la simulación predictiva de exámenes, el análisis bibliográfico profundo y la memorización nemotécnica en una sola suite colaborativa.
+      </p>
 
-    <!-- ═════════════════════════════════════════════ -->
-    <!-- TAB 1: SYNAPSE HUB CENTRAL -->
-    <!-- ═════════════════════════════════════════════ -->
-    <section id="tab-hub" class="tab-content active">
-      <div class="hero">
-        <div class="hero-badge">⚡ Todo tu entorno de estudio unificado</div>
-        <h2>Aprende Más Rápido. Investiga Mejor. <span>Aprueba Seguro.</span></h2>
-        <p>Synapse integra redacción académica rigurosa, simuladores de exámenes interactivos, síntesis de papers científicos y tarjetas de memoria activa en un solo entorno de trabajo.</p>
+      <div class="hero-actions">
+        <button class="btn-hero-primary" onclick="handleCtaAction()">Comenzar Gratis Ahora ➜</button>
+        <a class="btn-hero-secondary" href="#precios">Ver Planes & Precios ↓</a>
       </div>
 
-      <div class="service-grid">
-        <!-- Servicio 1: RedactaPro -->
-        <div class="card">
-          <div>
-            <div class="card-icon">📝</div>
-            <h3>RedactaPro</h3>
-            <p>Generador completo de monografías, ensayos e informes con normas académicas (APA/Vancouver). Escanea de 1 a 6 fotos de tus guías y descarga en DOCX y PDF.</p>
-          </div>
-          <a href="dashboard.html" class="card-btn">Abrir RedactaPro ➜</a>
+      <!-- Métricas de Confianza -->
+      <div class="metrics-strip">
+        <div class="metric-item">
+          <div class="metric-number">99.4%</div>
+          <div class="metric-label">Precisión en Citación y Estructura</div>
         </div>
-
-        <!-- Servicio 2: Simulador de Exámenes -->
-        <div class="card">
-          <div>
-            <div class="card-icon">🎯</div>
-            <h3>Simulador de Exámenes</h3>
-            <p>Sube tus apuntes o temas y genera quizes reales de práctica (selección simple o desarrollo) con corrección inmediata y explicaciones detalladas paso a paso.</p>
-          </div>
-          <button class="card-btn" onclick="switchTab('exam')">Iniciar Simulacro ➜</button>
+        <div class="metric-item">
+          <div class="metric-number">APA 7ma</div>
+          <div class="metric-label">Normativas Oficiales & Vancouver</div>
         </div>
-
-        <!-- Servicio 3: Deep Research -->
-        <div class="card">
-          <div>
-            <div class="card-icon">🔬</div>
-            <h3>Deep Research</h3>
-            <p>Asistente de literatura académica. Explora temas a fondo, estructura marcos teóricos, encuentra hipótesis y sintetiza fuentes bibliográficas con rigor.</p>
-          </div>
-          <button class="card-btn" onclick="switchTab('research')">Investigar Tema ➜</button>
+        <div class="metric-item">
+          <div class="metric-number">4 en 1</div>
+          <div class="metric-label">Herramientas en un Solo Hub</div>
         </div>
-
-        <!-- Servicio 4: Flashcards -->
-        <div class="card">
-          <div>
-            <div class="card-icon">⚡</div>
-            <h3>Flashcards & Repaso</h3>
-            <p>Convierte resúmenes y temas densos en tarjetas interactivas de repetición espaciada para retener conceptos clave sin esfuerzo antes de tus exámenes.</p>
-          </div>
-          <button class="card-btn" onclick="switchTab('flashcards')">Practicar Tarjetas ➜</button>
+        <div class="metric-item">
+          <div class="metric-number">100%</div>
+          <div class="metric-label">Privacidad Académica Garantizada</div>
         </div>
       </div>
     </section>
 
-    <!-- ═════════════════════════════════════════════ -->
-    <!-- TAB 2: SIMULADOR DE EXÁMENES -->
-    <!-- ═════════════════════════════════════════════ -->
-    <section id="tab-exam" class="tab-content">
-      <div class="module-box">
-        <div class="module-header">
-          <h2>🎯 Simulador Inteligente de Exámenes</h2>
-          <p>Genera pruebas interactivas a la medida para autoevaluarte antes del examen real.</p>
+    <!-- ─── 2. SECCIÓN DE PRECIOS ─── -->
+    <section class="section-padding" id="precios">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-badge">Tarifas Transparentes</span>
+          <h2>Inversión Inteligente para tu Éxito Académico</h2>
+          <p>Elige el plan que mejor se adapte a tu ritmo de estudio. Diseñado tanto para asignaturas individuales como para investigaciones de tesis completas.</p>
         </div>
 
-        <div class="form-group">
-          <label>Tema del examen o pega tus apuntes / diapositivas:</label>
-          <textarea id="exam-input" rows="4" placeholder="Ej: Leyes de Newton, Termodinámica básica, Revolución Francesa, o pega aquí el temario de tu profesor..."></textarea>
-        </div>
-
-        <div class="grid-2">
-          <div class="form-group">
-            <label>Nivel de Dificultad:</label>
-            <select id="exam-level">
-              <option value="Bachillerato / Secundaria">Bachillerato / Secundaria</option>
-              <option value="Universidad / Pregrado" selected>Universidad / Pregrado</option>
-              <option value="Postgrado / Nivel Avanzado">Postgrado / Nivel Avanzado</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Número de Preguntas:</label>
-            <select id="exam-count">
-              <option value="5">5 Preguntas (Rápido)</option>
-              <option value="10" selected>10 Preguntas (Completo)</option>
-            </select>
-          </div>
-        </div>
-
-        <button class="btn-action" onclick="generateExam()">✨ Generar Simulacro de Examen</button>
-
-        <div class="loading-spinner" id="exam-loading">
-          <div class="spinner"></div>
-          <p style="color:var(--color-secondary); font-size:0.95rem; font-weight:600;">Estructurando preguntas y casos de estudio con IA...</p>
-        </div>
-
-        <div class="output-area" id="exam-output">
-          <div id="quiz-container"></div>
-          <div style="margin-top: 1.5rem; display: flex; gap: 10px;">
-            <button class="btn-action" id="btn-grade-exam" style="flex:1;" onclick="gradeExam()">📊 Enviar y Calificar</button>
-            <button class="card-btn secondary" style="width:auto;" onclick="resetExam()">🔄 Nuevo Examen</button>
-          </div>
-          <div id="exam-score-banner" style="margin-top: 1.5rem; display:none;"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ═════════════════════════════════════════════ -->
-    <!-- TAB 3: DEEP RESEARCH -->
-    <!-- ═════════════════════════════════════════════ -->
-    <section id="tab-research" class="tab-content">
-      <div class="module-box">
-        <div class="module-header">
-          <h2>🔬 Deep Research & Síntesis Académica</h2>
-          <p>Explora preguntas de investigación complejas y obtén marcos teóricos estructurados.</p>
-        </div>
-
-        <div class="form-group">
-          <label>Pregunta o problema de investigación:</label>
-          <input type="text" id="research-topic" class="form-control" placeholder="Ej: Efectos de la inteligencia artificial generativa en la neuroplasticidad y memoria de trabajo">
-        </div>
-
-        <div class="form-group">
-          <label>Enfoque y Profundidad:</label>
-          <select id="research-focus">
-            <option value="Marco Teórico y Estado del Arte">Marco Teórico y Estado del Arte (Conceptos fundamentales y teorías)</option>
-            <option value="Análisis de Evidencia y Controversias">Análisis de Evidencia y Controversias Actuales</option>
-            <option value="Propuesta Metodológica y Síntesis">Propuesta Metodológica y Síntesis de Referencias</option>
-          </select>
-        </div>
-
-        <button class="btn-action" onclick="runDeepResearch()">🔍 Iniciar Deep Research con IA</button>
-
-        <div class="loading-spinner" id="research-loading">
-          <div class="spinner"></div>
-          <p style="color:var(--color-secondary); font-size:0.95rem; font-weight:600;">Analizando literatura científica y estructurando síntesis...</p>
-        </div>
-
-        <div class="output-area" id="research-output">
-          <div id="research-content" style="line-height:1.75; font-size:1rem; color:var(--color-primary); background:#fff; padding:1.8rem; border-radius:12px; border:1px solid var(--border-color); white-space:pre-wrap; box-shadow:0 4px 12px rgba(0,0,0,0.02);"></div>
-          <div style="margin-top:1.2rem; display:flex; gap:10px;">
-            <button class="card-btn secondary" style="width:auto;" onclick="copyResearchText()">📋 Copiar Texto</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ═════════════════════════════════════════════ -->
-    <!-- TAB 4: FLASHCARDS -->
-    <!-- ═════════════════════════════════════════════ -->
-    <section id="tab-flashcards" class="tab-content">
-      <div class="module-box">
-        <div class="module-header">
-          <h2>⚡ Flashcards de Repaso Activo</h2>
-          <p>Aprende de forma interactiva con tarjetas nemotécnicas.</p>
-        </div>
-
-        <div class="form-group">
-          <label>Pega tus apuntes o lista de conceptos a memorizar:</label>
-          <textarea id="flashcards-input" rows="3" placeholder="Ej: Mitocondria (producción de ATP), Ribosoma (síntesis de proteínas), Lisosoma (digestión celular)..."></textarea>
-        </div>
-
-        <button class="btn-action" onclick="generateFlashcards()">⚡ Generar Mazo de Flashcards</button>
-
-        <div class="loading-spinner" id="flashcards-loading">
-          <div class="spinner"></div>
-          <p style="color:var(--color-secondary); font-size:0.95rem; font-weight:600;">Sintetizando conceptos en tarjetas de memoria...</p>
-        </div>
-
-        <div class="output-area" id="flashcards-output">
-          <div style="text-align:center; margin-bottom:10px; color:var(--color-secondary); font-size:0.9rem; font-weight:600;" id="card-counter">Tarjeta 1 de 5</div>
-          
-          <div class="flashcard-wrapper" onclick="flipCurrentCard()">
-            <div class="flashcard-inner" id="flashcard-inner">
-              <div class="flashcard-face flashcard-front">
-                <span class="flashcard-badge">Pregunta / Concepto</span>
-                <div class="flashcard-text" id="card-front-text">Cargando...</div>
-                <div class="flashcard-hint">💡 Haz clic para girar</div>
+        <div class="pricing-grid">
+          <!-- Plan Gratuito -->
+          <div class="pricing-card">
+            <div>
+              <div class="pricing-header">
+                <h3>Estudiante Inicial</h3>
+                <p class="pricing-desc">Ideal para probar la potencia de la suite sin compromiso.</p>
               </div>
-              <div class="flashcard-face flashcard-back">
-                <span class="flashcard-badge" style="color:var(--color-accent);">Definición & Nemotecnia</span>
-                <div class="flashcard-text" id="card-back-text">Respuesta...</div>
-                <div class="flashcard-hint">🔄 Haz clic para regresar al frente</div>
+              <div class="pricing-amount">
+                <span class="price-currency">$</span>
+                <span class="price-value">0</span>
+                <span class="price-period">/ para siempre</span>
               </div>
+              <ul class="pricing-features">
+                <li><span class="check">✓</span> 3 monografías o informes de prueba en RedactaPro</li>
+                <li><span class="check">✓</span> 5 simulacros de examen rápidos (5 preguntas c/u)</li>
+                <li><span class="check">✓</span> Búsquedas estándar de literatura en Deep Research</li>
+                <li><span class="check">✓</span> Mazo básico de flashcards nemotécnicas</li>
+                <li><span class="check">✓</span> Acceso desde navegador web móvil o desktop</li>
+              </ul>
+            </div>
+            <button class="btn-pricing outline" onclick="openAuthModal('register')">Comenzar Gratis</button>
+          </div>
+
+          <!-- Plan Pro (Destacado) -->
+          <div class="pricing-card featured">
+            <span class="badge-featured">★ MÁS POPULAR / RECOMENDADO</span>
+            <div>
+              <div class="pricing-header">
+                <h3>Pro Investigador</h3>
+                <p class="pricing-desc">Para universitarios y tesistas que exigen máxima calidad y cero límites.</p>
+              </div>
+              <div class="pricing-amount">
+                <span class="price-currency">$</span>
+                <span class="price-value">4.99</span>
+                <span class="price-period">/ mes</span>
+              </div>
+              <ul class="pricing-features">
+                <li><span class="check">✓</span> <strong>Generación ILIMITADA</strong> de documentos en RedactaPro</li>
+                <li><span class="check">✓</span> Escaneo OCR multimagen (de 1 a 6 fotos de tus guías)</li>
+                <li><span class="check">✓</span> Descargas en Microsoft Word (.docx) y PDF formal</li>
+                <li><span class="check">✓</span> Simulador de exámenes ilimitado hasta nivel postgrado</li>
+                <li><span class="check">✓</span> Deep Research avanzado con marcos teóricos exhaustivos</li>
+                <li><span class="check">✓</span> Flashcards 3D interactivas con repetición espaciada</li>
+                <li><span class="check">✓</span> Soporte prioritario y procesamiento ultra rápido</li>
+              </ul>
+            </div>
+            <button class="btn-pricing primary" onclick="openPaymentModal('Pro Investigador ($4.99)')">Obtener Plan Pro ➜</button>
+          </div>
+
+          <!-- Plan Semestral -->
+          <div class="pricing-card">
+            <div>
+              <div class="pricing-header">
+                <h3>Campus Semestral</h3>
+                <p class="pricing-desc">Ahorro máximo para cubrir todo el semestre académico con tranquilidad.</p>
+              </div>
+              <div class="pricing-amount">
+                <span class="price-currency">$</span>
+                <span class="price-value">19.99</span>
+                <span class="price-period">/ semestre completo</span>
+              </div>
+              <ul class="pricing-features">
+                <li><span class="check">✓</span> <strong>Todo lo incluido en el Plan Pro</strong> durante 6 meses</li>
+                <li><span class="check">✓</span> Asistencia personalizada en formateo de tesis de grado</li>
+                <li><span class="check">✓</span> Sesiones simultáneas en laptop y dispositivo móvil</li>
+                <li><span class="check">✓</span> Acceso prioritario a nuevos modelos y herramientas</li>
+                <li><span class="check">✓</span> Ahorro del 35% comparado con la mensualidad individual</li>
+              </ul>
+            </div>
+            <button class="btn-pricing outline" onclick="openPaymentModal('Campus Semestral ($19.99)')">Elegir Plan Semestral</button>
+          </div>
+        </div>
+
+        <div class="pricing-note">
+          💳 <strong>Facilidades de Pago:</strong> Aceptamos transferencias y <strong>Pago Móvil en Bolívares (tasa oficial BCV)</strong> para usuarios en Venezuela, además de pagos internacionales con tarjeta. Activación inmediata vía verificación de soporte.
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 3. SERVICIOS QUE OFRECEMOS ─── -->
+    <section class="section-padding" id="servicios">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-badge">Nuestra Suite Tecnológica</span>
+          <h2>Servicios Especializados para el Estudio e Investigación</h2>
+          <p>Cada componente de Synapse ha sido modelado para erradicar las horas de frustración en redacción, exámenes y asimilación de contenidos complejos.</p>
+        </div>
+
+        <div class="services-grid">
+          <!-- Servicio 1: RedactaPro -->
+          <div class="service-card">
+            <div>
+              <div class="service-top">
+                <div class="service-icon-box">📝</div>
+                <div>
+                  <div class="service-meta-tag">Redacción Académica</div>
+                  <h3>RedactaPro</h3>
+                </div>
+              </div>
+              <p class="service-desc">
+                Generador completo de monografías, ensayos científicos e informes universitarios. Sube hasta 6 fotos de tus guías de estudio o temarios; el motor extrae el contenido, estructura marcos teóricos, cita fuentes con normas APA 7ma o Vancouver y exporta archivos listos para imprimir en Word (.docx) y PDF.
+              </p>
+              <ul class="service-features-list">
+                <li>Escaneo OCR de fotos de cuadernos, guías o libros</li>
+                <li>Citas en el texto y bibliografía rigurosa verificada</li>
+                <li>Estructura formal con introducción, desarrollo y conclusiones</li>
+              </ul>
+            </div>
+            <a href="dashboard.html" class="btn-service primary">Acceder a RedactaPro ➜</a>
+          </div>
+
+          <!-- Servicio 2: Simulador de Exámenes -->
+          <div class="service-card">
+            <div>
+              <div class="service-top">
+                <div class="service-icon-box">🎯</div>
+                <div>
+                  <div class="service-meta-tag">Autoevaluación Predictiva</div>
+                  <h3>Simulador de Exámenes</h3>
+                </div>
+              </div>
+              <p class="service-desc">
+                Entrena tu cerebro bajo presión controlada. Pega tus apuntes o temario y genera evaluaciones personalizadas de opción múltiple con niveles de dificultad desde bachillerato hasta postgrado. Incluye corrección paso a paso y explicación detallada de por qué cada opción es correcta o errónea.
+              </p>
+              <ul class="service-features-list">
+                <li>Niveles configurables: Bachillerato, Universidad y Postgrado</li>
+                <li>Feedback inmediato pedagógico en cada respuesta</li>
+                <li>Cálculo de porcentaje de dominio y áreas a reforzar</li>
+              </ul>
+            </div>
+            <button class="btn-service secondary" onclick="activateWorkspaceTool('exam')">Probar Simulador en Vivo ↓</button>
+          </div>
+
+          <!-- Servicio 3: Deep Research -->
+          <div class="service-card">
+            <div>
+              <div class="service-top">
+                <div class="service-icon-box">🔬</div>
+                <div>
+                  <div class="service-meta-tag">Literatura & Estado del Arte</div>
+                  <h3>Deep Research</h3>
+                </div>
+              </div>
+              <p class="service-desc">
+                Asistente de literatura científica para proyectos de grado y monografías. Formula una hipótesis o tema complejo y obtén marcos teóricos estructurados, síntesis de controversias académicas, evidencia empírica y referencias bibliográficas recomendadas de alta relevancia.
+              </p>
+              <ul class="service-features-list">
+                <li>Resumen ejecutivo y fundamentos epistemológicos</li>
+                <li>Análisis de controversias científicas actuales</li>
+                <li>Copia rápida con un solo clic para tu procesador de texto</li>
+              </ul>
+            </div>
+            <button class="btn-service secondary" onclick="activateWorkspaceTool('research')">Iniciar Deep Research ↓</button>
+          </div>
+
+          <!-- Servicio 4: Flashcards 3D -->
+          <div class="service-card">
+            <div>
+              <div class="service-top">
+                <div class="service-icon-box">⚡</div>
+                <div>
+                  <div class="service-meta-tag">Memorización Nemotécnica</div>
+                  <h3>Flashcards 3D</h3>
+                </div>
+              </div>
+              <p class="service-desc">
+                Transforma grandes densidades de texto en mazos de tarjetas nemotécnicas tridimensionales interactivas. Aplica principios cognitivos de repetición espaciada y memorización activa para consolidar conceptos clave antes de tus exámenes parciales.
+              </p>
+              <ul class="service-features-list">
+                <li>Giro tridimensional fluido e interactivo</li>
+                <li>Definiciones sintéticas y claves nemotécnicas de memoria</li>
+                <li>Generación instantánea a partir de cualquier texto o resumen</li>
+              </ul>
+            </div>
+            <button class="btn-service secondary" onclick="activateWorkspaceTool('flashcards')">Crear Flashcards ↓</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 4. CONSOLAS INTERACTIVAS EN VIVO ─── -->
+    <section class="container" id="workspace">
+      <div class="workspace-section">
+        <div class="section-header" style="margin-bottom:2rem;">
+          <span class="section-badge">Laboratorio en Vivo</span>
+          <h2 style="font-size:2.2rem;">Consolas Interactivas de Estudio</h2>
+          <p>Prueba los motores inteligentes directamente desde tu navegador.</p>
+        </div>
+
+        <div class="workspace-tabs">
+          <button class="tab-btn active" id="btn-work-exam" onclick="activateWorkspaceTool('exam')">🎯 Simulador de Exámenes</button>
+          <button class="tab-btn" id="btn-work-research" onclick="activateWorkspaceTool('research')">🔬 Deep Research</button>
+          <button class="tab-btn" id="btn-work-flashcards" onclick="activateWorkspaceTool('flashcards')">⚡ Flashcards 3D</button>
+        </div>
+
+        <!-- CONSOLA 1: EXAMEN -->
+        <div class="workspace-tool-panel active" id="panel-exam">
+          <div class="form-group">
+            <label>Tema del examen o pega tus apuntes / diapositivas:</label>
+            <textarea id="exam-input" rows="4" placeholder="Ej: Leyes de la Termodinámica, Revolución Industrial, Bioquímica de Proteínas, o pega el temario de tu cátedra..."></textarea>
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label>Nivel Académico:</label>
+              <select id="exam-level">
+                <option value="Bachillerato / Secundaria">Bachillerato / Secundaria</option>
+                <option value="Universidad / Pregrado" selected>Universidad / Pregrado</option>
+                <option value="Postgrado / Nivel Avanzado">Postgrado / Nivel Avanzado</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Cantidad de Preguntas:</label>
+              <select id="exam-count">
+                <option value="5">5 Preguntas (Rápido)</option>
+                <option value="10" selected>10 Preguntas (Completo)</option>
+              </select>
             </div>
           </div>
 
-          <div class="flashcard-controls">
-            <button class="card-btn secondary" style="width:auto; padding:8px 18px;" onclick="prevCard()">⬅ Anterior</button>
-            <button class="card-btn" style="width:auto; padding:8px 24px;" onclick="flipCurrentCard()">Girar 🔄</button>
-            <button class="card-btn secondary" style="width:auto; padding:8px 18px;" onclick="nextCard()">Siguiente ➜</button>
+          <button class="btn-action" onclick="generateExam()">✨ Generar Simulacro de Examen</button>
+
+          <div class="loading-spinner" id="exam-loading">
+            <div class="spinner"></div>
+            <p style="color:var(--color-secondary); font-size:0.95rem; font-weight:600;">Estructurando preguntas y casos de estudio con IA...</p>
+          </div>
+
+          <div class="output-area" id="exam-output">
+            <div id="quiz-container"></div>
+            <div style="margin-top: 1.5rem; display: flex; gap: 12px; flex-wrap:wrap;">
+              <button class="btn-action" id="btn-grade-exam" style="flex:1;" onclick="gradeExam()">📊 Enviar y Calificar</button>
+              <button class="btn-service secondary" style="width:auto; padding:0.8rem 1.6rem;" onclick="resetExam()">🔄 Nuevo Examen</button>
+            </div>
+            <div id="exam-score-banner" style="margin-top: 1.5rem; display:none;"></div>
+          </div>
+        </div>
+
+        <!-- CONSOLA 2: RESEARCH -->
+        <div class="workspace-tool-panel" id="panel-research">
+          <div class="form-group">
+            <label>Pregunta o problema de investigación académica:</label>
+            <input type="text" id="research-topic" class="form-control" placeholder="Ej: Impacto de la inteligencia artificial generativa en la neuroplasticidad y memoria de trabajo">
+          </div>
+
+          <div class="form-group">
+            <label>Enfoque y Profundidad Metodológica:</label>
+            <select id="research-focus">
+              <option value="Marco Teórico y Estado del Arte">Marco Teórico y Estado del Arte (Conceptos fundamentales y autores)</option>
+              <option value="Análisis de Evidencia y Controversias">Análisis de Evidencia Empírica y Controversias Actuales</option>
+              <option value="Propuesta Metodológica y Síntesis">Propuesta Metodológica y Síntesis de Referencias</option>
+            </select>
+          </div>
+
+          <button class="btn-action" onclick="runDeepResearch()">🔍 Iniciar Deep Research con IA</button>
+
+          <div class="loading-spinner" id="research-loading">
+            <div class="spinner"></div>
+            <p style="color:var(--color-secondary); font-size:0.95rem; font-weight:600;">Analizando literatura científica y estructurando síntesis...</p>
+          </div>
+
+          <div class="output-area" id="research-output">
+            <div id="research-content" style="line-height:1.75; font-size:1rem; color:var(--color-primary); background:#fff; padding:1.8rem; border-radius:12px; border:1px solid var(--border-color); white-space:pre-wrap; box-shadow:0 4px 12px rgba(0,0,0,0.02);"></div>
+            <div style="margin-top:1.2rem; display:flex; gap:10px;">
+              <button class="btn-service secondary" style="width:auto; padding:0.8rem 1.6rem;" onclick="copyResearchText()">📋 Copiar Texto Completo</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONSOLA 3: FLASHCARDS -->
+        <div class="workspace-tool-panel" id="panel-flashcards">
+          <div class="form-group">
+            <label>Pega tus apuntes o lista de conceptos clave a memorizar:</label>
+            <textarea id="flashcards-input" rows="3" placeholder="Ej: Mitocondria (producción de ATP), Ribosoma (síntesis de proteínas), Lisosoma (digestión celular y reciclaje enzimático)..."></textarea>
+          </div>
+
+          <button class="btn-action" onclick="generateFlashcards()">⚡ Generar Mazo de Flashcards</button>
+
+          <div class="loading-spinner" id="flashcards-loading">
+            <div class="spinner"></div>
+            <p style="color:var(--color-secondary); font-size:0.95rem; font-weight:600;">Sintetizando conceptos en tarjetas de memoria...</p>
+          </div>
+
+          <div class="output-area" id="flashcards-output">
+            <div style="text-align:center; margin-bottom:10px; color:var(--color-secondary); font-size:0.92rem; font-weight:700;" id="card-counter">Tarjeta 1 de 5</div>
+            
+            <div class="flashcard-wrapper" onclick="flipCurrentCard()">
+              <div class="flashcard-inner" id="flashcard-inner">
+                <div class="flashcard-face flashcard-front">
+                  <span class="flashcard-badge">Pregunta / Concepto</span>
+                  <div class="flashcard-text" id="card-front-text">Cargando...</div>
+                  <div class="flashcard-hint">💡 Haz clic para girar</div>
+                </div>
+                <div class="flashcard-face flashcard-back">
+                  <span class="flashcard-badge" style="color:var(--color-accent);">Definición & Nemotecnia</span>
+                  <div class="flashcard-text" id="card-back-text">Respuesta...</div>
+                  <div class="flashcard-hint">🔄 Haz clic para regresar al frente</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flashcard-controls">
+              <button class="btn-service secondary" style="width:auto; padding:8px 18px;" onclick="prevCard()">⬅ Anterior</button>
+              <button class="btn-service primary" style="width:auto; padding:8px 24px;" onclick="flipCurrentCard()">Girar 🔄</button>
+              <button class="btn-service secondary" style="width:auto; padding:8px 18px;" onclick="nextCard()">Siguiente ➜</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─── 5. SOBRE NOSOTROS ─── -->
+    <section class="section-padding" id="nosotros">
+      <div class="container">
+        <div class="about-card">
+          <div class="about-grid">
+            <div class="about-text">
+              <span class="section-badge">Nuestra Misión</span>
+              <h3>Democratizar la Excelencia Universitaria mediante Inteligencia Artificial</h3>
+              <p>
+                Synapse fue concebida con un propósito claro: eliminar las barreras de tiempo, formato y sobrecarga cognitiva que enfrentan los estudiantes en la educación superior. Creemos firmemente que la tecnología no debe ser un atajo para eludir el aprendizaje, sino un catalizador que potencie la capacidad reflexiva y crítica de cada investigador.
+              </p>
+              <p>
+                Desarrollamos algoritmos específicos adaptados a las exigencias de universidades hispanohablantes, cuidando con celo el rigor formal, la veracidad bibliográfica y la ética académica.
+              </p>
+            </div>
+
+            <div class="pillars-grid">
+              <div class="pillar-box">
+                <div class="pillar-icon">🎯</div>
+                <div>
+                  <h4>Rigor Metodológico</h4>
+                  <p>Modelos ajustados a los estándares de citación APA y Vancouver para evitar sanciones de plagio o descalificaciones.</p>
+                </div>
+              </div>
+              <div class="pillar-box">
+                <div class="pillar-icon">🔒</div>
+                <div>
+                  <h4>Privacidad Estudiantil</h4>
+                  <p>Tus apuntes, fotos de guías e investigaciones son estrictamente confidenciales y jamás se comercializan.</p>
+                </div>
+              </div>
+              <div class="pillar-box">
+                <div class="pillar-icon">💡</div>
+                <div>
+                  <h4>Aprendizaje Significativo</h4>
+                  <p>Fomentamos el entendimiento conceptual profundo a través de retroalimentación pedagógica y repaso espaciado.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ═════════════════════════════════════════════ -->
-    <!-- TAB 5: PANEL ADMIN (MAXRSILVAGNI) -->
-    <!-- ═════════════════════════════════════════════ -->
-    <section id="tab-admin" class="tab-content">
-      <div class="module-box" style="max-width: 950px;">
-        <div class="module-header">
-          <h2>👑 Synapse Admin Suite & Control de Pagos</h2>
-          <p>Gestión centralizada para maxrsilvagni@gmail.com de todos los servicios del ecosistema.</p>
-        </div>
+    <!-- ─── 6. PREGUNTAS FRECUENTES & CONTACTO ─── -->
+    <section class="section-padding" id="contacto">
+      <div class="container">
+        <div class="split-section">
+          <!-- FAQ -->
+          <div>
+            <span class="section-badge">Resolución de Dudas</span>
+            <h2 style="font-size:2.2rem; color:var(--color-primary); margin-bottom:1.5rem; font-weight:800;">Preguntas Frecuentes</h2>
 
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:10px;">
-          <div style="display:flex; gap:8px;">
-            <button class="card-btn secondary" style="width:auto; padding:8px 16px;" onclick="loadAdminPagos()">💰 Ver Pagos</button>
-            <button class="card-btn secondary" style="width:auto; padding:8px 16px;" onclick="loadAdminUsuarios()">👥 Ver Usuarios</button>
+            <div class="faq-item">
+              <div class="faq-question">¿Puedo editar los trabajos generados en Word?</div>
+              <div class="faq-answer">Sí. RedactaPro genera archivos descargables nativos en Microsoft Word (.docx) con portadas formales, fuentes tipográficas estandarizadas y jerarquía de títulos lista para entregar o modificar.</div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-question">¿Cómo realizo el pago si estoy en Venezuela?</div>
+              <div class="faq-answer">Contamos con sistema de Pago Móvil en Bolívares a la tasa oficial del Banco Central de Venezuela (BCV). Una vez realizado, nos envías el comprobante y tu cuenta se activa en minutos.</div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-question">¿El Simulador de Exámenes acepta cualquier tema?</div>
+              <div class="faq-answer">Absolutamente. Puedes pegar desde temarios teóricos de medicina o derecho hasta leyes de ingeniería o historia; la IA estructurará reactivos válidos adaptados al nivel que selecciones.</div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-question">¿Existe permanencia obligatoria en los planes?</div>
+              <div class="faq-answer">No. No existen contratos de permanencia ni cargos ocultos. Puedes cancelar o renovar cuando lo necesites.</div>
+            </div>
           </div>
-          <button class="card-btn" style="width:auto; background:#c0392b; border-color:#c0392b; padding:8px 16px;" onclick="manualResetAdmins()">🧹 Purgar Otros Admins</button>
-        </div>
 
-        <div id="admin-table-container">
-          <p style="color:var(--color-secondary); text-align:center; padding:2rem; opacity:0.8;">Selecciona una opción para consultar registros.</p>
+          <!-- Formulario de Contacto -->
+          <div class="contact-card">
+            <h3>Ponte en Contacto</h3>
+            <p>¿Tienes dudas sobre algún plan, soporte técnico o convenios para universidades? Escríbenos directamente.</p>
+
+            <form onsubmit="handleContactSubmit(event)">
+              <div class="form-group">
+                <label>Nombre Completo:</label>
+                <input type="text" id="contact-name" class="form-control" required placeholder="Tu nombre">
+              </div>
+
+              <div class="form-group">
+                <label>Correo Electrónico:</label>
+                <input type="email" id="contact-email" class="form-control" required placeholder="tu@correo.com">
+              </div>
+
+              <div class="form-group">
+                <label>Asunto o Motivo:</label>
+                <select id="contact-subject" class="form-control">
+                  <option value="Activación de Pago / Pago Móvil">Activación de Pago / Pago Móvil</option>
+                  <option value="Soporte Técnico de Cuenta">Soporte Técnico de Cuenta</option>
+                  <option value="Consulta sobre RedactaPro">Consulta sobre RedactaPro</option>
+                  <option value="Propuesta Institucional o Campus">Propuesta Institucional o Campus</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Mensaje:</label>
+                <textarea id="contact-msg" rows="3" class="form-control" required placeholder="Describe tu consulta con detalle..."></textarea>
+              </div>
+
+              <button type="submit" class="btn-action">Enviar Mensaje a Synapse ✉️</button>
+            </form>
+          </div>
         </div>
       </div>
     </section>
-
   </main>
 
-  <!-- AUTH MODAL -->
+  <!-- ─── 7. FOOTER CORPORATIVO DE GRAN EMPRESA ─── -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h4>SYNAPSE</h4>
+          <p>La suite integral de inteligencia artificial diseñada para la investigación, redacción académica y preparación de exámenes en educación superior.</p>
+        </div>
+
+        <div class="footer-col">
+          <h5>Plataforma</h5>
+          <ul class="footer-links">
+            <li><a href="dashboard.html">RedactaPro</a></li>
+            <li><a href="#workspace" onclick="activateWorkspaceTool('exam')">Simulador de Exámenes</a></li>
+            <li><a href="#workspace" onclick="activateWorkspaceTool('research')">Deep Research</a></li>
+            <li><a href="#workspace" onclick="activateWorkspaceTool('flashcards')">Flashcards 3D</a></li>
+            <li><a href="#precios">Planes de Suscripción</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Compañía</h5>
+          <ul class="footer-links">
+            <li><a href="#nosotros">Sobre Nosotros</a></li>
+            <li><a href="#nosotros">Código de Integridad</a></li>
+            <li><a href="#precios">Métodos de Pago</a></li>
+            <li><a href="#contacto">Contacto & Soporte</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Soporte & Legal</h5>
+          <ul class="footer-links">
+            <li><a href="#contacto">Centro de Ayuda</a></li>
+            <li><a href="#" onclick="alert('Privacidad: Tus datos están protegidos y nunca serán compartidos con terceros.'); return false;">Política de Privacidad</a></li>
+            <li><a href="#" onclick="alert('Términos: Plataforma diseñada como copiloto académico para uso formativo.'); return false;">Términos de Servicio</a></li>
+            <li><a href="mailto:soporte@synapsehub.com">soporte@synapsehub.com</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>© 2026 Synapse Suite Inc. Todos los derechos reservados. Diseñado para la excelencia académica.</div>
+        <div>Hecho con rigor para estudiantes e investigadores hispanohablantes.</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ─── AUTH MODAL ─── -->
   <div class="modal-overlay" id="auth-modal">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAuthModal()">✕</button>
@@ -1005,12 +1866,59 @@
     </div>
   </div>
 
+  <!-- ─── PAYMENT / UPGRADE MODAL ─── -->
+  <div class="modal-overlay" id="payment-modal">
+    <div class="modal-card" style="max-width:480px; text-align:left;">
+      <button class="modal-close" onclick="closePaymentModal()">✕</button>
+      <div style="text-align:center; margin-bottom:1.2rem;">
+        <h3 style="font-size:1.6rem; color:var(--color-primary); font-weight:800;" id="pay-plan-title">Plan Pro Investigador</h3>
+        <p style="color:var(--color-secondary); font-size:0.92rem;">Activación inmediata de acceso ilimitado</p>
+      </div>
+
+      <div style="background:var(--bg-subtle); padding:1.2rem; border-radius:12px; margin-bottom:1.2rem; border:1px solid var(--border-color);">
+        <h4 style="font-size:1rem; color:var(--color-primary); margin-bottom:6px; font-weight:700;">Datos para Pago Móvil (Venezuela):</h4>
+        <p style="font-size:0.9rem; color:var(--color-secondary); line-height:1.5;">
+          • <strong>Banco:</strong> Banesco (0134)<br>
+          • <strong>Teléfono:</strong> 0414-1234567<br>
+          • <strong>Cédula:</strong> V-28.123.456<br>
+          • <strong>Tasa:</strong> Oficial BCV al momento del pago
+        </p>
+      </div>
+
+      <p style="font-size:0.88rem; color:var(--color-secondary); line-height:1.5; margin-bottom:1.2rem;">
+        Luego de realizar tu pago, haz clic en el botón de confirmación o contáctanos por WhatsApp para verificar la transacción y activar tu plan al instante.
+      </p>
+
+      <button class="btn-action" onclick="confirmPaymentWhatsApp()">📲 Notificar Pago por WhatsApp</button>
+    </div>
+  </div>
+
+  <!-- ─── ADMIN MODAL (MAXRSILVAGNI) ─── -->
+  <div class="modal-overlay" id="admin-modal">
+    <div class="modal-card" style="max-width:920px; text-align:left;">
+      <button class="modal-close" onclick="closeAdminModal()">✕</button>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; border-bottom:1px solid var(--border-color); padding-bottom:1rem; flex-wrap:wrap; gap:10px;">
+        <div>
+          <h2 style="font-size:1.6rem; color:var(--color-primary); font-weight:800;">👑 Synapse Admin Suite</h2>
+          <span style="font-size:0.85rem; color:var(--color-accent); font-weight:700;">Control exclusivo para maxrsilvagni@gmail.com</span>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn-service secondary" style="width:auto; padding:6px 14px; font-size:0.85rem;" onclick="loadAdminPagos()">💰 Ver Pagos</button>
+          <button class="btn-service secondary" style="width:auto; padding:6px 14px; font-size:0.85rem;" onclick="loadAdminUsuarios()">👥 Ver Usuarios</button>
+          <button class="btn-service primary" style="width:auto; background:#c0392b; border-color:#c0392b; padding:6px 14px; font-size:0.85rem;" onclick="manualResetAdmins()">🧹 Purgar Otros Admins</button>
+        </div>
+      </div>
+
+      <div id="admin-table-container" style="max-height:450px; overflow-y:auto;">
+        <p style="color:var(--color-secondary); text-align:center; padding:2rem;">Selecciona una opción para consultar registros.</p>
+      </div>
+    </div>
+  </div>
+
   <div id="toast"></div>
 
+  <!-- ─── JAVASCRIPT & LOGIC ─── -->
   <script>
-    // ═════════════════════════════════════════════
-    // CONFIG & STATE
-    // ═════════════════════════════════════════════
     const state = {
       apiKey: atob('QVEuQWI4Uk42SnBsdlYxX0F3RzdJYWVfWWlLZFpDTFlidFBvRUV0WEVjX2pWczdFRFFPaXc='),
       currentUser: null,
@@ -1023,13 +1931,12 @@
     };
     const GEMINI_MODEL = 'gemini-3.8-flash';
 
-    // ═════════════════════════════════════════════
-    // AUTHENTICATION & LISTENERS
-    // ═════════════════════════════════════════════
+    // ─── AUTHENTICATION LISTENERS ───
     firebase.auth().onAuthStateChanged(async (user) => {
       state.currentUser = user;
       const loggedInView = document.getElementById('user-logged-in-view');
       const loggedOutView = document.getElementById('user-logged-out-view');
+      const adminBtn = document.getElementById('btn-admin-panel');
 
       if (user) {
         loggedInView.style.display = 'flex';
@@ -1050,7 +1957,7 @@
           if (isOwner) {
             state.userData.plan = 'admin';
             document.getElementById('user-plan-badge').textContent = '👑 Admin (∞)';
-            document.getElementById('btn-tab-admin').style.display = 'inline-flex';
+            adminBtn.style.display = 'inline-flex';
             resetUnauthorizedAdmins();
           } else {
             if (state.userData.plan === 'admin') {
@@ -1059,27 +1966,34 @@
             }
             const p = state.userData.plan || 'free';
             document.getElementById('user-plan-badge').textContent = p.toUpperCase();
-            document.getElementById('btn-tab-admin').style.display = 'none';
+            adminBtn.style.display = 'none';
           }
         } catch(e) {
           console.warn("Firestore error fallback:", e);
           if (isOwner) {
             document.getElementById('user-plan-badge').textContent = '👑 Admin (∞)';
-            document.getElementById('btn-tab-admin').style.display = 'inline-flex';
+            adminBtn.style.display = 'inline-flex';
           }
         }
       } else {
         loggedInView.style.display = 'none';
         loggedOutView.style.display = 'flex';
-        document.getElementById('btn-tab-admin').style.display = 'none';
+        adminBtn.style.display = 'none';
       }
     });
 
     function logoutUser() {
       firebase.auth().signOut().then(() => {
         showToast("Sesión cerrada");
-        switchTab('hub');
       });
+    }
+
+    function handleCtaAction() {
+      if (state.currentUser) {
+        window.location.href = '#servicios';
+      } else {
+        openAuthModal('register');
+      }
     }
 
     function openAuthModal(mode = 'login') {
@@ -1136,39 +2050,56 @@
       }
     }
 
-    // ═════════════════════════════════════════════
-    // NAVIGATION TABS
-    // ═════════════════════════════════════════════
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-      
-      const target = document.getElementById('tab-' + tabId);
-      if (target) target.classList.add('active');
-      
-      const btn = document.getElementById('btn-tab-' + tabId);
+    // ─── PAYMENT & CONTACT MODALS ───
+    function openPaymentModal(planTitle) {
+      document.getElementById('pay-plan-title').textContent = planTitle;
+      document.getElementById('payment-modal').style.display = 'flex';
+    }
+
+    function closePaymentModal() {
+      document.getElementById('payment-modal').style.display = 'none';
+    }
+
+    function confirmPaymentWhatsApp() {
+      const email = state.currentUser ? state.currentUser.email : 'No registrado';
+      const text = encodeURIComponent(`Hola Synapse, he realizado el pago para activar mi suscripción al plan de Synapse. Mi correo es: ${email}`);
+      window.open(`https://wa.me/?text=${text}`, '_blank');
+      closePaymentModal();
+    }
+
+    function handleContactSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('contact-name').value;
+      showToast(`¡Gracias ${name}! Tu mensaje ha sido recibido. Te responderemos pronto.`);
+      e.target.reset();
+    }
+
+    // ─── WORKSPACE TOOL SWITCHER ───
+    function activateWorkspaceTool(toolId) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.workspace-tool-panel').forEach(p => p.classList.remove('active'));
+
+      const btn = document.getElementById('btn-work-' + toolId);
       if (btn) btn.classList.add('active');
 
-      if (tabId === 'admin') {
-        loadAdminPagos();
-      }
+      const target = document.getElementById('panel-' + toolId);
+      if (target) target.classList.add('active');
+
+      const ws = document.getElementById('workspace');
+      if (ws) ws.scrollIntoView({ behavior: 'smooth' });
     }
 
     function showToast(msg) {
       const t = document.getElementById('toast');
       t.textContent = msg;
       t.style.display = 'block';
-      setTimeout(() => t.style.display = 'none', 3000);
+      setTimeout(() => t.style.display = 'none', 3200);
     }
 
-    // ═════════════════════════════════════════════
-    // GEMINI CALL HELPER
-    // ═════════════════════════════════════════════
+    // ─── GEMINI ENGINE HELPER ───
     async function askGemini(prompt, systemInstruction = null) {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${state.apiKey}`;
-      const body = {
-        contents: [{ role: 'user', parts: [{ text: prompt }] }]
-      };
+      const body = { contents: [{ role: 'user', parts: [{ text: prompt }] }] };
       if (systemInstruction) {
         body.system_instruction = { parts: [{ text: systemInstruction }] };
       }
@@ -1182,9 +2113,7 @@
       return data.candidates[0].content.parts[0].text;
     }
 
-    // ═════════════════════════════════════════════
-    // 🎯 SIMULADOR DE EXÁMENES
-    // ═════════════════════════════════════════════
+    // ─── 🎯 SIMULADOR DE EXÁMENES ───
     async function generateExam() {
       if (!state.currentUser) {
         openAuthModal('login');
@@ -1209,7 +2138,7 @@ Genera exactamente ${count} preguntas de examen de opción múltiple para estudi
 ${input}
 """
 
-Responde ÚNICAMENTE en formato JSON plano (un array de objetos), sin bloques de código markdown, con la siguiente estructura exacta:
+Responde ÚNICAMENTE en formato JSON plano (un array de objetos), sin bloques de markdown:
 [
   {
     "pregunta": "Texto de la pregunta...",
@@ -1221,7 +2150,7 @@ Responde ÚNICAMENTE en formato JSON plano (un array de objetos), sin bloques de
 
       try {
         const raw = await askGemini(prompt, "Eres un evaluador académico riguroso. Devuelve estrictamente JSON válido.");
-        const cleanJson = raw.replace(/```json/gi, '').replace(/```/gi, '').trim();
+        const cleanJson = raw.replace(/\`\`\`json/gi, '').replace(/\`\`\`/gi, '').trim();
         state.quizData = JSON.parse(cleanJson);
         state.userAnswers = {};
 
@@ -1307,9 +2236,7 @@ Responde ÚNICAMENTE en formato JSON plano (un array de objetos), sin bloques de
       document.getElementById('exam-output').style.display = 'none';
     }
 
-    // ═════════════════════════════════════════════
-    // 🔬 DEEP RESEARCH
-    // ═════════════════════════════════════════════
+    // ─── 🔬 DEEP RESEARCH ───
     async function runDeepResearch() {
       if (!state.currentUser) {
         openAuthModal('login');
@@ -1358,9 +2285,7 @@ Mantén un lenguaje formal, analítico, neutro y de alto rigor investigativo.`;
       navigator.clipboard.writeText(text).then(() => showToast("¡Texto de investigación copiado al portapapeles!"));
     }
 
-    // ═════════════════════════════════════════════
-    // ⚡ FLASHCARDS
-    // ═════════════════════════════════════════════
+    // ─── ⚡ FLASHCARDS ───
     async function generateFlashcards() {
       if (!state.currentUser) {
         openAuthModal('login');
@@ -1390,7 +2315,7 @@ Responde ÚNICAMENTE en formato JSON plano (un array de objetos), sin bloques de
 
       try {
         const raw = await askGemini(prompt, "Devuelve únicamente JSON válido.");
-        const clean = raw.replace(/```json/gi, '').replace(/```/gi, '').trim();
+        const clean = raw.replace(/\`\`\`json/gi, '').replace(/\`\`\`/gi, '').trim();
         state.flashcards = JSON.parse(clean);
         state.currentCardIndex = 0;
 
@@ -1430,9 +2355,16 @@ Responde ÚNICAMENTE en formato JSON plano (un array de objetos), sin bloques de
       }
     }
 
-    // ═════════════════════════════════════════════
-    // 👑 ADMIN FUNCTIONS
-    // ═════════════════════════════════════════════
+    // ─── 👑 ADMIN FUNCTIONS (MAXRSILVAGNI) ───
+    function openAdminModal() {
+      document.getElementById('admin-modal').style.display = 'flex';
+      loadAdminPagos();
+    }
+
+    function closeAdminModal() {
+      document.getElementById('admin-modal').style.display = 'none';
+    }
+
     async function resetUnauthorizedAdmins() {
       try {
         const snap = await firebase.firestore().collection('users').get();
@@ -1515,7 +2447,7 @@ Responde ÚNICAMENTE en formato JSON plano (un array de objetos), sin bloques de
             <td>${d.email || doc.id}</td>
             <td><span class="badge-plan">${plan}</span></td>
             <td>
-              ${isOwner ? '<span style="color:var(--color-accent); font-weight:bold; font-size:0.85rem;">Cuenta Principal</span>' : `<button class="card-btn secondary" style="width:auto; padding:4px 10px; font-size:0.8rem;" onclick="anularUser('${doc.id}')">Anular a Free</button>`}
+              ${isOwner ? '<span style="color:var(--color-accent); font-weight:bold; font-size:0.85rem;">Cuenta Principal</span>' : `<button class="btn-service secondary" style="width:auto; padding:4px 10px; font-size:0.8rem;" onclick="anularUser('${doc.id}')">Anular a Free</button>`}
             </td>
           </tr>`;
         });
