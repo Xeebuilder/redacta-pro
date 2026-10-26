@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RedactaPro - Plataforma de Redacción Estructurada</title>
+  
+  <!-- Firebase Scripts (v9 Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: #E5D8C8;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #2B1B17;
+      line-height: 1.6;
+    }
+    
+    /* ─── NAVBAR ─── */
+    .navbar {
+      background-color: #FAF8F5;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(43,27,23,0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .navbar h2 { font-weight: 800; font-size: 1.6rem; margin: 0; letter-spacing: -0.5px; }
+    .nav-links button {
+      background: none; border: none; font-size: 1rem; font-weight: 600;
+      color: #2B1B17; cursor: pointer; padding: 0.5rem 1rem;
+    }
+    .nav-links button:hover { opacity: 0.7; }
+    .btn-login {
+      background-color: #2B1B17 !important; color: #fff !important;
+      border-radius: 8px; padding: 0.5rem 1.2rem !important; transition: transform 0.2s;
+    }
+    .btn-login:hover { transform: translateY(-2px); }
+    
+    /* ─── HERO ─── */
+    .hero {
+      text-align: center; padding: 6rem 2rem 4rem; max-width: 900px; margin: 0 auto;
+      animation: fadeIn 1s ease-out forwards;
+    }
+    .hero h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 1.5rem; line-height: 1.1; letter-spacing: -1px; }
+    .hero h1 span { color: #8C6A53; }
+    .hero p { font-size: 1.25rem; margin-bottom: 2.5rem; opacity: 0.85; max-width: 700px; margin-left: auto; margin-right: auto; }
+    .hero-btn {
+      background-color: #4A322B; color: #fff; border: none; border-radius: 12px;
+      padding: 1.2rem 3rem; font-size: 1.2rem; font-weight: 700; cursor: pointer;
+      box-shadow: 0 8px 24px rgba(74,50,43,0.3); transition: transform 0.2s;
+    }
+    .hero-btn:hover { transform: translateY(-3px); }
+    .global-counter { margin-top: 3rem; animation: fadeUp 1s ease-out; }
+    .global-counter h2 { font-size: 3.5rem; font-weight: 800; color: #2B1B17; line-height: 1; }
+    .global-counter p { font-size: 1rem; opacity: 0.7; font-weight: 600; margin-top: 0.5rem; }
+    
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* ─── FEATURES ─── */
+    .features { padding: 4rem 2rem; background-color: #FAF8F5; border-top: 1px solid rgba(43,27,23,0.1); border-bottom: 1px solid rgba(43,27,23,0.1); }
+    .features-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; max-width: 1100px; margin: 0 auto; }
+    .feature-card { flex: 1 1 300px; padding: 2.5rem 2rem; background: #fff; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: transform 0.3s; }
+    .feature-card:hover { transform: translateY(-5px); }
+    .feature-card h3 { font-size: 1.4rem; margin-bottom: 1rem; color: #2B1B17; font-weight: 800; }
+    .feature-card p { opacity: 0.8; font-size: 1.05rem; }
+    .icon { font-size: 3rem; margin-bottom: 1rem; display: inline-block; }
+
+    /* ─── PRICING ─── */
+    .pricing { padding: 5rem 2rem; text-align: center; }
+    .pricing h2 { font-size: 2.5rem; margin-bottom: 1rem; font-weight: 800; }
+    .pricing > p { font-size: 1.15rem; opacity: 0.8; margin-bottom: 4rem; max-width: 600px; margin-left: auto; margin-right: auto; }
+    .cards-container {
+      display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; max-width: 1100px; margin: 0 auto;
+    }
+    .price-card {
+      background-color: #FAF8F5; border: 1px solid rgba(43,27,23,0.12);
+      border-radius: 16px; padding: 2.5rem 2rem; width: 320px; text-align: left;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.03); transition: transform 0.3s;
+      position: relative; display: flex; flex-direction: column;
+    }
+    .price-card:hover { transform: translateY(-10px); }
+    .price-card.popular { border: 2px solid #2B1B17; transform: scale(1.05); }
+    .price-card.popular:hover { transform: scale(1.05) translateY(-10px); }
+    .badge {
+      position: absolute; top: -14px; right: 30px; background-color: #2B1B17;
+      color: #fff; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: bold;
+    }
+    .price-card h3 { font-size: 1.5rem; margin-bottom: 0.5rem; font-weight: 800; }
+    .price { font-size: 3rem; font-weight: 800; margin-bottom: 1.5rem; }
+    .price span { font-size: 1rem; font-weight: normal; opacity: 0.7; }
+    .price-card ul { list-style: none; margin-bottom: 2.5rem; flex-grow: 1; }
+    .price-card li { margin-bottom: 0.8rem; display: flex; align-items: flex-start; gap: 8px; line-height: 1.4; }
+    .price-card li::before { content: '✓'; font-weight: bold; color: #4A322B; }
+    .btn-buy {
+      width: 100%; background-color: #EAE2D5; color: #2B1B17; border: 2px solid #2B1B17;
+      padding: 1rem; border-radius: 10px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-buy:hover { background-color: #2B1B17; color: #fff; }
+
+    /* ─── MODAL AUTH ─── */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(43,27,23,0.5); backdrop-filter: blur(4px);
+      display: none; justify-content: center; align-items: center; z-index: 1000;
+    }
+    .modal {
+      background: #FAF8F5; padding: 2.5rem; border-radius: 16px; width: 100%; max-width: 400px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.15); position: relative;
+      max-height: 90vh; overflow-y: auto;
+    }
+    .close-modal { position: absolute; top: 15px; right: 15px; cursor: pointer; font-size: 1.2rem; }
+    .modal h3 { font-size: 1.8rem; margin-bottom: 1.5rem; text-align: center; }
+    .modal input {
+      width: 100%; padding: 0.8rem; margin-bottom: 1rem; border-radius: 8px;
+      border: 1px solid rgba(43,27,23,0.2); font-size: 1rem; background: #fff;
+    }
+    .modal .btn {
+      width: 100%; background: #2B1B17; color: #fff; padding: 0.9rem; border: none;
+      border-radius: 8px; font-weight: 700; font-size: 1.05rem; cursor: pointer; margin-bottom: 1rem;
+    }
+    .modal .switch-mode { text-align: center; font-size: 0.9rem; cursor: pointer; text-decoration: underline; }
+    #auth-error { color: #c0392b; font-size: 0.9rem; text-align: center; margin-bottom: 1rem; display: none; }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <a href="hub.html" title="Ir a Synapse Hub" style="display:flex; align-items:center; text-decoration:none;">
+        <img src="synapse-logo.jpg" alt="Synapse" style="width:36px; height:36px; border-radius:8px; object-fit:cover; box-shadow:0 0 10px rgba(139,92,246,0.3);">
+      </a>
+      <div>
+        <h2 style="margin:0; font-size:1.4rem; line-height:1.2;">RedactaPro</h2>
+        <span style="font-size:0.75rem; color:#8C6A53; font-weight:700;">by Synapse Hub</span>
+      </div>
+    </div>
+    <div class="nav-links" style="display:flex; align-items:center;">
+      <a href="hub.html" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg, #8B5CF6, #06B6D4); color:#fff; padding:6px 14px; border-radius:8px; font-weight:700; font-size:0.85rem; margin-right:8px; box-shadow:0 2px 10px rgba(6,182,212,0.3);">🧠 Synapse Hub</a>
+      <button onclick="document.getElementById('features').scrollIntoView({behavior: 'smooth'})">Cómo funciona</button>
+      <button onclick="document.getElementById('pricing').scrollIntoView({behavior: 'smooth'})">Planes</button>
+      <button id="nav-user-btn" class="btn-login" onclick="openAuthModal()">Iniciar Sesión</button>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <h1>Crea Trabajos Académicos <span>100% Únicos</span> al Instante</h1>
+    <p>Sube la foto de tu asignación y deja que RedactaPro investigue y redacte por ti. Garantizamos originalidad absoluta: <strong>cero plagio, indetectable por IA.</strong></p>
+    <button class="hero-btn" onclick="document.getElementById('pricing').scrollIntoView({behavior: 'smooth'})">Ver Planes</button>
+    <div class="global-counter">
+      <h2 id="hero-counter">430+</h2>
+      <p>Trabajos únicos entregados con éxito</p>
+    </div>
+  </section>
+
+  <section id="features" class="features">
+    <div class="features-container">
+      <div class="feature-card">
+        <div class="icon">🛡️</div>
+        <h3>100% Anti-Plagio</h3>
+        <p>Cada trabajo se genera con palabras, estructuras y enfoques totalmente diferentes. Dos estudiantes pueden pedir el mismo tema y recibirán textos completamente distintos e indetectables.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">📸</div>
+        <h3>Escaneo Directo</h3>
+        <p>Solo tómale una foto a la tarea o a la pizarra del profesor. La Inteligencia Artificial extrae los temas clave y los desarrolla a profundidad al instante.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">💾</div>
+        <h3>Descarga a Word</h3>
+        <p>Exporta tu trabajo con márgenes perfectos y estructura académica en formato `.docx`. Listo para imprimir o enviar, sin necesidad de copiar y pegar.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing" class="pricing">
+    <h2>Invierte en tu tranquilidad</h2>
+    <p>Ahorra horas de investigación y garantiza la originalidad de tus trabajos académicos.</p>
+    <div class="cards-container">
+      
+      <div class="price-card">
+        <h3>Básico</h3>
+        <div class="price">$3<span>/mes</span></div>
+        <ul>
+          <li>1 Informe Complejo por semana</li>
+          <li>2 Investigaciones por semana</li>
+          <li>Extracción por imagen (Scan)</li>
+          <li>Descarga directa a Word (.docx)</li>
+        </ul>
+        <button class="btn-buy" onclick="seleccionarPlan('Básico', 3)">Elegir Básico</button>
+      </div>
+
+      <div class="price-card popular">
+        <div class="badge">Recomendado</div>
+        <h3>Estudiante</h3>
+        <div class="price">$5<span>/mes</span></div>
+        <ul>
+          <li>3 Informes Complejos por semana</li>
+          <li>5 Investigaciones por semana</li>
+          <li>Estructuración inteligente de listas</li>
+          <li>Descarga directa a Word (.docx)</li>
+        </ul>
+        <button class="btn-buy" onclick="seleccionarPlan('Estudiante', 5)">Elegir Estudiante</button>
+      </div>
+
+      <div class="price-card">
+        <h3>Premium</h3>
+        <div class="price">$10<span>/mes</span></div>
+        <ul>
+          <li>5 Informes Complejos por semana</li>
+          <li>15 Investigaciones por semana</li>
+          <li>Soporte técnico prioritario</li>
+          <li>Acceso a futuras actualizaciones</li>
+        </ul>
+        <button class="btn-buy" onclick="seleccionarPlan('Premium', 10)">Elegir Premium</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- AUTH MODAL -->
+  <div class="modal-overlay" id="auth-modal">
+    <div class="modal">
+      <div class="close-modal" onclick="closeAuthModal()">✖</div>
+      <h3 id="modal-title">Iniciar Sesión</h3>
+      <div id="auth-error"></div>
+      <input type="email" id="email" placeholder="Correo electrónico" />
+      <input type="password" id="password" placeholder="Contraseña" />
+      <button class="btn" id="auth-submit" onclick="submitAuth()">Entrar</button>
+      <div class="switch-mode" onclick="toggleAuthMode()">¿No tienes cuenta? Regístrate aquí</div>
+    </div>
+  </div>
+
+  <!-- CUSTOM ALERT MODAL -->
+  <div class="modal-overlay" id="custom-alert-overlay" style="display:none; z-index: 9999;">
+    <div class="modal" style="max-width: 400px; text-align: center;">
+      <div style="font-size: 4rem; margin-bottom: 10px;">🎉</div>
+      <h3 style="margin-bottom: 0.5rem; color:#2B1B17;">¡Pago Verificado!</h3>
+      <p style="opacity: 0.8; margin-bottom: 1.5rem;" id="custom-alert-msg"></p>
+      <button class="btn" style="width: 100%; font-size: 1.1rem; padding: 1rem; background: #2B1B17;" id="custom-alert-btn">Comenzar a usar RedactaPro</button>
+    </div>
+  </div>
+
+  <!-- PAYMENT MODAL -->
+  <div class="modal-overlay" id="payment-modal" style="display:none;">
+    <div class="modal" style="max-width: 450px; text-align: center;">
+      <div class="close-modal" onclick="document.getElementById('payment-modal').style.display='none'">✖</div>
+      <h3 style="margin-bottom: 0.5rem; color:#2B1B17;">Plan <span id="plan-name"></span></h3>
+      <p style="margin-bottom: 1.5rem; opacity: 0.8;">Para activar tu plan, realiza un Pago Móvil con los siguientes datos:</p>
+      
+      <div style="background: #EAE2D5; padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; text-align: left;">
+        <p style="margin: 0 0 10px 0;"><strong>🏦 Banco:</strong> Banesco (0134)</p>
+        <p style="margin: 0 0 10px 0;"><strong>📱 Teléfono:</strong> 0412 046 6522</p>
+        <p style="margin: 0;"><strong>🪪 Cédula:</strong> V-34176801</p>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <div style="font-size: 2.5rem; font-weight: 800; color: #2B1B17;" id="plan-bs">Calculando...</div>
+        <div style="font-size: 1.2rem; font-weight: normal; opacity: 0.5;" id="plan-usd">Calculando...</div>
+        <div style="font-size: 0.85rem; opacity: 0.4; margin-top: 5px;" id="tasa-bcv">Tasa BCV: Cargando...</div>
+      </div>
+
+      <div id="payment-upload-section">
+        <div class="file-drop" onclick="document.getElementById('voucher-file').click()" style="border: 2px dashed rgba(43,27,23,0.3); border-radius: 12px; padding: 1.5rem; cursor: pointer; transition: 0.2s; background: #fff; margin-bottom: 10px;">
+          <input type="file" id="voucher-file" accept=".jpg,.jpeg,.png" style="display:none;" onchange="handleVoucherUpload(event)"/>
+          <div style="font-size: 2rem;">📸</div>
+          <p style="margin: 10px 0 0 0; font-weight: bold; color: #2B1B17;">Toca para subir tu comprobante</p>
+        </div>
+        <img id="voucher-preview" style="max-width: 100%; max-height: 250px; object-fit: contain; border-radius: 12px; margin-bottom: 10px; display: none; margin-left: auto; margin-right: auto;" />
+        <div id="voucher-error" style="color: #c0392b; margin-bottom: 10px; display: none; font-weight: bold;"></div>
+        
+        <button class="btn" id="btn-verify" style="width: 100%; font-size: 1.1rem; padding: 1rem; background: #2B1B17; margin-bottom: 10px; display: none;" onclick="verificarPago()">🔍 Verificar Pago Automáticamente</button>
+        <button class="btn-secondary" style="width: 100%; font-size: 0.95rem; padding: 0.8rem; background: transparent; border: 1px solid rgba(43,27,23,0.2); color: rgba(43,27,23,0.7);" onclick="enviarWhatsApp('ayuda')">No tengo el comprobante / Ayuda</button>
+      </div>
+
+      <div id="payment-loading" style="display:none; padding: 2rem 0;">
+        <div style="width: 40px; height: 40px; border: 4px solid rgba(43,27,23,0.1); border-top-color: #2B1B17; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 10px auto;"></div>
+        <p style="font-weight: bold; color: #2B1B17;">La Inteligencia Artificial está validando el comprobante de pago...</p>
+        <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+      </div>
+    </div>
+  </div>
+
+<script>
+  let isLogin = true;
+  let currentUser = null;
+  let pendingPlan = null;
+  let userEmail = "";
+  
+  let voucherB64 = null;
+  let voucherMime = null;
+  let pendingBsAmount = null;
+
+  const GEMINI_MODEL = 'gemini-3.8-flash';
+  const apiKey = atob('QVEuQWI4Uk42SnBsdlYxX0F3RzdJYWVfWWlLZFpDTFlidFBvRUV0WEVjX2pWczdFRFFPaXc=');
+
+  async function geminiChat(parts, systemInstruction = null) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
+    const body = {
+      contents: [{ parts }],
+      generationConfig: { temperature: 0.1 }
+    };
+    if (systemInstruction) {
+      body.systemInstruction = { parts: [{ text: systemInstruction }] };
+    }
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error?.message || 'Error en Gemini API');
+    return data.candidates[0].content.parts[0].text;
+  }
+
+  function showCustomAlert(msg, onConfirm) {
+    document.getElementById('custom-alert-msg').textContent = msg;
+    document.getElementById('custom-alert-overlay').style.display = 'flex';
+    document.getElementById('custom-alert-btn').onclick = () => {
+      document.getElementById('custom-alert-overlay').style.display = 'none';
+      if (onConfirm) onConfirm();
+    };
+  }
+
+  function handleVoucherUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    voucherMime = file.type || 'image/jpeg';
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      voucherB64 = e.target.result.split(',')[1];
+      const img = document.getElementById('voucher-preview');
+      img.src = e.target.result;
+      img.style.display = 'block';
+      document.getElementById('btn-verify').style.display = 'block';
+      document.getElementById('voucher-error').style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  async function verificarPago() {
+    const upSec = document.getElementById('payment-upload-section');
+    const loadSec = document.getElementById('payment-loading');
+    const errEl = document.getElementById('voucher-error');
+    
+    upSec.style.display = 'none';
+    loadSec.style.display = 'block';
+    errEl.style.display = 'none';
+
+    const todayStr = new Date().toLocaleDateString('es-VE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const prompt = `Analiza este comprobante de Pago Móvil venezolano.
+    La fecha actual de hoy es: ${todayStr}.
+    VERIFICACIÓN ESTRICTA DE SEGURIDAD. Revisa minuciosamente que el texto de la imagen contenga TODO lo siguiente:
+    1. Destino/Teléfono: Debe contener '04120466522' o '0412 046 6522'.
+    2. Cédula: Debe contener '34176801' o '34.176.801'.
+    3. Banco destino: 'Banesco' o '0134'.
+    4. Monto: El pago DEBE decir exactamente ${pendingBsAmount} (Bolívares o Bs).
+    5. Fecha de Pago: La fecha del comprobante DEBE coincidir con hoy (${todayStr}) o máximo el día de ayer. Si la fecha dice el año 2026, es CORRECTA porque hoy estamos en 2026. No lo rechaces diciendo que es del futuro.
+    
+    Si TODOS los datos solicitados coinciden a la perfección (incluyendo la fecha), responde ÚNICAMENTE con la palabra: APROBADO.
+    Si falta ALGÚN dato, el monto no es EXACTAMENTE ${pendingBsAmount}, o el pago es viejo, responde ÚNICAMENTE con una frase corta del motivo del rechazo.`;
+
+    try {
+       const result = await geminiChat([
+         { text: prompt },
+         { inline_data: { mime_type: voucherMime, data: voucherB64 } }
+       ]);
+
+       if (result.includes('APROBADO')) {
+         const planMap = { 'Básico': 'basic', 'Estudiante': 'student', 'Premium': 'premium' };
+         const dbPlan = planMap[pendingPlan.nombre];
+         
+         await firebase.firestore().collection('users').doc(currentUser.uid).update({ plan: dbPlan });
+         
+         // Registrar el pago en Firestore para el historial del administrador
+         try {
+           await firebase.firestore().collection('payments').add({
+             email: currentUser.email,
+             uid: currentUser.uid,
+             plan: pendingPlan.nombre,
+             monto_bs: pendingBsAmount,
+             fecha: new Date().toISOString(),
+             timestamp: firebase.firestore.FieldValue.serverTimestamp()
+           });
+         } catch(err) {
+           console.error("Error guardando historial de pago:", err);
+         }
+         
+         // Enviar notificación al correo del administrador
+         try {
+           const revokeLink = `https://redacta-pro.vercel.app/dashboard.html?revoke_email=${encodeURIComponent(currentUser.email)}`;
+           await fetch("https://formsubmit.co/ajax/maxrsilvagni@gmail.com", {
+             method: "POST",
+             headers: {
+               'Content-Type': 'application/json',
+               'Accept': 'application/json'
+             },
+             body: JSON.stringify({
+               _subject: `💰 ¡Nuevo Pago Aprobado! - Plan ${pendingPlan.nombre}`,
+               Cliente: currentUser.email,
+               Plan_Comprado: pendingPlan.nombre,
+               Monto_Bolivares: `${pendingBsAmount} Bs.`,
+               Mensaje: "La IA verificó el comprobante exitosamente y la cuenta fue activada de forma automática.",
+               ACCION_ADMIN: `Si revisas tu Banesco y el pago es FALSO, haz clic en el siguiente enlace para cancelar su suscripción inmediatamente: ${revokeLink}`
+             })
+           });
+         } catch(e) {
+           console.error("No se pudo enviar la alerta al admin:", e);
+         }
+         
+         showCustomAlert('Felicidades, la Inteligencia Artificial validó tu pago exitosamente. Tu cuenta ha sido activada.', () => {
+           window.location.href = 'dashboard.html';
+         });
+       } else {
+         upSec.style.display = 'block';
+         loadSec.style.display = 'none';
+         errEl.textContent = `❌ Rechazado: ${result}`;
+         errEl.style.display = 'block';
+       }
+    } catch(e) {
+       upSec.style.display = 'block';
+       loadSec.style.display = 'none';
+       errEl.textContent = `❌ Error procesando imagen: ${e.message}`;
+       errEl.style.display = 'block';
+    }
+  }  window.history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
+
+  let isLoginAction = false; // Track if auth change came from clicking the login button
+
+  // Firebase listener
+  firebase.auth().onAuthStateChanged(async (user) => {
+    if (user) {
+      currentUser = user;
+      userEmail = user.email;
+      const navBtn = document.getElementById('nav-user-btn');
+      navBtn.textContent = 'Mi Panel';
+      navBtn.onclick = () => { window.location.href = 'dashboard.html'; };
+
+      try {
+        const doc = await firebase.firestore().collection('users').doc(user.uid).get();
+        if (doc.exists) {
+          const data = doc.data();
+          if (data.plan === 'free') {
+            closeAuthModal();
+            if (pendingPlan) {
+              seleccionarPlan(pendingPlan.nombre, pendingPlan.usd);
+              pendingPlan = null;
+            } else if (isLoginAction) {
+              document.getElementById('pricing').scrollIntoView({behavior: 'smooth'});
+            }
+          } else {
+            closeAuthModal();
+            if (isLoginAction) window.location.href = 'dashboard.html';
+          }
+        } else {
+          closeAuthModal();
+          if (pendingPlan) {
+            seleccionarPlan(pendingPlan.nombre, pendingPlan.usd);
+            pendingPlan = null;
+          } else if (isLoginAction) {
+            document.getElementById('pricing').scrollIntoView({behavior: 'smooth'});
+          }
+        }
+      } catch(e) {
+        console.warn("Firestore listener fallback:", e);
+        closeAuthModal();
+        if (isLoginAction) window.location.href = 'dashboard.html';
+      }
+    } else {
+      currentUser = null;
+      document.getElementById('nav-user-btn').textContent = 'Iniciar Sesión';
+      document.getElementById('nav-user-btn').onclick = openAuthModal;
+    }
+  });
+
+  async function seleccionarPlan(nombre, usdPrice) {
+    pendingPlan = { nombre, usd: usdPrice };
+    
+    if (!currentUser) {
+      openAuthModal();
+      return;
+    }
+    
+    // Reset modal state
+    voucherB64 = null;
+    document.getElementById('voucher-preview').style.display = 'none';
+    document.getElementById('btn-verify').style.display = 'none';
+    document.getElementById('voucher-error').style.display = 'none';
+    document.getElementById('payment-upload-section').style.display = 'block';
+    document.getElementById('payment-loading').style.display = 'none';
+    
+    document.getElementById('plan-name').textContent = nombre;
+    document.getElementById('plan-usd').textContent = `$${usdPrice}.00 USD`;
+    document.getElementById('plan-bs').textContent = `Calculando... Bs`;
+    document.getElementById('tasa-bcv').textContent = `Tasa BCV: Cargando...`;
+    document.getElementById('payment-modal').style.display = 'flex';
+    
+    try {
+      const res = await fetch('https://ve.dolarapi.com/v1/dolares/oficial');
+      const data = await res.json();
+      const tasa = data.promedio;
+      const bolivares = (usdPrice * tasa).toFixed(2);
+      pendingBsAmount = bolivares;
+      
+      document.getElementById('plan-bs').textContent = `${bolivares} Bs.`;
+      document.getElementById('tasa-bcv').textContent = `Tasa BCV: ${tasa} Bs/$`;
+    } catch(e) {
+      document.getElementById('plan-bs').textContent = `Error de conexión`;
+      document.getElementById('tasa-bcv').textContent = `Intenta de nuevo más tarde`;
+    }
+  }
+
+  function enviarWhatsApp(tipo) {
+    const plan = document.getElementById('plan-name').textContent;
+    let msg = '';
+    if (tipo === 'comprobante') {
+      msg = `Hola, acabo de realizar el Pago Móvil para el plan ${plan} de RedactaPro. Mi correo registrado es: ${userEmail}. Aquí adjunto mi comprobante:`;
+    } else {
+      msg = `Hola, intenté pagar el plan ${plan} con mi correo ${userEmail}, pero olvidé tomar captura / no tengo el voucher. Mis datos del Pago Móvil (Banco de origen y últimos 4 números de referencia) son: `;
+    }
+    const num = "584120466522";
+    window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`, '_blank');
+  }
+
+  function openAuthModal() {
+    document.getElementById('auth-modal').style.display = 'flex';
+  }
+  function closeAuthModal() {
+    document.getElementById('auth-modal').style.display = 'none';
+  }
+  
+  function toggleAuthMode() {
+    isLogin = !isLogin;
+    document.getElementById('modal-title').textContent = isLogin ? 'Iniciar Sesión' : 'Crear Cuenta';
+    document.getElementById('auth-submit').textContent = isLogin ? 'Entrar' : 'Registrarse';
+    document.querySelector('.switch-mode').textContent = isLogin ? '¿No tienes cuenta? Regístrate aquí' : '¿Ya tienes cuenta? Inicia sesión';
+    document.getElementById('auth-error').style.display = 'none';
+  }
+
+  async function submitAuth() {
+    isLoginAction = true;
+    const email = document.getElementById('email').value.trim();
+    const pass  = document.getElementById('password').value;
+    const errEl = document.getElementById('auth-error');
+    const submitBtn = document.getElementById('auth-submit');
+    errEl.style.display = 'none';
+
+    if(!email || !pass) {
+      errEl.textContent = 'Por favor llena todos los campos.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Verificando...';
+
+    try {
+      if (isLogin) {
+        const cred = await firebase.auth().signInWithEmailAndPassword(email, pass);
+        const user = cred.user;
+        currentUser = user;
+        userEmail = user.email;
+
+        closeAuthModal();
+        if (pendingPlan) {
+          seleccionarPlan(pendingPlan.nombre, pendingPlan.usd);
+          pendingPlan = null;
+        } else {
+          window.location.href = 'dashboard.html';
+        }
+      } else {
+        const userCred = await firebase.auth().createUserWithEmailAndPassword(email, pass);
+        currentUser = userCred.user;
+        userEmail = userCred.user.email;
+        try {
+          await firebase.firestore().collection('users').doc(userCred.user.uid).set({
+            email: email,
+            plan: 'free',
+            usage_informe: 0,
+            usage_investigacion: 0,
+            last_reset: new Date().toISOString()
+          });
+        } catch(fe) {
+          console.warn("Firestore profile creation fallback:", fe);
+        }
+        closeAuthModal();
+        if (pendingPlan) {
+          seleccionarPlan(pendingPlan.nombre, pendingPlan.usd);
+          pendingPlan = null;
+        } else {
+          document.getElementById('pricing').scrollIntoView({behavior: 'smooth'});
+        }
+      }
+    } catch(e) {
+      errEl.textContent = e.message;
+      errEl.style.display = 'block';
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = isLogin ? 'Entrar' : 'Registrarse';
+    }
+  }
+</script>
+</body>
+</html>

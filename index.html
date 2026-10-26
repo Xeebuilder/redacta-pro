@@ -1,612 +1,1568 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>RedactaPro - Plataforma de Redacción Estructurada</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Synapse | Hub de Estudio & Investigación con IA</title>
+  <link rel="icon" type="image/jpeg" href="synapse-logo.jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   
-  <!-- Firebase Scripts (v9 Compat) -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <!-- Firebase SDK Compat -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
   <script src="firebase-config.js"></script>
 
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg-dark: #080B11;
+      --bg-card: rgba(16, 22, 34, 0.85);
+      --bg-card-hover: rgba(22, 30, 46, 0.95);
+      --border: rgba(139, 92, 246, 0.18);
+      --border-glow: rgba(6, 182, 212, 0.4);
+      --accent-violet: #8B5CF6;
+      --accent-cyan: #06B6D4;
+      --accent-gradient: linear-gradient(135deg, #8B5CF6 0%, #06B6D4 100%);
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-sans);
+    }
+
     body {
-      background-color: #E5D8C8;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #2B1B17;
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(139, 92, 246, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.10) 0%, transparent 45%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navbar */
+    .navbar {
+      height: 74px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(8, 11, 17, 0.88);
+      backdrop-filter: blur(14px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      object-fit: cover;
+      box-shadow: 0 0 16px rgba(139, 92, 246, 0.35);
+      background: #000;
+    }
+
+    .brand-text h1 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 0;
+      line-height: 1.15;
+    }
+
+    .brand-text span {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      letter-spacing: 0.6px;
+      display: block;
+      font-weight: 600;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+
+    .nav-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-btn.active {
+      color: #fff;
+      background: rgba(139, 92, 246, 0.15);
+      border-color: var(--accent-violet);
+      box-shadow: 0 0 14px rgba(139, 92, 246, 0.25);
+    }
+
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge-plan {
+      background: var(--accent-gradient);
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+    }
+
+    .user-email-text {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      max-width: 170px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .btn-login-nav {
+      background: var(--accent-gradient);
+      border: none;
+      color: #fff;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 10px rgba(139, 92, 246, 0.3);
+    }
+
+    .btn-login-nav:hover {
+      box-shadow: 0 4px 15px rgba(6, 182, 212, 0.45);
+      transform: translateY(-1px);
+    }
+
+    .btn-logout {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #f87171;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .btn-logout:hover {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+      flex: 1;
+      width: 100%;
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Hero Banner */
+    .hero {
+      text-align: center;
+      margin-bottom: 3.5rem;
+      position: relative;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 30px;
+      background: rgba(139, 92, 246, 0.1);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      font-size: 0.85rem;
+      color: #c084fc;
+      margin-bottom: 1.2rem;
+      font-weight: 600;
+    }
+
+    .hero h2 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      background: linear-gradient(180deg, #FFFFFF 0%, #94A3B8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 700px;
+      margin: 0 auto;
       line-height: 1.6;
     }
-    
-    /* ─── NAVBAR ─── */
-    .navbar {
-      background-color: #FAF8F5;
-      padding: 1rem 2rem;
+
+    /* Service Grid */
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       display: flex;
+      flex-direction: column;
       justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--accent-gradient);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      background: var(--bg-card-hover);
+      border-color: var(--border-glow);
+      box-shadow: 0 12px 30px rgba(6, 182, 212, 0.15);
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-icon {
+      font-size: 2.2rem;
+      margin-bottom: 1.2rem;
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      background: rgba(139, 92, 246, 0.12);
+      display: flex;
       align-items: center;
-      border-bottom: 1px solid rgba(43,27,23,0.1);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-      position: sticky; top: 0; z-index: 100;
+      justify-content: center;
+      border: 1px solid rgba(139, 92, 246, 0.25);
     }
-    .navbar h2 { font-weight: 800; font-size: 1.6rem; margin: 0; letter-spacing: -0.5px; }
-    .nav-links button {
-      background: none; border: none; font-size: 1rem; font-weight: 600;
-      color: #2B1B17; cursor: pointer; padding: 0.5rem 1rem;
-    }
-    .nav-links button:hover { opacity: 0.7; }
-    .btn-login {
-      background-color: #2B1B17 !important; color: #fff !important;
-      border-radius: 8px; padding: 0.5rem 1.2rem !important; transition: transform 0.2s;
-    }
-    .btn-login:hover { transform: translateY(-2px); }
-    
-    /* ─── HERO ─── */
-    .hero {
-      text-align: center; padding: 6rem 2rem 4rem; max-width: 900px; margin: 0 auto;
-      animation: fadeIn 1s ease-out forwards;
-    }
-    .hero h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 1.5rem; line-height: 1.1; letter-spacing: -1px; }
-    .hero h1 span { color: #8C6A53; }
-    .hero p { font-size: 1.25rem; margin-bottom: 2.5rem; opacity: 0.85; max-width: 700px; margin-left: auto; margin-right: auto; }
-    .hero-btn {
-      background-color: #4A322B; color: #fff; border: none; border-radius: 12px;
-      padding: 1.2rem 3rem; font-size: 1.2rem; font-weight: 700; cursor: pointer;
-      box-shadow: 0 8px 24px rgba(74,50,43,0.3); transition: transform 0.2s;
-    }
-    .hero-btn:hover { transform: translateY(-3px); }
-    .global-counter { margin-top: 3rem; animation: fadeUp 1s ease-out; }
-    .global-counter h2 { font-size: 3.5rem; font-weight: 800; color: #2B1B17; line-height: 1; }
-    .global-counter p { font-size: 1rem; opacity: 0.7; font-weight: 600; margin-top: 0.5rem; }
-    
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    /* ─── FEATURES ─── */
-    .features { padding: 4rem 2rem; background-color: #FAF8F5; border-top: 1px solid rgba(43,27,23,0.1); border-bottom: 1px solid rgba(43,27,23,0.1); }
-    .features-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; max-width: 1100px; margin: 0 auto; }
-    .feature-card { flex: 1 1 300px; padding: 2.5rem 2rem; background: #fff; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: transform 0.3s; }
-    .feature-card:hover { transform: translateY(-5px); }
-    .feature-card h3 { font-size: 1.4rem; margin-bottom: 1rem; color: #2B1B17; font-weight: 800; }
-    .feature-card p { opacity: 0.8; font-size: 1.05rem; }
-    .icon { font-size: 3rem; margin-bottom: 1rem; display: inline-block; }
+    .card h3 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+      color: #fff;
+    }
 
-    /* ─── PRICING ─── */
-    .pricing { padding: 5rem 2rem; text-align: center; }
-    .pricing h2 { font-size: 2.5rem; margin-bottom: 1rem; font-weight: 800; }
-    .pricing > p { font-size: 1.15rem; opacity: 0.8; margin-bottom: 4rem; max-width: 600px; margin-left: auto; margin-right: auto; }
-    .cards-container {
-      display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; max-width: 1100px; margin: 0 auto;
+    .card p {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin-bottom: 1.5rem;
+      flex: 1;
     }
-    .price-card {
-      background-color: #FAF8F5; border: 1px solid rgba(43,27,23,0.12);
-      border-radius: 16px; padding: 2.5rem 2rem; width: 320px; text-align: left;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.03); transition: transform 0.3s;
-      position: relative; display: flex; flex-direction: column;
-    }
-    .price-card:hover { transform: translateY(-10px); }
-    .price-card.popular { border: 2px solid #2B1B17; transform: scale(1.05); }
-    .price-card.popular:hover { transform: scale(1.05) translateY(-10px); }
-    .badge {
-      position: absolute; top: -14px; right: 30px; background-color: #2B1B17;
-      color: #fff; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: bold;
-    }
-    .price-card h3 { font-size: 1.5rem; margin-bottom: 0.5rem; font-weight: 800; }
-    .price { font-size: 3rem; font-weight: 800; margin-bottom: 1.5rem; }
-    .price span { font-size: 1rem; font-weight: normal; opacity: 0.7; }
-    .price-card ul { list-style: none; margin-bottom: 2.5rem; flex-grow: 1; }
-    .price-card li { margin-bottom: 0.8rem; display: flex; align-items: flex-start; gap: 8px; line-height: 1.4; }
-    .price-card li::before { content: '✓'; font-weight: bold; color: #4A322B; }
-    .btn-buy {
-      width: 100%; background-color: #EAE2D5; color: #2B1B17; border: 2px solid #2B1B17;
-      padding: 1rem; border-radius: 10px; font-weight: 700; cursor: pointer; transition: all 0.2s;
-    }
-    .btn-buy:hover { background-color: #2B1B17; color: #fff; }
 
-    /* ─── MODAL AUTH ─── */
+    .card-btn {
+      width: 100%;
+      padding: 12px 20px;
+      background: var(--accent-gradient);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .card-btn:hover {
+      opacity: 0.92;
+      box-shadow: 0 0 18px rgba(6, 182, 212, 0.4);
+      transform: scale(1.02);
+    }
+
+    .card-btn.secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+    }
+
+    .card-btn.secondary:hover {
+      background: rgba(139, 92, 246, 0.2);
+      border-color: var(--accent-violet);
+    }
+
+    /* Modules Styles */
+    .module-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2.2rem;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .module-header {
+      margin-bottom: 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 1.2rem;
+    }
+
+    .module-header h2 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .module-header p {
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-size: 0.95rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #cbd5e1;
+    }
+
+    .form-control, textarea, select {
+      width: 100%;
+      background: rgba(8, 11, 17, 0.7);
+      border: 1px solid rgba(139, 92, 246, 0.25);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .form-control:focus, textarea:focus, select:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 12px rgba(6, 182, 212, 0.25);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .btn-action {
+      background: var(--accent-gradient);
+      border: none;
+      padding: 14px 24px;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.2s;
+      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-action:hover {
+      box-shadow: 0 6px 25px rgba(6, 182, 212, 0.45);
+      transform: translateY(-2px);
+    }
+
+    /* Output Area */
+    .output-area {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: none;
+    }
+
+    .loading-spinner {
+      display: none;
+      text-align: center;
+      padding: 2.5rem 0;
+    }
+
+    .spinner {
+      width: 44px;
+      height: 44px;
+      border: 3px solid rgba(139, 92, 246, 0.2);
+      border-top-color: var(--accent-cyan);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Quiz Styles */
+    .question-card {
+      background: rgba(8, 11, 17, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .question-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: #fff;
+    }
+
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .option-item {
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .option-item:hover {
+      background: rgba(139, 92, 246, 0.1);
+      border-color: rgba(139, 92, 246, 0.3);
+    }
+
+    .option-item.selected {
+      background: rgba(139, 92, 246, 0.25);
+      border-color: var(--accent-violet);
+      font-weight: 600;
+    }
+
+    .option-item.correct {
+      background: rgba(34, 197, 94, 0.25) !important;
+      border-color: #22c55e !important;
+      color: #4ade80 !important;
+    }
+
+    .option-item.incorrect {
+      background: rgba(239, 68, 68, 0.25) !important;
+      border-color: #ef4444 !important;
+      color: #fca5a5 !important;
+    }
+
+    .explanation-box {
+      margin-top: 10px;
+      padding: 10px 14px;
+      background: rgba(6, 182, 212, 0.1);
+      border-left: 3px solid var(--accent-cyan);
+      border-radius: 6px;
+      font-size: 0.88rem;
+      color: #cbd5e1;
+      display: none;
+    }
+
+    /* Flashcard 3D */
+    .flashcard-wrapper {
+      perspective: 1000px;
+      max-width: 500px;
+      height: 300px;
+      margin: 1.5rem auto;
+      cursor: pointer;
+    }
+
+    .flashcard-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+
+    .flashcard-inner.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .flashcard-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .flashcard-front {
+      background: linear-gradient(145deg, rgba(16, 22, 34, 0.95), rgba(8, 11, 17, 0.95));
+      border-color: var(--accent-violet);
+    }
+
+    .flashcard-back {
+      background: linear-gradient(145deg, rgba(8, 11, 17, 0.95), rgba(16, 22, 34, 0.95));
+      border-color: var(--accent-cyan);
+      transform: rotateY(180deg);
+    }
+
+    .flashcard-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+    }
+
+    .flashcard-text {
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.5;
+      color: #fff;
+    }
+
+    .flashcard-hint {
+      margin-top: 1.2rem;
+      font-size: 0.8rem;
+      color: var(--accent-cyan);
+    }
+
+    .flashcard-controls {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 1.5rem;
+    }
+
+    /* Admin Table */
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .admin-table th, .admin-table td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .admin-table th {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Auth Modal */
     .modal-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(43,27,23,0.5); backdrop-filter: blur(4px);
-      display: none; justify-content: center; align-items: center; z-index: 1000;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
     }
-    .modal {
-      background: #FAF8F5; padding: 2.5rem; border-radius: 16px; width: 100%; max-width: 400px;
-      box-shadow: 0 12px 32px rgba(0,0,0,0.15); position: relative;
-      max-height: 90vh; overflow-y: auto;
+
+    .modal-card {
+      background: #0f1422;
+      border: 1px solid var(--border-glow);
+      border-radius: 18px;
+      padding: 2.2rem;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+      position: relative;
     }
-    .close-modal { position: absolute; top: 15px; right: 15px; cursor: pointer; font-size: 1.2rem; }
-    .modal h3 { font-size: 1.8rem; margin-bottom: 1.5rem; text-align: center; }
-    .modal input {
-      width: 100%; padding: 0.8rem; margin-bottom: 1rem; border-radius: 8px;
-      border: 1px solid rgba(43,27,23,0.2); font-size: 1rem; background: #fff;
+
+    .modal-close {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.3rem;
+      cursor: pointer;
     }
-    .modal .btn {
-      width: 100%; background: #2B1B17; color: #fff; padding: 0.9rem; border: none;
-      border-radius: 8px; font-weight: 700; font-size: 1.05rem; cursor: pointer; margin-bottom: 1rem;
+
+    .modal-close:hover {
+      color: #fff;
     }
-    .modal .switch-mode { text-align: center; font-size: 0.9rem; cursor: pointer; text-decoration: underline; }
-    #auth-error { color: #c0392b; font-size: 0.9rem; text-align: center; margin-bottom: 1rem; display: none; }
+
+    .auth-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 8px;
+    }
+
+    .auth-tab-btn {
+      flex: 1;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      padding: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .auth-tab-btn.active {
+      color: #fff;
+      background: rgba(139, 92, 246, 0.15);
+      border-bottom: 2px solid var(--accent-violet);
+    }
+
+    .auth-error {
+      color: #f87171;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      display: none;
+      background: rgba(239, 68, 68, 0.1);
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(239, 68, 68, 0.25);
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: rgba(16, 22, 34, 0.95);
+      border: 1px solid var(--accent-cyan);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      display: none;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+    }
   </style>
 </head>
 <body>
 
-  <nav class="navbar">
-    <div style="display:flex; align-items:center; gap:12px;">
-      <a href="hub.html" title="Ir a Synapse Hub" style="display:flex; align-items:center; text-decoration:none;">
-        <img src="synapse-logo.jpg" alt="Synapse" style="width:36px; height:36px; border-radius:8px; object-fit:cover; box-shadow:0 0 10px rgba(139,92,246,0.3);">
-      </a>
-      <div>
-        <h2 style="margin:0; font-size:1.4rem; line-height:1.2;">RedactaPro</h2>
-        <span style="font-size:0.75rem; color:#8C6A53; font-weight:700;">by Synapse Hub</span>
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <div class="brand" onclick="switchTab('hub')">
+      <img src="synapse-logo.jpg" alt="Synapse Logo" class="brand-logo">
+      <div class="brand-text">
+        <h1>SYNAPSE</h1>
+        <span>AI ACADEMIC & RESEARCH HUB</span>
       </div>
     </div>
-    <div class="nav-links" style="display:flex; align-items:center;">
-      <a href="hub.html" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg, #8B5CF6, #06B6D4); color:#fff; padding:6px 14px; border-radius:8px; font-weight:700; font-size:0.85rem; margin-right:8px; box-shadow:0 2px 10px rgba(6,182,212,0.3);">🧠 Synapse Hub</a>
-      <button onclick="document.getElementById('features').scrollIntoView({behavior: 'smooth'})">Cómo funciona</button>
-      <button onclick="document.getElementById('pricing').scrollIntoView({behavior: 'smooth'})">Planes</button>
-      <button id="nav-user-btn" class="btn-login" onclick="openAuthModal()">Iniciar Sesión</button>
-    </div>
-  </nav>
 
-  <section class="hero">
-    <h1>Crea Trabajos Académicos <span>100% Únicos</span> al Instante</h1>
-    <p>Sube la foto de tu asignación y deja que RedactaPro investigue y redacte por ti. Garantizamos originalidad absoluta: <strong>cero plagio, indetectable por IA.</strong></p>
-    <button class="hero-btn" onclick="document.getElementById('pricing').scrollIntoView({behavior: 'smooth'})">Ver Planes</button>
-    <div class="global-counter">
-      <h2 id="hero-counter">430+</h2>
-      <p>Trabajos únicos entregados con éxito</p>
-    </div>
-  </section>
+    <nav class="nav-links">
+      <button class="nav-btn active" id="btn-tab-hub" onclick="switchTab('hub')">🏠 Hub</button>
+      <a class="nav-btn" href="dashboard.html" title="Abrir generador RedactaPro">📝 RedactaPro</a>
+      <button class="nav-btn" id="btn-tab-exam" onclick="switchTab('exam')">🎯 Simulador Exámenes</button>
+      <button class="nav-btn" id="btn-tab-research" onclick="switchTab('research')">🔬 Deep Research</button>
+      <button class="nav-btn" id="btn-tab-flashcards" onclick="switchTab('flashcards')">⚡ Flashcards</button>
+      <button class="nav-btn" id="btn-tab-admin" style="display:none;" onclick="switchTab('admin')">👑 Panel Admin</button>
+    </nav>
 
-  <section id="features" class="features">
-    <div class="features-container">
-      <div class="feature-card">
-        <div class="icon">🛡️</div>
-        <h3>100% Anti-Plagio</h3>
-        <p>Cada trabajo se genera con palabras, estructuras y enfoques totalmente diferentes. Dos estudiantes pueden pedir el mismo tema y recibirán textos completamente distintos e indetectables.</p>
+    <div class="nav-user">
+      <div id="user-logged-in-view" style="display:none; align-items:center; gap:12px;">
+        <span class="badge-plan" id="user-plan-badge">Free</span>
+        <span class="user-email-text" id="user-email-display">usuario</span>
+        <button class="btn-logout" onclick="logoutUser()">Salir</button>
       </div>
-      <div class="feature-card">
-        <div class="icon">📸</div>
-        <h3>Escaneo Directo</h3>
-        <p>Solo tómale una foto a la tarea o a la pizarra del profesor. La Inteligencia Artificial extrae los temas clave y los desarrolla a profundidad al instante.</p>
-      </div>
-      <div class="feature-card">
-        <div class="icon">💾</div>
-        <h3>Descarga a Word</h3>
-        <p>Exporta tu trabajo con márgenes perfectos y estructura académica en formato `.docx`. Listo para imprimir o enviar, sin necesidad de copiar y pegar.</p>
+      <div id="user-logged-out-view" style="display:flex; align-items:center; gap:8px;">
+        <button class="btn-login-nav" onclick="openAuthModal('login')">Iniciar Sesión</button>
       </div>
     </div>
-  </section>
+  </header>
 
-  <section id="pricing" class="pricing">
-    <h2>Invierte en tu tranquilidad</h2>
-    <p>Ahorra horas de investigación y garantiza la originalidad de tus trabajos académicos.</p>
-    <div class="cards-container">
-      
-      <div class="price-card">
-        <h3>Básico</h3>
-        <div class="price">$3<span>/mes</span></div>
-        <ul>
-          <li>1 Informe Complejo por semana</li>
-          <li>2 Investigaciones por semana</li>
-          <li>Extracción por imagen (Scan)</li>
-          <li>Descarga directa a Word (.docx)</li>
-        </ul>
-        <button class="btn-buy" onclick="seleccionarPlan('Básico', 3)">Elegir Básico</button>
+  <main class="container">
+
+    <!-- ═════════════════════════════════════════════ -->
+    <!-- TAB 1: SYNAPSE HUB CENTRAL -->
+    <!-- ═════════════════════════════════════════════ -->
+    <section id="tab-hub" class="tab-content active">
+      <div class="hero">
+        <div class="hero-badge">⚡ Todo tu entorno de estudio unificado con IA</div>
+        <h2>Aprende Más Rápido. Investiga Mejor. Aprueba Seguro.</h2>
+        <p>Synapse integra redacción académica, simuladores de exámenes interactivos, síntesis de papers científicos y tarjetas de memoria activa en una sola suite inteligente.</p>
       </div>
 
-      <div class="price-card popular">
-        <div class="badge">Recomendado</div>
-        <h3>Estudiante</h3>
-        <div class="price">$5<span>/mes</span></div>
-        <ul>
-          <li>3 Informes Complejos por semana</li>
-          <li>5 Investigaciones por semana</li>
-          <li>Estructuración inteligente de listas</li>
-          <li>Descarga directa a Word (.docx)</li>
-        </ul>
-        <button class="btn-buy" onclick="seleccionarPlan('Estudiante', 5)">Elegir Estudiante</button>
-      </div>
+      <div class="service-grid">
+        <!-- Servicio 1: RedactaPro -->
+        <div class="card">
+          <div>
+            <div class="card-icon">📝</div>
+            <h3>RedactaPro</h3>
+            <p>Generador completo de monografías, ensayos e informes con normas académicas (APA/Vancouver). Escanea de 1 a 6 fotos de tus guías y descarga en DOCX y PDF.</p>
+          </div>
+          <a href="dashboard.html" class="card-btn">Abrir RedactaPro ➜</a>
+        </div>
 
-      <div class="price-card">
-        <h3>Premium</h3>
-        <div class="price">$10<span>/mes</span></div>
-        <ul>
-          <li>5 Informes Complejos por semana</li>
-          <li>15 Investigaciones por semana</li>
-          <li>Soporte técnico prioritario</li>
-          <li>Acceso a futuras actualizaciones</li>
-        </ul>
-        <button class="btn-buy" onclick="seleccionarPlan('Premium', 10)">Elegir Premium</button>
-      </div>
+        <!-- Servicio 2: Simulador de Exámenes -->
+        <div class="card">
+          <div>
+            <div class="card-icon">🎯</div>
+            <h3>Simulador de Exámenes</h3>
+            <p>Sube tus apuntes o temas y genera quizes reales de práctica (selección múltiple o desarrollo) con corrección inmediata y explicaciones paso a paso.</p>
+          </div>
+          <button class="card-btn" onclick="switchTab('exam')">Iniciar Simulacro ➜</button>
+        </div>
 
-    </div>
-  </section>
+        <!-- Servicio 3: Deep Research -->
+        <div class="card">
+          <div>
+            <div class="card-icon">🔬</div>
+            <h3>Deep Research</h3>
+            <p>Asistente de literatura académica. Explora temas a fondo, estructura marcos teóricos, encuentra hipótesis y sintetiza fuentes bibliográficas con rigor.</p>
+          </div>
+          <button class="card-btn" onclick="switchTab('research')">Investigar Tema ➜</button>
+        </div>
+
+        <!-- Servicio 4: Flashcards -->
+        <div class="card">
+          <div>
+            <div class="card-icon">⚡</div>
+            <h3>Flashcards & Repaso</h3>
+            <p>Convierte resúmenes y apuntes densos en tarjetas 3D de repetición espaciada para retener conceptos clave sin esfuerzo antes de tus parciales.</p>
+          </div>
+          <button class="card-btn" onclick="switchTab('flashcards')">Practicar Tarjetas ➜</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════════════════════════════════════════════ -->
+    <!-- TAB 2: SIMULADOR DE EXÁMENES -->
+    <!-- ═════════════════════════════════════════════ -->
+    <section id="tab-exam" class="tab-content">
+      <div class="module-box">
+        <div class="module-header">
+          <h2>🎯 Simulador Inteligente de Exámenes</h2>
+          <p>Genera pruebas interactivas a la medida para autoevaluarte antes del examen real.</p>
+        </div>
+
+        <div class="form-group">
+          <label>Tema del examen o pega tus apuntes / diapositivas:</label>
+          <textarea id="exam-input" rows="4" placeholder="Ej: Leyes de Newton, Termodinámica básica, Revolución Francesa, o pega aquí el temario de tu profesor..."></textarea>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Nivel de Dificultad:</label>
+            <select id="exam-level">
+              <option value="Bachillerato / Secundaria">Bachillerato / Secundaria</option>
+              <option value="Universidad / Pregrado" selected>Universidad / Pregrado</option>
+              <option value="Postgrado / Nivel Avanzado">Postgrado / Nivel Avanzado</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Número de Preguntas:</label>
+            <select id="exam-count">
+              <option value="5">5 Preguntas (Rápido)</option>
+              <option value="10" selected>10 Preguntas (Completo)</option>
+            </select>
+          </div>
+        </div>
+
+        <button class="btn-action" onclick="generateExam()">✨ Generar Simulacro de Examen</button>
+
+        <div class="loading-spinner" id="exam-loading">
+          <div class="spinner"></div>
+          <p style="color:var(--text-muted); font-size:0.9rem;">Estructurando preguntas y casos de estudio con IA...</p>
+        </div>
+
+        <div class="output-area" id="exam-output">
+          <div id="quiz-container"></div>
+          <div style="margin-top: 1.5rem; display: flex; gap: 10px;">
+            <button class="btn-action" id="btn-grade-exam" style="flex:1;" onclick="gradeExam()">📊 Enviar y Calificar</button>
+            <button class="card-btn secondary" style="width:auto;" onclick="resetExam()">🔄 Nuevo Examen</button>
+          </div>
+          <div id="exam-score-banner" style="margin-top: 1.5rem; display:none;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════════════════════════════════════════════ -->
+    <!-- TAB 3: DEEP RESEARCH -->
+    <!-- ═════════════════════════════════════════════ -->
+    <section id="tab-research" class="tab-content">
+      <div class="module-box">
+        <div class="module-header">
+          <h2>🔬 Deep Research & Síntesis Académica</h2>
+          <p>Explora preguntas de investigación complejas y obtén marcos teóricos estructurados.</p>
+        </div>
+
+        <div class="form-group">
+          <label>Pregunta o problema de investigación:</label>
+          <input type="text" id="research-topic" class="form-control" placeholder="Ej: Efectos de la inteligencia artificial generativa en la neuroplasticidad y memoria de trabajo">
+        </div>
+
+        <div class="form-group">
+          <label>Enfoque y Profundidad:</label>
+          <select id="research-focus">
+            <option value="Marco Teórico y Estado del Arte">Marco Teórico y Estado del Arte (Conceptos fundamentales y teorías)</option>
+            <option value="Análisis de Evidencia y Controversias">Análisis de Evidencia y Controversias Actuales</option>
+            <option value="Propuesta Metodológica y Síntesis">Propuesta Metodológica y Síntesis de Referencias</option>
+          </select>
+        </div>
+
+        <button class="btn-action" onclick="runDeepResearch()">🔍 Iniciar Deep Research con IA</button>
+
+        <div class="loading-spinner" id="research-loading">
+          <div class="spinner"></div>
+          <p style="color:var(--text-muted); font-size:0.9rem;">Analizando literatura científica y estructurando síntesis...</p>
+        </div>
+
+        <div class="output-area" id="research-output">
+          <div id="research-content" style="line-height:1.7; font-size:0.95rem; color:#e2e8f0; background:rgba(8,11,17,0.7); padding:1.5rem; border-radius:12px; border:1px solid rgba(255,255,255,0.08); white-space:pre-wrap;"></div>
+          <div style="margin-top:1.2rem; display:flex; gap:10px;">
+            <button class="card-btn secondary" style="width:auto;" onclick="copyResearchText()">📋 Copiar Texto</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════════════════════════════════════════════ -->
+    <!-- TAB 4: FLASHCARDS -->
+    <!-- ═════════════════════════════════════════════ -->
+    <section id="tab-flashcards" class="tab-content">
+      <div class="module-box">
+        <div class="module-header">
+          <h2>⚡ Flashcards de Repaso Activo</h2>
+          <p>Aprende de forma interactiva con tarjetas nemotécnicas 3D.</p>
+        </div>
+
+        <div class="form-group">
+          <label>Pega tus apuntes o lista de conceptos a memorizar:</label>
+          <textarea id="flashcards-input" rows="3" placeholder="Ej: Mitocondria (producción de ATP), Ribosoma (síntesis de proteínas), Lisosoma (digestión celular)..."></textarea>
+        </div>
+
+        <button class="btn-action" onclick="generateFlashcards()">⚡ Generar Mazo de Flashcards</button>
+
+        <div class="loading-spinner" id="flashcards-loading">
+          <div class="spinner"></div>
+          <p style="color:var(--text-muted); font-size:0.9rem;">Sintetizando conceptos en tarjetas de memoria...</p>
+        </div>
+
+        <div class="output-area" id="flashcards-output">
+          <div style="text-align:center; margin-bottom:10px; color:var(--text-muted); font-size:0.85rem;" id="card-counter">Tarjeta 1 de 5</div>
+          
+          <div class="flashcard-wrapper" onclick="flipCurrentCard()">
+            <div class="flashcard-inner" id="flashcard-inner">
+              <div class="flashcard-face flashcard-front">
+                <span class="flashcard-badge">Pregunta / Concepto</span>
+                <div class="flashcard-text" id="card-front-text">Cargando...</div>
+                <div class="flashcard-hint">💡 Haz clic para girar</div>
+              </div>
+              <div class="flashcard-face flashcard-back">
+                <span class="flashcard-badge" style="color:var(--accent-cyan);">Definición & Nemotecnia</span>
+                <div class="flashcard-text" id="card-back-text">Respuesta...</div>
+                <div class="flashcard-hint">🔄 Haz clic para regresar al frente</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flashcard-controls">
+            <button class="card-btn secondary" style="width:auto; padding:8px 18px;" onclick="prevCard()">⬅ Anterior</button>
+            <button class="card-btn" style="width:auto; padding:8px 24px;" onclick="flipCurrentCard()">Girar 🔄</button>
+            <button class="card-btn secondary" style="width:auto; padding:8px 18px;" onclick="nextCard()">Siguiente ➜</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════════════════════════════════════════════ -->
+    <!-- TAB 5: PANEL ADMIN (MAXRSILVAGNI) -->
+    <!-- ═════════════════════════════════════════════ -->
+    <section id="tab-admin" class="tab-content">
+      <div class="module-box" style="max-width: 1000px;">
+        <div class="module-header">
+          <h2>👑 Synapse Admin Suite & Control de Pagos</h2>
+          <p>Gestión centralizada para maxrsilvagni@gmail.com de todos los servicios del ecosistema.</p>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:10px;">
+          <div style="display:flex; gap:8px;">
+            <button class="card-btn secondary" style="width:auto; padding:8px 16px;" onclick="loadAdminPagos()">💰 Ver Pagos</button>
+            <button class="card-btn secondary" style="width:auto; padding:8px 16px;" onclick="loadAdminUsuarios()">👥 Ver Usuarios</button>
+          </div>
+          <button class="card-btn" style="width:auto; background:#c0392b; padding:8px 16px;" onclick="manualResetAdmins()">🧹 Purgar Otros Admins</button>
+        </div>
+
+        <div id="admin-table-container">
+          <p style="color:var(--text-muted); text-align:center; padding:2rem;">Selecciona una opción para consultar registros.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
 
   <!-- AUTH MODAL -->
   <div class="modal-overlay" id="auth-modal">
-    <div class="modal">
-      <div class="close-modal" onclick="closeAuthModal()">✖</div>
-      <h3 id="modal-title">Iniciar Sesión</h3>
-      <div id="auth-error"></div>
-      <input type="email" id="email" placeholder="Correo electrónico" />
-      <input type="password" id="password" placeholder="Contraseña" />
-      <button class="btn" id="auth-submit" onclick="submitAuth()">Entrar</button>
-      <div class="switch-mode" onclick="toggleAuthMode()">¿No tienes cuenta? Regístrate aquí</div>
-    </div>
-  </div>
-
-  <!-- CUSTOM ALERT MODAL -->
-  <div class="modal-overlay" id="custom-alert-overlay" style="display:none; z-index: 9999;">
-    <div class="modal" style="max-width: 400px; text-align: center;">
-      <div style="font-size: 4rem; margin-bottom: 10px;">🎉</div>
-      <h3 style="margin-bottom: 0.5rem; color:#2B1B17;">¡Pago Verificado!</h3>
-      <p style="opacity: 0.8; margin-bottom: 1.5rem;" id="custom-alert-msg"></p>
-      <button class="btn" style="width: 100%; font-size: 1.1rem; padding: 1rem; background: #2B1B17;" id="custom-alert-btn">Comenzar a usar RedactaPro</button>
-    </div>
-  </div>
-
-  <!-- PAYMENT MODAL -->
-  <div class="modal-overlay" id="payment-modal" style="display:none;">
-    <div class="modal" style="max-width: 450px; text-align: center;">
-      <div class="close-modal" onclick="document.getElementById('payment-modal').style.display='none'">✖</div>
-      <h3 style="margin-bottom: 0.5rem; color:#2B1B17;">Plan <span id="plan-name"></span></h3>
-      <p style="margin-bottom: 1.5rem; opacity: 0.8;">Para activar tu plan, realiza un Pago Móvil con los siguientes datos:</p>
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeAuthModal()">✕</button>
       
-      <div style="background: #EAE2D5; padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; text-align: left;">
-        <p style="margin: 0 0 10px 0;"><strong>🏦 Banco:</strong> Banesco (0134)</p>
-        <p style="margin: 0 0 10px 0;"><strong>📱 Teléfono:</strong> 0412 046 6522</p>
-        <p style="margin: 0;"><strong>🪪 Cédula:</strong> V-34176801</p>
+      <div style="text-align:center; margin-bottom:1.5rem;">
+        <img src="synapse-logo.jpg" alt="Synapse" style="width:48px; height:48px; border-radius:12px; margin-bottom:8px;">
+        <h3 style="font-size:1.4rem; color:#fff;" id="modal-title">Bienvenido a Synapse</h3>
+        <p style="color:var(--text-muted); font-size:0.85rem;">Tu suite de estudio e investigación con IA</p>
       </div>
 
-      <div style="margin-bottom: 1.5rem;">
-        <div style="font-size: 2.5rem; font-weight: 800; color: #2B1B17;" id="plan-bs">Calculando...</div>
-        <div style="font-size: 1.2rem; font-weight: normal; opacity: 0.5;" id="plan-usd">Calculando...</div>
-        <div style="font-size: 0.85rem; opacity: 0.4; margin-top: 5px;" id="tasa-bcv">Tasa BCV: Cargando...</div>
+      <div class="auth-tabs">
+        <button class="auth-tab-btn active" id="tab-login-btn" onclick="setAuthTab('login')">Iniciar Sesión</button>
+        <button class="auth-tab-btn" id="tab-register-btn" onclick="setAuthTab('register')">Crear Cuenta</button>
       </div>
 
-      <div id="payment-upload-section">
-        <div class="file-drop" onclick="document.getElementById('voucher-file').click()" style="border: 2px dashed rgba(43,27,23,0.3); border-radius: 12px; padding: 1.5rem; cursor: pointer; transition: 0.2s; background: #fff; margin-bottom: 10px;">
-          <input type="file" id="voucher-file" accept=".jpg,.jpeg,.png" style="display:none;" onchange="handleVoucherUpload(event)"/>
-          <div style="font-size: 2rem;">📸</div>
-          <p style="margin: 10px 0 0 0; font-weight: bold; color: #2B1B17;">Toca para subir tu comprobante</p>
+      <div class="auth-error" id="auth-error-msg"></div>
+
+      <form id="auth-form" onsubmit="handleAuthSubmit(event)">
+        <div class="form-group">
+          <label>Correo Electrónico:</label>
+          <input type="email" id="auth-email" class="form-control" required placeholder="tu@correo.com">
         </div>
-        <img id="voucher-preview" style="max-width: 100%; max-height: 250px; object-fit: contain; border-radius: 12px; margin-bottom: 10px; display: none; margin-left: auto; margin-right: auto;" />
-        <div id="voucher-error" style="color: #c0392b; margin-bottom: 10px; display: none; font-weight: bold;"></div>
-        
-        <button class="btn" id="btn-verify" style="width: 100%; font-size: 1.1rem; padding: 1rem; background: #2B1B17; margin-bottom: 10px; display: none;" onclick="verificarPago()">🔍 Verificar Pago Automáticamente</button>
-        <button class="btn-secondary" style="width: 100%; font-size: 0.95rem; padding: 0.8rem; background: transparent; border: 1px solid rgba(43,27,23,0.2); color: rgba(43,27,23,0.7);" onclick="enviarWhatsApp('ayuda')">No tengo el comprobante / Ayuda</button>
-      </div>
-
-      <div id="payment-loading" style="display:none; padding: 2rem 0;">
-        <div style="width: 40px; height: 40px; border: 4px solid rgba(43,27,23,0.1); border-top-color: #2B1B17; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 10px auto;"></div>
-        <p style="font-weight: bold; color: #2B1B17;">La Inteligencia Artificial está validando el comprobante de pago...</p>
-        <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
-      </div>
+        <div class="form-group">
+          <label>Contraseña:</label>
+          <input type="password" id="auth-password" class="form-control" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn-action" id="auth-submit-btn">Ingresar a Synapse</button>
+      </form>
     </div>
   </div>
 
-<script>
-  let isLogin = true;
-  let currentUser = null;
-  let pendingPlan = null;
-  let userEmail = "";
-  
-  let voucherB64 = null;
-  let voucherMime = null;
-  let pendingBsAmount = null;
+  <div id="toast"></div>
 
-  const GEMINI_MODEL = 'gemini-3.8-flash';
-  const apiKey = atob('QVEuQWI4Uk42SnBsdlYxX0F3RzdJYWVfWWlLZFpDTFlidFBvRUV0WEVjX2pWczdFRFFPaXc=');
-
-  async function geminiChat(parts, systemInstruction = null) {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
-    const body = {
-      contents: [{ parts }],
-      generationConfig: { temperature: 0.1 }
+  <script>
+    // ═════════════════════════════════════════════
+    // CONFIG & STATE
+    // ═════════════════════════════════════════════
+    const state = {
+      apiKey: atob('QVEuQWI4Uk42SnBsdlYxX0F3RzdJYWVfWWlLZFpDTFlidFBvRUV0WEVjX2pWczdFRFFPaXc='),
+      currentUser: null,
+      userData: null,
+      quizData: [],
+      userAnswers: {},
+      flashcards: [],
+      currentCardIndex: 0,
+      authMode: 'login'
     };
-    if (systemInstruction) {
-      body.systemInstruction = { parts: [{ text: systemInstruction }] };
-    }
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error?.message || 'Error en Gemini API');
-    return data.candidates[0].content.parts[0].text;
-  }
+    const GEMINI_MODEL = 'gemini-3.8-flash';
 
-  function showCustomAlert(msg, onConfirm) {
-    document.getElementById('custom-alert-msg').textContent = msg;
-    document.getElementById('custom-alert-overlay').style.display = 'flex';
-    document.getElementById('custom-alert-btn').onclick = () => {
-      document.getElementById('custom-alert-overlay').style.display = 'none';
-      if (onConfirm) onConfirm();
-    };
-  }
+    // ═════════════════════════════════════════════
+    // AUTHENTICATION & LISTENERS
+    // ═════════════════════════════════════════════
+    firebase.auth().onAuthStateChanged(async (user) => {
+      state.currentUser = user;
+      const loggedInView = document.getElementById('user-logged-in-view');
+      const loggedOutView = document.getElementById('user-logged-out-view');
 
-  function handleVoucherUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    voucherMime = file.type || 'image/jpeg';
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      voucherB64 = e.target.result.split(',')[1];
-      const img = document.getElementById('voucher-preview');
-      img.src = e.target.result;
-      img.style.display = 'block';
-      document.getElementById('btn-verify').style.display = 'block';
-      document.getElementById('voucher-error').style.display = 'none';
-    };
-    reader.readAsDataURL(file);
-  }
+      if (user) {
+        loggedInView.style.display = 'flex';
+        loggedOutView.style.display = 'none';
+        document.getElementById('user-email-display').textContent = user.email;
 
-  async function verificarPago() {
-    const upSec = document.getElementById('payment-upload-section');
-    const loadSec = document.getElementById('payment-loading');
-    const errEl = document.getElementById('voucher-error');
-    
-    upSec.style.display = 'none';
-    loadSec.style.display = 'block';
-    errEl.style.display = 'none';
-
-    const todayStr = new Date().toLocaleDateString('es-VE', { day: '2-digit', month: '2-digit', year: 'numeric' });
-    const prompt = `Analiza este comprobante de Pago Móvil venezolano.
-    La fecha actual de hoy es: ${todayStr}.
-    VERIFICACIÓN ESTRICTA DE SEGURIDAD. Revisa minuciosamente que el texto de la imagen contenga TODO lo siguiente:
-    1. Destino/Teléfono: Debe contener '04120466522' o '0412 046 6522'.
-    2. Cédula: Debe contener '34176801' o '34.176.801'.
-    3. Banco destino: 'Banesco' o '0134'.
-    4. Monto: El pago DEBE decir exactamente ${pendingBsAmount} (Bolívares o Bs).
-    5. Fecha de Pago: La fecha del comprobante DEBE coincidir con hoy (${todayStr}) o máximo el día de ayer. Si la fecha dice el año 2026, es CORRECTA porque hoy estamos en 2026. No lo rechaces diciendo que es del futuro.
-    
-    Si TODOS los datos solicitados coinciden a la perfección (incluyendo la fecha), responde ÚNICAMENTE con la palabra: APROBADO.
-    Si falta ALGÚN dato, el monto no es EXACTAMENTE ${pendingBsAmount}, o el pago es viejo, responde ÚNICAMENTE con una frase corta del motivo del rechazo.`;
-
-    try {
-       const result = await geminiChat([
-         { text: prompt },
-         { inline_data: { mime_type: voucherMime, data: voucherB64 } }
-       ]);
-
-       if (result.includes('APROBADO')) {
-         const planMap = { 'Básico': 'basic', 'Estudiante': 'student', 'Premium': 'premium' };
-         const dbPlan = planMap[pendingPlan.nombre];
-         
-         await firebase.firestore().collection('users').doc(currentUser.uid).update({ plan: dbPlan });
-         
-         // Registrar el pago en Firestore para el historial del administrador
-         try {
-           await firebase.firestore().collection('payments').add({
-             email: currentUser.email,
-             uid: currentUser.uid,
-             plan: pendingPlan.nombre,
-             monto_bs: pendingBsAmount,
-             fecha: new Date().toISOString(),
-             timestamp: firebase.firestore.FieldValue.serverTimestamp()
-           });
-         } catch(err) {
-           console.error("Error guardando historial de pago:", err);
-         }
-         
-         // Enviar notificación al correo del administrador
-         try {
-           const revokeLink = `https://redacta-pro.vercel.app/dashboard.html?revoke_email=${encodeURIComponent(currentUser.email)}`;
-           await fetch("https://formsubmit.co/ajax/maxrsilvagni@gmail.com", {
-             method: "POST",
-             headers: {
-               'Content-Type': 'application/json',
-               'Accept': 'application/json'
-             },
-             body: JSON.stringify({
-               _subject: `💰 ¡Nuevo Pago Aprobado! - Plan ${pendingPlan.nombre}`,
-               Cliente: currentUser.email,
-               Plan_Comprado: pendingPlan.nombre,
-               Monto_Bolivares: `${pendingBsAmount} Bs.`,
-               Mensaje: "La IA verificó el comprobante exitosamente y la cuenta fue activada de forma automática.",
-               ACCION_ADMIN: `Si revisas tu Banesco y el pago es FALSO, haz clic en el siguiente enlace para cancelar su suscripción inmediatamente: ${revokeLink}`
-             })
-           });
-         } catch(e) {
-           console.error("No se pudo enviar la alerta al admin:", e);
-         }
-         
-         showCustomAlert('Felicidades, la Inteligencia Artificial validó tu pago exitosamente. Tu cuenta ha sido activada.', () => {
-           window.location.href = 'dashboard.html';
-         });
-       } else {
-         upSec.style.display = 'block';
-         loadSec.style.display = 'none';
-         errEl.textContent = `❌ Rechazado: ${result}`;
-         errEl.style.display = 'block';
-       }
-    } catch(e) {
-       upSec.style.display = 'block';
-       loadSec.style.display = 'none';
-       errEl.textContent = `❌ Error procesando imagen: ${e.message}`;
-       errEl.style.display = 'block';
-    }
-  }  window.history.scrollRestoration = 'manual';
-  window.scrollTo(0, 0);
-
-  let isLoginAction = false; // Track if auth change came from clicking the login button
-
-  // Firebase listener
-  firebase.auth().onAuthStateChanged(async (user) => {
-    if (user) {
-      currentUser = user;
-      userEmail = user.email;
-      const navBtn = document.getElementById('nav-user-btn');
-      navBtn.textContent = 'Mi Panel';
-      navBtn.onclick = () => { window.location.href = 'dashboard.html'; };
-
-      try {
-        const doc = await firebase.firestore().collection('users').doc(user.uid).get();
-        if (doc.exists) {
-          const data = doc.data();
-          if (data.plan === 'free') {
-            closeAuthModal();
-            if (pendingPlan) {
-              seleccionarPlan(pendingPlan.nombre, pendingPlan.usd);
-              pendingPlan = null;
-            } else if (isLoginAction) {
-              document.getElementById('pricing').scrollIntoView({behavior: 'smooth'});
-            }
+        const isOwner = user.email && user.email.toLowerCase().trim() === 'maxrsilvagni@gmail.com';
+        
+        try {
+          const doc = await firebase.firestore().collection('users').doc(user.uid).get();
+          if (doc.exists) {
+            state.userData = doc.data();
           } else {
-            closeAuthModal();
-            if (isLoginAction) window.location.href = 'dashboard.html';
+            state.userData = { plan: isOwner ? 'admin' : 'free', email: user.email };
+            await firebase.firestore().collection('users').doc(user.uid).set(state.userData);
           }
-        } else {
-          closeAuthModal();
-          if (pendingPlan) {
-            seleccionarPlan(pendingPlan.nombre, pendingPlan.usd);
-            pendingPlan = null;
-          } else if (isLoginAction) {
-            document.getElementById('pricing').scrollIntoView({behavior: 'smooth'});
+
+          if (isOwner) {
+            state.userData.plan = 'admin';
+            document.getElementById('user-plan-badge').textContent = '👑 Admin (∞)';
+            document.getElementById('btn-tab-admin').style.display = 'inline-flex';
+            resetUnauthorizedAdmins();
+          } else {
+            if (state.userData.plan === 'admin') {
+              state.userData.plan = 'free';
+              await firebase.firestore().collection('users').doc(user.uid).update({ plan: 'free' });
+            }
+            const p = state.userData.plan || 'free';
+            document.getElementById('user-plan-badge').textContent = p.toUpperCase();
+            document.getElementById('btn-tab-admin').style.display = 'none';
           }
-        }
-      } catch(e) {
-        console.warn("Firestore listener fallback:", e);
-        closeAuthModal();
-        if (isLoginAction) window.location.href = 'dashboard.html';
-      }
-    } else {
-      currentUser = null;
-      document.getElementById('nav-user-btn').textContent = 'Iniciar Sesión';
-      document.getElementById('nav-user-btn').onclick = openAuthModal;
-    }
-  });
-
-  async function seleccionarPlan(nombre, usdPrice) {
-    pendingPlan = { nombre, usd: usdPrice };
-    
-    if (!currentUser) {
-      openAuthModal();
-      return;
-    }
-    
-    // Reset modal state
-    voucherB64 = null;
-    document.getElementById('voucher-preview').style.display = 'none';
-    document.getElementById('btn-verify').style.display = 'none';
-    document.getElementById('voucher-error').style.display = 'none';
-    document.getElementById('payment-upload-section').style.display = 'block';
-    document.getElementById('payment-loading').style.display = 'none';
-    
-    document.getElementById('plan-name').textContent = nombre;
-    document.getElementById('plan-usd').textContent = `$${usdPrice}.00 USD`;
-    document.getElementById('plan-bs').textContent = `Calculando... Bs`;
-    document.getElementById('tasa-bcv').textContent = `Tasa BCV: Cargando...`;
-    document.getElementById('payment-modal').style.display = 'flex';
-    
-    try {
-      const res = await fetch('https://ve.dolarapi.com/v1/dolares/oficial');
-      const data = await res.json();
-      const tasa = data.promedio;
-      const bolivares = (usdPrice * tasa).toFixed(2);
-      pendingBsAmount = bolivares;
-      
-      document.getElementById('plan-bs').textContent = `${bolivares} Bs.`;
-      document.getElementById('tasa-bcv').textContent = `Tasa BCV: ${tasa} Bs/$`;
-    } catch(e) {
-      document.getElementById('plan-bs').textContent = `Error de conexión`;
-      document.getElementById('tasa-bcv').textContent = `Intenta de nuevo más tarde`;
-    }
-  }
-
-  function enviarWhatsApp(tipo) {
-    const plan = document.getElementById('plan-name').textContent;
-    let msg = '';
-    if (tipo === 'comprobante') {
-      msg = `Hola, acabo de realizar el Pago Móvil para el plan ${plan} de RedactaPro. Mi correo registrado es: ${userEmail}. Aquí adjunto mi comprobante:`;
-    } else {
-      msg = `Hola, intenté pagar el plan ${plan} con mi correo ${userEmail}, pero olvidé tomar captura / no tengo el voucher. Mis datos del Pago Móvil (Banco de origen y últimos 4 números de referencia) son: `;
-    }
-    const num = "584120466522";
-    window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`, '_blank');
-  }
-
-  function openAuthModal() {
-    document.getElementById('auth-modal').style.display = 'flex';
-  }
-  function closeAuthModal() {
-    document.getElementById('auth-modal').style.display = 'none';
-  }
-  
-  function toggleAuthMode() {
-    isLogin = !isLogin;
-    document.getElementById('modal-title').textContent = isLogin ? 'Iniciar Sesión' : 'Crear Cuenta';
-    document.getElementById('auth-submit').textContent = isLogin ? 'Entrar' : 'Registrarse';
-    document.querySelector('.switch-mode').textContent = isLogin ? '¿No tienes cuenta? Regístrate aquí' : '¿Ya tienes cuenta? Inicia sesión';
-    document.getElementById('auth-error').style.display = 'none';
-  }
-
-  async function submitAuth() {
-    isLoginAction = true;
-    const email = document.getElementById('email').value.trim();
-    const pass  = document.getElementById('password').value;
-    const errEl = document.getElementById('auth-error');
-    const submitBtn = document.getElementById('auth-submit');
-    errEl.style.display = 'none';
-
-    if(!email || !pass) {
-      errEl.textContent = 'Por favor llena todos los campos.';
-      errEl.style.display = 'block';
-      return;
-    }
-
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Verificando...';
-
-    try {
-      if (isLogin) {
-        const cred = await firebase.auth().signInWithEmailAndPassword(email, pass);
-        const user = cred.user;
-        currentUser = user;
-        userEmail = user.email;
-
-        closeAuthModal();
-        if (pendingPlan) {
-          seleccionarPlan(pendingPlan.nombre, pendingPlan.usd);
-          pendingPlan = null;
-        } else {
-          window.location.href = 'dashboard.html';
+        } catch(e) {
+          console.warn("Firestore error fallback:", e);
+          if (isOwner) {
+            document.getElementById('user-plan-badge').textContent = '👑 Admin (∞)';
+            document.getElementById('btn-tab-admin').style.display = 'inline-flex';
+          }
         }
       } else {
-        const userCred = await firebase.auth().createUserWithEmailAndPassword(email, pass);
-        currentUser = userCred.user;
-        userEmail = userCred.user.email;
-        try {
-          await firebase.firestore().collection('users').doc(userCred.user.uid).set({
-            email: email,
-            plan: 'free',
-            usage_informe: 0,
-            usage_investigacion: 0,
-            last_reset: new Date().toISOString()
-          });
-        } catch(fe) {
-          console.warn("Firestore profile creation fallback:", fe);
+        loggedInView.style.display = 'none';
+        loggedOutView.style.display = 'flex';
+        document.getElementById('btn-tab-admin').style.display = 'none';
+      }
+    });
+
+    function logoutUser() {
+      firebase.auth().signOut().then(() => {
+        showToast("Sesión cerrada");
+        switchTab('hub');
+      });
+    }
+
+    function openAuthModal(mode = 'login') {
+      state.authMode = mode;
+      setAuthTab(mode);
+      document.getElementById('auth-modal').style.display = 'flex';
+      document.getElementById('auth-error-msg').style.display = 'none';
+    }
+
+    function closeAuthModal() {
+      document.getElementById('auth-modal').style.display = 'none';
+    }
+
+    function setAuthTab(mode) {
+      state.authMode = mode;
+      const loginBtn = document.getElementById('tab-login-btn');
+      const regBtn = document.getElementById('tab-register-btn');
+      const submitBtn = document.getElementById('auth-submit-btn');
+
+      if (mode === 'login') {
+        loginBtn.classList.add('active');
+        regBtn.classList.remove('active');
+        submitBtn.textContent = 'Ingresar a Synapse';
+      } else {
+        regBtn.classList.add('active');
+        loginBtn.classList.remove('active');
+        submitBtn.textContent = 'Crear Cuenta Gratuita';
+      }
+    }
+
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('auth-email').value.trim();
+      const password = document.getElementById('auth-password').value;
+      const errBox = document.getElementById('auth-error-msg');
+      errBox.style.display = 'none';
+
+      try {
+        if (state.authMode === 'login') {
+          await firebase.auth().signInWithEmailAndPassword(email, password);
+        } else {
+          await firebase.auth().createUserWithEmailAndPassword(email, password);
         }
         closeAuthModal();
-        if (pendingPlan) {
-          seleccionarPlan(pendingPlan.nombre, pendingPlan.usd);
-          pendingPlan = null;
-        } else {
-          document.getElementById('pricing').scrollIntoView({behavior: 'smooth'});
-        }
+        showToast("¡Bienvenido a Synapse!");
+      } catch(err) {
+        let msg = "Error al autenticar. Verifica tus credenciales.";
+        if (err.code === 'auth/wrong-password') msg = "Contraseña incorrecta.";
+        else if (err.code === 'auth/user-not-found') msg = "No existe una cuenta con este correo.";
+        else if (err.code === 'auth/email-already-in-use') msg = "Este correo ya está registrado. Inicia sesión.";
+        else if (err.code === 'auth/weak-password') msg = "La contraseña debe tener al menos 6 caracteres.";
+        errBox.textContent = msg;
+        errBox.style.display = 'block';
       }
-    } catch(e) {
-      errEl.textContent = e.message;
-      errEl.style.display = 'block';
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = isLogin ? 'Entrar' : 'Registrarse';
     }
+
+    // ═════════════════════════════════════════════
+    // NAVIGATION TABS
+    // ═════════════════════════════════════════════
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      
+      const target = document.getElementById('tab-' + tabId);
+      if (target) target.classList.add('active');
+      
+      const btn = document.getElementById('btn-tab-' + tabId);
+      if (btn) btn.classList.add('active');
+
+      if (tabId === 'admin') {
+        loadAdminPagos();
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.style.display = 'block';
+      setTimeout(() => t.style.display = 'none', 3500);
+    }
+
+    // ═════════════════════════════════════════════
+    // GEMINI CALL HELPER
+    // ═════════════════════════════════════════════
+    async function askGemini(prompt, systemInstruction = null) {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${state.apiKey}`;
+      const body = {
+        contents: [{ role: 'user', parts: [{ text: prompt }] }]
+      };
+      if (systemInstruction) {
+        body.system_instruction = { parts: [{ text: systemInstruction }] };
+      }
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if (!res.ok || data.error) throw new Error(data.error ? data.error.message : 'Error comunicando con Gemini');
+      return data.candidates[0].content.parts[0].text;
+    }
+
+    // ═════════════════════════════════════════════
+    // 🎯 SIMULADOR DE EXÁMENES
+    // ═════════════════════════════════════════════
+    async function generateExam() {
+      if (!state.currentUser) {
+        openAuthModal('login');
+        return;
+      }
+
+      const input = document.getElementById('exam-input').value.trim();
+      if (!input) {
+        alert("Por favor ingresa un tema o pega tus apuntes para generar el examen.");
+        return;
+      }
+      const level = document.getElementById('exam-level').value;
+      const count = document.getElementById('exam-count').value;
+
+      document.getElementById('exam-loading').style.display = 'block';
+      document.getElementById('exam-output').style.display = 'none';
+      document.getElementById('exam-score-banner').style.display = 'none';
+
+      const prompt = `Actúa como un profesor universitario experto en evaluación académica.
+Genera exactamente ${count} preguntas de examen de opción múltiple para estudiantes de nivel ${level} sobre el siguiente material:
+"""
+${input}
+"""
+
+Responde ÚNICAMENTE en formato JSON plano (un array de objetos), sin bloques de código markdown, con la siguiente estructura exacta:
+[
+  {
+    "pregunta": "Texto de la pregunta...",
+    "opciones": ["Opción A", "Opción B", "Opción C", "Opción D"],
+    "correcta": 0,
+    "explicacion": "Explicación detallada de por qué esta es la respuesta correcta y por qué las otras son incorrectas."
   }
-</script>
+]`;
+
+      try {
+        const raw = await askGemini(prompt, "Eres un evaluador académico riguroso. Devuelve estrictamente JSON válido.");
+        const cleanJson = raw.replace(/```json/gi, '').replace(/```/gi, '').trim();
+        state.quizData = JSON.parse(cleanJson);
+        state.userAnswers = {};
+
+        renderQuiz();
+        document.getElementById('exam-loading').style.display = 'none';
+        document.getElementById('exam-output').style.display = 'block';
+      } catch(e) {
+        document.getElementById('exam-loading').style.display = 'none';
+        alert("Error generando examen: " + e.message);
+      }
+    }
+
+    function renderQuiz() {
+      const c = document.getElementById('quiz-container');
+      c.innerHTML = '';
+      state.quizData.forEach((q, idx) => {
+        let optHtml = '';
+        q.opciones.forEach((opt, optIdx) => {
+          optHtml += `<div class="option-item" id="opt-${idx}-${optIdx}" onclick="selectOption(${idx}, ${optIdx})">
+            <span style="font-weight:700; color:var(--accent-cyan);">${String.fromCharCode(65 + optIdx)})</span> ${opt}
+          </div>`;
+        });
+
+        c.innerHTML += `
+          <div class="question-card" id="q-card-${idx}">
+            <div class="question-title">${idx + 1}. ${q.pregunta}</div>
+            <div class="options-list">${optHtml}</div>
+            <div class="explanation-box" id="exp-${idx}"><strong>Explicación:</strong> ${q.explicacion}</div>
+          </div>
+        `;
+      });
+    }
+
+    function selectOption(qIdx, optIdx) {
+      state.userAnswers[qIdx] = optIdx;
+      document.querySelectorAll(`[id^="opt-${qIdx}-"]`).forEach(el => el.classList.remove('selected'));
+      const chosen = document.getElementById(`opt-${qIdx}-${optIdx}`);
+      if (chosen) chosen.classList.add('selected');
+    }
+
+    function gradeExam() {
+      if (Object.keys(state.userAnswers).length < state.quizData.length) {
+        if (!confirm("Aún tienes preguntas sin responder. ¿Deseas calificar de todos modos?")) return;
+      }
+      let correctCount = 0;
+      state.quizData.forEach((q, idx) => {
+        const userChoice = state.userAnswers[idx];
+        const correctChoice = q.correcta;
+        const expBox = document.getElementById(`exp-${idx}`);
+        if (expBox) expBox.style.display = 'block';
+
+        if (userChoice !== undefined) {
+          const userEl = document.getElementById(`opt-${idx}-${userChoice}`);
+          if (userChoice === correctChoice) {
+            correctCount++;
+            if (userEl) userEl.classList.add('correct');
+          } else {
+            if (userEl) userEl.classList.add('incorrect');
+            const corrEl = document.getElementById(`opt-${idx}-${correctChoice}`);
+            if (corrEl) corrEl.classList.add('correct');
+          }
+        } else {
+          const corrEl = document.getElementById(`opt-${idx}-${correctChoice}`);
+          if (corrEl) corrEl.classList.add('correct');
+        }
+      });
+
+      const total = state.quizData.length;
+      const scorePct = Math.round((correctCount / total) * 100);
+      const banner = document.getElementById('exam-score-banner');
+      banner.style.display = 'block';
+      banner.innerHTML = `
+        <div style="background: rgba(139,92,246,0.15); border: 1px solid var(--accent-violet); border-radius: 12px; padding: 1.5rem; text-align: center;">
+          <h3 style="font-size:1.6rem; color:#fff; margin-bottom:6px;">Calificación: ${correctCount}/${total} (${scorePct}%)</h3>
+          <p style="color:var(--text-muted); font-size:0.95rem;">${scorePct >= 70 ? '🎉 ¡Excelente dominio del tema! Revisa las explicaciones para pulir detalles.' : '📖 Te recomendamos repasar los conceptos marcados en rojo antes de la prueba.'}</p>
+        </div>
+      `;
+      window.scrollTo({ top: banner.offsetTop - 100, behavior: 'smooth' });
+    }
+
+    function resetExam() {
+      document.getElementById('exam-input').value = '';
+      document.getElementById('exam-output').style.display = 'none';
+    }
+
+    // ═════════════════════════════════════════════
+    // 🔬 DEEP RESEARCH
+    // ═════════════════════════════════════════════
+    async function runDeepResearch() {
+      if (!state.currentUser) {
+        openAuthModal('login');
+        return;
+      }
+
+      const topic = document.getElementById('research-topic').value.trim();
+      if (!topic) {
+        alert("Por favor introduce una pregunta o tema para investigar.");
+        return;
+      }
+      const focus = document.getElementById('research-focus').value;
+
+      document.getElementById('research-loading').style.display = 'block';
+      document.getElementById('research-output').style.display = 'none';
+
+      const prompt = `Actúa como un investigador senior y académico de nivel doctoral.
+Realiza una investigación profunda y exhaustiva con enfoque en "${focus}" sobre el siguiente tópico:
+"""
+${topic}
+"""
+
+Estructura el documento de forma rigurosa y académica con las siguientes secciones:
+1. Resumen Ejecutivo (Abstract)
+2. Marco Teórico y Fundamentos Epistemológicos
+3. Evidencia Científica y Hallazgos Principales
+4. Análisis Crítico, Controversias y Preguntas Abiertas
+5. Conclusión Sintética
+6. Referencias Bibliográficas Recomendadas (Formato APA 7mo edición)
+
+Mantén un lenguaje formal, analítico, neutro y de alto rigor investigativo.`;
+
+      try {
+        const result = await askGemini(prompt);
+        document.getElementById('research-content').textContent = result;
+        document.getElementById('research-loading').style.display = 'none';
+        document.getElementById('research-output').style.display = 'block';
+      } catch(e) {
+        document.getElementById('research-loading').style.display = 'none';
+        alert("Error en investigación: " + e.message);
+      }
+    }
+
+    function copyResearchText() {
+      const text = document.getElementById('research-content').textContent;
+      navigator.clipboard.writeText(text).then(() => showToast("¡Texto de investigación copiado al portapapeles!"));
+    }
+
+    // ═════════════════════════════════════════════
+    // ⚡ FLASHCARDS
+    // ═════════════════════════════════════════════
+    async function generateFlashcards() {
+      if (!state.currentUser) {
+        openAuthModal('login');
+        return;
+      }
+
+      const input = document.getElementById('flashcards-input').value.trim();
+      if (!input) {
+        alert("Por favor ingresa conceptos o apuntes para crear las tarjetas.");
+        return;
+      }
+      document.getElementById('flashcards-loading').style.display = 'block';
+      document.getElementById('flashcards-output').style.display = 'none';
+
+      const prompt = `A partir del siguiente texto, crea entre 5 y 8 tarjetas de memorización activa (Flashcards) de alta retención:
+"""
+${input}
+"""
+
+Responde ÚNICAMENTE en formato JSON plano (un array de objetos), sin bloques de markdown:
+[
+  {
+    "front": "Pregunta concisa o concepto clave a definir",
+    "back": "Definición clara, directa y una pequeña clave nemotécnica o ejemplo para recordarlo"
+  }
+]`;
+
+      try {
+        const raw = await askGemini(prompt, "Devuelve únicamente JSON válido.");
+        const clean = raw.replace(/```json/gi, '').replace(/```/gi, '').trim();
+        state.flashcards = JSON.parse(clean);
+        state.currentCardIndex = 0;
+
+        showCard(0);
+        document.getElementById('flashcards-loading').style.display = 'none';
+        document.getElementById('flashcards-output').style.display = 'block';
+      } catch(e) {
+        document.getElementById('flashcards-loading').style.display = 'none';
+        alert("Error generando flashcards: " + e.message);
+      }
+    }
+
+    function showCard(idx) {
+      if (!state.flashcards || state.flashcards.length === 0) return;
+      document.getElementById('flashcard-inner').classList.remove('flipped');
+      const card = state.flashcards[idx];
+      document.getElementById('card-front-text').textContent = card.front;
+      document.getElementById('card-back-text').textContent = card.back;
+      document.getElementById('card-counter').textContent = `Tarjeta ${idx + 1} de ${state.flashcards.length}`;
+    }
+
+    function flipCurrentCard() {
+      document.getElementById('flashcard-inner').classList.toggle('flipped');
+    }
+
+    function nextCard() {
+      if (state.currentCardIndex < state.flashcards.length - 1) {
+        state.currentCardIndex++;
+        showCard(state.currentCardIndex);
+      }
+    }
+
+    function prevCard() {
+      if (state.currentCardIndex > 0) {
+        state.currentCardIndex--;
+        showCard(state.currentCardIndex);
+      }
+    }
+
+    // ═════════════════════════════════════════════
+    // 👑 ADMIN FUNCTIONS
+    // ═════════════════════════════════════════════
+    async function resetUnauthorizedAdmins() {
+      try {
+        const snap = await firebase.firestore().collection('users').get();
+        let count = 0;
+        const batch = [];
+        snap.forEach(doc => {
+          const d = doc.data();
+          const email = (d.email || '').toLowerCase().trim();
+          if (email !== 'maxrsilvagni@gmail.com' && (d.plan === 'admin' || d.isAdmin === true)) {
+            batch.push(doc.ref.update({ plan: 'free', isAdmin: false }));
+            count++;
+          }
+        });
+        if (batch.length > 0) await Promise.all(batch);
+        return count;
+      } catch(e) {
+        console.warn("Error en resetUnauthorizedAdmins:", e);
+        return 0;
+      }
+    }
+
+    async function manualResetAdmins() {
+      if (!confirm("¿Confirmas resetear a 'free' todos los usuarios con rol Admin excepto maxrsilvagni@gmail.com?")) return;
+      const count = await resetUnauthorizedAdmins();
+      alert(`Operación completada. Se resetearon ${count} usuario(s) a plan gratuito.`);
+      loadAdminUsuarios();
+    }
+
+    async function loadAdminPagos() {
+      const c = document.getElementById('admin-table-container');
+      c.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:1.5rem;">Cargando pagos...</p>';
+      try {
+        const snap = await firebase.firestore().collection('payments').orderBy('timestamp', 'desc').limit(50).get();
+        if (snap.empty) {
+          c.innerHTML = '<p style="text-align:center; padding:1.5rem; color:var(--text-muted);">No hay pagos registrados aún.</p>';
+          return;
+        }
+        let rows = '';
+        snap.forEach(doc => {
+          const d = doc.data();
+          const fecha = d.fecha ? new Date(d.fecha).toLocaleString() : 'Reciente';
+          rows += `<tr>
+            <td>${fecha}</td>
+            <td><strong>${d.email}</strong></td>
+            <td><span class="badge-plan">${d.plan}</span></td>
+            <td style="color:#22c55e; font-weight:bold;">${d.monto_bs} Bs.</td>
+          </tr>`;
+        });
+        c.innerHTML = `
+          <h3 style="margin-bottom:1rem; color:#fff;">Historial de Pagos Verificados</h3>
+          <table class="admin-table">
+            <thead>
+              <tr><th>Fecha</th><th>Usuario</th><th>Plan</th><th>Monto</th></tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        `;
+      } catch(e) {
+        c.innerHTML = `<p style="color:#ef4444;">Error: ${e.message}</p>`;
+      }
+    }
+
+    async function loadAdminUsuarios() {
+      const c = document.getElementById('admin-table-container');
+      c.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:1.5rem;">Cargando usuarios...</p>';
+      try {
+        const snap = await firebase.firestore().collection('users').limit(100).get();
+        if (snap.empty) {
+          c.innerHTML = '<p style="text-align:center; padding:1.5rem; color:var(--text-muted);">No hay usuarios registrados.</p>';
+          return;
+        }
+        let rows = '';
+        snap.forEach(doc => {
+          const d = doc.data();
+          const email = (d.email || '').toLowerCase().trim();
+          const isOwner = email === 'maxrsilvagni@gmail.com';
+          const plan = isOwner ? '👑 Propietario' : (d.plan || 'free');
+          
+          rows += `<tr>
+            <td>${d.email || doc.id}</td>
+            <td><span class="badge-plan" style="${isOwner ? 'background:#8B5CF6;' : ''}">${plan}</span></td>
+            <td>
+              ${isOwner ? '<span style="color:#94a3b8; font-size:0.85rem;">Cuenta Principal</span>' : `<button class="card-btn secondary" style="width:auto; padding:4px 10px; font-size:0.8rem;" onclick="anularUser('${doc.id}')">Anular a Free</button>`}
+            </td>
+          </tr>`;
+        });
+        c.innerHTML = `
+          <h3 style="margin-bottom:1rem; color:#fff;">Control de Usuarios Registrados</h3>
+          <table class="admin-table">
+            <thead>
+              <tr><th>Usuario</th><th>Plan</th><th>Acción</th></tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        `;
+      } catch(e) {
+        c.innerHTML = `<p style="color:#ef4444;">Error: ${e.message}</p>`;
+      }
+    }
+
+    async function anularUser(uid) {
+      if (!confirm("¿Regresar este usuario al plan Free?")) return;
+      await firebase.firestore().collection('users').doc(uid).update({ plan: 'free', premium_until: null });
+      loadAdminUsuarios();
+    }
+  </script>
 </body>
 </html>
