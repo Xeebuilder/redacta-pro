@@ -532,9 +532,10 @@
 
   async function submitAuth() {
     isLoginAction = true;
-    const email = document.getElementById('email').value;
+    const email = document.getElementById('email').value.trim();
     const pass  = document.getElementById('password').value;
     const errEl = document.getElementById('auth-error');
+    const submitBtn = document.getElementById('auth-submit');
     errEl.style.display = 'none';
 
     if(!email || !pass) {
@@ -543,23 +544,53 @@
       return;
     }
 
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Verificando...';
+
     try {
       if (isLogin) {
-        await firebase.auth().signInWithEmailAndPassword(email, pass);
+        const cred = await firebase.auth().signInWithEmailAndPassword(email, pass);
+        const user = cred.user;
+        currentUser = user;
+        userEmail = user.email;
+
+        // Check plan in Firestore directly
+        const doc = await firebase.firestore().collection('users').doc(user.uid).get();
+        const data = doc.exists ? doc.data() : { plan: 'free' };
+
+        if (data.plan === 'free' && pendingPlan) {
+          closeAuthModal();
+          seleccionarPlan(pendingPlan.nombre, pendingPlan.usd);
+          pendingPlan = null;
+        } else {
+          closeAuthModal();
+          window.location.href = 'dashboard.html';
+        }
       } else {
         const userCred = await firebase.auth().createUserWithEmailAndPassword(email, pass);
-        // Create user doc in Firestore with default Basic limits (0 usage)
+        currentUser = userCred.user;
+        userEmail = userCred.user.email;
         await firebase.firestore().collection('users').doc(userCred.user.uid).set({
           email: email,
-          plan: 'free', // Requires manual upgrade to basic/student/premium later
+          plan: 'free',
           usage_informe: 0,
           usage_investigacion: 0,
           last_reset: new Date().toISOString()
         });
+        closeAuthModal();
+        if (pendingPlan) {
+          seleccionarPlan(pendingPlan.nombre, pendingPlan.usd);
+          pendingPlan = null;
+        } else {
+          document.getElementById('pricing').scrollIntoView({behavior: 'smooth'});
+        }
       }
     } catch(e) {
       errEl.textContent = e.message;
       errEl.style.display = 'block';
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = isLogin ? 'Entrar' : 'Registrarse';
     }
   }
 </script>
