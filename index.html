@@ -435,10 +435,23 @@
       navBtn.textContent = 'Mi Panel';
       navBtn.onclick = () => { window.location.href = 'dashboard.html'; };
 
-      const doc = await firebase.firestore().collection('users').doc(user.uid).get();
-      if (doc.exists) {
-        const data = doc.data();
-        if (data.plan === 'free') {
+      try {
+        const doc = await firebase.firestore().collection('users').doc(user.uid).get();
+        if (doc.exists) {
+          const data = doc.data();
+          if (data.plan === 'free') {
+            closeAuthModal();
+            if (pendingPlan) {
+              seleccionarPlan(pendingPlan.nombre, pendingPlan.usd);
+              pendingPlan = null;
+            } else if (isLoginAction) {
+              document.getElementById('pricing').scrollIntoView({behavior: 'smooth'});
+            }
+          } else {
+            closeAuthModal();
+            if (isLoginAction) window.location.href = 'dashboard.html';
+          }
+        } else {
           closeAuthModal();
           if (pendingPlan) {
             seleccionarPlan(pendingPlan.nombre, pendingPlan.usd);
@@ -446,18 +459,11 @@
           } else if (isLoginAction) {
             document.getElementById('pricing').scrollIntoView({behavior: 'smooth'});
           }
-        } else {
-          closeAuthModal();
-          if (isLoginAction) window.location.href = 'dashboard.html';
         }
-      } else {
+      } catch(e) {
+        console.warn("Firestore listener fallback:", e);
         closeAuthModal();
-        if (pendingPlan) {
-          seleccionarPlan(pendingPlan.nombre, pendingPlan.usd);
-          pendingPlan = null;
-        } else if (isLoginAction) {
-          document.getElementById('pricing').scrollIntoView({behavior: 'smooth'});
-        }
+        if (isLoginAction) window.location.href = 'dashboard.html';
       }
     } else {
       currentUser = null;
@@ -554,29 +560,28 @@
         currentUser = user;
         userEmail = user.email;
 
-        // Check plan in Firestore directly
-        const doc = await firebase.firestore().collection('users').doc(user.uid).get();
-        const data = doc.exists ? doc.data() : { plan: 'free' };
-
-        if (data.plan === 'free' && pendingPlan) {
-          closeAuthModal();
+        closeAuthModal();
+        if (pendingPlan) {
           seleccionarPlan(pendingPlan.nombre, pendingPlan.usd);
           pendingPlan = null;
         } else {
-          closeAuthModal();
           window.location.href = 'dashboard.html';
         }
       } else {
         const userCred = await firebase.auth().createUserWithEmailAndPassword(email, pass);
         currentUser = userCred.user;
         userEmail = userCred.user.email;
-        await firebase.firestore().collection('users').doc(userCred.user.uid).set({
-          email: email,
-          plan: 'free',
-          usage_informe: 0,
-          usage_investigacion: 0,
-          last_reset: new Date().toISOString()
-        });
+        try {
+          await firebase.firestore().collection('users').doc(userCred.user.uid).set({
+            email: email,
+            plan: 'free',
+            usage_informe: 0,
+            usage_investigacion: 0,
+            last_reset: new Date().toISOString()
+          });
+        } catch(fe) {
+          console.warn("Firestore profile creation fallback:", fe);
+        }
         closeAuthModal();
         if (pendingPlan) {
           seleccionarPlan(pendingPlan.nombre, pendingPlan.usd);
