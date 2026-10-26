@@ -278,7 +278,7 @@ const PLAN_LIMITS = {
   free: { informe: 0, investigacion: 0 },
   basic: { informe: 1, investigacion: 2 },
   student: { informe: 3, investigacion: 5 },
-  premium: { informe: 5, investigacion: 15 },
+  premium: { informe: '∞', investigacion: '∞' },
   admin: { informe: '∞', investigacion: '∞' }
 };
 
@@ -344,7 +344,16 @@ async function loadUserData() {
       await firebase.firestore().collection('users').doc(currentUser.uid).set(userData);
     }
     
-    // Show admin button for the official admin
+    // DUEÑO OFICIAL: maxrsilvagni@gmail.com SIEMPRE TIENE PLAN ADMIN INFINITO
+    if (currentUser.email === 'maxrsilvagni@gmail.com') {
+      userData.plan = 'admin';
+      await firebase.firestore().collection('users').doc(currentUser.uid).set({
+        plan: 'admin',
+        email: currentUser.email
+      }, { merge: true });
+    }
+
+    // Show admin button for the official admin or admin plan
     if (currentUser.email === 'maxrsilvagni@gmail.com' || userData.plan === 'admin') {
       document.getElementById('admin-panel-btn').style.display = 'inline-block';
     }
@@ -355,39 +364,47 @@ async function loadUserData() {
   }
 }
 
-// Admin Mode Click Handler
+// Admin Mode Click Handler (Código Secreto)
 let profileClicks = 0;
 let clickTimer = null;
-document.getElementById('user-email').addEventListener('click', () => {
-  profileClicks++;
-  clearTimeout(clickTimer);
-  if (profileClicks >= 3) {
-    profileClicks = 0;
-    showPrompt("Código de acceso Admin:", async (pwd) => {
-      if (pwd === "50025002") {
-         userData.plan = "admin";
-         await firebase.firestore().collection('users').doc(currentUser.uid).update({ plan: 'admin' });
-         updateQuotaBadges();
-         showAlert("Modo Admin activado exitosamente. Tu cuenta ahora tiene acceso infinito y de por vida.", "¡Felicidades!");
-      } else if (pwd) {
-         showToast("Código incorrecto.", "error");
-      }
-    });
-  } else {
-    clickTimer = setTimeout(() => profileClicks = 0, 1000);
-  }
-});
+const userEmailEl = document.getElementById('user-email');
+if (userEmailEl) {
+  userEmailEl.style.cursor = 'pointer';
+  userEmailEl.title = 'Haz 3 clics para ingresar código Admin';
+  userEmailEl.addEventListener('click', () => {
+    profileClicks++;
+    clearTimeout(clickTimer);
+    if (profileClicks >= 3) {
+      profileClicks = 0;
+      showPrompt("Código de acceso Admin (Infinito):", async (pwd) => {
+        if (pwd === "50025002") {
+           userData.plan = "admin";
+           await firebase.firestore().collection('users').doc(currentUser.uid).set({ plan: 'admin' }, { merge: true });
+           updateQuotaBadges();
+           document.getElementById('admin-panel-btn').style.display = 'inline-block';
+           showAlert("Modo Admin activado exitosamente. Tu cuenta ahora tiene acceso infinito y de por vida.", "¡Felicidades!");
+        } else if (pwd) {
+           showToast("Código incorrecto.");
+        }
+      });
+    } else {
+      clickTimer = setTimeout(() => profileClicks = 0, 2500);
+    }
+  });
+}
 
 function updateQuotaBadges() {
   if (!userData) return;
+  const isUnlimited = userData.plan === 'admin' || userData.plan === 'premium';
   const limits = PLAN_LIMITS[userData.plan] || PLAN_LIMITS.free;
-  document.getElementById('quota-inv').textContent = userData.plan === 'admin' ? '∞' : `${userData.usage_investigacion}/${limits.investigacion}`;
-  document.getElementById('quota-inf').textContent = userData.plan === 'admin' ? '∞' : `${userData.usage_informe}/${limits.informe}`;
+  document.getElementById('quota-inv').textContent = isUnlimited ? '∞' : `${userData.usage_investigacion || 0}/${limits.investigacion}`;
+  document.getElementById('quota-inf').textContent = isUnlimited ? '∞' : `${userData.usage_informe || 0}/${limits.informe}`;
 }
 
 async function checkAndConsumeQuota(modo) {
   if (!userData) return false;
-  if (userData.plan === 'admin') return true;
+  // Tanto Admin como Premium tienen acceso 100% ilimitado
+  if (userData.plan === 'admin' || userData.plan === 'premium') return true;
 
   const dbField = modo === 'Investigacion' ? 'usage_investigacion' : 'usage_informe';
   const limits = PLAN_LIMITS[userData.plan] || PLAN_LIMITS.free;
@@ -399,7 +416,7 @@ async function checkAndConsumeQuota(modo) {
   }
 
   // Consume 1 credit
-  userData[dbField] += 1;
+  userData[dbField] = (userData[dbField] || 0) + 1;
   await firebase.firestore().collection('users').doc(currentUser.uid).update({
     [dbField]: userData[dbField]
   });
