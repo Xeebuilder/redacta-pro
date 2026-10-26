@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Synapse | Hub de Estudio & Investigación con IA</title>
+  <link rel="icon" type="image/jpeg" href="synapse-logo.jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Firebase SDK Compat -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #080B11;
+      --bg-card: rgba(16, 22, 34, 0.85);
+      --bg-card-hover: rgba(22, 30, 46, 0.95);
+      --border: rgba(139, 92, 246, 0.18);
+      --border-glow: rgba(6, 182, 212, 0.4);
+      --accent-violet: #8B5CF6;
+      --accent-cyan: #06B6D4;
+      --accent-gradient: linear-gradient(135deg, #8B5CF6 0%, #06B6D4 100%);
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-sans);
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(139, 92, 246, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.10) 0%, transparent 45%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navbar */
+    .navbar {
+      height: 72px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(8, 11, 17, 0.85);
+      backdrop-filter: blur(14px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      object-fit: cover;
+      box-shadow: 0 0 16px rgba(139, 92, 246, 0.4);
+    }
+
+    .brand-text h1 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 0;
+      line-height: 1.2;
+    }
+
+    .brand-text span {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      display: block;
+      font-weight: 500;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+
+    .nav-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-btn.active {
+      color: #fff;
+      background: rgba(139, 92, 246, 0.15);
+      border-color: var(--accent-violet);
+      box-shadow: 0 0 14px rgba(139, 92, 246, 0.25);
+    }
+
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge-plan {
+      background: var(--accent-gradient);
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+    }
+
+    .user-email-text {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      max-width: 170px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .btn-logout {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #f87171;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .btn-logout:hover {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+      flex: 1;
+      width: 100%;
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Hero Banner */
+    .hero {
+      text-align: center;
+      margin-bottom: 3.5rem;
+      position: relative;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 30px;
+      background: rgba(139, 92, 246, 0.1);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      font-size: 0.85rem;
+      color: #c084fc;
+      margin-bottom: 1.2rem;
+      font-weight: 600;
+    }
+
+    .hero h2 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      background: linear-gradient(180deg, #FFFFFF 0%, #94A3B8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Service Grid */
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--accent-gradient);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      background: var(--bg-card-hover);
+      border-color: var(--border-glow);
+      box-shadow: 0 12px 30px rgba(6, 182, 212, 0.15);
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1.2rem;
+      width: 54px;
+      height: 54px;
+      border-radius: 12px;
+      background: rgba(139, 92, 246, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(139, 92, 246, 0.25);
+    }
+
+    .card h3 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+      color: #fff;
+    }
+
+    .card p {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin-bottom: 1.5rem;
+      flex: 1;
+    }
+
+    .card-btn {
+      width: 100%;
+      padding: 12px 20px;
+      background: var(--accent-gradient);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .card-btn:hover {
+      opacity: 0.92;
+      box-shadow: 0 0 18px rgba(6, 182, 212, 0.4);
+      transform: scale(1.02);
+    }
+
+    .card-btn.secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+    }
+
+    .card-btn.secondary:hover {
+      background: rgba(139, 92, 246, 0.2);
+      border-color: var(--accent-violet);
+    }
+
+    /* Modules Styles (Exam, Research, Flashcards) */
+    .module-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2.2rem;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .module-header {
+      margin-bottom: 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 1.2rem;
+    }
+
+    .module-header h2 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .module-header p {
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-size: 0.95rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #cbd5e1;
+    }
+
+    .form-control, textarea, select {
+      width: 100%;
+      background: rgba(8, 11, 17, 0.7);
+      border: 1px solid rgba(139, 92, 246, 0.25);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .form-control:focus, textarea:focus, select:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 12px rgba(6, 182, 212, 0.25);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .btn-action {
+      background: var(--accent-gradient);
+      border: none;
+      padding: 14px 24px;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.2s;
+      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-action:hover {
+      box-shadow: 0 6px 25px rgba(6, 182, 212, 0.45);
+      transform: translateY(-2px);
+    }
+
+    /* Output Display Area */
+    .output-area {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: none;
+    }
+
+    .loading-spinner {
+      display: none;
+      text-align: center;
+      padding: 2.5rem 0;
+    }
+
+    .spinner {
+      width: 44px;
+      height: 44px;
+      border: 3px solid rgba(139, 92, 246, 0.2);
+      border-top-color: var(--accent-cyan);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Interactive Quiz Card Styles */
+    .question-card {
+      background: rgba(8, 11, 17, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .question-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: #fff;
+    }
+
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .option-item {
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .option-item:hover {
+      background: rgba(139, 92, 246, 0.1);
+      border-color: rgba(139, 92, 246, 0.3);
+    }
+
+    .option-item.selected {
+      background: rgba(139, 92, 246, 0.25);
+      border-color: var(--accent-violet);
+      font-weight: 600;
+    }
+
+    .option-item.correct {
+      background: rgba(34, 197, 94, 0.25) !important;
+      border-color: #22c55e !important;
+      color: #4ade80 !important;
+    }
+
+    .option-item.incorrect {
+      background: rgba(239, 68, 68, 0.25) !important;
+      border-color: #ef4444 !important;
+      color: #fca5a5 !important;
+    }
+
+    .explanation-box {
+      margin-top: 10px;
+      padding: 10px 14px;
+      background: rgba(6, 182, 212, 0.1);
+      border-left: 3px solid var(--accent-cyan);
+      border-radius: 6px;
+      font-size: 0.88rem;
+      color: #cbd5e1;
+      display: none;
+    }
+
+    /* Flashcard 3D Flip Styles */
+    .flashcard-wrapper {
+      perspective: 1000px;
+      max-width: 500px;
+      height: 300px;
+      margin: 1.5rem auto;
+      cursor: pointer;
+    }
+
+    .flashcard-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+
+    .flashcard-inner.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .flashcard-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .flashcard-front {
+      background: linear-gradient(145deg, rgba(16, 22, 34, 0.95), rgba(8, 11, 17, 0.95));
+      border-color: var(--accent-violet);
+    }
+
+    .flashcard-back {
+      background: linear-gradient(145deg, rgba(8, 11, 17, 0.95), rgba(16, 22, 34, 0.95));
+      border-color: var(--accent-cyan);
+      transform: rotateY(180deg);
+    }
+
+    .flashcard-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+    }
+
+    .flashcard-text {
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.5;
+      color: #fff;
+    }
+
+    .flashcard-hint {
+      margin-top: 1.2rem;
+      font-size: 0.8rem;
+      color: var(--accent-cyan);
+    }
+
+    .flashcard-controls {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 1.5rem;
+    }
+
+    /* Admin Table Styles */
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .admin-table th, .admin-table td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .admin-table th {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: rgba(16, 22, 34, 0.95);
+      border: 1px solid var(--accent-cyan);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      display: none;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <div class="brand" onclick="switchTab('hub')">
+      <img src="synapse-logo.jpg" alt="Synapse Logo" class="brand-logo">
+      <div class="brand-text">
+        <h1>SYNAPSE</h1>
+        <span>AI ACADEMIC & RESEARCH HUB</span>
+      </div>
+    </div>
+
+    <nav class="nav-links">
+      <button class="nav-btn active" id="btn-tab-hub" onclick="switchTab('hub')">🏠 Hub</button>
+      <a class="nav-btn" href="dashboard.html" title="Abrir generador RedactaPro">📝 RedactaPro</a>
+      <button class="nav-btn" id="btn-tab-exam" onclick="switchTab('exam')">🎯 Simulador Exámenes</button>
+      <button class="nav-btn" id="btn-tab-research" onclick="switchTab('research')">🔬 Deep Research</button>
+      <button class="nav-btn" id="btn-tab-flashcards" onclick="switchTab('flashcards')">⚡ Flashcards</button>
+      <button class="nav-btn" id="btn-tab-admin" style="display:none;" onclick="switchTab('admin')">👑 Panel Admin</button>
+    </nav>
+
+    <div class="nav-user">
+      <span class="badge-plan" id="user-plan-badge">Free</span>
+      <span class="user-email-text" id="user-email-display">Cargando...</span>
+      <button class="btn-logout" onclick="logoutUser()">Salir</button>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- ═════════════════════════════════════════════ -->
+    <!-- TAB 1: SYNAPSE HUB CENTRAL -->
+    <!-- ═════════════════════════════════════════════ -->
+    <section id="tab-hub" class="tab-content active">
+      <div class="hero">
+        <div class="hero-badge">⚡ Todo tu entorno de estudio unificado con IA</div>
+        <h2>Aprende Más Rápido. Investiga Mejor. Aprueba Seguro.</h2>
+        <p>Synapse integra redacción académica, simuladores de exámenes interactivos, síntesis de papers científicos y tarjetas de memoria activa en una sola suite inteligente.</p>
+      </div>
+
+      <div class="service-grid">
+        <!-- Servicio 1: RedactaPro -->
+        <div class="card">
+          <div>
+            <div class="card-icon">📝</div>
+            <h3>RedactaPro</h3>
+            <p>Generador completo de monografías, ensayos e informes con normas académicas (APA/Vancouver). Escanea de 1 a 6 fotos de tus guías y descarga en DOCX y PDF.</p>
+          </div>
+          <a href="dashboard.html" class="card-btn">Abrir RedactaPro ➜</a>
+        </div>
+
+        <!-- Servicio 2: Simulador de Exámenes -->
+        <div class="card">
+          <div>
+            <div class="card-icon">🎯</div>
+            <h3>Simulador de Exámenes</h3>
+            <p>Sube tus apuntes o temas y genera quizes reales de práctica (selección múltiple o desarrollo) con corrección inmediata y explicaciones paso a paso.</p>
+          </div>
+          <button class="card-btn" onclick="switchTab('exam')">Iniciar Simulacro ➜</button>
+        </div>
+
+        <!-- Servicio 3: Deep Research -->
+        <div class="card">
+          <div>
+            <div class="card-icon">🔬</div>
+            <h3>Deep Research</h3>
+            <p>Asistente de literatura académica. Explora temas a fondo, estructura marcos teóricos, encuentra hipótesis y sintetiza fuentes bibliográficas con rigor.</p>
+          </div>
+          <button class="card-btn" onclick="switchTab('research')">Investigar Tema ➜</button>
+        </div>
+
+        <!-- Servicio 4: Flashcards -->
+        <div class="card">
+          <div>
+            <div class="card-icon">⚡</div>
+            <h3>Flashcards & Repaso</h3>
+            <p>Convierte resúmenes y apuntes densos en tarjetas 3D de repetición espaciada para retener conceptos clave sin esfuerzo antes de tus parciales.</p>
+          </div>
+          <button class="card-btn" onclick="switchTab('flashcards')">Practicar Tarjetas ➜</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════════════════════════════════════════════ -->
+    <!-- TAB 2: SIMULADOR DE EXÁMENES -->
+    <!-- ═════════════════════════════════════════════ -->
+    <section id="tab-exam" class="tab-content">
+      <div class="module-box">
+        <div class="module-header">
+          <h2>🎯 Simulador Inteligente de Exámenes</h2>
+          <p>Genera pruebas interactivas a la medida para autoevaluarte antes del examen real.</p>
+        </div>
+
+        <div class="form-group">
+          <label>Tema del examen o pega tus apuntes / diapositivas:</label>
+          <textarea id="exam-input" rows="4" placeholder="Ej: Leyes de Newton, Termodinámica básica, Revolución Francesa, o pega aquí el temario de tu profesor..."></textarea>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Nivel de Dificultad:</label>
+            <select id="exam-level">
+              <option value="Bachillerato / Secundaria">Bachillerato / Secundaria</option>
+              <option value="Universidad / Pregrado" selected>Universidad / Pregrado</option>
+              <option value="Postgrado / Nivel Avanzado">Postgrado / Nivel Avanzado</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Número de Preguntas:</label>
+            <select id="exam-count">
+              <option value="5">5 Preguntas (Rápido)</option>
+              <option value="10" selected>10 Preguntas (Completo)</option>
+            </select>
+          </div>
+        </div>
+
+        <button class="btn-action" onclick="generateExam()">✨ Generar Simulacro de Examen</button>
+
+        <div class="loading-spinner" id="exam-loading">
+          <div class="spinner"></div>
+          <p style="color:var(--text-muted); font-size:0.9rem;">Estructurando preguntas y casos de estudio con IA...</p>
+        </div>
+
+        <div class="output-area" id="exam-output">
+          <div id="quiz-container"></div>
+          <div style="margin-top: 1.5rem; display: flex; gap: 10px;">
+            <button class="btn-action" id="btn-grade-exam" style="flex:1;" onclick="gradeExam()">📊 Enviar y Calificar</button>
+            <button class="card-btn secondary" style="width:auto;" onclick="resetExam()">🔄 Nuevo Examen</button>
+          </div>
+          <div id="exam-score-banner" style="margin-top: 1.5rem; display:none;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════════════════════════════════════════════ -->
+    <!-- TAB 3: DEEP RESEARCH -->
+    <!-- ═════════════════════════════════════════════ -->
+    <section id="tab-research" class="tab-content">
+      <div class="module-box">
+        <div class="module-header">
+          <h2>🔬 Deep Research & Síntesis Académica</h2>
+          <p>Explora preguntas de investigación complejas y obtén marcos teóricos estructurados.</p>
+        </div>
+
+        <div class="form-group">
+          <label>Pregunta o problema de investigación:</label>
+          <input type="text" id="research-topic" class="form-control" placeholder="Ej: Efectos de la inteligencia artificial generativa en la neuroplasticidad y memoria de trabajo">
+        </div>
+
+        <div class="form-group">
+          <label>Enfoque y Profundidad:</label>
+          <select id="research-focus">
+            <option value="Marco Teórico y Estado del Arte">Marco Teórico y Estado del Arte (Conceptos fundamentales y teorías)</option>
+            <option value="Análisis de Evidencia y Controversias">Análisis de Evidencia y Controversias Actuales</option>
+            <option value="Propuesta Metodológica y Síntesis">Propuesta Metodológica y Síntesis de Referencias</option>
+          </select>
+        </div>
+
+        <button class="btn-action" onclick="runDeepResearch()">🔍 Iniciar Deep Research con IA</button>
+
+        <div class="loading-spinner" id="research-loading">
+          <div class="spinner"></div>
+          <p style="color:var(--text-muted); font-size:0.9rem;">Analizando literatura científica y estructurando síntesis...</p>
+        </div>
+
+        <div class="output-area" id="research-output">
+          <div id="research-content" style="line-height:1.7; font-size:0.95rem; color:#e2e8f0; background:rgba(8,11,17,0.7); padding:1.5rem; border-radius:12px; border:1px solid rgba(255,255,255,0.08); white-space:pre-wrap;"></div>
+          <div style="margin-top:1.2rem; display:flex; gap:10px;">
+            <button class="card-btn secondary" style="width:auto;" onclick="copyResearchText()">📋 Copiar Texto</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════════════════════════════════════════════ -->
+    <!-- TAB 4: FLASHCARDS -->
+    <!-- ═════════════════════════════════════════════ -->
+    <section id="tab-flashcards" class="tab-content">
+      <div class="module-box">
+        <div class="module-header">
+          <h2>⚡ Flashcards de Repaso Activo</h2>
+          <p>Aprende de forma interactiva con tarjetas nemotécnicas 3D.</p>
+        </div>
+
+        <div class="form-group">
+          <label>Pega tus apuntes o lista de conceptos a memorizar:</label>
+          <textarea id="flashcards-input" rows="3" placeholder="Ej: Mitocondria (producción de ATP), Ribosoma (síntesis de proteínas), Lisosoma (digestión celular)..."></textarea>
+        </div>
+
+        <button class="btn-action" onclick="generateFlashcards()">⚡ Generar Mazo de Flashcards</button>
+
+        <div class="loading-spinner" id="flashcards-loading">
+          <div class="spinner"></div>
+          <p style="color:var(--text-muted); font-size:0.9rem;">Sintetizando conceptos en tarjetas de memoria...</p>
+        </div>
+
+        <div class="output-area" id="flashcards-output">
+          <div style="text-align:center; margin-bottom:10px; color:var(--text-muted); font-size:0.85rem;" id="card-counter">Tarjeta 1 de 5</div>
+          
+          <div class="flashcard-wrapper" onclick="flipCurrentCard()">
+            <div class="flashcard-inner" id="flashcard-inner">
+              <div class="flashcard-face flashcard-front">
+                <span class="flashcard-badge">Pregunta / Concepto</span>
+                <div class="flashcard-text" id="card-front-text">Cargando...</div>
+                <div class="flashcard-hint">💡 Haz clic para girar</div>
+              </div>
+              <div class="flashcard-face flashcard-back">
+                <span class="flashcard-badge" style="color:var(--accent-cyan);">Definición & Nemotecnia</span>
+                <div class="flashcard-text" id="card-back-text">Respuesta...</div>
+                <div class="flashcard-hint">🔄 Haz clic para regresar al frente</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flashcard-controls">
+            <button class="card-btn secondary" style="width:auto; padding:8px 18px;" onclick="prevCard()">⬅ Anterior</button>
+            <button class="card-btn" style="width:auto; padding:8px 24px;" onclick="flipCurrentCard()">Girar 🔄</button>
+            <button class="card-btn secondary" style="width:auto; padding:8px 18px;" onclick="nextCard()">Siguiente ➜</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════════════════════════════════════════════ -->
+    <!-- TAB 5: PANEL ADMIN (MAXRSILVAGNI) -->
+    <!-- ═════════════════════════════════════════════ -->
+    <section id="tab-admin" class="tab-content">
+      <div class="module-box" style="max-width: 1000px;">
+        <div class="module-header">
+          <h2>👑 Synapse Admin Suite & Control de Pagos</h2>
+          <p>Gestión centralizada para maxrsilvagni@gmail.com de todos los servicios del ecosistema.</p>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:10px;">
+          <div style="display:flex; gap:8px;">
+            <button class="card-btn secondary" style="width:auto; padding:8px 16px;" onclick="loadAdminPagos()">💰 Ver Pagos</button>
+            <button class="card-btn secondary" style="width:auto; padding:8px 16px;" onclick="loadAdminUsuarios()">👥 Ver Usuarios</button>
+          </div>
+          <button class="card-btn" style="width:auto; background:#c0392b; padding:8px 16px;" onclick="manualResetAdmins()">🧹 Purgar Otros Admins</button>
+        </div>
+
+        <div id="admin-table-container">
+          <p style="color:var(--text-muted); text-align:center; padding:2rem;">Selecciona una opción para consultar registros.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="toast"></div>
+
+  <script>
+    // ═════════════════════════════════════════════
+    // CONFIG & STATE
+    // ═════════════════════════════════════════════
+    const state = {
+      apiKey: atob('QVEuQWI4Uk42SnBsdlYxX0F3RzdJYWVfWWlLZFpDTFlidFBvRUV0WEVjX2pWczdFRFFPaXc='),
+      currentUser: null,
+      userData: null,
+      quizData: [],
+      userAnswers: {},
+      flashcards: [],
+      currentCardIndex: 0
+    };
+    const GEMINI_MODEL = 'gemini-3.8-flash';
+
+    // ═════════════════════════════════════════════
+    // AUTHENTICATION & LISTENERS
+    // ═════════════════════════════════════════════
+    firebase.auth().onAuthStateChanged(async (user) => {
+      if (!user) {
+        window.location.href = 'index.html';
+        return;
+      }
+      state.currentUser = user;
+      document.getElementById('user-email-display').textContent = user.email;
+
+      const isOwner = user.email && user.email.toLowerCase().trim() === 'maxrsilvagni@gmail.com';
+      
+      // Consultar Firestore
+      try {
+        const doc = await firebase.firestore().collection('users').doc(user.uid).get();
+        if (doc.exists) {
+          state.userData = doc.data();
+        } else {
+          state.userData = { plan: isOwner ? 'admin' : 'free', email: user.email };
+          await firebase.firestore().collection('users').doc(user.uid).set(state.userData);
+        }
+
+        // Si es el dueño oficial, siempre admin e infinito
+        if (isOwner) {
+          state.userData.plan = 'admin';
+          document.getElementById('user-plan-badge').textContent = '👑 Admin (∞)';
+          document.getElementById('btn-tab-admin').style.display = 'inline-flex';
+          resetUnauthorizedAdmins();
+        } else {
+          if (state.userData.plan === 'admin') {
+            state.userData.plan = 'free';
+            await firebase.firestore().collection('users').doc(user.uid).update({ plan: 'free' });
+          }
+          const p = state.userData.plan || 'free';
+          document.getElementById('user-plan-badge').textContent = p.toUpperCase();
+        }
+      } catch(e) {
+        console.warn("Firestore error fallback:", e);
+        if (isOwner) {
+          document.getElementById('user-plan-badge').textContent = '👑 Admin (∞)';
+          document.getElementById('btn-tab-admin').style.display = 'inline-flex';
+        }
+      }
+    });
+
+    function logoutUser() {
+      firebase.auth().signOut().then(() => window.location.href = 'index.html');
+    }
+
+    // ═════════════════════════════════════════════
+    // NAVIGATION TABS
+    // ═════════════════════════════════════════════
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      
+      const target = document.getElementById('tab-' + tabId);
+      if (target) target.classList.add('active');
+      
+      const btn = document.getElementById('btn-tab-' + tabId);
+      if (btn) btn.classList.add('active');
+
+      if (tabId === 'admin') {
+        loadAdminPagos();
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.style.display = 'block';
+      setTimeout(() => t.style.display = 'none', 3500);
+    }
+
+    // ═════════════════════════════════════════════
+    // GEMINI CALL HELPER
+    // ═════════════════════════════════════════════
+    async function askGemini(prompt, systemInstruction = null) {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${state.apiKey}`;
+      const body = {
+        contents: [{ role: 'user', parts: [{ text: prompt }] }]
+      };
+      if (systemInstruction) {
+        body.system_instruction = { parts: [{ text: systemInstruction }] };
+      }
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if (!res.ok || data.error) throw new Error(data.error ? data.error.message : 'Error comunicando con Gemini');
+      return data.candidates[0].content.parts[0].text;
+    }
+
+    // ═════════════════════════════════════════════
+    // 🎯 SIMULADOR DE EXÁMENES
+    // ═════════════════════════════════════════════
+    async function generateExam() {
+      const input = document.getElementById('exam-input').value.trim();
+      if (!input) {
+        alert("Por favor ingresa un tema o pega tus apuntes para generar el examen.");
+        return;
+      }
+      const level = document.getElementById('exam-level').value;
+      const count = document.getElementById('exam-count').value;
+
+      document.getElementById('exam-loading').style.display = 'block';
+      document.getElementById('exam-output').style.display = 'none';
+      document.getElementById('exam-score-banner').style.display = 'none';
+
+      const prompt = `Actúa como un profesor universitario experto en evaluación académica.
+Genera exactamente ${count} preguntas de examen de opción múltiple para estudiantes de nivel ${level} sobre el siguiente material:
+"""
+${input}
+"""
+
+Responde ÚNICAMENTE en formato JSON plano (un array de objetos), sin bloques de código markdown, con la siguiente estructura exacta:
+[
+  {
+    "pregunta": "Texto de la pregunta...",
+    "opciones": ["Opción A", "Opción B", "Opción C", "Opción D"],
+    "correcta": 0,
+    "explicacion": "Explicación detallada de por qué esta es la respuesta correcta y por qué las otras son incorrectas."
+  }
+]`;
+
+      try {
+        const raw = await askGemini(prompt, "Eres un evaluador académico riguroso. Devuelve estrictamente JSON válido.");
+        const cleanJson = raw.replace(/```json/gi, '').replace(/```/gi, '').trim();
+        state.quizData = JSON.parse(cleanJson);
+        state.userAnswers = {};
+
+        renderQuiz();
+        document.getElementById('exam-loading').style.display = 'none';
+        document.getElementById('exam-output').style.display = 'block';
+      } catch(e) {
+        document.getElementById('exam-loading').style.display = 'none';
+        alert("Error generando examen: " + e.message);
+      }
+    }
+
+    function renderQuiz() {
+      const c = document.getElementById('quiz-container');
+      c.innerHTML = '';
+      state.quizData.forEach((q, idx) => {
+        let optHtml = '';
+        q.opciones.forEach((opt, optIdx) => {
+          optHtml += `<div class="option-item" id="opt-${idx}-${optIdx}" onclick="selectOption(${idx}, ${optIdx})">
+            <span style="font-weight:700; color:var(--accent-cyan);">${String.fromCharCode(65 + optIdx)})</span> ${opt}
+          </div>`;
+        });
+
+        c.innerHTML += `
+          <div class="question-card" id="q-card-${idx}">
+            <div class="question-title">${idx + 1}. ${q.pregunta}</div>
+            <div class="options-list">${optHtml}</div>
+            <div class="explanation-box" id="exp-${idx}"><strong>Explicación:</strong> ${q.explicacion}</div>
+          </div>
+        `;
+      });
+    }
+
+    function selectOption(qIdx, optIdx) {
+      state.userAnswers[qIdx] = optIdx;
+      document.querySelectorAll(`[id^="opt-${qIdx}-"]`).forEach(el => el.classList.remove('selected'));
+      const chosen = document.getElementById(`opt-${qIdx}-${optIdx}`);
+      if (chosen) chosen.classList.add('selected');
+    }
+
+    function gradeExam() {
+      if (Object.keys(state.userAnswers).length < state.quizData.length) {
+        if (!confirm("Aún tienes preguntas sin responder. ¿Deseas calificar de todos modos?")) return;
+      }
+      let correctCount = 0;
+      state.quizData.forEach((q, idx) => {
+        const userChoice = state.userAnswers[idx];
+        const correctChoice = q.correcta;
+        const expBox = document.getElementById(`exp-${idx}`);
+        if (expBox) expBox.style.display = 'block';
+
+        if (userChoice !== undefined) {
+          const userEl = document.getElementById(`opt-${idx}-${userChoice}`);
+          if (userChoice === correctChoice) {
+            correctCount++;
+            if (userEl) userEl.classList.add('correct');
+          } else {
+            if (userEl) userEl.classList.add('incorrect');
+            const corrEl = document.getElementById(`opt-${idx}-${correctChoice}`);
+            if (corrEl) corrEl.classList.add('correct');
+          }
+        } else {
+          const corrEl = document.getElementById(`opt-${idx}-${correctChoice}`);
+          if (corrEl) corrEl.classList.add('correct');
+        }
+      });
+
+      const total = state.quizData.length;
+      const scorePct = Math.round((correctCount / total) * 100);
+      const banner = document.getElementById('exam-score-banner');
+      banner.style.display = 'block';
+      banner.innerHTML = `
+        <div style="background: rgba(139,92,246,0.15); border: 1px solid var(--accent-violet); border-radius: 12px; padding: 1.5rem; text-align: center;">
+          <h3 style="font-size:1.6rem; color:#fff; margin-bottom:6px;">Calificación: ${correctCount}/${total} (${scorePct}%)</h3>
+          <p style="color:var(--text-muted); font-size:0.95rem;">${scorePct >= 70 ? '🎉 ¡Excelente dominio del tema! Revisa las explicaciones para pulir detalles.' : '📖 Te recomendamos repasar los conceptos marcados en rojo antes de la prueba.'}</p>
+        </div>
+      `;
+      window.scrollTo({ top: banner.offsetTop - 100, behavior: 'smooth' });
+    }
+
+    function resetExam() {
+      document.getElementById('exam-input').value = '';
+      document.getElementById('exam-output').style.display = 'none';
+    }
+
+    // ═════════════════════════════════════════════
+    // 🔬 DEEP RESEARCH
+    // ═════════════════════════════════════════════
+    async function runDeepResearch() {
+      const topic = document.getElementById('research-topic').value.trim();
+      if (!topic) {
+        alert("Por favor introduce una pregunta o tema para investigar.");
+        return;
+      }
+      const focus = document.getElementById('research-focus').value;
+
+      document.getElementById('research-loading').style.display = 'block';
+      document.getElementById('research-output').style.display = 'none';
+
+      const prompt = `Actúa como un investigador senior y académico de nivel doctoral.
+Realiza una investigación profunda y exhaustiva con enfoque en "${focus}" sobre el siguiente tópico:
+"""
+${topic}
+"""
+
+Estructura el documento de forma rigurosa y académica con las siguientes secciones:
+1. Resumen Ejecutivo (Abstract)
+2. Marco Teórico y Fundamentos Epistemológicos
+3. Evidencia Científica y Hallazgos Principales
+4. Análisis Crítico, Controversias y Preguntas Abiertas
+5. Conclusión Sintética
+6. Referencias Bibliográficas Recomendadas (Formato APA 7mo edición)
+
+Mantén un lenguaje formal, analítico, neutro y de alto rigor investigativo.`;
+
+      try {
+        const result = await askGemini(prompt);
+        document.getElementById('research-content').textContent = result;
+        document.getElementById('research-loading').style.display = 'none';
+        document.getElementById('research-output').style.display = 'block';
+      } catch(e) {
+        document.getElementById('research-loading').style.display = 'none';
+        alert("Error en investigación: " + e.message);
+      }
+    }
+
+    function copyResearchText() {
+      const text = document.getElementById('research-content').textContent;
+      navigator.clipboard.writeText(text).then(() => showToast("¡Texto de investigación copiado al portapapeles!"));
+    }
+
+    // ═════════════════════════════════════════════
+    // ⚡ FLASHCARDS
+    // ═════════════════════════════════════════════
+    async function generateFlashcards() {
+      const input = document.getElementById('flashcards-input').value.trim();
+      if (!input) {
+        alert("Por favor ingresa conceptos o apuntes para crear las tarjetas.");
+        return;
+      }
+      document.getElementById('flashcards-loading').style.display = 'block';
+      document.getElementById('flashcards-output').style.display = 'none';
+
+      const prompt = `A partir del siguiente texto, crea entre 5 y 8 tarjetas de memorización activa (Flashcards) de alta retención:
+"""
+${input}
+"""
+
+Responde ÚNICAMENTE en formato JSON plano (un array de objetos), sin bloques de markdown:
+[
+  {
+    "front": "Pregunta concisa o concepto clave a definir",
+    "back": "Definición clara, directa y una pequeña clave nemotécnica o ejemplo para recordarlo"
+  }
+]`;
+
+      try {
+        const raw = await askGemini(prompt, "Devuelve únicamente JSON válido.");
+        const clean = raw.replace(/```json/gi, '').replace(/```/gi, '').trim();
+        state.flashcards = JSON.parse(clean);
+        state.currentCardIndex = 0;
+
+        showCard(0);
+        document.getElementById('flashcards-loading').style.display = 'none';
+        document.getElementById('flashcards-output').style.display = 'block';
+      } catch(e) {
+        document.getElementById('flashcards-loading').style.display = 'none';
+        alert("Error generando flashcards: " + e.message);
+      }
+    }
+
+    function showCard(idx) {
+      if (!state.flashcards || state.flashcards.length === 0) return;
+      document.getElementById('flashcard-inner').classList.remove('flipped');
+      const card = state.flashcards[idx];
+      document.getElementById('card-front-text').textContent = card.front;
+      document.getElementById('card-back-text').textContent = card.back;
+      document.getElementById('card-counter').textContent = `Tarjeta ${idx + 1} de ${state.flashcards.length}`;
+    }
+
+    function flipCurrentCard() {
+      document.getElementById('flashcard-inner').classList.toggle('flipped');
+    }
+
+    function nextCard() {
+      if (state.currentCardIndex < state.flashcards.length - 1) {
+        state.currentCardIndex++;
+        showCard(state.currentCardIndex);
+      }
+    }
+
+    function prevCard() {
+      if (state.currentCardIndex > 0) {
+        state.currentCardIndex--;
+        showCard(state.currentCardIndex);
+      }
+    }
+
+    // ═════════════════════════════════════════════
+    // 👑 ADMIN FUNCTIONS
+    // ═════════════════════════════════════════════
+    async function resetUnauthorizedAdmins() {
+      try {
+        const snap = await firebase.firestore().collection('users').get();
+        let count = 0;
+        const batch = [];
+        snap.forEach(doc => {
+          const d = doc.data();
+          const email = (d.email || '').toLowerCase().trim();
+          if (email !== 'maxrsilvagni@gmail.com' && (d.plan === 'admin' || d.isAdmin === true)) {
+            batch.push(doc.ref.update({ plan: 'free', isAdmin: false }));
+            count++;
+          }
+        });
+        if (batch.length > 0) await Promise.all(batch);
+        return count;
+      } catch(e) {
+        console.warn("Error en resetUnauthorizedAdmins:", e);
+        return 0;
+      }
+    }
+
+    async function manualResetAdmins() {
+      if (!confirm("¿Confirmas resetear a 'free' todos los usuarios con rol Admin excepto maxrsilvagni@gmail.com?")) return;
+      const count = await resetUnauthorizedAdmins();
+      alert(`Operación completada. Se resetearon ${count} usuario(s) a plan gratuito.`);
+      loadAdminUsuarios();
+    }
+
+    async function loadAdminPagos() {
+      const c = document.getElementById('admin-table-container');
+      c.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:1.5rem;">Cargando pagos...</p>';
+      try {
+        const snap = await firebase.firestore().collection('payments').orderBy('timestamp', 'desc').limit(50).get();
+        if (snap.empty) {
+          c.innerHTML = '<p style="text-align:center; padding:1.5rem; color:var(--text-muted);">No hay pagos registrados aún.</p>';
+          return;
+        }
+        let rows = '';
+        snap.forEach(doc => {
+          const d = doc.data();
+          const fecha = d.fecha ? new Date(d.fecha).toLocaleString() : 'Reciente';
+          rows += `<tr>
+            <td>${fecha}</td>
+            <td><strong>${d.email}</strong></td>
+            <td><span class="badge-plan">${d.plan}</span></td>
+            <td style="color:#22c55e; font-weight:bold;">${d.monto_bs} Bs.</td>
+          </tr>`;
+        });
+        c.innerHTML = `
+          <h3 style="margin-bottom:1rem; color:#fff;">Historial de Pagos Verificados</h3>
+          <table class="admin-table">
+            <thead>
+              <tr><th>Fecha</th><th>Usuario</th><th>Plan</th><th>Monto</th></tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        `;
+      } catch(e) {
+        c.innerHTML = `<p style="color:#ef4444;">Error: ${e.message}</p>`;
+      }
+    }
+
+    async function loadAdminUsuarios() {
+      const c = document.getElementById('admin-table-container');
+      c.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:1.5rem;">Cargando usuarios...</p>';
+      try {
+        const snap = await firebase.firestore().collection('users').limit(100).get();
+        if (snap.empty) {
+          c.innerHTML = '<p style="text-align:center; padding:1.5rem; color:var(--text-muted);">No hay usuarios registrados.</p>';
+          return;
+        }
+        let rows = '';
+        snap.forEach(doc => {
+          const d = doc.data();
+          const email = (d.email || '').toLowerCase().trim();
+          const isOwner = email === 'maxrsilvagni@gmail.com';
+          const plan = isOwner ? '👑 Propietario' : (d.plan || 'free');
+          
+          rows += `<tr>
+            <td>${d.email || doc.id}</td>
+            <td><span class="badge-plan" style="${isOwner ? 'background:#8B5CF6;' : ''}">${plan}</span></td>
+            <td>
+              ${isOwner ? '<span style="color:#94a3b8; font-size:0.85rem;">Cuenta Principal</span>' : `<button class="card-btn secondary" style="width:auto; padding:4px 10px; font-size:0.8rem;" onclick="anularUser('${doc.id}')">Anular a Free</button>`}
+            </td>
+          </tr>`;
+        });
+        c.innerHTML = `
+          <h3 style="margin-bottom:1rem; color:#fff;">Control de Usuarios Registrados</h3>
+          <table class="admin-table">
+            <thead>
+              <tr><th>Usuario</th><th>Plan</th><th>Acción</th></tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        `;
+      } catch(e) {
+        c.innerHTML = `<p style="color:#ef4444;">Error: ${e.message}</p>`;
+      }
+    }
+
+    async function anularUser(uid) {
+      if (!confirm("¿Regresar este usuario al plan Free?")) return;
+      await firebase.firestore().collection('users').doc(uid).update({ plan: 'free', premium_until: null });
+      loadAdminUsuarios();
+    }
+  </script>
+</body>
+</html>

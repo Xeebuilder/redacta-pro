@@ -133,8 +133,17 @@
 <body>
 
   <nav class="navbar">
-    <h2>RedactaPro</h2>
-    <div class="nav-links">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <a href="hub.html" title="Ir a Synapse Hub" style="display:flex; align-items:center; text-decoration:none;">
+        <img src="synapse-logo.jpg" alt="Synapse" style="width:36px; height:36px; border-radius:8px; object-fit:cover; box-shadow:0 0 10px rgba(139,92,246,0.3);">
+      </a>
+      <div>
+        <h2 style="margin:0; font-size:1.4rem; line-height:1.2;">RedactaPro</h2>
+        <span style="font-size:0.75rem; color:#8C6A53; font-weight:700;">by Synapse Hub</span>
+      </div>
+    </div>
+    <div class="nav-links" style="display:flex; align-items:center;">
+      <a href="hub.html" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg, #8B5CF6, #06B6D4); color:#fff; padding:6px 14px; border-radius:8px; font-weight:700; font-size:0.85rem; margin-right:8px; box-shadow:0 2px 10px rgba(6,182,212,0.3);">🧠 Synapse Hub</a>
       <button onclick="document.getElementById('features').scrollIntoView({behavior: 'smooth'})">Cómo funciona</button>
       <button onclick="document.getElementById('pricing').scrollIntoView({behavior: 'smooth'})">Planes</button>
       <button id="nav-user-btn" class="btn-login" onclick="openAuthModal()">Iniciar Sesión</button>
