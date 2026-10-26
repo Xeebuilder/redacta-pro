@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Synapse | Hub de Estudio & Investigación con IA</title>
   <link rel="icon" type="image/jpeg" href="synapse-logo.jpg">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   
   <!-- Firebase SDK Compat -->
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
@@ -14,53 +13,43 @@
   <script src="firebase-config.js"></script>
 
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    
     :root {
-      --bg-dark: #080B11;
-      --bg-card: rgba(16, 22, 34, 0.85);
-      --bg-card-hover: rgba(22, 30, 46, 0.95);
-      --border: rgba(139, 92, 246, 0.18);
-      --border-glow: rgba(6, 182, 212, 0.4);
-      --accent-violet: #8B5CF6;
-      --accent-cyan: #06B6D4;
-      --accent-gradient: linear-gradient(135deg, #8B5CF6 0%, #06B6D4 100%);
-      --text-main: #F8FAFC;
-      --text-muted: #94A3B8;
-      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: var(--font-sans);
+      --bg-page: #E5D8C8;
+      --bg-card: #FAF8F5;
+      --bg-white: #FFFFFF;
+      --bg-subtle: #EAE2D5;
+      --color-primary: #2B1B17;
+      --color-secondary: #4A322B;
+      --color-accent: #8C6A53;
+      --border-color: rgba(43, 27, 23, 0.12);
+      --border-strong: #2B1B17;
+      --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     body {
-      background-color: var(--bg-dark);
-      background-image: 
-        radial-gradient(circle at 15% 15%, rgba(139, 92, 246, 0.12) 0%, transparent 40%),
-        radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.10) 0%, transparent 45%);
-      background-attachment: fixed;
-      color: var(--text-main);
+      background-color: var(--bg-page);
+      font-family: var(--font-family);
+      color: var(--color-primary);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      line-height: 1.6;
     }
 
-    /* Top Navbar */
+    /* ─── NAVBAR ─── */
     .navbar {
-      height: 74px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(8, 11, 17, 0.88);
-      backdrop-filter: blur(14px);
+      background-color: var(--bg-card);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
       position: sticky;
       top: 0;
       z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 2rem;
     }
 
     .brand {
@@ -72,46 +61,44 @@
     }
 
     .brand-logo {
-      width: 44px;
-      height: 44px;
+      width: 42px;
+      height: 42px;
       border-radius: 10px;
       object-fit: cover;
-      box-shadow: 0 0 16px rgba(139, 92, 246, 0.35);
-      background: #000;
+      border: 1px solid rgba(43, 27, 23, 0.15);
+      background: #FAF8F5;
     }
 
     .brand-text h1 {
-      font-size: 1.3rem;
+      font-size: 1.45rem;
       font-weight: 800;
-      letter-spacing: 1.5px;
-      background: var(--accent-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+      color: var(--color-primary);
       margin: 0;
-      line-height: 1.15;
+      line-height: 1.1;
     }
 
     .brand-text span {
       font-size: 0.72rem;
-      color: var(--text-muted);
-      letter-spacing: 0.6px;
+      color: var(--color-accent);
+      letter-spacing: 0.5px;
       display: block;
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
     }
 
     .nav-btn {
-      background: transparent;
+      background: none;
       border: 1px solid transparent;
-      color: var(--text-muted);
-      padding: 8px 14px;
+      color: var(--color-primary);
+      padding: 0.5rem 1rem;
       border-radius: 8px;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
@@ -122,16 +109,14 @@
     }
 
     .nav-btn:hover {
-      color: #fff;
-      background: rgba(255, 255, 255, 0.05);
-      border-color: rgba(255, 255, 255, 0.1);
+      background-color: rgba(43, 27, 23, 0.06);
     }
 
     .nav-btn.active {
-      color: #fff;
-      background: rgba(139, 92, 246, 0.15);
-      border-color: var(--accent-violet);
-      box-shadow: 0 0 14px rgba(139, 92, 246, 0.25);
+      background-color: var(--color-primary);
+      color: #FFFFFF;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(43, 27, 23, 0.15);
     }
 
     .nav-user {
@@ -141,19 +126,19 @@
     }
 
     .badge-plan {
-      background: var(--accent-gradient);
-      color: #fff;
-      padding: 4px 10px;
+      background-color: var(--color-primary);
+      color: #FFFFFF;
+      padding: 4px 12px;
       border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 700;
+      font-size: 0.8rem;
+      font-weight: bold;
       letter-spacing: 0.5px;
-      box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
     }
 
     .user-email-text {
-      font-size: 0.85rem;
-      color: var(--text-muted);
+      font-size: 0.9rem;
+      color: var(--color-secondary);
+      font-weight: 600;
       max-width: 170px;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -161,45 +146,45 @@
     }
 
     .btn-login-nav {
-      background: var(--accent-gradient);
-      border: none;
-      color: #fff;
-      padding: 8px 18px;
+      background-color: var(--color-primary);
+      color: #FFFFFF;
+      border: 2px solid var(--color-primary);
       border-radius: 8px;
-      font-size: 0.88rem;
+      padding: 0.5rem 1.4rem;
+      font-size: 0.92rem;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.2s;
-      box-shadow: 0 2px 10px rgba(139, 92, 246, 0.3);
     }
 
     .btn-login-nav:hover {
-      box-shadow: 0 4px 15px rgba(6, 182, 212, 0.45);
-      transform: translateY(-1px);
+      background-color: var(--color-secondary);
+      border-color: var(--color-secondary);
+      transform: translateY(-2px);
     }
 
     .btn-logout {
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: #f87171;
-      padding: 6px 12px;
+      background: transparent;
+      border: 1px solid var(--color-primary);
+      color: var(--color-primary);
+      padding: 0.4rem 1rem;
       border-radius: 8px;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       cursor: pointer;
-      font-weight: 600;
+      font-weight: 700;
       transition: all 0.2s;
     }
 
     .btn-logout:hover {
-      background: #ef4444;
+      background: var(--color-primary);
       color: #fff;
     }
 
-    /* Main Container */
+    /* ─── CONTAINER ─── */
     .container {
-      max-width: 1200px;
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 2.5rem 1.5rem;
+      padding: 3rem 1.5rem;
       flex: 1;
       width: 100%;
     }
@@ -218,125 +203,111 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Hero Banner */
+    /* ─── HERO ─── */
     .hero {
       text-align: center;
       margin-bottom: 3.5rem;
-      position: relative;
+      animation: fadeIn 0.8s ease-out;
     }
 
     .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 16px;
-      border-radius: 30px;
-      background: rgba(139, 92, 246, 0.1);
-      border: 1px solid rgba(139, 92, 246, 0.3);
-      font-size: 0.85rem;
-      color: #c084fc;
+      display: inline-block;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 6px 18px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--color-secondary);
       margin-bottom: 1.2rem;
-      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
     }
 
     .hero h2 {
-      font-size: 2.8rem;
+      font-size: 3.2rem;
       font-weight: 800;
-      line-height: 1.2;
-      margin-bottom: 1rem;
-      background: linear-gradient(180deg, #FFFFFF 0%, #94A3B8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      line-height: 1.15;
+      margin-bottom: 1.2rem;
+      color: var(--color-primary);
+      letter-spacing: -1px;
+    }
+
+    .hero h2 span {
+      color: var(--color-accent);
     }
 
     .hero p {
-      font-size: 1.15rem;
-      color: var(--text-muted);
-      max-width: 700px;
+      font-size: 1.2rem;
+      color: var(--color-secondary);
+      opacity: 0.9;
+      max-width: 740px;
       margin: 0 auto;
       line-height: 1.6;
     }
 
-    /* Service Grid */
+    /* ─── SERVICE GRID ─── */
     .service-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.8rem;
       margin-bottom: 3rem;
     }
 
     .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
       border-radius: 16px;
-      padding: 2rem;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: 2.2rem 1.8rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.03);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       position: relative;
-      overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    }
-
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: var(--accent-gradient);
-      opacity: 0;
-      transition: opacity 0.3s ease;
     }
 
     .card:hover {
-      transform: translateY(-5px);
-      background: var(--bg-card-hover);
-      border-color: var(--border-glow);
-      box-shadow: 0 12px 30px rgba(6, 182, 212, 0.15);
-    }
-
-    .card:hover::before {
-      opacity: 1;
+      transform: translateY(-6px);
+      box-shadow: 0 14px 30px rgba(43, 27, 23, 0.08);
+      border-color: rgba(43, 27, 23, 0.25);
     }
 
     .card-icon {
       font-size: 2.2rem;
       margin-bottom: 1.2rem;
-      width: 52px;
-      height: 52px;
-      border-radius: 12px;
-      background: rgba(139, 92, 246, 0.12);
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: var(--bg-subtle);
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 1px solid rgba(139, 92, 246, 0.25);
+      border: 1px solid rgba(43, 27, 23, 0.1);
     }
 
     .card h3 {
-      font-size: 1.35rem;
-      font-weight: 700;
+      font-size: 1.4rem;
+      font-weight: 800;
       margin-bottom: 0.6rem;
-      color: #fff;
+      color: var(--color-primary);
     }
 
     .card p {
-      font-size: 0.92rem;
-      color: var(--text-muted);
+      font-size: 0.95rem;
+      color: var(--color-secondary);
+      opacity: 0.88;
       line-height: 1.55;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.8rem;
       flex: 1;
     }
 
     .card-btn {
       width: 100%;
-      padding: 12px 20px;
-      background: var(--accent-gradient);
-      border: none;
+      padding: 0.8rem 1.4rem;
+      background-color: var(--color-primary);
+      border: 2px solid var(--color-primary);
       border-radius: 10px;
-      color: #fff;
+      color: #FFFFFF;
       font-weight: 700;
       font-size: 0.95rem;
       cursor: pointer;
@@ -349,51 +320,54 @@
     }
 
     .card-btn:hover {
-      opacity: 0.92;
-      box-shadow: 0 0 18px rgba(6, 182, 212, 0.4);
-      transform: scale(1.02);
+      background-color: var(--color-secondary);
+      border-color: var(--color-secondary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(43, 27, 23, 0.2);
     }
 
     .card-btn.secondary {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border);
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--color-primary);
+      color: var(--color-primary);
     }
 
     .card-btn.secondary:hover {
-      background: rgba(139, 92, 246, 0.2);
-      border-color: var(--accent-violet);
+      background-color: var(--color-primary);
+      color: #FFFFFF;
     }
 
-    /* Modules Styles */
+    /* ─── MODULE BOX ─── */
     .module-box {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
       border-radius: 16px;
       padding: 2.2rem;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-      max-width: 900px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.03);
+      max-width: 860px;
       margin: 0 auto;
     }
 
     .module-header {
       margin-bottom: 2rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid var(--border-color);
       padding-bottom: 1.2rem;
     }
 
     .module-header h2 {
       font-size: 1.8rem;
       font-weight: 800;
-      color: #fff;
+      color: var(--color-primary);
       display: flex;
       align-items: center;
       gap: 12px;
     }
 
     .module-header p {
-      color: var(--text-muted);
+      color: var(--color-secondary);
+      opacity: 0.85;
       margin-top: 6px;
-      font-size: 0.95rem;
+      font-size: 1rem;
     }
 
     .form-group {
@@ -403,26 +377,27 @@
     .form-group label {
       display: block;
       margin-bottom: 8px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: #cbd5e1;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--color-primary);
     }
 
     .form-control, textarea, select {
       width: 100%;
-      background: rgba(8, 11, 17, 0.7);
-      border: 1px solid rgba(139, 92, 246, 0.25);
+      background-color: var(--bg-white);
+      border: 1px solid rgba(43, 27, 23, 0.2);
       border-radius: 10px;
-      padding: 12px 16px;
-      color: #fff;
-      font-size: 0.95rem;
+      padding: 0.8rem 1rem;
+      color: var(--color-primary);
+      font-size: 1rem;
       outline: none;
       transition: all 0.2s;
+      font-family: inherit;
     }
 
     .form-control:focus, textarea:focus, select:focus {
-      border-color: var(--accent-cyan);
-      box-shadow: 0 0 12px rgba(6, 182, 212, 0.25);
+      border-color: var(--color-primary);
+      box-shadow: 0 0 8px rgba(43, 27, 23, 0.1);
     }
 
     .grid-2 {
@@ -432,17 +407,17 @@
     }
 
     .btn-action {
-      background: var(--accent-gradient);
-      border: none;
-      padding: 14px 24px;
+      background-color: var(--color-primary);
+      border: 2px solid var(--color-primary);
+      padding: 0.85rem 1.8rem;
       border-radius: 10px;
-      color: #fff;
-      font-size: 1rem;
+      color: #FFFFFF;
+      font-size: 1.05rem;
       font-weight: 700;
       cursor: pointer;
       width: 100%;
       transition: all 0.2s;
-      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+      box-shadow: 0 4px 12px rgba(43, 27, 23, 0.15);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -450,15 +425,16 @@
     }
 
     .btn-action:hover {
-      box-shadow: 0 6px 25px rgba(6, 182, 212, 0.45);
+      background-color: var(--color-secondary);
+      border-color: var(--color-secondary);
       transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(43, 27, 23, 0.25);
     }
 
-    /* Output Area */
     .output-area {
       margin-top: 2rem;
       padding-top: 1.5rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      border-top: 1px solid var(--border-color);
       display: none;
     }
 
@@ -471,31 +447,30 @@
     .spinner {
       width: 44px;
       height: 44px;
-      border: 3px solid rgba(139, 92, 246, 0.2);
-      border-top-color: var(--accent-cyan);
+      border: 4px solid var(--bg-subtle);
+      border-top-color: var(--color-primary);
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
       margin: 0 auto 1rem;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Quiz Styles */
+    /* ─── QUIZ STYLES ─── */
     .question-card {
-      background: rgba(8, 11, 17, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background-color: var(--bg-white);
+      border: 1px solid var(--border-color);
       border-radius: 12px;
       padding: 1.5rem;
       margin-bottom: 1.2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
     }
 
     .question-title {
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       font-weight: 700;
       margin-bottom: 1rem;
-      color: #fff;
+      color: var(--color-primary);
     }
 
     .options-list {
@@ -506,8 +481,8 @@
 
     .option-item {
       padding: 10px 14px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.2s;
@@ -515,43 +490,44 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      color: var(--color-primary);
     }
 
     .option-item:hover {
-      background: rgba(139, 92, 246, 0.1);
-      border-color: rgba(139, 92, 246, 0.3);
+      background-color: var(--bg-subtle);
     }
 
     .option-item.selected {
-      background: rgba(139, 92, 246, 0.25);
-      border-color: var(--accent-violet);
-      font-weight: 600;
+      background-color: var(--bg-subtle);
+      border-color: var(--color-primary);
+      font-weight: 700;
     }
 
     .option-item.correct {
-      background: rgba(34, 197, 94, 0.25) !important;
-      border-color: #22c55e !important;
-      color: #4ade80 !important;
+      background-color: #e8f8f0 !important;
+      border-color: #27ae60 !important;
+      color: #1e8449 !important;
+      font-weight: bold;
     }
 
     .option-item.incorrect {
-      background: rgba(239, 68, 68, 0.25) !important;
-      border-color: #ef4444 !important;
-      color: #fca5a5 !important;
+      background-color: #fde8e8 !important;
+      border-color: #c0392b !important;
+      color: #922b21 !important;
     }
 
     .explanation-box {
       margin-top: 10px;
-      padding: 10px 14px;
-      background: rgba(6, 182, 212, 0.1);
-      border-left: 3px solid var(--accent-cyan);
+      padding: 12px 16px;
+      background-color: var(--bg-subtle);
+      border-left: 4px solid var(--color-accent);
       border-radius: 6px;
-      font-size: 0.88rem;
-      color: #cbd5e1;
+      font-size: 0.92rem;
+      color: var(--color-primary);
       display: none;
     }
 
-    /* Flashcard 3D */
+    /* ─── FLASHCARDS 3D ─── */
     .flashcard-wrapper {
       perspective: 1000px;
       max-width: 500px;
@@ -579,46 +555,46 @@
       height: 100%;
       backface-visibility: hidden;
       border-radius: 16px;
-      border: 1px solid var(--border);
-      padding: 2rem;
+      border: 2px solid var(--color-primary);
+      padding: 2.2rem;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 8px 24px rgba(43, 27, 23, 0.08);
     }
 
     .flashcard-front {
-      background: linear-gradient(145deg, rgba(16, 22, 34, 0.95), rgba(8, 11, 17, 0.95));
-      border-color: var(--accent-violet);
+      background: var(--bg-card);
     }
 
     .flashcard-back {
-      background: linear-gradient(145deg, rgba(8, 11, 17, 0.95), rgba(16, 22, 34, 0.95));
-      border-color: var(--accent-cyan);
+      background: var(--bg-subtle);
+      border-color: var(--color-accent);
       transform: rotateY(180deg);
     }
 
     .flashcard-badge {
-      font-size: 0.75rem;
-      font-weight: 700;
+      font-size: 0.8rem;
+      font-weight: 800;
       letter-spacing: 1px;
-      color: var(--text-muted);
+      color: var(--color-accent);
       margin-bottom: 1rem;
       text-transform: uppercase;
     }
 
     .flashcard-text {
       font-size: 1.25rem;
-      font-weight: 600;
+      font-weight: 700;
       line-height: 1.5;
-      color: #fff;
+      color: var(--color-primary);
     }
 
     .flashcard-hint {
       margin-top: 1.2rem;
-      font-size: 0.8rem;
-      color: var(--accent-cyan);
+      font-size: 0.85rem;
+      color: var(--color-secondary);
+      font-weight: 600;
     }
 
     .flashcard-controls {
@@ -628,35 +604,35 @@
       margin-top: 1.5rem;
     }
 
-    /* Admin Table */
+    /* ─── ADMIN TABLE ─── */
     .admin-table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 1rem;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
     }
 
     .admin-table th, .admin-table td {
       padding: 12px 14px;
       text-align: left;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid #ddd;
     }
 
     .admin-table th {
-      background: rgba(255, 255, 255, 0.03);
-      color: var(--text-muted);
-      font-weight: 600;
+      background: var(--bg-subtle);
+      color: var(--color-primary);
+      font-weight: 700;
     }
 
-    /* Auth Modal */
+    /* ─── AUTH MODAL ─── */
     .modal-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(8px);
+      background: rgba(43, 27, 23, 0.6);
+      backdrop-filter: blur(5px);
       display: none;
       justify-content: center;
       align-items: center;
@@ -664,14 +640,15 @@
     }
 
     .modal-card {
-      background: #0f1422;
-      border: 1px solid var(--border-glow);
-      border-radius: 18px;
-      padding: 2.2rem;
-      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 2.5rem;
+      width: 90%;
       max-width: 420px;
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
       position: relative;
+      text-align: center;
     }
 
     .modal-close {
@@ -680,20 +657,18 @@
       right: 18px;
       background: none;
       border: none;
-      color: var(--text-muted);
-      font-size: 1.3rem;
+      color: var(--color-secondary);
+      font-size: 1.4rem;
       cursor: pointer;
     }
 
-    .modal-close:hover {
-      color: #fff;
-    }
+    .modal-close:hover { color: var(--color-primary); }
 
     .auth-tabs {
       display: flex;
       gap: 8px;
       margin-bottom: 1.5rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid var(--border-color);
       padding-bottom: 8px;
     }
 
@@ -701,7 +676,7 @@
       flex: 1;
       background: none;
       border: none;
-      color: var(--text-muted);
+      color: var(--color-secondary);
       padding: 8px;
       font-size: 0.95rem;
       font-weight: 700;
@@ -711,36 +686,36 @@
     }
 
     .auth-tab-btn.active {
-      color: #fff;
-      background: rgba(139, 92, 246, 0.15);
-      border-bottom: 2px solid var(--accent-violet);
+      color: #FFFFFF;
+      background: var(--color-primary);
     }
 
     .auth-error {
-      color: #f87171;
-      font-size: 0.85rem;
+      color: #7b241c;
+      font-size: 0.9rem;
       margin-bottom: 1rem;
       display: none;
-      background: rgba(239, 68, 68, 0.1);
+      background: #fde8e8;
       padding: 8px 12px;
       border-radius: 8px;
-      border: 1px solid rgba(239, 68, 68, 0.25);
+      border-left: 4px solid #c0392b;
+      text-align: left;
     }
 
-    /* Toast */
+    /* ─── TOAST ─── */
     #toast {
       position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: rgba(16, 22, 34, 0.95);
-      border: 1px solid var(--accent-cyan);
-      color: #fff;
-      padding: 12px 20px;
-      border-radius: 10px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      bottom: 2rem;
+      right: 2rem;
+      background-color: var(--color-primary);
+      color: #FFFFFF;
+      padding: 0.85rem 1.4rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
       display: none;
-      z-index: 1000;
-      animation: fadeIn 0.3s ease;
+      z-index: 9999;
     }
   </style>
 </head>
@@ -752,7 +727,7 @@
       <img src="synapse-logo.jpg" alt="Synapse Logo" class="brand-logo">
       <div class="brand-text">
         <h1>SYNAPSE</h1>
-        <span>AI ACADEMIC & RESEARCH HUB</span>
+        <span>HUB ACADÉMICO & DE INVESTIGACIÓN</span>
       </div>
     </div>
 
@@ -784,9 +759,9 @@
     <!-- ═════════════════════════════════════════════ -->
     <section id="tab-hub" class="tab-content active">
       <div class="hero">
-        <div class="hero-badge">⚡ Todo tu entorno de estudio unificado con IA</div>
-        <h2>Aprende Más Rápido. Investiga Mejor. Aprueba Seguro.</h2>
-        <p>Synapse integra redacción académica, simuladores de exámenes interactivos, síntesis de papers científicos y tarjetas de memoria activa en una sola suite inteligente.</p>
+        <div class="hero-badge">⚡ Todo tu entorno de estudio unificado</div>
+        <h2>Aprende Más Rápido. Investiga Mejor. <span>Aprueba Seguro.</span></h2>
+        <p>Synapse integra redacción académica rigurosa, simuladores de exámenes interactivos, síntesis de papers científicos y tarjetas de memoria activa en un solo entorno de trabajo.</p>
       </div>
 
       <div class="service-grid">
@@ -805,7 +780,7 @@
           <div>
             <div class="card-icon">🎯</div>
             <h3>Simulador de Exámenes</h3>
-            <p>Sube tus apuntes o temas y genera quizes reales de práctica (selección múltiple o desarrollo) con corrección inmediata y explicaciones paso a paso.</p>
+            <p>Sube tus apuntes o temas y genera quizes reales de práctica (selección simple o desarrollo) con corrección inmediata y explicaciones detalladas paso a paso.</p>
           </div>
           <button class="card-btn" onclick="switchTab('exam')">Iniciar Simulacro ➜</button>
         </div>
@@ -825,7 +800,7 @@
           <div>
             <div class="card-icon">⚡</div>
             <h3>Flashcards & Repaso</h3>
-            <p>Convierte resúmenes y apuntes densos en tarjetas 3D de repetición espaciada para retener conceptos clave sin esfuerzo antes de tus parciales.</p>
+            <p>Convierte resúmenes y temas densos en tarjetas interactivas de repetición espaciada para retener conceptos clave sin esfuerzo antes de tus exámenes.</p>
           </div>
           <button class="card-btn" onclick="switchTab('flashcards')">Practicar Tarjetas ➜</button>
         </div>
@@ -869,7 +844,7 @@
 
         <div class="loading-spinner" id="exam-loading">
           <div class="spinner"></div>
-          <p style="color:var(--text-muted); font-size:0.9rem;">Estructurando preguntas y casos de estudio con IA...</p>
+          <p style="color:var(--color-secondary); font-size:0.95rem; font-weight:600;">Estructurando preguntas y casos de estudio con IA...</p>
         </div>
 
         <div class="output-area" id="exam-output">
@@ -911,11 +886,11 @@
 
         <div class="loading-spinner" id="research-loading">
           <div class="spinner"></div>
-          <p style="color:var(--text-muted); font-size:0.9rem;">Analizando literatura científica y estructurando síntesis...</p>
+          <p style="color:var(--color-secondary); font-size:0.95rem; font-weight:600;">Analizando literatura científica y estructurando síntesis...</p>
         </div>
 
         <div class="output-area" id="research-output">
-          <div id="research-content" style="line-height:1.7; font-size:0.95rem; color:#e2e8f0; background:rgba(8,11,17,0.7); padding:1.5rem; border-radius:12px; border:1px solid rgba(255,255,255,0.08); white-space:pre-wrap;"></div>
+          <div id="research-content" style="line-height:1.75; font-size:1rem; color:var(--color-primary); background:#fff; padding:1.8rem; border-radius:12px; border:1px solid var(--border-color); white-space:pre-wrap; box-shadow:0 4px 12px rgba(0,0,0,0.02);"></div>
           <div style="margin-top:1.2rem; display:flex; gap:10px;">
             <button class="card-btn secondary" style="width:auto;" onclick="copyResearchText()">📋 Copiar Texto</button>
           </div>
@@ -930,7 +905,7 @@
       <div class="module-box">
         <div class="module-header">
           <h2>⚡ Flashcards de Repaso Activo</h2>
-          <p>Aprende de forma interactiva con tarjetas nemotécnicas 3D.</p>
+          <p>Aprende de forma interactiva con tarjetas nemotécnicas.</p>
         </div>
 
         <div class="form-group">
@@ -942,11 +917,11 @@
 
         <div class="loading-spinner" id="flashcards-loading">
           <div class="spinner"></div>
-          <p style="color:var(--text-muted); font-size:0.9rem;">Sintetizando conceptos en tarjetas de memoria...</p>
+          <p style="color:var(--color-secondary); font-size:0.95rem; font-weight:600;">Sintetizando conceptos en tarjetas de memoria...</p>
         </div>
 
         <div class="output-area" id="flashcards-output">
-          <div style="text-align:center; margin-bottom:10px; color:var(--text-muted); font-size:0.85rem;" id="card-counter">Tarjeta 1 de 5</div>
+          <div style="text-align:center; margin-bottom:10px; color:var(--color-secondary); font-size:0.9rem; font-weight:600;" id="card-counter">Tarjeta 1 de 5</div>
           
           <div class="flashcard-wrapper" onclick="flipCurrentCard()">
             <div class="flashcard-inner" id="flashcard-inner">
@@ -956,7 +931,7 @@
                 <div class="flashcard-hint">💡 Haz clic para girar</div>
               </div>
               <div class="flashcard-face flashcard-back">
-                <span class="flashcard-badge" style="color:var(--accent-cyan);">Definición & Nemotecnia</span>
+                <span class="flashcard-badge" style="color:var(--color-accent);">Definición & Nemotecnia</span>
                 <div class="flashcard-text" id="card-back-text">Respuesta...</div>
                 <div class="flashcard-hint">🔄 Haz clic para regresar al frente</div>
               </div>
@@ -976,7 +951,7 @@
     <!-- TAB 5: PANEL ADMIN (MAXRSILVAGNI) -->
     <!-- ═════════════════════════════════════════════ -->
     <section id="tab-admin" class="tab-content">
-      <div class="module-box" style="max-width: 1000px;">
+      <div class="module-box" style="max-width: 950px;">
         <div class="module-header">
           <h2>👑 Synapse Admin Suite & Control de Pagos</h2>
           <p>Gestión centralizada para maxrsilvagni@gmail.com de todos los servicios del ecosistema.</p>
@@ -987,11 +962,11 @@
             <button class="card-btn secondary" style="width:auto; padding:8px 16px;" onclick="loadAdminPagos()">💰 Ver Pagos</button>
             <button class="card-btn secondary" style="width:auto; padding:8px 16px;" onclick="loadAdminUsuarios()">👥 Ver Usuarios</button>
           </div>
-          <button class="card-btn" style="width:auto; background:#c0392b; padding:8px 16px;" onclick="manualResetAdmins()">🧹 Purgar Otros Admins</button>
+          <button class="card-btn" style="width:auto; background:#c0392b; border-color:#c0392b; padding:8px 16px;" onclick="manualResetAdmins()">🧹 Purgar Otros Admins</button>
         </div>
 
         <div id="admin-table-container">
-          <p style="color:var(--text-muted); text-align:center; padding:2rem;">Selecciona una opción para consultar registros.</p>
+          <p style="color:var(--color-secondary); text-align:center; padding:2rem; opacity:0.8;">Selecciona una opción para consultar registros.</p>
         </div>
       </div>
     </section>
@@ -1004,9 +979,9 @@
       <button class="modal-close" onclick="closeAuthModal()">✕</button>
       
       <div style="text-align:center; margin-bottom:1.5rem;">
-        <img src="synapse-logo.jpg" alt="Synapse" style="width:48px; height:48px; border-radius:12px; margin-bottom:8px;">
-        <h3 style="font-size:1.4rem; color:#fff;" id="modal-title">Bienvenido a Synapse</h3>
-        <p style="color:var(--text-muted); font-size:0.85rem;">Tu suite de estudio e investigación con IA</p>
+        <img src="synapse-logo.jpg" alt="Synapse" style="width:48px; height:48px; border-radius:12px; margin-bottom:8px; border:1px solid rgba(43,27,23,0.15);">
+        <h3 style="font-size:1.6rem; color:var(--color-primary); font-weight:800;" id="modal-title">Bienvenido a Synapse</h3>
+        <p style="color:var(--color-secondary); font-size:0.92rem; opacity:0.85;">Tu suite de estudio e investigación con IA</p>
       </div>
 
       <div class="auth-tabs">
@@ -1017,15 +992,15 @@
       <div class="auth-error" id="auth-error-msg"></div>
 
       <form id="auth-form" onsubmit="handleAuthSubmit(event)">
-        <div class="form-group">
+        <div class="form-group" style="text-align:left;">
           <label>Correo Electrónico:</label>
           <input type="email" id="auth-email" class="form-control" required placeholder="tu@correo.com">
         </div>
-        <div class="form-group">
+        <div class="form-group" style="text-align:left;">
           <label>Contraseña:</label>
           <input type="password" id="auth-password" class="form-control" required placeholder="••••••••">
         </div>
-        <button type="submit" class="btn-action" id="auth-submit-btn">Ingresar a Synapse</button>
+        <button type="submit" class="btn-action" id="auth-submit-btn" style="margin-top:1rem;">Ingresar a Synapse</button>
       </form>
     </div>
   </div>
@@ -1183,7 +1158,7 @@
       const t = document.getElementById('toast');
       t.textContent = msg;
       t.style.display = 'block';
-      setTimeout(() => t.style.display = 'none', 3500);
+      setTimeout(() => t.style.display = 'none', 3000);
     }
 
     // ═════════════════════════════════════════════
@@ -1266,7 +1241,7 @@ Responde ÚNICAMENTE en formato JSON plano (un array de objetos), sin bloques de
         let optHtml = '';
         q.opciones.forEach((opt, optIdx) => {
           optHtml += `<div class="option-item" id="opt-${idx}-${optIdx}" onclick="selectOption(${idx}, ${optIdx})">
-            <span style="font-weight:700; color:var(--accent-cyan);">${String.fromCharCode(65 + optIdx)})</span> ${opt}
+            <span style="font-weight:700; color:var(--color-accent);">${String.fromCharCode(65 + optIdx)})</span> ${opt}
           </div>`;
         });
 
@@ -1319,9 +1294,9 @@ Responde ÚNICAMENTE en formato JSON plano (un array de objetos), sin bloques de
       const banner = document.getElementById('exam-score-banner');
       banner.style.display = 'block';
       banner.innerHTML = `
-        <div style="background: rgba(139,92,246,0.15); border: 1px solid var(--accent-violet); border-radius: 12px; padding: 1.5rem; text-align: center;">
-          <h3 style="font-size:1.6rem; color:#fff; margin-bottom:6px;">Calificación: ${correctCount}/${total} (${scorePct}%)</h3>
-          <p style="color:var(--text-muted); font-size:0.95rem;">${scorePct >= 70 ? '🎉 ¡Excelente dominio del tema! Revisa las explicaciones para pulir detalles.' : '📖 Te recomendamos repasar los conceptos marcados en rojo antes de la prueba.'}</p>
+        <div style="background-color: var(--bg-subtle); border: 2px solid var(--color-primary); border-radius: 12px; padding: 1.5rem; text-align: center;">
+          <h3 style="font-size:1.6rem; color:var(--color-primary); margin-bottom:6px; font-weight:800;">Calificación: ${correctCount}/${total} (${scorePct}%)</h3>
+          <p style="color:var(--color-secondary); font-size:0.95rem; font-weight:600;">${scorePct >= 70 ? '🎉 ¡Excelente dominio del tema! Revisa las explicaciones para pulir detalles.' : '📖 Te recomendamos repasar los conceptos marcados en rojo antes de la prueba.'}</p>
         </div>
       `;
       window.scrollTo({ top: banner.offsetTop - 100, behavior: 'smooth' });
@@ -1488,11 +1463,11 @@ Responde ÚNICAMENTE en formato JSON plano (un array de objetos), sin bloques de
 
     async function loadAdminPagos() {
       const c = document.getElementById('admin-table-container');
-      c.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:1.5rem;">Cargando pagos...</p>';
+      c.innerHTML = '<p style="color:var(--color-secondary); text-align:center; padding:1.5rem;">Cargando pagos...</p>';
       try {
         const snap = await firebase.firestore().collection('payments').orderBy('timestamp', 'desc').limit(50).get();
         if (snap.empty) {
-          c.innerHTML = '<p style="text-align:center; padding:1.5rem; color:var(--text-muted);">No hay pagos registrados aún.</p>';
+          c.innerHTML = '<p style="text-align:center; padding:1.5rem; color:var(--color-secondary);">No hay pagos registrados aún.</p>';
           return;
         }
         let rows = '';
@@ -1503,11 +1478,11 @@ Responde ÚNICAMENTE en formato JSON plano (un array de objetos), sin bloques de
             <td>${fecha}</td>
             <td><strong>${d.email}</strong></td>
             <td><span class="badge-plan">${d.plan}</span></td>
-            <td style="color:#22c55e; font-weight:bold;">${d.monto_bs} Bs.</td>
+            <td style="color:#27ae60; font-weight:bold;">${d.monto_bs} Bs.</td>
           </tr>`;
         });
         c.innerHTML = `
-          <h3 style="margin-bottom:1rem; color:#fff;">Historial de Pagos Verificados</h3>
+          <h3 style="margin-bottom:1rem; color:var(--color-primary); font-weight:800;">Historial de Pagos Verificados</h3>
           <table class="admin-table">
             <thead>
               <tr><th>Fecha</th><th>Usuario</th><th>Plan</th><th>Monto</th></tr>
@@ -1516,17 +1491,17 @@ Responde ÚNICAMENTE en formato JSON plano (un array de objetos), sin bloques de
           </table>
         `;
       } catch(e) {
-        c.innerHTML = `<p style="color:#ef4444;">Error: ${e.message}</p>`;
+        c.innerHTML = `<p style="color:#c0392b;">Error: ${e.message}</p>`;
       }
     }
 
     async function loadAdminUsuarios() {
       const c = document.getElementById('admin-table-container');
-      c.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:1.5rem;">Cargando usuarios...</p>';
+      c.innerHTML = '<p style="color:var(--color-secondary); text-align:center; padding:1.5rem;">Cargando usuarios...</p>';
       try {
         const snap = await firebase.firestore().collection('users').limit(100).get();
         if (snap.empty) {
-          c.innerHTML = '<p style="text-align:center; padding:1.5rem; color:var(--text-muted);">No hay usuarios registrados.</p>';
+          c.innerHTML = '<p style="text-align:center; padding:1.5rem; color:var(--color-secondary);">No hay usuarios registrados.</p>';
           return;
         }
         let rows = '';
@@ -1538,14 +1513,14 @@ Responde ÚNICAMENTE en formato JSON plano (un array de objetos), sin bloques de
           
           rows += `<tr>
             <td>${d.email || doc.id}</td>
-            <td><span class="badge-plan" style="${isOwner ? 'background:#8B5CF6;' : ''}">${plan}</span></td>
+            <td><span class="badge-plan">${plan}</span></td>
             <td>
-              ${isOwner ? '<span style="color:#94a3b8; font-size:0.85rem;">Cuenta Principal</span>' : `<button class="card-btn secondary" style="width:auto; padding:4px 10px; font-size:0.8rem;" onclick="anularUser('${doc.id}')">Anular a Free</button>`}
+              ${isOwner ? '<span style="color:var(--color-accent); font-weight:bold; font-size:0.85rem;">Cuenta Principal</span>' : `<button class="card-btn secondary" style="width:auto; padding:4px 10px; font-size:0.8rem;" onclick="anularUser('${doc.id}')">Anular a Free</button>`}
             </td>
           </tr>`;
         });
         c.innerHTML = `
-          <h3 style="margin-bottom:1rem; color:#fff;">Control de Usuarios Registrados</h3>
+          <h3 style="margin-bottom:1rem; color:var(--color-primary); font-weight:800;">Control de Usuarios Registrados</h3>
           <table class="admin-table">
             <thead>
               <tr><th>Usuario</th><th>Plan</th><th>Acción</th></tr>
@@ -1554,7 +1529,7 @@ Responde ÚNICAMENTE en formato JSON plano (un array de objetos), sin bloques de
           </table>
         `;
       } catch(e) {
-        c.innerHTML = `<p style="color:#ef4444;">Error: ${e.message}</p>`;
+        c.innerHTML = `<p style="color:#c0392b;">Error: ${e.message}</p>`;
       }
     }
 
