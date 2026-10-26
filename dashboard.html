@@ -222,9 +222,12 @@
 
         <!-- SECCIÓN USUARIOS -->
         <div id="admin-section-usuarios" style="display:none; background:#fff; border-radius:12px; padding:1.2rem; box-shadow:0 4px 12px rgba(0,0,0,0.05); overflow-x:auto;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:10px;">
             <h3 style="margin:0;">Control de Usuarios Registrados</h3>
-            <button class="btn" style="width:auto; margin:0; padding:0.4rem 0.8rem; font-size:0.85rem; background:#4A322B;" onclick="loadAdminUsuarios()">🔄 Actualizar Usuarios</button>
+            <div style="display:flex; gap:8px;">
+              <button class="btn" style="width:auto; margin:0; padding:0.4rem 0.8rem; font-size:0.85rem; background:#c0392b; color:#fff;" onclick="manualResetAdmins()">🧹 Resetear otros Admins a Free</button>
+              <button class="btn" style="width:auto; margin:0; padding:0.4rem 0.8rem; font-size:0.85rem; background:#4A322B;" onclick="loadAdminUsuarios()">🔄 Actualizar Usuarios</button>
+            </div>
           </div>
           <table style="width:100%; border-collapse: collapse; font-size: 0.95rem;">
             <thead>
@@ -410,7 +413,13 @@ async function loadUserData() {
     const doc = await firebase.firestore().collection('users').doc(currentUser.uid).get();
     if (doc.exists) {
       userData = doc.data();
-      if (isOwner) userData.plan = 'admin';
+      if (isOwner) {
+        userData.plan = 'admin';
+      } else if (userData.plan === 'admin') {
+        // SEGURIDAD: Solo maxrsilvagni@gmail.com puede ser Admin
+        userData.plan = 'free';
+        await firebase.firestore().collection('users').doc(currentUser.uid).update({ plan: 'free' });
+      }
       
       // Expire temporary premium
       if (userData.premium_until && userData.premium_until < Date.now()) {
@@ -429,8 +438,8 @@ async function loadUserData() {
       await firebase.firestore().collection('users').doc(currentUser.uid).set(userData);
     }
     
-    // DUEÑO OFICIAL O ADMIN: Guardar permanentemente en Firestore
-    if (isOwner || userData.plan === 'admin') {
+    // DUEÑO OFICIAL: Guardar permanentemente en Firestore y ejecutar limpieza
+    if (isOwner) {
       userData.plan = 'admin';
       await firebase.firestore().collection('users').doc(currentUser.uid).set({
         plan: 'admin',
@@ -440,6 +449,14 @@ async function loadUserData() {
       if (tabAdmin) tabAdmin.style.display = 'inline-block';
       const admBtn = document.getElementById('admin-panel-btn');
       if (admBtn) admBtn.style.display = 'inline-block';
+
+      // Sweep automático para resetear cualquier admin ajeno
+      resetUnauthorizedAdmins();
+    } else {
+      const tabAdmin = document.getElementById('tab-btn-admin');
+      if (tabAdmin) tabAdmin.style.display = 'none';
+      const admBtn = document.getElementById('admin-panel-btn');
+      if (admBtn) admBtn.style.display = 'none';
     }
     
     updateQuotaBadges();
@@ -450,38 +467,6 @@ async function loadUserData() {
       updateQuotaBadges();
     }
   }
-}
-
-// Admin Mode Click Handler (Código Secreto)
-let profileClicks = 0;
-let clickTimer = null;
-const userEmailEl = document.getElementById('user-email');
-if (userEmailEl) {
-  userEmailEl.style.cursor = 'pointer';
-  userEmailEl.title = 'Haz 3 clics para ingresar código Admin';
-  userEmailEl.addEventListener('click', () => {
-    profileClicks++;
-    clearTimeout(clickTimer);
-    if (profileClicks >= 3) {
-      profileClicks = 0;
-      showPrompt("Código de acceso Admin (Infinito):", async (pwd) => {
-        if (pwd === "50025002") {
-           userData.plan = "admin";
-           await firebase.firestore().collection('users').doc(currentUser.uid).set({ plan: 'admin', email: currentUser.email }, { merge: true });
-           updateQuotaBadges();
-           const tabAdmin = document.getElementById('tab-btn-admin');
-           if (tabAdmin) tabAdmin.style.display = 'inline-block';
-           const admBtn = document.getElementById('admin-panel-btn');
-           if (admBtn) admBtn.style.display = 'inline-block';
-           showAlert("Modo Admin activado exitosamente. Tu cuenta ahora tiene acceso infinito y de por vida.", "¡Felicidades!");
-        } else if (pwd) {
-           showToast("Código incorrecto.");
-        }
-      });
-    } else {
-      clickTimer = setTimeout(() => profileClicks = 0, 2500);
-    }
-  });
 }
 
 function updateQuotaBadges() {
@@ -1078,6 +1063,11 @@ function switchAdminSubtab(subtab) {
 
 async function forzarModoAdmin() {
   if (!currentUser) return;
+  const isOwner = (currentUser.email || '').toLowerCase().trim() === 'maxrsilvagni@gmail.com';
+  if (!isOwner) {
+    showAlert("Acceso restringido únicamente para maxrsilvagni@gmail.com.", "Acceso Denegado");
+    return;
+  }
   userData.plan = 'admin';
   updateQuotaBadges();
   try {
@@ -1091,6 +1081,37 @@ async function forzarModoAdmin() {
   const statEl = document.getElementById('admin-status-display');
   if (statEl) statEl.textContent = 'Modo Admin Infinito (∞)';
   showAlert("¡Modo Admin Infinito (∞) activado y guardado en tu cuenta!", "¡Felicidades!");
+}
+
+async function resetUnauthorizedAdmins() {
+  try {
+    const snap = await firebase.firestore().collection('users').get();
+    let count = 0;
+    const promises = [];
+    snap.forEach(doc => {
+      const d = doc.data();
+      const email = (d.email || '').toLowerCase().trim();
+      if (email !== 'maxrsilvagni@gmail.com' && (d.plan === 'admin' || d.isAdmin === true || d.role === 'admin')) {
+        promises.push(doc.ref.update({ plan: 'free', isAdmin: false, role: 'user' }));
+        count++;
+      }
+    });
+    if (promises.length > 0) {
+      await Promise.all(promises);
+      console.log(`Seguridad: Se resetearon ${count} usuario(s) que tenían rol admin no autorizado.`);
+    }
+    return count;
+  } catch(e) {
+    console.warn("Error en resetUnauthorizedAdmins:", e);
+    return 0;
+  }
+}
+
+async function manualResetAdmins() {
+  if (!confirm("¿Confirmas resetear a 'free' todos los usuarios con rol Admin excepto maxrsilvagni@gmail.com?")) return;
+  const count = await resetUnauthorizedAdmins();
+  showAlert(`Operación completada. Se resetearon ${count} usuario(s) no autorizados a plan gratuito.`, "Admins Reseteados");
+  loadAdminUsuarios();
 }
 
 async function loadAdminPagos() {
@@ -1131,17 +1152,21 @@ async function loadAdminUsuarios() {
     let html = '';
     snap.forEach(doc => {
       const d = doc.data();
+      const email = (d.email || '').toLowerCase().trim();
+      const isThisOwner = email === 'maxrsilvagni@gmail.com';
       let isTempPremium = d.premium_until && d.premium_until > Date.now();
-      let planDisplay = isTempPremium ? 'premium (temporal)' : (d.plan || 'free');
-      let badgeColor = (planDisplay === 'admin' || planDisplay === 'premium' || isTempPremium) ? '#27ae60' : '#888';
+      let planDisplay = isThisOwner ? 'admin (propietario)' : (isTempPremium ? 'premium (temporal)' : (d.plan || 'free'));
+      let badgeColor = isThisOwner ? '#2B1B17' : ((planDisplay === 'premium' || isTempPremium) ? '#27ae60' : '#888');
       
+      let actionsHtml = isThisOwner 
+        ? `<span style="font-size:0.85rem; color:#888; font-weight:bold;">👑 Propietario</span>`
+        : `<button onclick="adminAction('${doc.id}', 'ban')" style="background:#c0392b; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; margin-right:6px; font-weight:bold;">Anular / Gratis</button>
+           <button onclick="adminAction('${doc.id}', 'premium7')" style="background:#f39c12; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:bold;">Regalar Premium (1 sem)</button>`;
+
       html += `<tr style="border-bottom: 1px solid #eee;">
         <td style="padding:12px 10px;">${d.email || doc.id}</td>
         <td style="padding:12px 10px;"><span class="quota-badge" style="background:${badgeColor}; margin:0;">${planDisplay}</span></td>
-        <td style="padding:12px 10px; text-align:center;">
-          <button onclick="adminAction('${doc.id}', 'ban')" style="background:#c0392b; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; margin-right:6px; font-weight:bold;">Anular / Gratis</button>
-          <button onclick="adminAction('${doc.id}', 'premium7')" style="background:#f39c12; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:bold;">Regalar Premium (1 sem)</button>
-        </td>
+        <td style="padding:12px 10px; text-align:center;">${actionsHtml}</td>
       </tr>`;
     });
     tbody.innerHTML = html;
