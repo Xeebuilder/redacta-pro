@@ -64,6 +64,12 @@
     .file-drop-icon { font-size: 2rem; margin-bottom: 0.5rem; }
     .file-drop p { font-size: 0.95rem; opacity: 0.75; margin: 0; }
     .preview-img { max-width: 100%; border-radius: 12px; border: 3px solid #2B1B17; box-shadow: 0 6px 18px rgba(0,0,0,0.08); margin: 0.75rem 0; display: none; }
+    .preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); gap: 12px; margin: 1rem 0; }
+    .preview-card { position: relative; height: 120px; border-radius: 12px; overflow: hidden; border: 2px solid #2B1B17; background: #FFFFFF; box-shadow: 0 4px 10px rgba(0,0,0,0.06); animation: popIn 0.3s ease forwards; }
+    .preview-card img { width: 100%; height: 100%; object-fit: cover; }
+    .preview-badge { position: absolute; bottom: 6px; left: 6px; background: rgba(43,27,23,0.85); color: #FFFFFF; font-size: 0.75rem; padding: 2px 7px; border-radius: 6px; font-weight: 700; backdrop-filter: blur(2px); }
+    .preview-remove { position: absolute; top: 6px; right: 6px; background: #c0392b; color: #FFFFFF; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; font-size: 11px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.3); transition: transform 0.2s; }
+    .preview-remove:hover { transform: scale(1.15); }
     .progress-wrap { background-color: #EAE2D5; border-radius: 999px; height: 10px; width: 100%; margin: 1rem 0; overflow: hidden; }
     .progress-bar { background-color: #2B1B17; height: 100%; width: 0%; border-radius: 999px; transition: width 0.3s ease; }
     .status-text { font-size: 0.95rem; font-weight: 500; color: #2B1B17; margin-bottom: 0.5rem; min-height: 1.5rem; }
@@ -138,6 +144,7 @@
 <nav class="navbar">
   <h2>RedactaPro Dashboard</h2>
   <div class="user-info">
+    <button id="admin-panel-btn" class="btn-logout" style="display:none; background:#8C6A53; color:#fff; border:none;" onclick="openAdminPanel()">Panel Admin</button>
     <span id="user-email">Cargando...</span>
     <button class="btn-logout" onclick="firebase.auth().signOut()">Salir</button>
   </div>
@@ -261,8 +268,7 @@ function showPrompt(message, callback) {
 const state = {
   apiKey: atob('QVEuQWI4Uk42SnBsdlYxX0F3RzdJYWVfWWlLZFpDTFlidFBvRUV0WEVjX2pWczdFRFFPaXc='),
   temas: { Investigacion: [], Informe: [] },
-  imageB64: { Investigacion: null, Informe: null },
-  imageMime: { Investigacion: 'image/jpeg', Informe: 'image/jpeg' },
+  images: { Investigacion: [], Informe: [] },
 };
 
 const GEMINI_MODEL = 'gemini-3.8-flash';
@@ -326,10 +332,23 @@ async function loadUserData() {
     const doc = await firebase.firestore().collection('users').doc(currentUser.uid).get();
     if (doc.exists) {
       userData = doc.data();
+      
+      // Expire temporary premium
+      if (userData.premium_until && userData.premium_until < Date.now()) {
+        userData.plan = 'free';
+        userData.premium_until = null;
+        await firebase.firestore().collection('users').doc(currentUser.uid).update({ plan: 'free', premium_until: null });
+        showAlert("Tu plan Premium temporal ha expirado.", "Aviso");
+      }
     } else {
-      // Create it if it doesn't exist (for old users)
       await firebase.firestore().collection('users').doc(currentUser.uid).set(userData);
     }
+    
+    // Show admin button for the official admin
+    if (currentUser.email === 'maxrsilvagni@gmail.com' || userData.plan === 'admin') {
+      document.getElementById('admin-panel-btn').style.display = 'inline-block';
+    }
+    
     updateQuotaBadges();
   } catch(e) {
     console.error("Error cargando perfil:", e);
@@ -446,12 +465,15 @@ function renderGenerator(modo) {
 
     <div id="scan-panel-${modo}" class="fade-in-up" style="animation-delay: 0.3s">
       <div class="file-drop" onclick="document.getElementById('file-${modo}').click()">
-        <input type="file" id="file-${modo}" accept=".jpg,.jpeg,.png" onchange="handleFileUpload(event,'${modo}')"/>
-        <div class="file-drop-icon">📂</div>
-        <p>Arrastra o haz clic para seleccionar la captura de tu asignación (JPG, PNG)</p>
+        <input type="file" id="file-${modo}" accept=".jpg,.jpeg,.png" multiple onchange="handleFileUpload(event,'${modo}')"/>
+        <div class="file-drop-icon">📸</div>
+        <p><strong>Haz clic o arrastra las capturas de tu asignación</strong></p>
+        <p style="font-size: 0.85rem; opacity: 0.7; margin-top: 4px;">Puedes subir de 1 hasta 6 páginas (JPG, PNG)</p>
       </div>
-      <img id="preview-${modo}" class="preview-img smooth-show" alt="Vista previa"/>
-      <button class="btn fade-in-up" id="btn-scan-${modo}" style="display:none;" onclick="analizarImagen('${modo}')">✨ Analizar y Estructurar Asignación</button>
+      <div id="preview-grid-${modo}" class="preview-grid" style="display:none;"></div>
+      <button class="btn fade-in-up" id="btn-scan-${modo}" style="display:none;" onclick="analizarImagen('${modo}')">
+        ✨ Analizar y Estructurar Asignación (<span id="count-${modo}">0</span>/6 fotos)
+      </button>
     </div>
 
     <div id="text-panel-${modo}" style="display:none;" class="smooth-show">
@@ -479,57 +501,119 @@ function setMode(modo, val) {
 }
 
 // ═══════════════════════════════════════════
-// FILE UPLOAD & PREVIEW
+// MULTI-IMAGE UPLOAD & PREVIEW (Up to 6)
 // ═══════════════════════════════════════════
 function handleFileUpload(event, modo) {
-  const file = event.target.files[0];
-  if (!file) return;
-  state.imageMime[modo] = file.type || 'image/jpeg';
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    state.imageB64[modo] = e.target.result.split(',')[1];
-    
-    const img = document.getElementById('preview-' + modo);
-    const btn = document.getElementById('btn-scan-' + modo);
-    
-    // Reset animation
-    img.style.animation = 'none';
-    btn.style.animation = 'none';
-    img.offsetHeight; // trigger reflow
-    
-    img.src = e.target.result;
-    img.style.display = 'block';
-    btn.style.display = 'block';
-    
-    img.style.animation = 'fadeInUp 0.5s ease forwards';
-    btn.style.animation = 'fadeInUp 0.5s ease forwards';
-  };
-  reader.readAsDataURL(file);
+  const files = Array.from(event.target.files);
+  if (!files.length) return;
+
+  const currentCount = state.images[modo].length;
+  if (currentCount >= 6) {
+    showAlert("Ya has alcanzado el límite máximo de 6 páginas.", "Límite alcanzado");
+    event.target.value = '';
+    return;
+  }
+
+  const availableSlots = 6 - currentCount;
+  if (files.length > availableSlots) {
+    showAlert(`Solo puedes agregar ${availableSlots} imagen(es) más para completar el máximo de 6.`, "Límite de imágenes");
+  }
+
+  const filesToAdd = files.slice(0, availableSlots);
+  let loaded = 0;
+
+  filesToAdd.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      state.images[modo].push({
+        b64: e.target.result.split(',')[1],
+        mime: file.type || 'image/jpeg',
+        url: e.target.result,
+        name: file.name
+      });
+      loaded++;
+      if (loaded === filesToAdd.length) {
+        renderPreviews(modo);
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+
+  event.target.value = '';
+}
+
+function removeImage(modo, idx) {
+  state.images[modo].splice(idx, 1);
+  renderPreviews(modo);
+}
+
+function renderPreviews(modo) {
+  const grid = document.getElementById('preview-grid-' + modo);
+  const btn = document.getElementById('btn-scan-' + modo);
+  const countSpan = document.getElementById('count-' + modo);
+  const images = state.images[modo];
+
+  if (!images || images.length === 0) {
+    grid.style.display = 'none';
+    grid.innerHTML = '';
+    btn.style.display = 'none';
+    return;
+  }
+
+  let html = '';
+  images.forEach((img, i) => {
+    html += `
+      <div class="preview-card">
+        <img src="${img.url}" alt="Página ${i + 1}" />
+        <span class="preview-badge">Pág ${i + 1}</span>
+        <button type="button" class="preview-remove" onclick="removeImage('${modo}', ${i})" title="Eliminar foto">✖</button>
+      </div>
+    `;
+  });
+
+  grid.innerHTML = html;
+  grid.style.display = 'grid';
+  countSpan.textContent = images.length;
+  btn.style.display = 'block';
+  btn.style.animation = 'none';
+  btn.offsetHeight;
+  btn.style.animation = 'fadeInUp 0.4s ease forwards';
 }
 
 // ═══════════════════════════════════════════
-// ANALYZE IMAGE (Gemini Vision)
+// ANALYZE IMAGES (Gemini Vision Multi-Image)
 // ═══════════════════════════════════════════
 async function analizarImagen(modo) {
+  const images = state.images[modo];
+  if (!images || images.length === 0) {
+    showAlert("Por favor sube al menos una imagen de tu asignación.", "Sin imágenes");
+    return;
+  }
+
   const btn   = document.getElementById('btn-scan-' + modo);
   const msgEl = document.getElementById('msg-' + modo);
   btn.disabled = true;
-  showCoolLoading('msg-' + modo, 'La IA está leyendo los conceptos...');
+  showCoolLoading('msg-' + modo, `La IA está leyendo y organizando las ${images.length} páginas...`);
 
   const prompt =
-    "Analiza detalladamente esta imagen de una asignación escolar o universitaria.\n\n" +
+    `Analiza detalladamente las ${images.length} imágenes adjuntas, que corresponden a las diferentes páginas o capturas de una asignación escolar o universitaria.\n\n` +
     "REGLAS CRÍTICAS DE EXTRACCIÓN:\n" +
-    "1. Descarta por completo cualquier dato administrativo, fechas de entrega, ponderaciones.\n" +
-    "2. Identifica cuál es el TEMA central de la hoja.\n" +
-    "3. Toma cada uno de los subpuntos y fusiónalos lógicamente con el tema central.\n" +
-    "4. REGLA ESTRICTA: NO USES PARENTESIS '()'. Si el texto original tiene paréntesis, saca su contenido y conviértelo en un punto separado o intégralo de forma natural, pero elimina el símbolo.\n\n" +
+    "1. Revisa todas las páginas en orden y extrae la totalidad de los temas y subtemas a desarrollar en el trabajo.\n" +
+    "2. Descarta por completo cualquier dato administrativo, fechas de entrega, ponderaciones o normas de formato.\n" +
+    "3. Identifica cuál es el TEMA central de la asignación.\n" +
+    "4. Toma cada uno de los subpuntos a lo largo de las distintas hojas y conéctalos con el tema central para formar títulos claros e independientes.\n" +
+    "5. REGLA ESTRICTA: NO USES PARÉNTESIS '()'. Si el texto original tiene paréntesis, saca su contenido y conviértelo en un punto separado o intégralo de forma natural, pero elimina el símbolo.\n\n" +
     "Devuelve exactamente una lista de temas separada por comas, sin preámbulos ni títulos.";
 
   try {
-    const text = await geminiChat([
-      { text: prompt },
-      { inline_data: { mime_type: state.imageMime[modo], data: state.imageB64[modo] } }
-    ]);
+    const parts = [{ text: prompt }];
+    for (const img of images) {
+      parts.push({
+        inline_data: { mime_type: img.mime, data: img.b64 }
+      });
+    }
+
+    const text = await geminiChat(parts);
 
     let contenido = text;
     for (const tag of ["Tema principal:", "Tema global:", "Puntos:", "Subpuntos:", "Temas:"]) {
@@ -538,14 +622,14 @@ async function analizarImagen(modo) {
     state.temas[modo] = contenido.split(',').map(t => t.trim()).filter(Boolean);
     renderTemas(modo);
     hideCoolLoading('msg-' + modo);
-    showToast('🚀 ¡Temas leídos! Generando documento...');
+    showToast('🚀 ¡Temas leídos de todas las páginas! Generando documento...');
     await generarDocumento(modo);
   } catch(e) {
     hideCoolLoading('msg-' + modo);
-    msgEl.innerHTML = `<div class="alert alert-error"><p>❌ Error analizando la imagen: ${e.message}</p></div>`;
+    msgEl.innerHTML = `<div class="alert alert-error"><p>❌ Error analizando las imágenes: ${e.message}</p></div>`;
   } finally {
     btn.disabled = false;
-    btn.textContent = '✨ Analizar y Estructurar Asignación';
+    btn.textContent = `✨ Analizar y Estructurar Asignación (${images.length}/6 fotos)`;
   }
 }
 
@@ -696,10 +780,10 @@ async function generarDocumento(modo) {
         ? " DEBES incluir una lista formal estructurada con viñetas 'Componente: descripción'."
         : " No uses listas, redacta completamente en párrafos continuos y fluidos.";
       systemInstruction = (
-        `Actúa como un estudiante de 4to o 5to año de bachillerato (10th grade) inteligente pero natural. Desarrolla el punto solicitado.\n` +
-        `TONO Y LENGUAJE: Escribe de forma fluida, sencilla y muy fácil de entender. Usa palabras comunes, conectores naturales, como si un humano lo hubiera escrito a mano. Evita sonar robótico, excesivamente formal o usar palabras muy rebuscadas (evita que parezca escrito por una Inteligencia Artificial).\n` +
-        `REGLA CRÍTICA DE CONTEXTO: Tu respuesta debe centrarse TOTAL Y EXCLUSIVAMENTE en Venezuela y su relación directa con el título '${tema}'.\n` +
-        `REGLA DE VARIABILIDAD (Anti-Plagio y Anti-IA): Sé completamente original. Nunca empieces igual ni uses plantillas repetitivas. Expresate de forma única para engañar a profesores y cualquier detector de IA (garantizando 100% originalidad).\n` +
+        `Actúa como un estudiante universitario de excelencia o joven investigador académico. Desarrolla el punto solicitado con precisión y profundidad.\n` +
+        `ENFOQUE Y CONTEXTO UNIVERSAL: Desarrolla el tema con rigor académico global y universal. Si el tema es científico, matemático o técnico (por ejemplo logaritmos, física, biología, química, informática), desarróllalo según sus principios, definiciones, leyes, propiedades y aplicaciones universales. Si el tema es histórico, social, económico o cultural, ajústate objetivamente al contexto geográfico o histórico que el propio tema indique; NUNCA fuerces menciones a países o realidades locales específicas a menos que el título del tema lo solicite explícitamente.\n` +
+        `TONO Y LENGUAJE: Escribe con un tono formal, serio y educado, pero mantén una fluidez natural y humana. Usa un vocabulario académico adecuado sin caer en palabras rebuscadas o rimbombantes. Prohibido sonar robótico o usar estructuras cliché típicas de una Inteligencia Artificial.\n` +
+        `REGLA DE VARIABILIDAD (Anti-Plagio y Anti-IA): Sé completamente original. Nunca empieces igual ni uses plantillas repetitivas. Exprésate con autenticidad para garantizar que cada entrega sea 100% única y apruebe cualquier filtro anti-plagio o detector de IA.\n` +
         `REGLA CRÍTICA DE EXTENSIÓN: El texto completo debe tener obligatoriamente ${rango}. Mantén un equilibrio preciso.\n` +
         `No incluyas títulos en tu respuesta. Prohibido usar el signo de punto y coma (;). No repitas ideas ni frases.\n` +
         `MINÚSCULAS Y MAYÚSCULAS: Todo el texto regular debe ir en minúsculas, EXCEPTO la primera letra de cada oración y nombres propios.\n` +
@@ -707,14 +791,14 @@ async function generarDocumento(modo) {
       );
     } else {
       systemInstruction = (
-        `Actúa como un estudiante de bachillerato avanzado o universitario de los primeros semestres presentando un informe, pero con un lenguaje natural y fluido. Desarrolla el punto: '${tema}'.\n` +
-        `TONO Y LENGUAJE: Escribe de manera clara, directa y agradable de leer. Prohibidas las palabras exageradas, conectores cliché de IA (como 'es importante destacar', 'en resumen', 'en conclusión'). Escribe párrafos que suenen orgánicos.\n` +
-        `REGLA CRÍTICA DE CONTEXTO GEOGRÁFICO: Todo el contenido debe desarrollarse dentro del marco de VENEZUELA exclusivamente.\n` +
+        `Actúa como un analista o redactor profesional y académico. Desarrolla el punto específico: '${tema}'.\n` +
+        `ENFOQUE Y CONTEXTO UNIVERSAL: Desarrolla el contenido con alcance global, objetivo y sustentado. Analiza los hechos, fundamentos teóricos, datos o aplicaciones internacionales pertinentes a la materia (científica, técnica, social o empresarial) sin forzar ningún país, región ni sesgo ideológico a menos que el tema lo exija directamente.\n` +
+        `TONO Y LENGUAJE: Escribe de manera formal, objetiva y profesional, pero directa y fluida. Prohibidas las palabras exageradas y conectores cliché de IA (como 'es importante destacar', 'en resumen', 'en conclusión'). Escribe párrafos serios que suenen cien por ciento orgánicos y humanos.\n` +
         `REGLA DE VARIABILIDAD (Anti-Plagio y Anti-IA): Genera un patrón de escritura totalmente distinto cada vez. Altera verbos, orden de ideas y enfoque para garantizar originalidad absoluta y que no pueda ser rastreado a una IA.\n` +
         `REGLA DE EXTENSIÓN ESTABLE: Todo el texto debe tener entre 200 y 240 palabras (ni más, ni menos).\n` +
         `REGLAS ESTRUCTURALES:\n` +
-        `1. Incluye datos relevantes a Venezuela de forma natural.\n` +
-        `2. Menciona acontecimientos locales clave si aplican.\n` +
+        `1. Incluye conceptos clave, fundamentos teóricos o datos objetivos aplicados de forma natural y pertinente al tema.\n` +
+        `2. Mantén un enfoque riguroso, neutral y libre de sesgos.\n` +
         `3. Prohibido repetir ideas.\n` +
         `4. Prohibido usar el signo de punto y coma (;).\n` +
         `5. Combina un párrafo narrativo con una pequeña lista en viñetas (•) si es útil.`
@@ -851,7 +935,131 @@ async function buildAndDownloadDocx(bloques, modo, downloadSec) {
   
   container.appendChild(a);
   document.getElementById('download-modal-overlay').style.display = 'flex';
-}
+  // ===== ADMIN PANEL LOGIC =====
+  function openAdminPanel() {
+    document.getElementById('admin-panel').style.display = 'flex';
+    loadAdminPagos();
+    loadAdminUsuarios();
+  }
+
+  function switchAdminTab(tab, btn) {
+    document.getElementById('admin-tab-pagos').style.display = tab === 'pagos' ? 'block' : 'none';
+    document.getElementById('admin-tab-usuarios').style.display = tab === 'usuarios' ? 'block' : 'none';
+    
+    const btns = btn.parentElement.querySelectorAll('.tab-btn');
+    btns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  async function loadAdminPagos() {
+    const tbody = document.getElementById('admin-pagos-body');
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:1rem;">Cargando...</td></tr>';
+    try {
+      const snap = await firebase.firestore().collection('payments').orderBy('timestamp', 'desc').limit(50).get();
+      if (snap.empty) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:1rem;">No hay pagos registrados.</td></tr>';
+        return;
+      }
+      let html = '';
+      snap.forEach(doc => {
+        const d = doc.data();
+        const dateStr = new Date(d.fecha).toLocaleDateString() + ' ' + new Date(d.fecha).toLocaleTimeString();
+        html += `<tr style="border-bottom: 1px solid #eee;">
+          <td style="padding:10px;">${dateStr}</td>
+          <td style="padding:10px;">${d.email}</td>
+          <td style="padding:10px;"><b>${d.plan}</b></td>
+          <td style="padding:10px;">${d.monto_bs}</td>
+        </tr>`;
+      });
+      tbody.innerHTML = html;
+    } catch(e) {
+      tbody.innerHTML = `<tr><td colspan="4" style="color:red; padding:10px;">Error: ${e.message}</td></tr>`;
+    }
+  }
+
+  async function loadAdminUsuarios() {
+    const tbody = document.getElementById('admin-usuarios-body');
+    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:1rem;">Cargando...</td></tr>';
+    try {
+      const snap = await firebase.firestore().collection('users').limit(100).get();
+      let html = '';
+      snap.forEach(doc => {
+        const d = doc.data();
+        let isTempPremium = d.premium_until && d.premium_until > Date.now();
+        let planDisplay = isTempPremium ? 'premium (temporal)' : d.plan;
+        
+        html += `<tr style="border-bottom: 1px solid #eee;">
+          <td style="padding:10px;">${d.email}</td>
+          <td style="padding:10px;"><b>${planDisplay}</b></td>
+          <td style="padding:10px; text-align:center;">
+            <button onclick="adminAction('${doc.id}', 'ban')" style="background:#c0392b; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; margin-right:5px;">Anular / Gratis</button>
+            <button onclick="adminAction('${doc.id}', 'premium7')" style="background:#f39c12; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Premium (1 sem)</button>
+          </td>
+        </tr>`;
+      });
+      tbody.innerHTML = html;
+    } catch(e) {
+      tbody.innerHTML = `<tr><td colspan="3" style="color:red; padding:10px;">Error: ${e.message}</td></tr>`;
+    }
+  }
+
+  async function adminAction(uid, action) {
+    if(!confirm('¿Estás seguro de realizar esta acción?')) return;
+    try {
+      if (action === 'ban') {
+        await firebase.firestore().collection('users').doc(uid).update({ plan: 'free', premium_until: null });
+        showAlert("Usuario devuelto al plan gratuito.", "Éxito");
+      } else if (action === 'premium7') {
+        const oneWeek = Date.now() + (7 * 24 * 60 * 60 * 1000);
+        await firebase.firestore().collection('users').doc(uid).update({ plan: 'premium', premium_until: oneWeek });
+        showAlert("Usuario actualizado a Premium por 1 semana.", "Éxito");
+      }
+      loadAdminUsuarios();
+    } catch(e) {
+      showAlert("Error: " + e.message, "Error");
+    }
+  }
+
 </script>
+
+  <!-- ADMIN PANEL UI -->
+  <div class="modal-overlay" id="admin-panel" style="display:none; z-index: 2000; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center;">
+    <div class="modal" style="background:#fff; padding: 2rem; border-radius: 12px; width: 95%; max-width: 900px; max-height: 90vh; overflow-y: auto; position: relative;">
+      <div style="position:absolute; top:15px; right:15px; cursor:pointer; font-size:1.5rem;" onclick="document.getElementById('admin-panel').style.display='none'">✖</div>
+      <h3 style="margin-bottom: 1.5rem; color:#2B1B17; font-size: 1.8rem;">Panel de Administración</h3>
+      <div style="display:flex; gap:10px; margin-bottom: 1rem;">
+        <button class="tab-btn active" onclick="switchAdminTab('pagos', this)" style="padding:10px; border:none; background:#eee; cursor:pointer; font-weight:bold; border-radius:5px;">Pagos Recientes</button>
+        <button class="tab-btn" onclick="switchAdminTab('usuarios', this)" style="padding:10px; border:none; background:#eee; cursor:pointer; font-weight:bold; border-radius:5px;">Gestión de Usuarios</button>
+      </div>
+      
+      <div id="admin-tab-pagos" style="display:block;">
+        <table style="width:100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.95rem;">
+          <thead>
+            <tr style="background:#FAF8F5; border-bottom: 2px solid #ddd;">
+              <th style="padding:10px; text-align:left;">Fecha</th>
+              <th style="padding:10px; text-align:left;">Usuario</th>
+              <th style="padding:10px; text-align:left;">Plan</th>
+              <th style="padding:10px; text-align:left;">Monto Bs</th>
+            </tr>
+          </thead>
+          <tbody id="admin-pagos-body"></tbody>
+        </table>
+      </div>
+
+      <div id="admin-tab-usuarios" style="display:none;">
+        <table style="width:100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.95rem;">
+          <thead>
+            <tr style="background:#FAF8F5; border-bottom: 2px solid #ddd;">
+              <th style="padding:10px; text-align:left;">Usuario</th>
+              <th style="padding:10px; text-align:left;">Plan</th>
+              <th style="padding:10px; text-align:center;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="admin-usuarios-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

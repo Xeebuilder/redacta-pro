@@ -370,6 +370,20 @@
          
          await firebase.firestore().collection('users').doc(currentUser.uid).update({ plan: dbPlan });
          
+         // Registrar el pago en Firestore para el historial del administrador
+         try {
+           await firebase.firestore().collection('payments').add({
+             email: currentUser.email,
+             uid: currentUser.uid,
+             plan: pendingPlan.nombre,
+             monto_bs: pendingBsAmount,
+             fecha: new Date().toISOString(),
+             timestamp: firebase.firestore.FieldValue.serverTimestamp()
+           });
+         } catch(err) {
+           console.error("Error guardando historial de pago:", err);
+         }
+         
          // Enviar notificación al correo del administrador
          try {
            const revokeLink = `https://redacta-pro.vercel.app/dashboard.html?revoke_email=${encodeURIComponent(currentUser.email)}`;
