@@ -157,6 +157,7 @@
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('investigacion', this)">🔬 Modo Investigación <span id="quota-inv" class="quota-badge">0/0</span></button>
       <button class="tab-btn"        onclick="switchTab('informe', this)">📊 Modo Informe Complejo <span id="quota-inf" class="quota-badge">0/0</span></button>
+      <button class="tab-btn" id="tab-btn-admin" onclick="switchTab('admin', this)" style="background:#4A322B; color:#fff;">👑 Panel Admin & Pagos</button>
     </div>
 
     <div id="tab-investigacion" class="tab-panel active">
@@ -173,9 +174,70 @@
       <div class="tab-body">
         <div class="header-banner banner-informe" style="margin-bottom:1.2rem;">
           <h1 style="color:#4A322B;">📊 Módulo de Informes Complejos</h1>
-          <p style="font-size:1.1rem; font-weight:500; margin:0; opacity:.85;">Redacción corporativa de largo alcance vinculada estrictamente al contexto nacional.</p>
+          <p style="font-size:1.1rem; font-weight:500; margin:0; opacity:.85;">Redacción analítica y rigurosa de largo alcance.</p>
         </div>
         <div id="gen-Informe"></div>
+      </div>
+    </div>
+
+    <div id="tab-admin" class="tab-panel">
+      <div class="tab-body">
+        <div class="header-banner" style="background: linear-gradient(135deg, #4A322B, #2B1B17); color: #fff; margin-bottom:1.5rem; padding: 1.5rem; border-radius: 12px;">
+          <h1 style="color:#fff; margin-bottom: 0.5rem;">👑 Panel de Control y Pagos (Admin)</h1>
+          <p style="font-size:1rem; opacity:0.9; margin:0;">Registro en tiempo real de todos los pagos verificados por la IA y gestión de usuarios.</p>
+        </div>
+
+        <!-- TARJETA DE ESTADO ADMIN -->
+        <div style="background:#fff; border: 2px solid #2B1B17; border-radius: 12px; padding: 1.2rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <h4 style="margin:0; font-size:1.1rem; color:#2B1B17;">Cuenta Administradora: <span id="admin-account-display">maxrsilvagni@gmail.com</span></h4>
+            <p style="margin:5px 0 0 0; font-size:0.9rem; opacity:0.8;">Estado: <strong id="admin-status-display" style="color:#27ae60; font-size:1rem;">Modo Admin Infinito (∞)</strong></p>
+          </div>
+          <button class="btn" style="width:auto; margin:0; padding:0.6rem 1.4rem; background:#2B1B17; font-weight:bold;" onclick="forzarModoAdmin()">⚡ Forzar Modo Infinito</button>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-bottom: 1rem;">
+          <button class="btn" id="subtab-btn-pagos" style="flex:1; margin:0; background:#2B1B17; color:#fff;" onclick="switchAdminSubtab('pagos')">💰 Historial de Pagos Verificados</button>
+          <button class="btn" id="subtab-btn-usuarios" style="flex:1; margin:0; background:#EAE2D5; color:#2B1B17; border: 1px solid #2B1B17;" onclick="switchAdminSubtab('usuarios')">👥 Gestión de Usuarios</button>
+        </div>
+
+        <!-- SECCIÓN PAGOS -->
+        <div id="admin-section-pagos" style="background:#fff; border-radius:12px; padding:1.2rem; box-shadow:0 4px 12px rgba(0,0,0,0.05); overflow-x:auto;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+            <h3 style="margin:0;">Registro de Pagos Recibidos (IA)</h3>
+            <button class="btn" style="width:auto; margin:0; padding:0.4rem 0.8rem; font-size:0.85rem; background:#4A322B;" onclick="loadAdminPagos()">🔄 Actualizar Pagos</button>
+          </div>
+          <table style="width:100%; border-collapse: collapse; font-size: 0.95rem;">
+            <thead>
+              <tr style="background:#FAF8F5; border-bottom: 2px solid #ddd;">
+                <th style="padding:10px; text-align:left;">Fecha</th>
+                <th style="padding:10px; text-align:left;">Usuario</th>
+                <th style="padding:10px; text-align:left;">Plan</th>
+                <th style="padding:10px; text-align:left;">Monto (Bs)</th>
+              </tr>
+            </thead>
+            <tbody id="admin-pagos-body"></tbody>
+          </table>
+        </div>
+
+        <!-- SECCIÓN USUARIOS -->
+        <div id="admin-section-usuarios" style="display:none; background:#fff; border-radius:12px; padding:1.2rem; box-shadow:0 4px 12px rgba(0,0,0,0.05); overflow-x:auto;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+            <h3 style="margin:0;">Control de Usuarios Registrados</h3>
+            <button class="btn" style="width:auto; margin:0; padding:0.4rem 0.8rem; font-size:0.85rem; background:#4A322B;" onclick="loadAdminUsuarios()">🔄 Actualizar Usuarios</button>
+          </div>
+          <table style="width:100%; border-collapse: collapse; font-size: 0.95rem;">
+            <thead>
+              <tr style="background:#FAF8F5; border-bottom: 2px solid #ddd;">
+                <th style="padding:10px; text-align:left;">Usuario</th>
+                <th style="padding:10px; text-align:left;">Plan Actual</th>
+                <th style="padding:10px; text-align:center;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="admin-usuarios-body"></tbody>
+          </table>
+        </div>
+
       </div>
     </div>
   </div>
@@ -294,6 +356,17 @@ firebase.auth().onAuthStateChanged(async (user) => {
   currentUser = user;
   document.getElementById('user-email').textContent = user.email;
   document.getElementById('app').style.display = 'block';
+
+  // DUEÑO OFICIAL: Forzar Admin e Infinito de inmediato en pantalla
+  const isOwner = user.email && user.email.toLowerCase().trim() === 'maxrsilvagni@gmail.com';
+  if (isOwner) {
+    userData.plan = 'admin';
+    updateQuotaBadges(); // Pone ∞ de inmediato sin esperar
+    const tabAdmin = document.getElementById('tab-btn-admin');
+    if (tabAdmin) tabAdmin.style.display = 'inline-block';
+    const admBtn = document.getElementById('admin-panel-btn');
+    if (admBtn) admBtn.style.display = 'inline-block';
+  }
   
   // Load User Data & Limits
   await loadUserData();
@@ -328,10 +401,16 @@ firebase.auth().onAuthStateChanged(async (user) => {
 let userData = { plan: 'free', usage_informe: 0, usage_investigacion: 0 }; // Default fallback
 
 async function loadUserData() {
+  const isOwner = currentUser && currentUser.email && currentUser.email.toLowerCase().trim() === 'maxrsilvagni@gmail.com';
+  if (isOwner) {
+    userData.plan = 'admin';
+    updateQuotaBadges();
+  }
   try {
     const doc = await firebase.firestore().collection('users').doc(currentUser.uid).get();
     if (doc.exists) {
       userData = doc.data();
+      if (isOwner) userData.plan = 'admin';
       
       // Expire temporary premium
       if (userData.premium_until && userData.premium_until < Date.now()) {
@@ -341,26 +420,35 @@ async function loadUserData() {
         showAlert("Tu plan Premium temporal ha expirado.", "Aviso");
       }
     } else {
+      userData = {
+        email: currentUser.email,
+        plan: isOwner ? 'admin' : 'free',
+        usage_informe: 0,
+        usage_investigacion: 0
+      };
       await firebase.firestore().collection('users').doc(currentUser.uid).set(userData);
     }
     
-    // DUEÑO OFICIAL: maxrsilvagni@gmail.com SIEMPRE TIENE PLAN ADMIN INFINITO
-    if (currentUser.email === 'maxrsilvagni@gmail.com') {
+    // DUEÑO OFICIAL O ADMIN: Guardar permanentemente en Firestore
+    if (isOwner || userData.plan === 'admin') {
       userData.plan = 'admin';
       await firebase.firestore().collection('users').doc(currentUser.uid).set({
         plan: 'admin',
         email: currentUser.email
       }, { merge: true });
-    }
-
-    // Show admin button for the official admin or admin plan
-    if (currentUser.email === 'maxrsilvagni@gmail.com' || userData.plan === 'admin') {
-      document.getElementById('admin-panel-btn').style.display = 'inline-block';
+      const tabAdmin = document.getElementById('tab-btn-admin');
+      if (tabAdmin) tabAdmin.style.display = 'inline-block';
+      const admBtn = document.getElementById('admin-panel-btn');
+      if (admBtn) admBtn.style.display = 'inline-block';
     }
     
     updateQuotaBadges();
   } catch(e) {
     console.error("Error cargando perfil:", e);
+    if (isOwner) {
+      userData.plan = 'admin';
+      updateQuotaBadges();
+    }
   }
 }
 
@@ -379,9 +467,12 @@ if (userEmailEl) {
       showPrompt("Código de acceso Admin (Infinito):", async (pwd) => {
         if (pwd === "50025002") {
            userData.plan = "admin";
-           await firebase.firestore().collection('users').doc(currentUser.uid).set({ plan: 'admin' }, { merge: true });
+           await firebase.firestore().collection('users').doc(currentUser.uid).set({ plan: 'admin', email: currentUser.email }, { merge: true });
            updateQuotaBadges();
-           document.getElementById('admin-panel-btn').style.display = 'inline-block';
+           const tabAdmin = document.getElementById('tab-btn-admin');
+           if (tabAdmin) tabAdmin.style.display = 'inline-block';
+           const admBtn = document.getElementById('admin-panel-btn');
+           if (admBtn) admBtn.style.display = 'inline-block';
            showAlert("Modo Admin activado exitosamente. Tu cuenta ahora tiene acceso infinito y de por vida.", "¡Felicidades!");
         } else if (pwd) {
            showToast("Código incorrecto.");
@@ -432,6 +523,10 @@ function switchTab(name, btn) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
   btn.classList.add('active');
+  if (name === 'admin') {
+    loadAdminPagos();
+    loadAdminUsuarios();
+  }
 }
 
 // ═══════════════════════════════════════════
@@ -915,7 +1010,7 @@ async function buildAndDownloadDocx(bloques, modo, downloadSec) {
       }
       children.push(new Paragraph({
         children: runs,
-        indent: { left: 432 }, // 0.3 inches in twips (0.3 * 1440)
+        indent: { left: 432 },
         spacing: { after: 60 }
       }));
     } else if (b.type === 'spacer') {
@@ -931,7 +1026,7 @@ async function buildAndDownloadDocx(bloques, modo, downloadSec) {
   document.getElementById('download-modo-text').textContent = modo;
   
   const container = document.getElementById('download-btn-container');
-  container.innerHTML = ''; // Clear previous
+  container.innerHTML = '';
   
   const a = document.createElement('a');
   a.href = url;
@@ -943,7 +1038,6 @@ async function buildAndDownloadDocx(bloques, modo, downloadSec) {
   a.style.padding = '1.2rem';
   a.innerHTML = '💾 Descargar Archivo';
   
-  // Close modal when downloaded
   a.onclick = () => {
     setTimeout(() => {
       document.getElementById('download-modal-overlay').style.display = 'none';
@@ -954,131 +1048,125 @@ async function buildAndDownloadDocx(bloques, modo, downloadSec) {
   document.getElementById('download-modal-overlay').style.display = 'flex';
 }
 
-  // ===== ADMIN PANEL LOGIC =====
-  function openAdminPanel() {
-    document.getElementById('admin-panel').style.display = 'flex';
+// ═══════════════════════════════════════════
+// ADMIN PANEL LOGIC & ACTIONS
+// ═══════════════════════════════════════════
+function openAdminPanel() {
+  switchTab('admin', document.getElementById('tab-btn-admin'));
+}
+
+function switchAdminSubtab(subtab) {
+  document.getElementById('admin-section-pagos').style.display = subtab === 'pagos' ? 'block' : 'none';
+  document.getElementById('admin-section-usuarios').style.display = subtab === 'usuarios' ? 'block' : 'none';
+  
+  const btnPagos = document.getElementById('subtab-btn-pagos');
+  const btnUsers = document.getElementById('subtab-btn-usuarios');
+  if (subtab === 'pagos') {
+    btnPagos.style.background = '#2B1B17';
+    btnPagos.style.color = '#fff';
+    btnUsers.style.background = '#EAE2D5';
+    btnUsers.style.color = '#2B1B17';
     loadAdminPagos();
+  } else {
+    btnUsers.style.background = '#2B1B17';
+    btnUsers.style.color = '#fff';
+    btnPagos.style.background = '#EAE2D5';
+    btnPagos.style.color = '#2B1B17';
     loadAdminUsuarios();
   }
+}
 
-  function switchAdminTab(tab, btn) {
-    document.getElementById('admin-tab-pagos').style.display = tab === 'pagos' ? 'block' : 'none';
-    document.getElementById('admin-tab-usuarios').style.display = tab === 'usuarios' ? 'block' : 'none';
-    
-    const btns = btn.parentElement.querySelectorAll('.tab-btn');
-    btns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+async function forzarModoAdmin() {
+  if (!currentUser) return;
+  userData.plan = 'admin';
+  updateQuotaBadges();
+  try {
+    await firebase.firestore().collection('users').doc(currentUser.uid).set({
+      plan: 'admin',
+      email: currentUser.email
+    }, { merge: true });
+  } catch(e) {
+    console.error("Error guardando admin:", e);
   }
+  const statEl = document.getElementById('admin-status-display');
+  if (statEl) statEl.textContent = 'Modo Admin Infinito (∞)';
+  showAlert("¡Modo Admin Infinito (∞) activado y guardado en tu cuenta!", "¡Felicidades!");
+}
 
-  async function loadAdminPagos() {
-    const tbody = document.getElementById('admin-pagos-body');
-    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:1rem;">Cargando...</td></tr>';
-    try {
-      const snap = await firebase.firestore().collection('payments').orderBy('timestamp', 'desc').limit(50).get();
-      if (snap.empty) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:1rem;">No hay pagos registrados.</td></tr>';
-        return;
-      }
-      let html = '';
-      snap.forEach(doc => {
-        const d = doc.data();
-        const dateStr = new Date(d.fecha).toLocaleDateString() + ' ' + new Date(d.fecha).toLocaleTimeString();
-        html += `<tr style="border-bottom: 1px solid #eee;">
-          <td style="padding:10px;">${dateStr}</td>
-          <td style="padding:10px;">${d.email}</td>
-          <td style="padding:10px;"><b>${d.plan}</b></td>
-          <td style="padding:10px;">${d.monto_bs}</td>
-        </tr>`;
-      });
-      tbody.innerHTML = html;
-    } catch(e) {
-      tbody.innerHTML = `<tr><td colspan="4" style="color:red; padding:10px;">Error: ${e.message}</td></tr>`;
+async function loadAdminPagos() {
+  const tbody = document.getElementById('admin-pagos-body');
+  tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:1.5rem; opacity:0.7;">Cargando pagos...</td></tr>';
+  try {
+    const snap = await firebase.firestore().collection('payments').orderBy('timestamp', 'desc').limit(50).get();
+    if (snap.empty) {
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:1.5rem; opacity:0.7;">No hay pagos registrados aún en el sistema.</td></tr>';
+      return;
     }
+    let html = '';
+    snap.forEach(doc => {
+      const d = doc.data();
+      const dateStr = d.fecha ? (new Date(d.fecha).toLocaleDateString() + ' ' + new Date(d.fecha).toLocaleTimeString()) : 'Reciente';
+      html += `<tr style="border-bottom: 1px solid #eee;">
+        <td style="padding:12px 10px;">${dateStr}</td>
+        <td style="padding:12px 10px;"><strong>${d.email}</strong></td>
+        <td style="padding:12px 10px;"><span class="quota-badge" style="background:#27ae60; margin:0;">${d.plan}</span></td>
+        <td style="padding:12px 10px; font-weight:bold; color:#2B1B17;">${d.monto_bs} Bs.</td>
+      </tr>`;
+    });
+    tbody.innerHTML = html;
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="4" style="color:#c0392b; padding:10px;">Error cargando pagos: ${e.message}</td></tr>`;
   }
+}
 
-  async function loadAdminUsuarios() {
-    const tbody = document.getElementById('admin-usuarios-body');
-    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:1rem;">Cargando...</td></tr>';
-    try {
-      const snap = await firebase.firestore().collection('users').limit(100).get();
-      let html = '';
-      snap.forEach(doc => {
-        const d = doc.data();
-        let isTempPremium = d.premium_until && d.premium_until > Date.now();
-        let planDisplay = isTempPremium ? 'premium (temporal)' : d.plan;
-        
-        html += `<tr style="border-bottom: 1px solid #eee;">
-          <td style="padding:10px;">${d.email}</td>
-          <td style="padding:10px;"><b>${planDisplay}</b></td>
-          <td style="padding:10px; text-align:center;">
-            <button onclick="adminAction('${doc.id}', 'ban')" style="background:#c0392b; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; margin-right:5px;">Anular / Gratis</button>
-            <button onclick="adminAction('${doc.id}', 'premium7')" style="background:#f39c12; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Premium (1 sem)</button>
-          </td>
-        </tr>`;
-      });
-      tbody.innerHTML = html;
-    } catch(e) {
-      tbody.innerHTML = `<tr><td colspan="3" style="color:red; padding:10px;">Error: ${e.message}</td></tr>`;
+async function loadAdminUsuarios() {
+  const tbody = document.getElementById('admin-usuarios-body');
+  tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:1.5rem; opacity:0.7;">Cargando usuarios...</td></tr>';
+  try {
+    const snap = await firebase.firestore().collection('users').limit(100).get();
+    if (snap.empty) {
+      tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:1.5rem; opacity:0.7;">No hay usuarios registrados.</td></tr>';
+      return;
     }
-  }
-
-  async function adminAction(uid, action) {
-    if(!confirm('¿Estás seguro de realizar esta acción?')) return;
-    try {
-      if (action === 'ban') {
-        await firebase.firestore().collection('users').doc(uid).update({ plan: 'free', premium_until: null });
-        showAlert("Usuario devuelto al plan gratuito.", "Éxito");
-      } else if (action === 'premium7') {
-        const oneWeek = Date.now() + (7 * 24 * 60 * 60 * 1000);
-        await firebase.firestore().collection('users').doc(uid).update({ plan: 'premium', premium_until: oneWeek });
-        showAlert("Usuario actualizado a Premium por 1 semana.", "Éxito");
-      }
-      loadAdminUsuarios();
-    } catch(e) {
-      showAlert("Error: " + e.message, "Error");
-    }
-  }
-
-</script>
-
-  <!-- ADMIN PANEL UI -->
-  <div class="modal-overlay" id="admin-panel" style="display:none; z-index: 2000; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center;">
-    <div class="modal" style="background:#fff; padding: 2rem; border-radius: 12px; width: 95%; max-width: 900px; max-height: 90vh; overflow-y: auto; position: relative;">
-      <div style="position:absolute; top:15px; right:15px; cursor:pointer; font-size:1.5rem;" onclick="document.getElementById('admin-panel').style.display='none'">✖</div>
-      <h3 style="margin-bottom: 1.5rem; color:#2B1B17; font-size: 1.8rem;">Panel de Administración</h3>
-      <div style="display:flex; gap:10px; margin-bottom: 1rem;">
-        <button class="tab-btn active" onclick="switchAdminTab('pagos', this)" style="padding:10px; border:none; background:#eee; cursor:pointer; font-weight:bold; border-radius:5px;">Pagos Recientes</button>
-        <button class="tab-btn" onclick="switchAdminTab('usuarios', this)" style="padding:10px; border:none; background:#eee; cursor:pointer; font-weight:bold; border-radius:5px;">Gestión de Usuarios</button>
-      </div>
+    let html = '';
+    snap.forEach(doc => {
+      const d = doc.data();
+      let isTempPremium = d.premium_until && d.premium_until > Date.now();
+      let planDisplay = isTempPremium ? 'premium (temporal)' : (d.plan || 'free');
+      let badgeColor = (planDisplay === 'admin' || planDisplay === 'premium' || isTempPremium) ? '#27ae60' : '#888';
       
-      <div id="admin-tab-pagos" style="display:block;">
-        <table style="width:100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.95rem;">
-          <thead>
-            <tr style="background:#FAF8F5; border-bottom: 2px solid #ddd;">
-              <th style="padding:10px; text-align:left;">Fecha</th>
-              <th style="padding:10px; text-align:left;">Usuario</th>
-              <th style="padding:10px; text-align:left;">Plan</th>
-              <th style="padding:10px; text-align:left;">Monto Bs</th>
-            </tr>
-          </thead>
-          <tbody id="admin-pagos-body"></tbody>
-        </table>
-      </div>
+      html += `<tr style="border-bottom: 1px solid #eee;">
+        <td style="padding:12px 10px;">${d.email || doc.id}</td>
+        <td style="padding:12px 10px;"><span class="quota-badge" style="background:${badgeColor}; margin:0;">${planDisplay}</span></td>
+        <td style="padding:12px 10px; text-align:center;">
+          <button onclick="adminAction('${doc.id}', 'ban')" style="background:#c0392b; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; margin-right:6px; font-weight:bold;">Anular / Gratis</button>
+          <button onclick="adminAction('${doc.id}', 'premium7')" style="background:#f39c12; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:bold;">Regalar Premium (1 sem)</button>
+        </td>
+      </tr>`;
+    });
+    tbody.innerHTML = html;
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="3" style="color:#c0392b; padding:10px;">Error cargando usuarios: ${e.message}</td></tr>`;
+  }
+}
 
-      <div id="admin-tab-usuarios" style="display:none;">
-        <table style="width:100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.95rem;">
-          <thead>
-            <tr style="background:#FAF8F5; border-bottom: 2px solid #ddd;">
-              <th style="padding:10px; text-align:left;">Usuario</th>
-              <th style="padding:10px; text-align:left;">Plan</th>
-              <th style="padding:10px; text-align:center;">Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="admin-usuarios-body"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+async function adminAction(uid, action) {
+  if(!confirm('¿Confirmas realizar esta acción sobre este usuario?')) return;
+  try {
+    if (action === 'ban') {
+      await firebase.firestore().collection('users').doc(uid).update({ plan: 'free', premium_until: null });
+      showAlert("Usuario devuelto al plan gratuito.", "Éxito");
+    } else if (action === 'premium7') {
+      const oneWeek = Date.now() + (7 * 24 * 60 * 60 * 1000);
+      await firebase.firestore().collection('users').doc(uid).update({ plan: 'premium', premium_until: oneWeek });
+      showAlert("Usuario actualizado a Premium Ilimitado por 1 semana.", "Éxito");
+    }
+    loadAdminUsuarios();
+  } catch(e) {
+    showAlert("Error: " + e.message, "Error");
+  }
+}
+</script>
 
 </body>
 </html>
