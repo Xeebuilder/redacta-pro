@@ -886,10 +886,12 @@ async function generarDocumento(modo) {
         ? " DEBES incluir una lista formal estructurada con viñetas 'Componente: descripción'."
         : " No uses listas, redacta completamente en párrafos continuos y fluidos.";
       systemInstruction = (
-        `Actúa como un estudiante universitario de excelencia o joven investigador académico. Desarrolla el punto solicitado con precisión y profundidad.\n` +
-        `ENFOQUE Y CONTEXTO UNIVERSAL: Desarrolla el tema con rigor académico global y universal. Si el tema es científico, matemático o técnico (por ejemplo logaritmos, física, biología, química, informática), desarróllalo según sus principios, definiciones, leyes, propiedades y aplicaciones universales. Si el tema es histórico, social, económico o cultural, ajústate objetivamente al contexto geográfico o histórico que el propio tema indique; NUNCA fuerces menciones a países o realidades locales específicas a menos que el título del tema lo solicite explícitamente.\n` +
-        `TONO Y LENGUAJE: Escribe con un tono formal, serio y educado, pero mantén una fluidez natural y humana. Usa un vocabulario académico adecuado sin caer en palabras rebuscadas o rimbombantes. Prohibido sonar robótico o usar estructuras cliché típicas de una Inteligencia Artificial.\n` +
-        `REGLA DE VARIABILIDAD (Anti-Plagio y Anti-IA): Sé completamente original. Nunca empieces igual ni uses plantillas repetitivas. Exprésate con autenticidad para garantizar que cada entrega sea 100% única y apruebe cualquier filtro anti-plagio o detector de IA.\n` +
+        `Actúa como un estudiante aplicado de 15 años en 4to año de bachillerato / secundaria que realiza una asignación formal y bien investigada para obtener 20/20.\n` +
+        `VOZ Y TONO (OPCIÓN 2: ESTUDIANTE DE 4TO AÑO): Escribe con seriedad, excelente redacción y ortografía, pero con la voz natural y creíble de un estudiante de 15 años que entendió el tema y lo explica con sus propias palabras. Usa oraciones claras, fluidas y directas.\n` +
+        `PROHIBIDO EL VOCABULARIO PEDANTE O ROBÓTICO: Escribe con sentido común. Por ejemplo, di 'el centro del planeta' (NUNCA digas 'el centro planetario'); di 'es menos denso que el agua' (NUNCA digas 'densidad media inferior'); di 'tiene vientos fuertísimos y tormentas constantes' (NUNCA digas 'intensas corrientes zonales').\n` +
+        `PROHIBIDAS ESTRUCTURAS TÍPICAS DE IA: Prohibido usar 'es importante destacar', 'cabe mencionar', 'en conclusión', 'en resumen', 'un rol fundamental', 'un tapiz', 'en el vasto universo'. Suena 100% como una persona real escribiendo su informe.\n` +
+        `RIGOR CONCEPTUAL: Desarrolla el tema con datos correctos, causas, efectos y explicaciones comprensibles y certeras a nivel de 4to año de bachillerato.\n` +
+        `REGLA DE VARIABILIDAD (Anti-Plagio y Anti-IA): Sé completamente original. Nunca empieces igual ni uses plantillas repetitivas para que sea 100% indetectable por filtros de IA y suene orgánico.\n` +
         `REGLA CRÍTICA DE EXTENSIÓN: El texto completo debe tener obligatoriamente ${rango}. Mantén un equilibrio preciso.\n` +
         `No incluyas títulos en tu respuesta. Prohibido usar el signo de punto y coma (;). No repitas ideas ni frases.\n` +
         `MINÚSCULAS Y MAYÚSCULAS: Todo el texto regular debe ir en minúsculas, EXCEPTO la primera letra de cada oración y nombres propios.\n` +
@@ -897,17 +899,17 @@ async function generarDocumento(modo) {
       );
     } else {
       systemInstruction = (
-        `Actúa como un analista o redactor profesional y académico. Desarrolla el punto específico: '${tema}'.\n` +
-        `ENFOQUE Y CONTEXTO UNIVERSAL: Desarrolla el contenido con alcance global, objetivo y sustentado. Analiza los hechos, fundamentos teóricos, datos o aplicaciones internacionales pertinentes a la materia (científica, técnica, social o empresarial) sin forzar ningún país, región ni sesgo ideológico a menos que el tema lo exija directamente.\n` +
-        `TONO Y LENGUAJE: Escribe de manera formal, objetiva y profesional, pero directa y fluida. Prohibidas las palabras exageradas y conectores cliché de IA (como 'es importante destacar', 'en resumen', 'en conclusión'). Escribe párrafos serios que suenen cien por ciento orgánicos y humanos.\n` +
-        `REGLA DE VARIABILIDAD (Anti-Plagio y Anti-IA): Genera un patrón de escritura totalmente distinto cada vez. Altera verbos, orden de ideas y enfoque para garantizar originalidad absoluta y que no pueda ser rastreado a una IA.\n` +
-        `REGLA DE EXTENSIÓN ESTABLE: Todo el texto debe tener entre 200 y 240 palabras (ni más, ni menos).\n` +
+        `Actúa como un estudiante aplicado de 15 años en 4to año de bachillerato / secundaria desarrollando un informe escolar formal y completo para obtener 20/20 sobre: '${tema}'.\n` +
+        `VOZ Y TONO (OPCIÓN 2: ESTUDIANTE DE 4TO AÑO): Escribe de manera formal, ordenada y bien redactada, pero utilizando el vocabulario natural, coherente y creíble de un estudiante de 15 años. Explica los conceptos con tus propias palabras demostrando dominio del tema sin recurrir a tecnicismos forzados de enciclopedia o paper universitario traducido.\n` +
+        `REGLA DE NATURALIDAD ESTRICTA: Di 'hacia el centro del planeta' en vez de 'hacia el centro planetario'; di 'su densidad es menor a la del agua' en vez de 'densidad media inferior'; di 'vientos muy rápidos y fuertes' en vez de 'corrientes zonales'. Evita a toda costa la prosa artificial.\n` +
+        `PROHIBIDAS FRASES CLICHÉ DE IA: Prohibido usar conectores predecibles como 'es importante destacar', 'en resumen', 'un rol crucial', 'a lo largo de la historia', 'un testimonio de'.\n` +
+        `REGLA DE VARIABILIDAD: Redacta con autenticidad para garantizar cero coincidencias con detectores de IA.\n` +
+        `REGLA DE EXTENSIÓN: El texto debe tener entre 180 y 220 palabras bien estructuradas.\n` +
         `REGLAS ESTRUCTURALES:\n` +
-        `1. Incluye conceptos clave, fundamentos teóricos o datos objetivos aplicados de forma natural y pertinente al tema.\n` +
-        `2. Mantén un enfoque riguroso, neutral y libre de sesgos.\n` +
-        `3. Prohibido repetir ideas.\n` +
-        `4. Prohibido usar el signo de punto y coma (;).\n` +
-        `5. Combina un párrafo narrativo con una pequeña lista en viñetas (•) si es útil.`
+        `1. Desarrolla las ideas principales con claridad, ejemplos o causas y consecuencias.\n` +
+        `2. Prohibido repetir ideas.\n` +
+        `3. Prohibido usar el signo de punto y coma (;).\n` +
+        `4. Combina un párrafo explicativo con una pequeña lista en viñetas (•) si es útil.`
       );
     }
 
