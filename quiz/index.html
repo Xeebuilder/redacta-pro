@@ -1041,31 +1041,34 @@
         weakContext = `El estudiante ha fallado previamente en los siguientes conceptos: "${state.weakConcepts.slice(-3).join(', ')}". Incluye al menos una pregunta que refuerce y aclare esos puntos débiles.`;
       }
 
-      const prompt = `Eres el motor de aprendizaje activo de Synapse Smart Study (estilo Thea).
-Tu misión es generar ${count} preguntas continuas de opción múltiple para estudio y active recall sobre el tema: "${state.topic}".
-Nivel académico del estudiante: "${state.level}".
+      const prompt = `Eres el tutor pedagógico de Synapse Smart Study (estilo Thea).
+Tu misión es generar ${count} preguntas de estudio y active recall sobre el tema: "${state.topic}".
+Nivel del estudiante: "${state.level}".
 ${weakContext}
 
-Requisitos estrictos:
-1. Las preguntas deben desafiar la comprensión y aplicación del concepto, no ser triviales.
-2. 4 opciones (A, B, C, D) verosímiles pero con solo 1 inequívocamente correcta.
-3. Explicación clara y pedagógica (2 a 3 oraciones) de por qué es correcta y por qué no las demás.
-4. Un tip o regla nemotécnica corta ("tip").
+REGLAS DE ORO DE SIMPLICIDAD Y ENFOQUE FUNDAMENTAL (CRÍTICO):
+1. Enseña y evalúa LO BÁSICO, LO FUNDAMENTAL Y LO MÁS IMPORTANTE del tema. Las ideas y definiciones que un estudiante debe comprender para dominar la materia escolar/académica.
+2. CERO preguntas rebuscadas, CERO casos extremos de física teórica o de la NASA, CERO acertijos o trampas de compilador:
+   - Si el tema es escolar/ciencias (ej: "rotación y traslación", "fotosíntesis", "la célula"): pregunta sobre el día y la noche, las estaciones del año, duración de giros (24h, 365 días), inclinación del eje, organelos principales, etc. Prohibido hablar de proyectiles balísticos, efecto Coriolis en misiles o distancias astronómicas en millones de kilómetros.
+   - Si el tema es programación (ej: "Python básico"): pregunta sobre print(), variables, tipos de datos simples (int, str, bool), operadores y condicionales if/else. Prohibido hacer preguntas de slicing con saltos complejos [2:8:2] o comportamientos extraños de operadores.
+3. Preguntas directas, cotidianas y comprensibles para un estudiante de 14 a 16 años (o del nivel seleccionado).
+4. 4 opciones de respuesta cortas y claras (A, B, C, D) con 1 respuesta correcta inequívoca.
+5. Explicación clara y pedagógica (máximo 2 oraciones sencillas) y un tip nemotécnico o regla fácil de recordar ("tip").
 
 Responde ÚNICAMENTE en JSON plano válido (un array de objetos), sin bloques de markdown:
 [
   {
-    "pregunta": "¿Texto claro de la pregunta?",
-    "categoria": "Subtema o Concepto",
+    "pregunta": "¿Pregunta clara, directa y fundamental?",
+    "categoria": "Concepto Básico",
     "opciones": ["Opción A", "Opción B", "Opción C", "Opción D"],
     "correcta": 0,
-    "explicacion": "Explicación conceptual completa...",
-    "tip": "Regla nemotécnica o clave para recordar."
+    "explicacion": "Explicación sencilla y amigable del porqué.",
+    "tip": "Tip corto y fácil de recordar para el examen."
   }
 ]`;
 
       try {
-        const raw = await askGemini(prompt, "Eres un tutor académico de excelencia. Devuelve estrictamente JSON válido.");
+        const raw = await askGemini(prompt, "Eres un profesor cercano, claro y pedagógico. Devuelve estrictamente JSON válido.");
         const clean = raw.replace(/```json/gi, "").replace(/```/gi, "").trim();
         const batch = JSON.parse(clean);
         if (Array.isArray(batch) && batch.length > 0) {

@@ -2383,24 +2383,35 @@ Si falta ALGÚN dato, el monto no coincide, o el comprobante es inválido/antigu
       document.getElementById('exam-output').style.display = 'none';
       document.getElementById('exam-score-banner').style.display = 'none';
 
-      const prompt = `Actúa como un profesor universitario experto en evaluación académica.
-Genera exactamente ${count} preguntas de examen de opción múltiple para estudiantes de nivel ${level} sobre el siguiente material:
+      const prompt = `Actúa como un profesor claro, accesible y pedagógico de colegio/bachillerato.
+Tu objetivo es evaluar y enseñar los conceptos CLAVE, FUNDAMENTALES Y MÁS IMPORTANTES sobre el siguiente tema:
 """
 ${input}
 """
+Nivel académico: ${level}.
+Cantidad: exactamente ${count} preguntas de opción múltiple.
+
+REGLAS DE ORO DE SIMPLICIDAD Y PEDAGOGÍA:
+1. Enseña y evalúa los pilares esenciales del tema, lo que realmente preguntan los profesores en una prueba normal.
+2. CERO preguntas rebuscadas, CERO física de la NASA o jerga innecesaria, CERO trampas de compilador:
+   - En ciencias naturales o física: conceptos directos (causas, efectos, para qué sirve, duración, ejemplos reales).
+   - En programación o tecnología: conceptos iniciales, para qué sirve cada herramienta, sintaxis común y directa.
+3. Enunciados directos y comprensibles (2 a 3 líneas máximo).
+4. 4 opciones claras (A, B, C, D) con solo 1 respuesta correcta indiscutible.
+5. Explicación breve, amigable y comprensible.
 
 Responde ÚNICAMENTE en formato JSON plano (un array de objetos), sin bloques de markdown:
 [
   {
-    "pregunta": "Texto de la pregunta...",
+    "pregunta": "¿Pregunta clara, directa y fundamental?",
     "opciones": ["Opción A", "Opción B", "Opción C", "Opción D"],
     "correcta": 0,
-    "explicacion": "Explicación detallada de por qué esta es la respuesta correcta y por qué las otras son incorrectas."
+    "explicacion": "Explicación sencilla y clara de por qué es la respuesta correcta."
   }
 ]`;
 
       try {
-        const raw = await askGemini(prompt, "Eres un evaluador académico riguroso. Devuelve estrictamente JSON válido.");
+        const raw = await askGemini(prompt, "Eres un profesor pedagógico, claro y formativo. Devuelve estrictamente JSON válido.");
         const cleanJson = raw.replace(/\`\`\`json/gi, '').replace(/\`\`\`/gi, '').trim();
         state.quizData = JSON.parse(cleanJson);
         state.userAnswers = {};
