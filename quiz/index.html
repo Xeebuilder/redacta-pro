@@ -667,6 +667,7 @@
         <div class="form-group">
           <label class="form-label" for="study-topic">Tema a estudiar o pega tus apuntes / temario:</label>
           <input type="text" id="study-topic" class="input-text" placeholder="Ej: Leyes de Kepler, Mitocondria y Respiración Celular, Guerra Fría...">
+          <div id="topic-error-msg" style="display:none; color:#DC2626; font-size:0.88rem; font-weight:700; margin-top:8px;">⚠️ Por favor ingresa un tema o selecciona uno de los temas sugeridos arriba.</div>
           
           <div class="topic-presets">
             <span class="preset-pill" onclick="setTopic('Biología Celular y División Mitótica')">🧬 Biología Celular</span>
@@ -856,7 +857,7 @@
       answeredCurrent: false
     };
 
-    const GEMINI_MODEL = 'gemini-2.5-flash';
+    const GEMINI_MODEL = 'gemini-3.8-flash';
 
     // ─── AUTHENTICATION STATE ───
     firebase.auth().onAuthStateChanged((user) => {
@@ -873,6 +874,9 @@
 
     function setTopic(text) {
       document.getElementById('study-topic').value = text;
+      const err = document.getElementById('topic-error-msg');
+      if (err) err.style.display = 'none';
+      document.getElementById('study-topic').style.borderColor = 'var(--border-color)';
     }
 
     // ─── LLAMADA A GEMINI HELPER ───
@@ -894,12 +898,18 @@
 
     // ─── INICIAR SESIÓN DE ESTUDIO ───
     async function startStudySession() {
-      const topicInput = document.getElementById('study-topic').value.trim();
+      let topicInput = document.getElementById('study-topic').value.trim();
+      const errEl = document.getElementById('topic-error-msg');
+      const field = document.getElementById('study-topic');
+
       if (!topicInput) {
-        alert("Por favor escribe un tema o pega tus apuntes para iniciar.");
-        document.getElementById('study-topic').focus();
+        if (errEl) errEl.style.display = 'block';
+        field.style.borderColor = '#DC2626';
+        field.focus();
         return;
       }
+      if (errEl) errEl.style.display = 'none';
+      field.style.borderColor = 'var(--border-color)';
 
       state.topic = topicInput;
       state.level = document.getElementById('study-level').value;
@@ -918,6 +928,9 @@
 
       try {
         await fetchQuestionBatch(3); // Carga inicial de 3 preguntas
+        if (!state.queue || state.queue.length === 0) {
+          throw new Error("No se pudieron obtener preguntas del servidor. Revisa tu conexión o intenta con otro tema.");
+        }
         document.getElementById('view-loading').style.display = 'none';
         document.getElementById('view-quiz').style.display = 'block';
         renderQuestion();
@@ -963,13 +976,16 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos), sin bloques de
 
       try {
         const raw = await askGemini(prompt, "Eres un tutor académico de excelencia. Devuelve estrictamente JSON válido.");
-        const clean = raw.replace(/```json/gi, '').replace(/```/gi, '').trim();
+        const clean = raw.replace(/```json/gi, "").replace(/```/gi, "").trim();
         const batch = JSON.parse(clean);
-        if (Array.isArray(batch)) {
+        if (Array.isArray(batch) && batch.length > 0) {
           state.queue.push(...batch);
+        } else {
+          throw new Error("Formato de preguntas no reconocido por la IA.");
         }
       } catch (e) {
-        console.warn("Fallo en prefetching de lote:", e);
+        console.error("Error obteniendo preguntas:", e);
+        if (state.queue.length === 0) throw e;
       } finally {
         state.isFetchingBatch = false;
       }

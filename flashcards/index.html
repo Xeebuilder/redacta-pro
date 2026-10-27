@@ -327,7 +327,7 @@
       flashcards: [],
       currentCardIndex: 0
     };
-    const GEMINI_MODEL = 'gemini-2.5-flash';
+    const GEMINI_MODEL = 'gemini-3.8-flash';
 
     async function askGemini(prompt, systemInstruction = null) {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${state.apiKey}`;
