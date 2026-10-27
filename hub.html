@@ -1311,8 +1311,9 @@
       <a class="nav-link" href="#inicio">Inicio</a>
       <a class="nav-link" href="#precios">Precios</a>
       <a class="nav-link" href="#servicios">Servicios</a>
-      <a class="nav-link" href="#workspace">Consolas de Estudio</a>
-      <a class="nav-link" href="#nosotros">Sobre Nosotros</a>
+      <a class="nav-link" href="redactapro/">RedactaPro</a>
+      <a class="nav-link" href="quiz/">Quiz Continuo</a>
+      <a class="nav-link" href="#workspace">Consolas</a>
       <a class="nav-link" href="#contacto">Contacto</a>
     </nav>
 
@@ -1486,7 +1487,7 @@
                 <li>Estructura formal con introducción, desarrollo y conclusiones</li>
               </ul>
             </div>
-            <a href="dashboard.html" class="btn-service primary">Acceder a RedactaPro ➜</a>
+            <a href="redactapro/" class="btn-service primary">Acceder a RedactaPro ➜</a>
           </div>
 
           <!-- Servicio 2: Simulador de Exámenes -->
@@ -1495,8 +1496,8 @@
               <div class="service-top">
                 <div class="service-icon-box">🎯</div>
                 <div>
-                  <div class="service-meta-tag">Autoevaluación Predictiva</div>
-                  <h3>Simulador de Exámenes</h3>
+                  <div class="service-meta-tag">Estudio Activo • Metodología Thea</div>
+                  <h3>Quiz Continuo (Smart Study)</h3>
                 </div>
               </div>
               <p class="service-desc">
@@ -1508,7 +1509,10 @@
                 <li>Cálculo de porcentaje de dominio y áreas a reforzar</li>
               </ul>
             </div>
-            <button class="btn-service secondary" onclick="activateWorkspaceTool('exam')">Probar Simulador en Vivo ↓</button>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:1rem;">
+              <a href="quiz/" class="btn-service primary" style="flex:1; text-align:center; text-decoration:none;">Abrir Quiz Continuo ➜</a>
+              <button class="btn-service secondary" style="width:auto;" onclick="activateWorkspaceTool('exam')">Probar en Consola ↓</button>
+            </div>
           </div>
 
           <!-- Servicio 3: Deep Research -->
@@ -1530,7 +1534,10 @@
                 <li>Copia rápida con un solo clic para tu procesador de texto</li>
               </ul>
             </div>
-            <button class="btn-service secondary" onclick="activateWorkspaceTool('research')">Iniciar Deep Research ↓</button>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:1rem;">
+              <a href="research/" class="btn-service primary" style="flex:1; text-align:center; text-decoration:none;">Abrir Deep Research ➜</a>
+              <button class="btn-service secondary" style="width:auto;" onclick="activateWorkspaceTool('research')">Probar en Consola ↓</button>
+            </div>
           </div>
 
           <!-- Servicio 4: Flashcards 3D -->
@@ -1552,7 +1559,10 @@
                 <li>Generación instantánea a partir de cualquier texto o resumen</li>
               </ul>
             </div>
-            <button class="btn-service secondary" onclick="activateWorkspaceTool('flashcards')">Crear Flashcards ↓</button>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:1rem;">
+              <a href="flashcards/" class="btn-service primary" style="flex:1; text-align:center; text-decoration:none;">Abrir Flashcards ➜</a>
+              <button class="btn-service secondary" style="width:auto;" onclick="activateWorkspaceTool('flashcards')">Probar en Consola ↓</button>
+            </div>
           </div>
         </div>
       </div>
@@ -1568,13 +1578,17 @@
         </div>
 
         <div class="workspace-tabs">
-          <button class="tab-btn active" id="btn-work-exam" onclick="activateWorkspaceTool('exam')">🎯 Simulador de Exámenes</button>
+          <button class="tab-btn active" id="btn-work-exam" onclick="activateWorkspaceTool('exam')">🎯 Quiz de Estudio Continuo</button>
           <button class="tab-btn" id="btn-work-research" onclick="activateWorkspaceTool('research')">🔬 Deep Research</button>
           <button class="tab-btn" id="btn-work-flashcards" onclick="activateWorkspaceTool('flashcards')">⚡ Flashcards 3D</button>
         </div>
 
         <!-- CONSOLA 1: EXAMEN -->
         <div class="workspace-tool-panel active" id="panel-exam">
+          <div style="background:rgba(217,119,6,0.1); border:1px solid rgba(217,119,6,0.25); border-radius:10px; padding:10px 14px; margin-bottom:1.2rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <span style="font-size:0.88rem; font-weight:700; color:#D97706;">⚡ Metodología de Estudio Continuo estilo Thea</span>
+            <a href="quiz/" style="background:#2B1B17; color:#fff; padding:6px 14px; border-radius:8px; font-weight:700; font-size:0.82rem; text-decoration:none;">🚀 Abrir Modo Pantalla Completa (/quiz/) ➔</a>
+          </div>
           <div class="form-group">
             <label>Tema del examen o pega tus apuntes / diapositivas:</label>
             <textarea id="exam-input" rows="4" placeholder="Ej: Leyes de la Termodinámica, Revolución Industrial, Bioquímica de Proteínas, o pega el temario de tu cátedra..."></textarea>

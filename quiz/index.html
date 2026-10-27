@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Synapse Smart Study • Quizzes Continuos e Interactivos</title>
+  
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="../firebase-config.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    :root {
+      --bg-main: #E5D8C8;
+      --bg-card: #FAF8F5;
+      --bg-pure: #FFFFFF;
+      --text-main: #2B1B17;
+      --text-muted: #6B5B54;
+      --color-primary: #2B1B17;
+      --color-accent: #8C6A53;
+      --color-accent-light: #D9C3B0;
+      --border-color: rgba(43, 27, 23, 0.12);
+      
+      --correct-bg: #EAF7EE;
+      --correct-border: #1B7A43;
+      --correct-text: #0E512A;
+      
+      --incorrect-bg: #FDF2F2;
+      --incorrect-border: #DC2626;
+      --incorrect-text: #991B1B;
+      
+      --streak-color: #D97706;
+      --streak-bg: #FEF3C7;
+      
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --shadow-sm: 0 4px 12px rgba(43, 27, 23, 0.05);
+      --shadow-md: 0 8px 24px rgba(43, 27, 23, 0.08);
+      --shadow-lg: 0 16px 36px rgba(43, 27, 23, 0.12);
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1.5;
+    }
+
+    /* ─── NAVBAR ─── */
+    .navbar {
+      width: 100%;
+      background-color: var(--bg-card);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0.85rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--color-primary);
+    }
+    .nav-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1px solid var(--border-color);
+    }
+    .brand-title {
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: -0.5px;
+    }
+    .brand-badge {
+      background: var(--color-primary);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .nav-link {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.92rem;
+      transition: color 0.2s;
+    }
+    .nav-link:hover, .nav-link.active {
+      color: var(--color-primary);
+    }
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(43,27,23,0.06);
+      padding: 5px 12px;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    /* ─── APP CONTAINER ─── */
+    #app {
+      width: 100%;
+      max-width: 820px;
+      padding: 2rem 1.2rem 4rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ─── VIEW 1: LOBBY SETUP ─── */
+    .lobby-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 2.2rem;
+      box-shadow: var(--shadow-md);
+      text-align: center;
+    }
+    .lobby-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--streak-bg);
+      color: var(--streak-color);
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.82rem;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(217,119,6,0.25);
+    }
+    .lobby-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.75rem;
+      color: var(--color-primary);
+    }
+    .lobby-subtitle {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 620px;
+      margin: 0 auto 2rem;
+    }
+
+    .setup-box {
+      text-align: left;
+      background: var(--bg-pure);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.8rem;
+      margin-bottom: 2rem;
+    }
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+    .form-label {
+      display: block;
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+      color: var(--color-primary);
+    }
+    .input-text, .input-textarea, .select-level {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 1.1rem;
+      font-size: 1rem;
+      color: var(--text-main);
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .input-text:focus, .input-textarea:focus, .select-level:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(43,27,23,0.1);
+    }
+    .topic-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 0.75rem;
+    }
+    .preset-pill {
+      background: rgba(43,27,23,0.05);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .preset-pill:hover {
+      background: var(--color-primary);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .btn-start {
+      width: 100%;
+      background: var(--color-primary);
+      color: #FFFFFF;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 1.1rem;
+      font-size: 1.15rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.25s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-start:hover {
+      background: #4A322B;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* Pillars */
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 2rem;
+    }
+    .pillar-card {
+      background: var(--bg-pure);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 1.2rem;
+      text-align: left;
+    }
+    .pillar-icon { font-size: 1.6rem; margin-bottom: 0.4rem; }
+    .pillar-title { font-size: 0.95rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.25rem; }
+    .pillar-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.4; }
+
+    /* ─── VIEW 2: ACTIVE QUIZ VIEW ─── */
+    #view-quiz {
+      display: none;
+      width: 100%;
+    }
+
+    /* Progress & Metrics Header */
+    .quiz-metrics-bar {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1.4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      box-shadow: var(--shadow-sm);
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .metric-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .streak-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--streak-bg);
+      color: var(--streak-color);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      border: 1px solid rgba(217,119,6,0.3);
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .streak-pulse {
+      animation: pulseStreak 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes pulseStreak {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.18); background: #FDE68A; }
+      100% { transform: scale(1); }
+    }
+    .btn-finish-session {
+      background: transparent;
+      border: 1.5px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 5px 12px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-finish-session:hover {
+      background: rgba(43,27,23,0.08);
+      color: var(--color-primary);
+    }
+
+    /* Question Focused Card */
+    .question-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 2.2rem;
+      box-shadow: var(--shadow-md);
+      position: relative;
+    }
+    .question-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+    .meta-tag {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--color-accent);
+      background: rgba(140, 106, 83, 0.12);
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+    .question-text {
+      font-size: 1.35rem;
+      font-weight: 700;
+      line-height: 1.45;
+      color: var(--color-primary);
+      margin-bottom: 1.8rem;
+    }
+
+    /* Options List */
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 1.8rem;
+    }
+    .option-btn {
+      background: var(--bg-pure);
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.1rem 1.4rem;
+      text-align: left;
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--color-primary);
+      background: #FDFBF8;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(43,27,23,0.06);
+    }
+    .option-letter {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(43,27,23,0.08);
+      color: var(--color-primary);
+      font-weight: 800;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+    .option-content {
+      flex: 1;
+    }
+
+    /* Option States */
+    .option-btn.state-correct {
+      background: var(--correct-bg) !important;
+      border-color: var(--correct-border) !important;
+      color: var(--correct-text) !important;
+      box-shadow: 0 4px 16px rgba(27,122,67,0.15);
+    }
+    .option-btn.state-correct .option-letter {
+      background: var(--correct-border);
+      color: #fff;
+    }
+    .option-btn.state-incorrect {
+      background: var(--incorrect-bg) !important;
+      border-color: var(--incorrect-border) !important;
+      color: var(--incorrect-text) !important;
+      box-shadow: 0 4px 16px rgba(220,38,38,0.15);
+    }
+    .option-btn.state-incorrect .option-letter {
+      background: var(--incorrect-border);
+      color: #fff;
+    }
+    .option-btn:disabled {
+      cursor: default;
+    }
+
+    /* Explanation Banner */
+    .explanation-card {
+      display: none;
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.4rem;
+      margin-bottom: 1.5rem;
+      animation: fadeInSlide 0.3s ease-out;
+    }
+    @keyframes fadeInSlide {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .exp-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .exp-header.correct { color: var(--correct-border); }
+    .exp-header.incorrect { color: var(--incorrect-border); }
+    .exp-body {
+      font-size: 0.95rem;
+      color: var(--text-main);
+      line-height: 1.55;
+      margin-bottom: 0.75rem;
+    }
+    .exp-tip {
+      background: rgba(140, 106, 83, 0.08);
+      border-left: 3px solid var(--color-accent);
+      padding: 8px 12px;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.88rem;
+      color: var(--text-main);
+    }
+
+    /* Action Next Bar */
+    .action-next-bar {
+      display: none;
+      justify-content: flex-end;
+    }
+    .btn-next {
+      background: var(--color-primary);
+      color: #FFFFFF;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 0.95rem 2.2rem;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+    }
+    .btn-next:hover {
+      background: #4A322B;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* ─── VIEW 3: SESSION SUMMARY ─── */
+    #view-summary {
+      display: none;
+      width: 100%;
+    }
+    .summary-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 2.8rem 2.2rem;
+      text-align: center;
+      box-shadow: var(--shadow-md);
+    }
+    .summary-score-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: var(--bg-pure);
+      border: 4px solid var(--color-primary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+    }
+    .score-pct {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--color-primary);
+      line-height: 1;
+    }
+    .score-lbl {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .stat-pill {
+      background: var(--bg-pure);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 10px 18px;
+      text-align: left;
+    }
+    .stat-val { font-size: 1.25rem; font-weight: 800; color: var(--color-primary); }
+    .stat-name { font-size: 0.78rem; font-weight: 600; color: var(--text-muted); }
+
+    .summary-feedback-box {
+      text-align: left;
+      background: var(--bg-pure);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .feedback-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .summary-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-secondary {
+      background: transparent;
+      border: 2px solid var(--color-primary);
+      color: var(--color-primary);
+      padding: 0.9rem 1.6rem;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover {
+      background: rgba(43,27,23,0.06);
+    }
+
+    /* ─── LOADING STATE ─── */
+    .loading-overlay {
+      display: none;
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid rgba(43, 27, 23, 0.15);
+      border-top-color: var(--color-primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 1.2rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 640px) {
+      .navbar { padding: 0.8rem 1rem; }
+      .lobby-title { font-size: 1.7rem; }
+      .pillars-grid { grid-template-columns: 1fr; }
+      .question-box { padding: 1.5rem 1.2rem; }
+      .question-text { font-size: 1.15rem; }
+      .option-btn { font-size: 0.95rem; padding: 0.9rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR UNIFICADA SYNAPSE -->
+  <header class="navbar">
+    <a href="../" class="nav-brand" title="Volver al Hub de Synapse">
+      <img src="../synapse-logo.jpg" alt="Synapse" class="nav-logo" onerror="this.style.display='none'">
+      <span class="brand-title">SYNAPSE</span>
+      <span class="brand-badge">Smart Study</span>
+    </a>
+
+    <nav class="nav-links">
+      <a href="../" class="nav-link">Hub Principal</a>
+      <a href="../redactapro/" class="nav-link">RedactaPro</a>
+      <a href="../quiz/" class="nav-link active">Quiz Continuo</a>
+      <a href="../flashcards/" class="nav-link">Flashcards</a>
+      <div id="user-display" class="user-pill" style="display:none;">
+        <span>👤</span>
+        <span id="user-email-text">Usuario</span>
+      </div>
+    </nav>
+  </header>
+
+  <main id="app">
+
+    <!-- ─── 1. VISTA: LOBBY DE CONFIGURACIÓN ─── -->
+    <section id="view-lobby" class="lobby-card">
+      <div class="lobby-badge">
+        <span>⚡</span> Aprendizaje Activo • Metodología Thea
+      </div>
+      <h1 class="lobby-title">Quiz de Estudio Continuo</h1>
+      <p class="lobby-subtitle">
+        Entrena tu memoria y razonamiento. Te haremos preguntas continuas una a una basadas en tu tema o apuntes, con explicaciones inmediatas y adaptación a tus errores.
+      </p>
+
+      <div class="setup-box">
+        <div class="form-group">
+          <label class="form-label" for="study-topic">Tema a estudiar o pega tus apuntes / temario:</label>
+          <input type="text" id="study-topic" class="input-text" placeholder="Ej: Leyes de Kepler, Mitocondria y Respiración Celular, Guerra Fría...">
+          
+          <div class="topic-presets">
+            <span class="preset-pill" onclick="setTopic('Biología Celular y División Mitótica')">🧬 Biología Celular</span>
+            <span class="preset-pill" onclick="setTopic('Leyes del Movimiento de Newton')">🍎 Física Mecánica</span>
+            <span class="preset-pill" onclick="setTopic('Segunda Guerra Mundial: Causas y Frentes')">📜 Segunda Guerra Mundial</span>
+            <span class="preset-pill" onclick="setTopic('Álgebra: Factorización y Ecuaciones')">📐 Álgebra y Matemáticas</span>
+            <span class="preset-pill" onclick="setTopic('Química Orgánica: Hidrocarburos y Enlaces')">🧪 Química Orgánica</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="study-level">Nivel de profundidad académica:</label>
+          <select id="study-level" class="select-level">
+            <option value="Secundaria Básica">Secundaria Básica (12 - 14 años)</option>
+            <option value="Bachillerato y 4to año" selected>Bachillerato / Preparatoria (15 - 17 años)</option>
+            <option value="Universitario Riguroso">Universitario / Superior (Conceptos avanzados y rigor)</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="btn-start" onclick="startStudySession()">
+        <span>🚀</span> Iniciar Modo Estudio Continuo
+      </button>
+
+      <div class="pillars-grid">
+        <div class="pillar-card">
+          <div class="pillar-icon">🧠</div>
+          <div class="pillar-title">Active Recall</div>
+          <div class="pillar-desc">Te preguntamos en lugar de darte la respuesta servida. El esfuerzo cognitivo fija el conocimiento.</div>
+        </div>
+        <div class="pillar-card">
+          <div class="pillar-icon">⚡</div>
+          <div class="pillar-title">Feedback Inmediato</div>
+          <div class="pillar-desc">Conoce al instante por qué acertaste o fallaste con explicaciones concisas y reglas nemotécnicas.</div>
+        </div>
+        <div class="pillar-card">
+          <div class="pillar-icon">♾️</div>
+          <div class="pillar-title">Flujo Sin Esperas</div>
+          <div class="pillar-desc">Carga continua en segundo plano para que estudies a tu ritmo sin pantallas de espera intermedias.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── CARGANDO INICIAL ─── -->
+    <div id="view-loading" class="loading-overlay">
+      <div class="spinner"></div>
+      <h3 style="font-size:1.3rem; font-weight:700; margin-bottom:6px;">Estructurando tus preguntas con IA...</h3>
+      <p style="color:var(--text-muted); font-size:0.95rem;">Extrayendo conceptos clave y formulando desafíos interactivos.</p>
+    </div>
+
+    <!-- ─── 2. VISTA: ESTUDIO ACTIVO (SMART STUDY LOOP) ─── -->
+    <section id="view-quiz">
+      
+      <!-- Barra Superior de Métricas -->
+      <div class="quiz-metrics-bar">
+        <div class="metric-item">
+          <span style="color:var(--color-accent);">Pregunta</span>
+          <span id="metric-counter" style="color:var(--color-primary); font-size:1.1rem;">#1</span>
+        </div>
+
+        <div class="metric-item">
+          <div class="streak-badge" id="streak-badge-box">
+            <span id="streak-fire">🔥</span>
+            <span id="metric-streak">0 seguidas</span>
+          </div>
+        </div>
+
+        <div class="metric-item">
+          <span style="color:var(--text-muted); font-size:0.9rem;">Precisión:</span>
+          <span id="metric-accuracy" style="color:var(--correct-border);">100%</span>
+        </div>
+
+        <button class="btn-finish-session" onclick="finishSession()">
+          Terminar Sesión ⏹
+        </button>
+      </div>
+
+      <!-- Tarjeta Principal de Pregunta Única -->
+      <div class="question-box" id="question-card">
+        <div class="question-meta">
+          <span class="meta-tag" id="q-category-tag">Concepto Clave</span>
+          <span style="font-size:0.85rem; color:var(--text-muted);" id="q-topic-label">Tema</span>
+        </div>
+
+        <div class="question-text" id="q-text">
+          Cargando pregunta...
+        </div>
+
+        <!-- Opciones A, B, C, D -->
+        <div class="options-grid" id="q-options-container">
+          <!-- Renderizado dinámico -->
+        </div>
+
+        <!-- Banner de Explicación Inmediata -->
+        <div class="explanation-card" id="q-explanation-box">
+          <div class="exp-header" id="exp-header-tag">
+            <span id="exp-status-icon">✓</span>
+            <span id="exp-status-text">¡Correcto!</span>
+          </div>
+          <div class="exp-body" id="exp-body-text">
+            Explicación detallada...
+          </div>
+          <div class="exp-tip" id="exp-tip-box" style="display:none;">
+            <strong>💡 Clave para recordar:</strong> <span id="exp-tip-text"></span>
+          </div>
+        </div>
+
+        <!-- Barra de Acción: Siguiente Pregunta -->
+        <div class="action-next-bar" id="action-next-bar">
+          <button class="btn-next" id="btn-next-question" onclick="nextQuestion()">
+            <span>Siguiente Pregunta</span> ➔
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ─── 3. VISTA: RESUMEN DE SESIÓN ─── -->
+    <section id="view-summary">
+      <div class="summary-card">
+        <div class="summary-score-circle">
+          <span class="score-pct" id="sum-score-pct">0%</span>
+          <span class="score-lbl">Precisión</span>
+        </div>
+
+        <h2 style="font-size:1.8rem; font-weight:800; margin-bottom:0.5rem;" id="sum-title">¡Gran Sesión de Estudio!</h2>
+        <p style="color:var(--text-muted); max-width:540px; margin:0 auto 1.8rem;" id="sum-subtitle">
+          Has completado una sesión de entrenamiento activo. Repasa los puntos destacados a continuación:
+        </p>
+
+        <div class="stats-row">
+          <div class="stat-pill">
+            <div class="stat-val" id="sum-total-answered">0</div>
+            <div class="stat-name">Preguntas Respondidas</div>
+          </div>
+          <div class="stat-pill">
+            <div class="stat-val" id="sum-correct-count" style="color:var(--correct-border);">0</div>
+            <div class="stat-name">Aciertos</div>
+          </div>
+          <div class="stat-pill">
+            <div class="stat-val" id="sum-max-streak" style="color:var(--streak-color);">🔥 0</div>
+            <div class="stat-name">Mejor Racha</div>
+          </div>
+        </div>
+
+        <div class="summary-feedback-box" id="sum-feedback-container">
+          <div class="feedback-title" style="color:var(--color-primary);">
+            <span>📋</span> Diagnóstico Pedagógico
+          </div>
+          <p id="sum-feedback-text" style="color:var(--text-main); font-size:0.95rem; line-height:1.5;">
+            Excelente ritmo de estudio. Continúa practicando para afianzar los conceptos antes de tu evaluación formal.
+          </p>
+        </div>
+
+        <div class="summary-actions">
+          <button class="btn-start" style="width:auto; padding:0.85rem 1.8rem;" onclick="continueStudyingSameTopic()">
+            🔄 Seguir con este Tema
+          </button>
+          <button class="btn-secondary" onclick="newTopicSession()">
+            📚 Estudiar Otro Tema
+          </button>
+          <a href="../" class="btn-secondary">
+            🏠 Volver al Hub
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // ─── ESTADO GLOBAL DEL SMART STUDY ───
+    const state = {
+      apiKey: atob('QVEuQWI4Uk42SnBsdlYxX0F3RzdJYWVfWWlLZFpDTFlidFBvRUV0WEVjX2pWczdFRFFPaXc='),
+      currentUser: null,
+      topic: '',
+      level: '',
+      queue: [],
+      currentIndex: 0,
+      streak: 0,
+      maxStreak: 0,
+      correctCount: 0,
+      totalAnswered: 0,
+      weakConcepts: [],
+      masteredConcepts: [],
+      isFetchingBatch: false,
+      answeredCurrent: false
+    };
+
+    const GEMINI_MODEL = 'gemini-2.5-flash';
+
+    // ─── AUTHENTICATION STATE ───
+    firebase.auth().onAuthStateChanged((user) => {
+      state.currentUser = user;
+      const userDisplay = document.getElementById('user-display');
+      const emailText = document.getElementById('user-email-text');
+      if (user) {
+        userDisplay.style.display = 'flex';
+        emailText.textContent = user.displayName || user.email.split('@')[0];
+      } else {
+        userDisplay.style.display = 'none';
+      }
+    });
+
+    function setTopic(text) {
+      document.getElementById('study-topic').value = text;
+    }
+
+    // ─── LLAMADA A GEMINI HELPER ───
+    async function askGemini(prompt, systemInstruction = null) {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${state.apiKey}`;
+      const body = { contents: [{ role: 'user', parts: [{ text: prompt }] }] };
+      if (systemInstruction) {
+        body.system_instruction = { parts: [{ text: systemInstruction }] };
+      }
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if (!res.ok || data.error) throw new Error(data.error ? data.error.message : 'Error en IA');
+      return data.candidates[0].content.parts[0].text;
+    }
+
+    // ─── INICIAR SESIÓN DE ESTUDIO ───
+    async function startStudySession() {
+      const topicInput = document.getElementById('study-topic').value.trim();
+      if (!topicInput) {
+        alert("Por favor escribe un tema o pega tus apuntes para iniciar.");
+        document.getElementById('study-topic').focus();
+        return;
+      }
+
+      state.topic = topicInput;
+      state.level = document.getElementById('study-level').value;
+      state.queue = [];
+      state.currentIndex = 0;
+      state.streak = 0;
+      state.maxStreak = 0;
+      state.correctCount = 0;
+      state.totalAnswered = 0;
+      state.weakConcepts = [];
+      state.masteredConcepts = [];
+
+      document.getElementById('view-lobby').style.display = 'none';
+      document.getElementById('view-summary').style.display = 'none';
+      document.getElementById('view-loading').style.display = 'block';
+
+      try {
+        await fetchQuestionBatch(3); // Carga inicial de 3 preguntas
+        document.getElementById('view-loading').style.display = 'none';
+        document.getElementById('view-quiz').style.display = 'block';
+        renderQuestion();
+      } catch (err) {
+        document.getElementById('view-loading').style.display = 'none';
+        document.getElementById('view-lobby').style.display = 'block';
+        alert("No se pudo iniciar la sesión: " + err.message);
+      }
+    }
+
+    // ─── FETCHING ASÍNCRONO DE PREGUNTAS (PREFETCH STREAM) ───
+    async function fetchQuestionBatch(count = 3) {
+      if (state.isFetchingBatch) return;
+      state.isFetchingBatch = true;
+
+      let weakContext = "";
+      if (state.weakConcepts.length > 0) {
+        weakContext = `El estudiante ha fallado previamente en los siguientes conceptos: "${state.weakConcepts.slice(-3).join(', ')}". Incluye al menos una pregunta que refuerce y aclare esos puntos débiles.`;
+      }
+
+      const prompt = `Eres el motor de aprendizaje activo de Synapse Smart Study (estilo Thea).
+Tu misión es generar ${count} preguntas continuas de opción múltiple para estudio y active recall sobre el tema: "${state.topic}".
+Nivel académico del estudiante: "${state.level}".
+${weakContext}
+
+Requisitos estrictos:
+1. Las preguntas deben desafiar la comprensión y aplicación del concepto, no ser triviales.
+2. 4 opciones (A, B, C, D) verosímiles pero con solo 1 inequívocamente correcta.
+3. Explicación clara y pedagógica (2 a 3 oraciones) de por qué es correcta y por qué no las demás.
+4. Un tip o regla nemotécnica corta ("tip").
+
+Responde ÚNICAMENTE en JSON plano válido (un array de objetos), sin bloques de markdown:
+[
+  {
+    "pregunta": "¿Texto claro de la pregunta?",
+    "categoria": "Subtema o Concepto",
+    "opciones": ["Opción A", "Opción B", "Opción C", "Opción D"],
+    "correcta": 0,
+    "explicacion": "Explicación conceptual completa...",
+    "tip": "Regla nemotécnica o clave para recordar."
+  }
+]`;
+
+      try {
+        const raw = await askGemini(prompt, "Eres un tutor académico de excelencia. Devuelve estrictamente JSON válido.");
+        const clean = raw.replace(/```json/gi, '').replace(/```/gi, '').trim();
+        const batch = JSON.parse(clean);
+        if (Array.isArray(batch)) {
+          state.queue.push(...batch);
+        }
+      } catch (e) {
+        console.warn("Fallo en prefetching de lote:", e);
+      } finally {
+        state.isFetchingBatch = false;
+      }
+    }
+
+    // ─── RENDERIZAR LA PREGUNTA ACTUAL ───
+    function renderQuestion() {
+      const q = state.queue[state.currentIndex];
+      if (!q) {
+        finishSession();
+        return;
+      }
+
+      state.answeredCurrent = false;
+
+      // Actualizar Métricas
+      document.getElementById('metric-counter').textContent = `#${state.currentIndex + 1}`;
+      document.getElementById('metric-streak').textContent = `${state.streak} seguidas`;
+      
+      const acc = state.totalAnswered > 0 ? Math.round((state.correctCount / state.totalAnswered) * 100) : 100;
+      document.getElementById('metric-accuracy').textContent = `${acc}%`;
+
+      // Actualizar Textos
+      document.getElementById('q-category-tag').textContent = q.categoria || 'Concepto Clave';
+      document.getElementById('q-topic-label').textContent = state.topic;
+      document.getElementById('q-text').textContent = q.pregunta;
+
+      // Ocultar explicaciones previas
+      document.getElementById('q-explanation-box').style.display = 'none';
+      document.getElementById('action-next-bar').style.display = 'none';
+
+      // Renderizar Opciones
+      const container = document.getElementById('q-options-container');
+      container.innerHTML = '';
+
+      q.opciones.forEach((optText, idx) => {
+        const letter = String.fromCharCode(65 + idx);
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.id = `opt-${idx}`;
+        btn.onclick = () => handleAnswer(idx);
+        btn.innerHTML = `
+          <span class="option-letter">${letter}</span>
+          <span class="option-content">${optText}</span>
+        `;
+        container.appendChild(btn);
+      });
+
+      // Prefetching inteligente: si quedan menos de 2 preguntas en la cola, pedir más en background
+      if (state.queue.length - state.currentIndex <= 2) {
+        fetchQuestionBatch(3);
+      }
+    }
+
+    // ─── EVALUAR RESPUESTA CON FEEDBACK INMEDIATO ───
+    function handleAnswer(selectedIdx) {
+      if (state.answeredCurrent) return;
+      state.answeredCurrent = true;
+      state.totalAnswered++;
+
+      const q = state.queue[state.currentIndex];
+      const isCorrect = (selectedIdx === q.correcta);
+
+      // Deshabilitar todas las opciones
+      const allBtns = document.querySelectorAll('.option-btn');
+      allBtns.forEach(b => b.disabled = true);
+
+      // Elementos seleccionados y correctos
+      const selectedBtn = document.getElementById(`opt-${selectedIdx}`);
+      const correctBtn = document.getElementById(`opt-${q.correcta}`);
+
+      const streakBox = document.getElementById('streak-badge-box');
+
+      if (isCorrect) {
+        state.correctCount++;
+        state.streak++;
+        if (state.streak > state.maxStreak) state.maxStreak = state.streak;
+        if (selectedBtn) selectedBtn.classList.add('state-correct');
+        
+        // Animación de racha
+        streakBox.classList.remove('streak-pulse');
+        void streakBox.offsetWidth; // trigger reflow
+        streakBox.classList.add('streak-pulse');
+
+        if (q.categoria && !state.masteredConcepts.includes(q.categoria)) {
+          state.masteredConcepts.push(q.categoria);
+        }
+      } else {
+        state.streak = 0;
+        if (selectedBtn) selectedBtn.classList.add('state-incorrect');
+        if (correctBtn) correctBtn.classList.add('state-correct');
+
+        if (q.categoria && !state.weakConcepts.includes(q.categoria)) {
+          state.weakConcepts.push(q.categoria);
+        }
+      }
+
+      // Actualizar contador de racha en tiempo real
+      document.getElementById('metric-streak').textContent = `${state.streak} seguidas`;
+      const acc = Math.round((state.correctCount / state.totalAnswered) * 100);
+      document.getElementById('metric-accuracy').textContent = `${acc}%`;
+
+      // Mostrar Caja de Explicación Inmediata
+      const expBox = document.getElementById('q-explanation-box');
+      const expHeader = document.getElementById('exp-header-tag');
+      const expIcon = document.getElementById('exp-status-icon');
+      const expTitle = document.getElementById('exp-status-text');
+      const expBody = document.getElementById('exp-body-text');
+      const expTipBox = document.getElementById('exp-tip-box');
+      const expTipText = document.getElementById('exp-tip-text');
+
+      if (isCorrect) {
+        expHeader.className = 'exp-header correct';
+        expIcon.textContent = '✓';
+        expTitle.textContent = '¡Correcto! Excelente razonamiento.';
+      } else {
+        expHeader.className = 'exp-header incorrect';
+        expIcon.textContent = '✕';
+        expTitle.textContent = 'Incorrecto. Mira el concepto clave:';
+      }
+
+      expBody.textContent = q.explicacion;
+
+      if (q.tip) {
+        expTipBox.style.display = 'block';
+        expTipText.textContent = q.tip;
+      } else {
+        expTipBox.style.display = 'none';
+      }
+
+      expBox.style.display = 'block';
+      document.getElementById('action-next-bar').style.display = 'flex';
+      document.getElementById('btn-next-question').focus();
+    }
+
+    // ─── AVANZAR A SIGUIENTE PREGUNTA ───
+    function nextQuestion() {
+      state.currentIndex++;
+      if (state.currentIndex < state.queue.length) {
+        renderQuestion();
+      } else {
+        // Si aún está descargando lote, mostrar brevemente espera
+        if (state.isFetchingBatch) {
+          document.getElementById('view-quiz').style.display = 'none';
+          document.getElementById('view-loading').style.display = 'block';
+          const interval = setInterval(() => {
+            if (!state.isFetchingBatch && state.queue.length > state.currentIndex) {
+              clearInterval(interval);
+              document.getElementById('view-loading').style.display = 'none';
+              document.getElementById('view-quiz').style.display = 'block';
+              renderQuestion();
+            }
+          }, 300);
+        } else {
+          finishSession();
+        }
+      }
+    }
+
+    // Tecla Enter o Espacio para avanzar rápido
+    window.addEventListener('keydown', (e) => {
+      if ((e.key === 'Enter' || e.key === ' ') && state.answeredCurrent) {
+        const nextBar = document.getElementById('action-next-bar');
+        if (nextBar && nextBar.style.display === 'flex') {
+          e.preventDefault();
+          nextQuestion();
+        }
+      }
+    });
+
+    // ─── FINALIZAR SESIÓN Y MOSTRAR REPORTE ───
+    function finishSession() {
+      if (state.totalAnswered === 0) {
+        newTopicSession();
+        return;
+      }
+
+      document.getElementById('view-quiz').style.display = 'none';
+      document.getElementById('view-loading').style.display = 'none';
+      document.getElementById('view-summary').style.display = 'block';
+
+      const pct = Math.round((state.correctCount / state.totalAnswered) * 100);
+      document.getElementById('sum-score-pct').textContent = `${pct}%`;
+      document.getElementById('sum-total-answered').textContent = state.totalAnswered;
+      document.getElementById('sum-correct-count').textContent = state.correctCount;
+      document.getElementById('sum-max-streak').textContent = `🔥 ${state.maxStreak}`;
+
+      const titleEl = document.getElementById('sum-title');
+      const subEl = document.getElementById('sum-subtitle');
+      const feedEl = document.getElementById('sum-feedback-text');
+
+      if (pct >= 85) {
+        titleEl.textContent = "🏆 ¡Dominio Sobresaliente!";
+        subEl.textContent = "Has demostrado un nivel de retención y comprensión excepcional sobre este tema.";
+        feedEl.innerHTML = `Tienes muy afianzados los conceptos clave de <strong>${state.topic}</strong>. Tu mejor racha fue de <strong>${state.maxStreak} preguntas consecutivas</strong>. ¡Estás más que preparado para el examen!`;
+      } else if (pct >= 60) {
+        titleEl.textContent = "📈 ¡Buen Progreso de Estudio!";
+        subEl.textContent = "Comprendes las bases sólidas, pero hay detalles específicos que conviene reforzar.";
+        feedEl.innerHTML = `Has respondido correctamente <strong>${state.correctCount} de ${state.totalAnswered}</strong> preguntas. Te sugerimos revisar con atención las explicaciones de los conceptos donde fallaste para consolidar el 100%.`;
+      } else {
+        titleEl.textContent = "💡 Sesión de Aprendizaje Inicial";
+        subEl.textContent = "El objetivo del Smart Study es precisamente detectar las lagunas antes del examen real.";
+        feedEl.innerHTML = `La práctica activa ha identificado varios puntos a fortalecer en <strong>${state.topic}</strong>. Te recomendamos volver a repasar tus notas y realizar otra ronda continua.`;
+      }
+    }
+
+    function continueStudyingSameTopic() {
+      document.getElementById('view-summary').style.display = 'none';
+      document.getElementById('view-loading').style.display = 'block';
+      fetchQuestionBatch(3).then(() => {
+        document.getElementById('view-loading').style.display = 'none';
+        document.getElementById('view-quiz').style.display = 'block';
+        renderQuestion();
+      });
+    }
+
+    function newTopicSession() {
+      document.getElementById('view-summary').style.display = 'none';
+      document.getElementById('view-quiz').style.display = 'none';
+      document.getElementById('view-lobby').style.display = 'block';
+      document.getElementById('study-topic').value = '';
+    }
+  </script>
+</body>
+</html>

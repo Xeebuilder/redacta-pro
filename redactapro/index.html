@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Plataforma de Redacción Académica - Dashboard</title>
+  <script src="https://unpkg.com/docx@7.8.2/build/index.js"></script>
+  
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="../firebase-config.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: #E5D8C8;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #2B1B17;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .navbar {
+      width: 100%; background-color: #FAF8F5; padding: 1rem 2rem;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid rgba(43,27,23,0.1); margin-bottom: 2rem;
+    }
+    .user-info { display: flex; align-items: center; gap: 1rem; font-weight: 600; }
+    .btn-logout { background: transparent; border: 1px solid #2B1B17; padding: 0.4rem 1rem; border-radius: 6px; cursor: pointer; color: #2B1B17; font-weight: bold; }
+    
+    #app { width: 100%; max-width: 740px; padding: 0 1rem 4rem; }
+    p, span, label, li { color: #2B1B17; }
+    .header-banner { background-color: #FAF8F5; border: 1px solid rgba(43,27,23,0.15); border-radius: 16px; padding: 2.2rem; text-align: center; margin-bottom: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+    .banner-informe { border-left: 6px solid #4A322B !important; background-color: #FDFBF7; }
+    h1 { color: #2B1B17; font-weight: 800; margin-bottom: 0.5rem; }
+    h3 { color: #2B1B17; margin-bottom: 1rem; }
+    .card { background-color: #FAF8F5; border: 1px solid rgba(43,27,23,0.12); padding: 1.8rem; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.03); margin-bottom: 1.5rem; }
+    label { display: block; font-weight: 600; font-size: 1.05rem; margin-bottom: 0.5rem; color: #2B1B17; }
+    input[type="password"], input[type="text"], textarea { width: 100%; background-color: #FAF8F5; border: 1px solid rgba(43,27,23,0.2); border-radius: 10px; padding: 0.75rem 1rem; font-size: 1rem; color: #2B1B17; font-family: inherit; outline: none; transition: border-color 0.2s; }
+    input[type="password"]:focus, input[type="text"]:focus, textarea:focus { border-color: #2B1B17; }
+    textarea { resize: vertical; }
+    .radio-group { background-color: #FAF8F5; border: 1px solid rgba(43,27,23,0.12); padding: 0.8rem 1.4rem; border-radius: 16px; box-shadow: 0 4px 14px rgba(0,0,0,0.02); margin-bottom: 1.5rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .radio-group label { display: flex; align-items: center; gap: 0.5rem; font-weight: 500; cursor: pointer; margin: 0; }
+    input[type="radio"] { accent-color: #2B1B17; width: 18px; height: 18px; }
+    .btn { background-color: #2B1B17; color: #FFFFFF; border: 2px solid #2B1B17; border-radius: 10px; padding: 0.65rem 1.5rem; font-weight: 600; font-size: 1rem; width: 100%; cursor: pointer; transition: all 0.25s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 4px 10px rgba(43,27,23,0.15); margin-top: 0.75rem; }
+    .btn:hover { background-color: #4A322B; border-color: #4A322B; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(43,27,23,0.25); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-download { background-color: #A4D8FF; color: #101D33; border: 2px solid #A4D8FF; border-radius: 10px; padding: 0.8rem; font-weight: 700; font-size: 1.05rem; width: 100%; cursor: pointer; box-shadow: 0 6px 20px rgba(164,216,255,0.35); transition: all 0.25s ease; margin-top: 1rem; text-decoration: none; display: block; text-align: center; }
+    .btn-download:hover { background-color: #2B1B17; border-color: #2B1B17; color: #FFFFFF; transform: translateY(-2px); }
+    .tabs { display: flex; gap: 4px; margin-bottom: 0; }
+    .tab-btn { background-color: #FAF8F5; color: #2B1B17; border: 1px solid rgba(43,27,23,0.12); border-bottom: none; border-radius: 10px 10px 0 0; padding: 0.6rem 1.5rem; font-weight: 600; font-size: 1.05rem; cursor: pointer; transition: all 0.2s; }
+    .tab-btn.active { background-color: #2B1B17; color: #FFFFFF; border-color: #2B1B17; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .tab-body { background-color: #FAF8F5; border: 1px solid rgba(43,27,23,0.12); border-radius: 0 16px 16px 16px; padding: 1.8rem; margin-bottom: 1.5rem; }
+    .tema-badge { background-color: #EAE2D5; border-left: 4px solid #2B1B17; padding: 0.8rem 1.2rem; border-radius: 6px; margin-bottom: 0.6rem; font-weight: 500; color: #2B1B17; font-size: 0.95rem; }
+    .file-drop { background-color: #FFFFFF; border: 2px dashed rgba(43,27,23,0.25); border-radius: 10px; padding: 1.5rem; text-align: center; cursor: pointer; transition: border-color 0.2s; margin-bottom: 0.75rem; }
+    .file-drop:hover { border-color: #2B1B17; }
+    .file-drop input[type="file"] { display: none; }
+    .file-drop-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .file-drop p { font-size: 0.95rem; opacity: 0.75; margin: 0; }
+    .preview-img { max-width: 100%; border-radius: 12px; border: 3px solid #2B1B17; box-shadow: 0 6px 18px rgba(0,0,0,0.08); margin: 0.75rem 0; display: none; }
+    .preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); gap: 12px; margin: 1rem 0; }
+    .preview-card { position: relative; height: 120px; border-radius: 12px; overflow: hidden; border: 2px solid #2B1B17; background: #FFFFFF; box-shadow: 0 4px 10px rgba(0,0,0,0.06); animation: popIn 0.3s ease forwards; }
+    .preview-card img { width: 100%; height: 100%; object-fit: cover; }
+    .preview-badge { position: absolute; bottom: 6px; left: 6px; background: rgba(43,27,23,0.85); color: #FFFFFF; font-size: 0.75rem; padding: 2px 7px; border-radius: 6px; font-weight: 700; backdrop-filter: blur(2px); }
+    .preview-remove { position: absolute; top: 6px; right: 6px; background: #c0392b; color: #FFFFFF; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; font-size: 11px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.3); transition: transform 0.2s; }
+    .preview-remove:hover { transform: scale(1.15); }
+    .progress-wrap { background-color: #EAE2D5; border-radius: 999px; height: 10px; width: 100%; margin: 1rem 0; overflow: hidden; }
+    .progress-bar { background-color: #2B1B17; height: 100%; width: 0%; border-radius: 999px; transition: width 0.3s ease; }
+    .status-text { font-size: 0.95rem; font-weight: 500; color: #2B1B17; margin-bottom: 0.5rem; min-height: 1.5rem; }
+    #toast { position: fixed; bottom: 2rem; right: 2rem; background-color: #2B1B17; color: #FFFFFF; padding: 0.85rem 1.4rem; border-radius: 12px; font-weight: 600; font-size: 0.95rem; box-shadow: 0 8px 24px rgba(0,0,0,0.2); opacity: 0; transform: translateY(10px); transition: opacity 0.3s, transform 0.3s; z-index: 9999; pointer-events: none; }
+    #toast.show { opacity: 1; transform: translateY(0); }
+    .alert { border-radius: 10px; padding: 0.85rem 1.2rem; margin: 0.75rem 0; font-size: 0.95rem; font-weight: 500; }
+    .alert p { margin: 0; }
+    .alert-error   { background-color: #fde8e8; border-left: 4px solid #c0392b; color: #7b241c; }
+    .alert-warning { background-color: #fef9e7; border-left: 4px solid #d4ac0d; color: #7d6608; }
+    .quota-badge { background: #2B1B17; color: #fff; padding: 2px 8px; border-radius: 12px; font-size: 0.85rem; margin-left: 10px; }
+    
+    /* ─── COOL LOADING ANIMATIONS ─── */
+    .spinner {
+      width: 48px; height: 48px;
+      border: 5px solid rgba(43,27,23,0.1);
+      border-left-color: #4A322B;
+      border-radius: 50%;
+      animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      margin: 0 auto 15px auto;
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .loading-container { text-align: center; padding: 2rem; background: #fff; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); margin-bottom: 1.5rem; }
+    .loading-text { font-weight: 700; font-size: 1.1rem; color: #2B1B17; animation: pulse 1.5s ease-in-out infinite; }
+    @keyframes pulse { 50% { opacity: 0.4; } }
+
+    /* ─── CUSTOM MODALS ─── */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(43,27,23,0.6); backdrop-filter: blur(5px);
+      display: none; justify-content: center; align-items: center; z-index: 9999;
+    }
+    .modal {
+      background: #FAF8F5; padding: 2.5rem; border-radius: 20px; width: 90%; max-width: 420px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2); text-align: center;
+      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popIn { 0% { transform: scale(0.8) translateY(20px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
+    .modal h3 { font-size: 1.8rem; margin-bottom: 1rem; color: #2B1B17; font-weight: 800; }
+    .modal p { font-size: 1.05rem; margin-bottom: 2rem; opacity: 0.8; line-height: 1.5; }
+    .modal-input {
+      width: 100%; padding: 1rem; margin-bottom: 1.5rem; border-radius: 12px;
+      border: 2px solid rgba(43,27,23,0.1); font-size: 1.2rem; text-align: center;
+      transition: border-color 0.2s; background: #fff;
+    }
+    .modal-input:focus { border-color: #2B1B17; outline: none; }
+    .modal-buttons { display: flex; gap: 12px; }
+    .btn-secondary {
+      flex: 1; background: #EAE2D5; color: #2B1B17; border: none; padding: 1rem;
+      border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 1rem;
+    }
+    .btn-secondary:hover { background: #dcd2c3; }
+    .btn-primary {
+      flex: 1; background: #2B1B17; color: #fff; border: none; padding: 1rem;
+      border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 1rem;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(43,27,23,0.3); }
+
+    /* ─── ENHANCED GENERATION PROGRESS ─── */
+    .magic-text { font-size: 0.95rem; opacity: 0.7; font-style: italic; margin-top: 5px; color: #4A322B; }
+    
+    /* ─── SMOOTH ANIMATIONS ─── */
+    .fade-in-up { opacity: 0; animation: fadeInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    
+    .smooth-show { animation: fadeIn 0.5s ease forwards; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+
+<nav class="navbar">
+  <div style="display:flex; align-items:center; gap:12px;">
+    <a href="../" title="Ir a Synapse Hub" style="display:flex; align-items:center; text-decoration:none;">
+      <img src="../synapse-logo.jpg" alt="Synapse" style="width:38px; height:38px; border-radius:8px; object-fit:cover; border:1px solid rgba(43,27,23,0.15);">
+    </a>
+    <div>
+      <h2 style="margin:0; font-size:1.35rem; line-height:1.2; color:#2B1B17;">RedactaPro</h2>
+      <span style="font-size:0.75rem; color:#8C6A53; font-weight:700;">Parte de Synapse Suite</span>
+    </div>
+  </div>
+  <div class="user-info">
+    <a href="../" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; background:#2B1B17; color:#fff; padding:7px 14px; border-radius:8px; font-weight:700; font-size:0.85rem; box-shadow:0 2px 8px rgba(43,27,23,0.15);">🧠 Synapse Hub</a>
+    <button id="admin-panel-btn" class="btn-logout" style="display:none; background:#8C6A53; color:#fff; border:none;" onclick="openAdminPanel()">Panel Admin</button>
+    <span id="user-email">Cargando...</span>
+    <button class="btn-logout" onclick="firebase.auth().signOut()">Salir</button>
+  </div>
+</nav>
+
+<div id="app" style="display:none;">
+
+  <!-- ═══════ MAIN APP ═══════ -->
+  <div id="main-app">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('investigacion', this)">🔬 Modo Investigación <span id="quota-inv" class="quota-badge">0/0</span></button>
+      <button class="tab-btn"        onclick="switchTab('informe', this)">📊 Modo Informe Complejo <span id="quota-inf" class="quota-badge">0/0</span></button>
+      <button class="tab-btn" id="tab-btn-admin" onclick="switchTab('admin', this)" style="background:#4A322B; color:#fff;">👑 Panel Admin & Pagos</button>
+    </div>
+
+    <div id="tab-investigacion" class="tab-panel active">
+      <div class="tab-body">
+        <div class="header-banner" style="margin-bottom:1.2rem;">
+          <h1>🔬 Módulo de Investigación Académica</h1>
+          <p style="font-size:1.1rem; font-weight:500; margin:0; opacity:.85;">Genera respuestas analíticas, compactas y fluidas.</p>
+        </div>
+        <div id="gen-Investigacion"></div>
+      </div>
+    </div>
+
+    <div id="tab-informe" class="tab-panel">
+      <div class="tab-body">
+        <div class="header-banner banner-informe" style="margin-bottom:1.2rem;">
+          <h1 style="color:#4A322B;">📊 Módulo de Informes Complejos</h1>
+          <p style="font-size:1.1rem; font-weight:500; margin:0; opacity:.85;">Redacción analítica y rigurosa de largo alcance.</p>
+        </div>
+        <div id="gen-Informe"></div>
+      </div>
+    </div>
+
+    <div id="tab-admin" class="tab-panel">
+      <div class="tab-body">
+        <div class="header-banner" style="background: linear-gradient(135deg, #4A322B, #2B1B17); color: #fff; margin-bottom:1.5rem; padding: 1.5rem; border-radius: 12px;">
+          <h1 style="color:#fff; margin-bottom: 0.5rem;">👑 Panel de Control y Pagos (Admin)</h1>
+          <p style="font-size:1rem; opacity:0.9; margin:0;">Registro en tiempo real de todos los pagos verificados por la IA y gestión de usuarios.</p>
+        </div>
+
+        <!-- TARJETA DE ESTADO ADMIN -->
+        <div style="background:#fff; border: 2px solid #2B1B17; border-radius: 12px; padding: 1.2rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <h4 style="margin:0; font-size:1.1rem; color:#2B1B17;">Cuenta Administradora: <span id="admin-account-display">maxrsilvagni@gmail.com</span></h4>
+            <p style="margin:5px 0 0 0; font-size:0.9rem; opacity:0.8;">Estado: <strong id="admin-status-display" style="color:#27ae60; font-size:1rem;">Modo Admin Infinito (∞)</strong></p>
+          </div>
+          <button class="btn" style="width:auto; margin:0; padding:0.6rem 1.4rem; background:#2B1B17; font-weight:bold;" onclick="forzarModoAdmin()">⚡ Forzar Modo Infinito</button>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-bottom: 1rem;">
+          <button class="btn" id="subtab-btn-pagos" style="flex:1; margin:0; background:#2B1B17; color:#fff;" onclick="switchAdminSubtab('pagos')">💰 Historial de Pagos Verificados</button>
+          <button class="btn" id="subtab-btn-usuarios" style="flex:1; margin:0; background:#EAE2D5; color:#2B1B17; border: 1px solid #2B1B17;" onclick="switchAdminSubtab('usuarios')">👥 Gestión de Usuarios</button>
+        </div>
+
+        <!-- SECCIÓN PAGOS -->
+        <div id="admin-section-pagos" style="background:#fff; border-radius:12px; padding:1.2rem; box-shadow:0 4px 12px rgba(0,0,0,0.05); overflow-x:auto;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+            <h3 style="margin:0;">Registro de Pagos Recibidos (IA)</h3>
+            <button class="btn" style="width:auto; margin:0; padding:0.4rem 0.8rem; font-size:0.85rem; background:#4A322B;" onclick="loadAdminPagos()">🔄 Actualizar Pagos</button>
+          </div>
+          <table style="width:100%; border-collapse: collapse; font-size: 0.95rem;">
+            <thead>
+              <tr style="background:#FAF8F5; border-bottom: 2px solid #ddd;">
+                <th style="padding:10px; text-align:left;">Fecha</th>
+                <th style="padding:10px; text-align:left;">Usuario</th>
+                <th style="padding:10px; text-align:left;">Plan</th>
+                <th style="padding:10px; text-align:left;">Monto (Bs)</th>
+              </tr>
+            </thead>
+            <tbody id="admin-pagos-body"></tbody>
+          </table>
+        </div>
+
+        <!-- SECCIÓN USUARIOS -->
+        <div id="admin-section-usuarios" style="display:none; background:#fff; border-radius:12px; padding:1.2rem; box-shadow:0 4px 12px rgba(0,0,0,0.05); overflow-x:auto;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:10px;">
+            <h3 style="margin:0;">Control de Usuarios Registrados</h3>
+            <div style="display:flex; gap:8px;">
+              <button class="btn" style="width:auto; margin:0; padding:0.4rem 0.8rem; font-size:0.85rem; background:#c0392b; color:#fff;" onclick="manualResetAdmins()">🧹 Resetear otros Admins a Free</button>
+              <button class="btn" style="width:auto; margin:0; padding:0.4rem 0.8rem; font-size:0.85rem; background:#4A322B;" onclick="loadAdminUsuarios()">🔄 Actualizar Usuarios</button>
+            </div>
+          </div>
+          <table style="width:100%; border-collapse: collapse; font-size: 0.95rem;">
+            <thead>
+              <tr style="background:#FAF8F5; border-bottom: 2px solid #ddd;">
+                <th style="padding:10px; text-align:left;">Usuario</th>
+                <th style="padding:10px; text-align:left;">Plan Actual</th>
+                <th style="padding:10px; text-align:center;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="admin-usuarios-body"></tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+<div id="toast"></div>
+
+<!-- CUSTOM ALERT MODAL -->
+<div class="modal-overlay" id="custom-alert-overlay">
+  <div class="modal">
+    <h3 id="custom-alert-title">Aviso</h3>
+    <p id="custom-alert-msg"></p>
+    <button class="btn-primary" style="width:100%" onclick="document.getElementById('custom-alert-overlay').style.display='none'">Aceptar</button>
+  </div>
+</div>
+
+<!-- CUSTOM PROMPT MODAL -->
+<div class="modal-overlay" id="custom-prompt-overlay">
+  <div class="modal">
+    <h3 id="custom-prompt-title">Ingreso</h3>
+    <p id="custom-prompt-msg" style="display:none;"></p>
+    <input type="password" id="custom-prompt-input" class="modal-input" placeholder="Escribe aquí..." />
+    <div class="modal-buttons">
+      <button class="btn-secondary" onclick="document.getElementById('custom-prompt-overlay').style.display='none'">Cancelar</button>
+      <button class="btn-primary" id="custom-prompt-submit">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- DOWNLOAD MODAL -->
+<div class="modal-overlay" id="download-modal-overlay">
+  <div class="modal" style="max-width: 450px;">
+    <div style="font-size: 4rem; margin-bottom: 15px;">🎉</div>
+    <h3 style="margin-bottom: 0.5rem; color:#2B1B17; font-weight:800;">¡Documento Listo!</h3>
+    <p style="opacity: 0.8; margin-bottom: 1.5rem;">Tu redacción ha sido estructurada y optimizada con éxito.</p>
+    
+    <div style="background: #EAE2D5; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem;">
+      <h4 style="margin:0; color:#2B1B17; font-size:1.2rem;">Asignacion_<span id="download-modo-text"></span>.docx</h4>
+      <p style="margin: 5px 0 0 0; font-size: 0.9rem; opacity: 0.7;">Formato Word • Lista para entregar</p>
+    </div>
+    
+    <div id="download-btn-container" style="margin-bottom: 10px;"></div>
+    <button class="btn-secondary" style="width: 100%; font-size: 1rem;" onclick="document.getElementById('download-modal-overlay').style.display='none'">Cerrar ventana</button>
+  </div>
+</div>
+
+<script>
+function showCoolLoading(elementId, text) {
+  document.getElementById(elementId).innerHTML = `
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <div class="loading-text">${text}</div>
+    </div>
+  `;
+}
+function hideCoolLoading(elementId) {
+  document.getElementById(elementId).innerHTML = '';
+}
+
+function showAlert(message, title = "Aviso") {
+  document.getElementById('custom-alert-title').textContent = title;
+  document.getElementById('custom-alert-msg').textContent = message;
+  document.getElementById('custom-alert-overlay').style.display = 'flex';
+}
+
+function showPrompt(message, callback) {
+  document.getElementById('custom-prompt-title').textContent = message;
+  const input = document.getElementById('custom-prompt-input');
+  input.value = '';
+  document.getElementById('custom-prompt-overlay').style.display = 'flex';
+  
+  const submitBtn = document.getElementById('custom-prompt-submit');
+  const newSubmit = submitBtn.cloneNode(true);
+  submitBtn.parentNode.replaceChild(newSubmit, submitBtn);
+  
+  newSubmit.addEventListener('click', () => {
+    document.getElementById('custom-prompt-overlay').style.display = 'none';
+    callback(input.value);
+  });
+  
+  // Enter key support
+  input.onkeypress = (e) => {
+    if(e.key === 'Enter') newSubmit.click();
+  };
+  input.focus();
+}
+// ═══════════════════════════════════════════
+// STATE & CONFIG
+// ═══════════════════════════════════════════
+const state = {
+  apiKey: atob('QVEuQWI4Uk42SnBsdlYxX0F3RzdJYWVfWWlLZFpDTFlidFBvRUV0WEVjX2pWczdFRFFPaXc='),
+  temas: { Investigacion: [], Informe: [] },
+  images: { Investigacion: [], Informe: [] },
+};
+
+const GEMINI_MODEL = 'gemini-3.8-flash';
+let currentUser = null;
+
+const PLAN_LIMITS = {
+  free: { informe: 0, investigacion: 0 },
+  basic: { informe: 1, investigacion: 2 },
+  student: { informe: 3, investigacion: 5 },
+  premium: { informe: '∞', investigacion: '∞' },
+  admin: { informe: '∞', investigacion: '∞' }
+};
+
+// ═══════════════════════════════════════════
+// AUTH & DB LISTENER
+// ═══════════════════════════════════════════
+firebase.auth().onAuthStateChanged(async (user) => {
+  if (!user) {
+    window.location.href = "../"; // Redirect to landing if not logged in
+    return;
+  }
+  
+  currentUser = user;
+  document.getElementById('user-email').textContent = user.email;
+  document.getElementById('app').style.display = 'block';
+
+  // DUEÑO OFICIAL: Forzar Admin e Infinito de inmediato en pantalla
+  const isOwner = user.email && user.email.toLowerCase().trim() === 'maxrsilvagni@gmail.com';
+  if (isOwner) {
+    userData.plan = 'admin';
+    updateQuotaBadges(); // Pone ∞ de inmediato sin esperar
+    const tabAdmin = document.getElementById('tab-btn-admin');
+    if (tabAdmin) tabAdmin.style.display = 'inline-block';
+    const admBtn = document.getElementById('admin-panel-btn');
+    if (admBtn) admBtn.style.display = 'inline-block';
+  }
+  
+  // Load User Data & Limits
+  await loadUserData();
+
+  // CHECK FOR ADMIN REVOKE ACTION
+  const urlParams = new URLSearchParams(window.location.search);
+  const revokeEmail = urlParams.get('revoke_email');
+  if (revokeEmail) {
+    if (userData.plan === 'admin') {
+      try {
+        const snap = await firebase.firestore().collection('users').where('email', '==', revokeEmail).get();
+        if (!snap.empty) {
+          snap.forEach(doc => doc.ref.update({ plan: 'free' }));
+          showAlert(`La suscripción de ${revokeEmail} ha sido revocada.`, "¡Usuario Bloqueado!");
+        } else {
+          showAlert(`No se encontró el usuario ${revokeEmail} en la base de datos.`, "Error");
+        }
+      } catch(e) {
+        showAlert('Error al procesar: ' + e.message, "Error");
+      }
+    } else {
+      showAlert("No tienes permisos de administrador para realizar esta acción.", "Acceso Denegado");
+    }
+    // Clean URL
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+
+  renderGenerator('Investigacion');
+  renderGenerator('Informe');
+});
+
+let userData = { plan: 'free', usage_informe: 0, usage_investigacion: 0 }; // Default fallback
+
+async function loadUserData() {
+  const isOwner = currentUser && currentUser.email && currentUser.email.toLowerCase().trim() === 'maxrsilvagni@gmail.com';
+  if (isOwner) {
+    userData.plan = 'admin';
+    updateQuotaBadges();
+  }
+  try {
+    const doc = await firebase.firestore().collection('users').doc(currentUser.uid).get();
+    if (doc.exists) {
+      userData = doc.data();
+      if (isOwner) {
+        userData.plan = 'admin';
+      } else if (userData.plan === 'admin') {
+        // SEGURIDAD: Solo maxrsilvagni@gmail.com puede ser Admin
+        userData.plan = 'free';
+        await firebase.firestore().collection('users').doc(currentUser.uid).update({ plan: 'free' });
+      }
+      
+      // Expire temporary premium
+      if (userData.premium_until && userData.premium_until < Date.now()) {
+        userData.plan = 'free';
+        userData.premium_until = null;
+        await firebase.firestore().collection('users').doc(currentUser.uid).update({ plan: 'free', premium_until: null });
+        showAlert("Tu plan Premium temporal ha expirado.", "Aviso");
+      }
+    } else {
+      userData = {
+        email: currentUser.email,
+        plan: isOwner ? 'admin' : 'free',
+        usage_informe: 0,
+        usage_investigacion: 0
+      };
+      await firebase.firestore().collection('users').doc(currentUser.uid).set(userData);
+    }
+    
+    // DUEÑO OFICIAL: Guardar permanentemente en Firestore y ejecutar limpieza
+    if (isOwner) {
+      userData.plan = 'admin';
+      await firebase.firestore().collection('users').doc(currentUser.uid).set({
+        plan: 'admin',
+        email: currentUser.email
+      }, { merge: true });
+      const tabAdmin = document.getElementById('tab-btn-admin');
+      if (tabAdmin) tabAdmin.style.display = 'inline-block';
+      const admBtn = document.getElementById('admin-panel-btn');
+      if (admBtn) admBtn.style.display = 'inline-block';
+
+      // Sweep automático para resetear cualquier admin ajeno
+      resetUnauthorizedAdmins();
+    } else {
+      const tabAdmin = document.getElementById('tab-btn-admin');
+      if (tabAdmin) tabAdmin.style.display = 'none';
+      const admBtn = document.getElementById('admin-panel-btn');
+      if (admBtn) admBtn.style.display = 'none';
+    }
+    
+    updateQuotaBadges();
+  } catch(e) {
+    console.error("Error cargando perfil:", e);
+    if (isOwner) {
+      userData.plan = 'admin';
+      updateQuotaBadges();
+    }
+  }
+}
+
+function updateQuotaBadges() {
+  if (!userData) return;
+  const isUnlimited = userData.plan === 'admin' || userData.plan === 'premium';
+  const limits = PLAN_LIMITS[userData.plan] || PLAN_LIMITS.free;
+  document.getElementById('quota-inv').textContent = isUnlimited ? '∞' : `${userData.usage_investigacion || 0}/${limits.investigacion}`;
+  document.getElementById('quota-inf').textContent = isUnlimited ? '∞' : `${userData.usage_informe || 0}/${limits.informe}`;
+}
+
+async function checkAndConsumeQuota(modo) {
+  if (!userData) return false;
+  // Tanto Admin como Premium tienen acceso 100% ilimitado
+  if (userData.plan === 'admin' || userData.plan === 'premium') return true;
+
+  const dbField = modo === 'Investigacion' ? 'usage_investigacion' : 'usage_informe';
+  const limits = PLAN_LIMITS[userData.plan] || PLAN_LIMITS.free;
+  const limit = modo === 'Investigacion' ? limits.investigacion : limits.informe;
+
+  if (userData[dbField] >= limit) {
+    showAlert(`Has alcanzado el límite de tu plan (${userData.plan}) para ${modo}. Por favor actualiza tu suscripción en el panel.`, "Límite Alcanzado");
+    return false;
+  }
+
+  // Consume 1 credit
+  userData[dbField] = (userData[dbField] || 0) + 1;
+  await firebase.firestore().collection('users').doc(currentUser.uid).update({
+    [dbField]: userData[dbField]
+  });
+  updateQuotaBadges();
+  return true;
+}
+
+// ═══════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+  if (name === 'admin') {
+    loadAdminPagos();
+    loadAdminUsuarios();
+  }
+}
+
+// ═══════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ═══════════════════════════════════════════
+// GEMINI API HELPER
+// ═══════════════════════════════════════════
+async function geminiChat(parts, systemInstruction = null) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${state.apiKey}`;
+
+  const body = { contents: [{ role: 'user', parts }] };
+  if (systemInstruction) {
+    body.system_instruction = { parts: [{ text: systemInstruction }] };
+  }
+
+  const res  = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  const data = await res.json();
+
+  if (!res.ok || data.error) {
+    throw new Error(data.error ? data.error.message : `HTTP ${res.status}`);
+  }
+  return data.candidates[0].content.parts[0].text;
+}
+
+// ═══════════════════════════════════════════
+// RENDER GENERATOR UI
+// ═══════════════════════════════════════════
+function renderGenerator(modo) {
+  const container = document.getElementById('gen-' + modo);
+  container.innerHTML = `
+    <div class="section-label fade-in-up" style="animation-delay: 0.1s">🛠️ Método de entrada</div>
+    <div class="radio-group fade-in-up" style="animation-delay: 0.2s">
+      <label><input type="radio" name="mode-${modo}" value="scan" checked onchange="setMode('${modo}','scan')"/> Mediante una Imagen Scan</label>
+      <label><input type="radio" name="mode-${modo}" value="text" onchange="setMode('${modo}','text')"/> Mediante Texto Manual</label>
+    </div>
+
+    <div id="scan-panel-${modo}" class="fade-in-up" style="animation-delay: 0.3s">
+      <div class="file-drop" onclick="document.getElementById('file-${modo}').click()">
+        <input type="file" id="file-${modo}" accept=".jpg,.jpeg,.png" multiple onchange="handleFileUpload(event,'${modo}')"/>
+        <div class="file-drop-icon">📸</div>
+        <p><strong>Haz clic o arrastra las capturas de tu asignación</strong></p>
+        <p style="font-size: 0.85rem; opacity: 0.7; margin-top: 4px;">Puedes subir de 1 hasta 6 páginas (JPG, PNG)</p>
+      </div>
+      <div id="preview-grid-${modo}" class="preview-grid" style="display:none;"></div>
+      <button class="btn fade-in-up" id="btn-scan-${modo}" style="display:none;" onclick="analizarImagen('${modo}')">
+        ✨ Analizar y Estructurar Asignación (<span id="count-${modo}">0</span>/6 fotos)
+      </button>
+    </div>
+
+    <div id="text-panel-${modo}" style="display:none;" class="smooth-show">
+      <label for="txt-${modo}">Pega o escribe la lista de temas (separados por comas):</label>
+      <textarea id="txt-${modo}" rows="4" placeholder="Ej: Concepto y características de las células, Leyes de Mendel en la genética moderna"></textarea>
+      <button class="btn" onclick="cargarTemas('${modo}')">⚙️ Cargar Temas</button>
+    </div>
+
+    <div id="msg-${modo}"></div>
+    <div id="temas-container-${modo}"></div>
+    <div id="generate-section-${modo}" style="display:none;">
+      <button class="btn" onclick="generarDocumento('${modo}')">🚀 Generar Documento (${modo})</button>
+    </div>
+    <div id="progress-section-${modo}" style="display:none;">
+      <div class="status-text" id="status-${modo}"></div>
+      <div class="progress-wrap"><div class="progress-bar" id="bar-${modo}"></div></div>
+    </div>
+    <div id="download-section-${modo}"></div>
+  `;
+}
+
+function setMode(modo, val) {
+  document.getElementById('scan-panel-' + modo).style.display = val === 'scan' ? 'block' : 'none';
+  document.getElementById('text-panel-' + modo).style.display = val === 'text'  ? 'block' : 'none';
+}
+
+// ═══════════════════════════════════════════
+// MULTI-IMAGE UPLOAD & PREVIEW (Up to 6)
+// ═══════════════════════════════════════════
+function handleFileUpload(event, modo) {
+  const files = Array.from(event.target.files);
+  if (!files.length) return;
+
+  const currentCount = state.images[modo].length;
+  if (currentCount >= 6) {
+    showAlert("Ya has alcanzado el límite máximo de 6 páginas.", "Límite alcanzado");
+    event.target.value = '';
+    return;
+  }
+
+  const availableSlots = 6 - currentCount;
+  if (files.length > availableSlots) {
+    showAlert(`Solo puedes agregar ${availableSlots} imagen(es) más para completar el máximo de 6.`, "Límite de imágenes");
+  }
+
+  const filesToAdd = files.slice(0, availableSlots);
+  let loaded = 0;
+
+  filesToAdd.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      state.images[modo].push({
+        b64: e.target.result.split(',')[1],
+        mime: file.type || 'image/jpeg',
+        url: e.target.result,
+        name: file.name
+      });
+      loaded++;
+      if (loaded === filesToAdd.length) {
+        renderPreviews(modo);
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+
+  event.target.value = '';
+}
+
+function removeImage(modo, idx) {
+  state.images[modo].splice(idx, 1);
+  renderPreviews(modo);
+}
+
+function renderPreviews(modo) {
+  const grid = document.getElementById('preview-grid-' + modo);
+  const btn = document.getElementById('btn-scan-' + modo);
+  const countSpan = document.getElementById('count-' + modo);
+  const images = state.images[modo];
+
+  if (!images || images.length === 0) {
+    grid.style.display = 'none';
+    grid.innerHTML = '';
+    btn.style.display = 'none';
+    return;
+  }
+
+  let html = '';
+  images.forEach((img, i) => {
+    html += `
+      <div class="preview-card">
+        <img src="${img.url}" alt="Página ${i + 1}" />
+        <span class="preview-badge">Pág ${i + 1}</span>
+        <button type="button" class="preview-remove" onclick="removeImage('${modo}', ${i})" title="Eliminar foto">✖</button>
+      </div>
+    `;
+  });
+
+  grid.innerHTML = html;
+  grid.style.display = 'grid';
+  countSpan.textContent = images.length;
+  btn.style.display = 'block';
+  btn.style.animation = 'none';
+  btn.offsetHeight;
+  btn.style.animation = 'fadeInUp 0.4s ease forwards';
+}
+
+// ═══════════════════════════════════════════
+// ANALYZE IMAGES (Gemini Vision Multi-Image)
+// ═══════════════════════════════════════════
+async function analizarImagen(modo) {
+  const images = state.images[modo];
+  if (!images || images.length === 0) {
+    showAlert("Por favor sube al menos una imagen de tu asignación.", "Sin imágenes");
+    return;
+  }
+
+  const btn   = document.getElementById('btn-scan-' + modo);
+  const msgEl = document.getElementById('msg-' + modo);
+  btn.disabled = true;
+  showCoolLoading('msg-' + modo, `La IA está leyendo y organizando las ${images.length} páginas...`);
+
+  const prompt =
+    `Analiza detalladamente las ${images.length} imágenes adjuntas, que corresponden a las diferentes páginas o capturas de una asignación escolar o universitaria.\n\n` +
+    "REGLAS CRÍTICAS DE EXTRACCIÓN:\n" +
+    "1. Revisa todas las páginas en orden y extrae la totalidad de los temas y subtemas a desarrollar en el trabajo.\n" +
+    "2. Descarta por completo cualquier dato administrativo, fechas de entrega, ponderaciones o normas de formato.\n" +
+    "3. Identifica cuál es el TEMA central de la asignación.\n" +
+    "4. Toma cada uno de los subpuntos a lo largo de las distintas hojas y conéctalos con el tema central para formar títulos claros e independientes.\n" +
+    "5. REGLA ESTRICTA: NO USES PARÉNTESIS '()'. Si el texto original tiene paréntesis, saca su contenido y conviértelo en un punto separado o intégralo de forma natural, pero elimina el símbolo.\n\n" +
+    "Devuelve exactamente una lista de temas separada por comas, sin preámbulos ni títulos.";
+
+  try {
+    const parts = [{ text: prompt }];
+    for (const img of images) {
+      parts.push({
+        inline_data: { mime_type: img.mime, data: img.b64 }
+      });
+    }
+
+    const text = await geminiChat(parts);
+
+    let contenido = text;
+    for (const tag of ["Tema principal:", "Tema global:", "Puntos:", "Subpuntos:", "Temas:"]) {
+      contenido = contenido.replace(tag, '');
+    }
+    state.temas[modo] = contenido.split(',').map(t => t.trim()).filter(Boolean);
+    renderTemas(modo);
+    hideCoolLoading('msg-' + modo);
+    showToast('🚀 ¡Temas leídos de todas las páginas! Generando documento...');
+    await generarDocumento(modo);
+  } catch(e) {
+    hideCoolLoading('msg-' + modo);
+    msgEl.innerHTML = `<div class="alert alert-error"><p>❌ Error analizando las imágenes: ${e.message}</p></div>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = `✨ Analizar y Estructurar Asignación (${images.length}/6 fotos)`;
+  }
+}
+
+// ═══════════════════════════════════════════
+// LOAD TOPICS (manual via AI)
+// ═══════════════════════════════════════════
+async function cargarTemas(modo) {
+  const entrada = document.getElementById('txt-' + modo).value.trim();
+  const msgEl   = document.getElementById('msg-' + modo);
+  const btn     = document.querySelector(`#text-panel-${modo} button`);
+  
+  if (!entrada) {
+    msgEl.innerHTML = '<div class="alert alert-warning">⚠️ El campo de texto está vacío.</div>';
+    return;
+  }
+  
+  btn.disabled = true;
+  showCoolLoading('msg-' + modo, 'Organizando temas con IA...');
+
+  const prompt = 
+    "Actúa como un experto analizador de texto. Toma el texto proporcionado y conviértelo en una LISTA SEPARADA POR COMAS de temas individuales y completos.\n\n" +
+    "INSTRUCCIONES ESTRICTAS:\n" +
+    "1. EXTRAE subtemas y conviértelos en temas independientes.\n" +
+    "2. REGLA ESTRICTA: NO USES PARENTESIS '()'. Si el texto original tiene paréntesis, saca su contenido y conviértelo en un punto separado o intégralo de forma natural, pero elimina el símbolo.\n" +
+    "3. 'geosfera' y 'biosfera' DEBEN separarse en temas distintos aunque vengan juntos en el texto.\n" +
+    "4. Tu respuesta debe ser ÚNICAMENTE la lista separada por comas.\n\n" +
+    "TEXTO A ANALIZAR:\n" + entrada;
+
+  try {
+    const text = await geminiChat([{ text: prompt }]);
+    let contenido = text;
+    for (const tag of ["Tema principal:", "Tema global:", "Puntos:", "Subpuntos:", "Temas:"]) {
+      contenido = contenido.replace(tag, '');
+    }
+    state.temas[modo] = contenido.split(',').map(t => t.trim()).filter(Boolean);
+    renderTemas(modo);
+    hideCoolLoading('msg-' + modo);
+    showToast('✅ Temas organizados. Generando documento...');
+    await generarDocumento(modo);
+  } catch(e) {
+    hideCoolLoading('msg-' + modo);
+    msgEl.innerHTML = `<div class="alert alert-error"><p>❌ Error procesando el texto: ${e.message}</p></div>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '⚙️ Cargar y Organizar Temas';
+  }
+}
+
+// ═══════════════════════════════════════════
+// RENDER TOPICS
+// ═══════════════════════════════════════════
+const PALABRAS_PROHIBIDAS = ["4to año","lunes","martes","miércoles","jueves","viernes","investigación","entrega","individual","ponderación"];
+
+function limpiarTemas(temas) {
+  return temas
+    .map(t => t.replace(/^\d+[\s\.\:\-\"\']*/, '').trim().replace(/^["']|["']$/g, ''))
+    .map(t => t.replace(/[()]/g, '')) // Extra strict parentheses removal
+    .filter(t => t && !PALABRAS_PROHIBIDAS.some(p => t.toLowerCase().includes(p)));
+}
+
+function renderTemas(modo) {
+  const temasFin = limpiarTemas(state.temas[modo]);
+  const cont     = document.getElementById('temas-container-' + modo);
+  const genSec   = document.getElementById('generate-section-' + modo);
+  if (!temasFin.length) {
+    cont.innerHTML = '<div class="alert alert-warning fade-in-up">⚠️ No se detectaron temas válidos para redactar.</div>';
+    genSec.style.display = 'none';
+    return;
+  }
+  
+  let html = '<div class="card smooth-show"><h3>📋 Puntos identificados para desarrollo:</h3>';
+  temasFin.forEach((t, i) => {
+    html += `<div class="tema-badge fade-in-up" style="animation-delay: ${i * 0.08}s">${t}</div>`;
+  });
+  html += '</div>';
+  
+  cont.innerHTML = html;
+  genSec.style.display = 'block';
+  genSec.classList.add('smooth-show');
+}
+
+// ═══════════════════════════════════════════
+// TEXT HELPERS
+// ═══════════════════════════════════════════
+function corregirCapitales(texto) {
+  const map = { 'gomez':'Gómez','perez':'Pérez','jimenez':'Jiménez','juan':'Juan','vicente':'Vicente','marcos':'Marcos' };
+  for (const [k,v] of Object.entries(map)) {
+    texto = texto.replace(new RegExp(`\\b${k}\\b`, 'gi'), v);
+  }
+  texto = texto.replace(/(^[a-z]|(?<=\.\s)[a-z])/g, c => c.toUpperCase());
+  return texto;
+}
+
+// ═══════════════════════════════════════════
+// GENERATE DOCUMENT
+// ═══════════════════════════════════════════
+async function generarDocumento(modo) {
+  const temasFin = limpiarTemas(state.temas[modo]);
+  if (!temasFin.length) return;
+
+  const allowed = await checkAndConsumeQuota(modo);
+  if (!allowed) return;
+
+  const progressSec = document.getElementById('progress-section-' + modo);
+  const downloadSec = document.getElementById('download-section-' + modo);
+  const statusEl    = document.getElementById('status-' + modo);
+  const barEl       = document.getElementById('bar-' + modo);
+  const genBtn      = document.querySelector('#generate-section-' + modo + ' button');
+
+  genBtn.disabled = true;
+  progressSec.style.display = 'block';
+  downloadSec.innerHTML = '';
+  barEl.style.width = '0%';
+
+  const bloques = [];
+  const magicPhrases = [
+    "Buscando fuentes de alta fidelidad...",
+    "Estructurando redacción perfecta...",
+    "Aplicando algoritmos anti-plagio...",
+    "Ajustando el tono académico...",
+    "Eliminando inconsistencias..."
+  ];
+
+  for (let i = 0; i < temasFin.length; i++) {
+    const tema   = temasFin[i];
+    const numero = i + 1;
+    const phrase = magicPhrases[i % magicPhrases.length];
+    
+    statusEl.innerHTML = `
+      <strong>⏳ Procesando [${numero}/${temasFin.length}]:</strong> ${tema}
+      <div class="magic-text">✨ ${phrase}</div>
+    `;
+    barEl.style.width = `${Math.round((i / temasFin.length) * 100)}%`;
+
+    let tClean = tema.replace(/•/g, '').trim();
+    tClean = corregirCapitales(tClean.replace(/^[¿?]+|[¿?]+$/g, ''));
+    if (tClean.length > 0) tClean = tClean[0].toUpperCase() + tClean.slice(1);
+
+    const tLow = tClean.toLowerCase();
+    const esPregunta = /^(que|como|cual|por que|por qué|quien|quién|donde|cómo|qué|cuál)/.test(tLow);
+    const tituloFinal = esPregunta ? `${numero}. ¿${tClean}?` : `${numero}. ${tClean}`;
+
+    let systemInstruction;
+    if (modo === 'Investigacion') {
+      const important    = /gobierno|transicion|transición|impacto|situacion|situación|leyes|teoria/.test(tema.toLowerCase());
+      const rango        = important ? 'entre 160 y 180 palabras' : 'entre 115 y 125 palabras';
+      const formatoLista = (i % 2 === 0)
+        ? " DEBES incluir una lista formal estructurada con viñetas 'Componente: descripción'."
+        : " No uses listas, redacta completamente en párrafos continuos y fluidos.";
+      systemInstruction = (
+        `Actúa como un estudiante aplicado de 15 años en 4to año de bachillerato / secundaria que realiza una asignación formal y bien investigada para obtener 20/20.\n` +
+        `VOZ Y TONO (OPCIÓN 2: ESTUDIANTE DE 4TO AÑO): Escribe con seriedad, excelente redacción y ortografía, pero con la voz natural y creíble de un estudiante de 15 años que entendió el tema y lo explica con sus propias palabras. Usa oraciones claras, fluidas y directas.\n` +
+        `PROHIBIDO EL VOCABULARIO PEDANTE O ROBÓTICO: Escribe con sentido común. Por ejemplo, di 'el centro del planeta' (NUNCA digas 'el centro planetario'); di 'es menos denso que el agua' (NUNCA digas 'densidad media inferior'); di 'tiene vientos fuertísimos y tormentas constantes' (NUNCA digas 'intensas corrientes zonales').\n` +
+        `PROHIBIDAS ESTRUCTURAS TÍPICAS DE IA: Prohibido usar 'es importante destacar', 'cabe mencionar', 'en conclusión', 'en resumen', 'un rol fundamental', 'un tapiz', 'en el vasto universo'. Suena 100% como una persona real escribiendo su informe.\n` +
+        `RIGOR CONCEPTUAL: Desarrolla el tema con datos correctos, causas, efectos y explicaciones comprensibles y certeras a nivel de 4to año de bachillerato.\n` +
+        `REGLA DE VARIABILIDAD (Anti-Plagio y Anti-IA): Sé completamente original. Nunca empieces igual ni uses plantillas repetitivas para que sea 100% indetectable por filtros de IA y suene orgánico.\n` +
+        `REGLA CRÍTICA DE EXTENSIÓN: El texto completo debe tener obligatoriamente ${rango}. Mantén un equilibrio preciso.\n` +
+        `No incluyas títulos en tu respuesta. Prohibido usar el signo de punto y coma (;). No repitas ideas ni frases.\n` +
+        `MINÚSCULAS Y MAYÚSCULAS: Todo el texto regular debe ir en minúsculas, EXCEPTO la primera letra de cada oración y nombres propios.\n` +
+        `LISTAS: Si usas listas, usa el símbolo •. El formato obligatorio es 'Elemento: explicación' (máximo 20 palabras por punto).${formatoLista}`
+      );
+    } else {
+      systemInstruction = (
+        `Actúa como un estudiante aplicado de 15 años en 4to año de bachillerato / secundaria desarrollando un informe escolar formal y completo para obtener 20/20 sobre: '${tema}'.\n` +
+        `VOZ Y TONO (OPCIÓN 2: ESTUDIANTE DE 4TO AÑO): Escribe de manera formal, ordenada y bien redactada, pero utilizando el vocabulario natural, coherente y creíble de un estudiante de 15 años. Explica los conceptos con tus propias palabras demostrando dominio del tema sin recurrir a tecnicismos forzados de enciclopedia o paper universitario traducido.\n` +
+        `REGLA DE NATURALIDAD ESTRICTA: Di 'hacia el centro del planeta' en vez de 'hacia el centro planetario'; di 'su densidad es menor a la del agua' en vez de 'densidad media inferior'; di 'vientos muy rápidos y fuertes' en vez de 'corrientes zonales'. Evita a toda costa la prosa artificial.\n` +
+        `PROHIBIDAS FRASES CLICHÉ DE IA: Prohibido usar conectores predecibles como 'es importante destacar', 'en resumen', 'un rol crucial', 'a lo largo de la historia', 'un testimonio de'.\n` +
+        `REGLA DE VARIABILIDAD: Redacta con autenticidad para garantizar cero coincidencias con detectores de IA.\n` +
+        `REGLA DE EXTENSIÓN: El texto debe tener entre 180 y 220 palabras bien estructuradas.\n` +
+        `REGLAS ESTRUCTURALES:\n` +
+        `1. Desarrolla las ideas principales con claridad, ejemplos o causas y consecuencias.\n` +
+        `2. Prohibido repetir ideas.\n` +
+        `3. Prohibido usar el signo de punto y coma (;).\n` +
+        `4. Combina un párrafo explicativo con una pequeña lista en viñetas (•) si es útil.`
+      );
+    }
+
+    try {
+      let textoGenerado = await geminiChat(
+        [{ text: `Desarrolle el contenido detallado y equilibrado exclusivamente para el punto: '${tema}' sin repetir información.` }],
+        systemInstruction
+      );
+      textoGenerado = textoGenerado.replace(/\*/g, '').replace(/;/g, '.');
+      textoGenerado = corregirCapitales(textoGenerado);
+
+      bloques.push({ type: 'title', text: tituloFinal });
+
+      for (const linea of textoGenerado.split('\n')) {
+        const l = linea.trim();
+        if (!l) continue;
+        if (!l.startsWith('•') && l.split(' ').length > 65) {
+          const puntos = l.split('. ');
+          const mitad  = Math.floor(puntos.length / 2);
+          if (mitad > 0) {
+            bloques.push({ type: 'text', text: puntos.slice(0, mitad).join('. ') + '.' });
+            bloques.push({ type: 'text', text: puntos.slice(mitad).join('. ') });
+          } else {
+            bloques.push({ type: 'text', text: l });
+          }
+        } else if (l.startsWith('•')) {
+          const cont = l.replace(/^•\s*/, '').trim();
+          if (cont.includes(':')) {
+            const [sub, ...rest] = cont.split(':');
+            bloques.push({ type: 'bullet', sub: sub.trim(), desc: rest.join(':') });
+          } else {
+            bloques.push({ type: 'bullet', sub: '', desc: cont });
+          }
+        } else {
+          bloques.push({ type: 'text', text: l });
+        }
+      }
+      bloques.push({ type: 'spacer' });
+
+    } catch(e) {
+      statusEl.innerHTML = `<span style="color:#c0392b;">❌ Error en "${tema}": ${e.message}</span>`;
+    }
+  }
+
+  barEl.style.width = '100%';
+  statusEl.innerHTML = '<strong>🎉 ¡El informe ha sido completado con éxito total!</strong>';
+  genBtn.disabled = false;
+  
+  if (typeof confetti === 'function') {
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 }
+    });
+  }
+
+  if (bloques.length) {
+    try {
+      await buildAndDownloadDocx(bloques, modo, downloadSec);
+    } catch (e) {
+      statusEl.innerHTML = `<span style="color:#c0392b;">❌ Error creando el Word: ${e.message}</span>`;
+      console.error(e);
+    }
+  }
+}
+
+// ═══════════════════════════════════════════
+// BUILD DOCX
+// ═══════════════════════════════════════════
+async function buildAndDownloadDocx(bloques, modo, downloadSec) {
+  const { Document, Paragraph, TextRun, AlignmentType, Packer } = docx;
+  const children = [];
+
+  for (const b of bloques) {
+    if (b.type === 'title') {
+      children.push(new Paragraph({
+        children: [new TextRun({ text: b.text, bold: true, size: 30, font: 'Calibri' })],
+        spacing: { before: 200, after: 100 },
+        keepNext: true
+      }));
+    } else if (b.type === 'text') {
+      children.push(new Paragraph({
+        children: [new TextRun({ text: b.text, size: 26, font: 'Calibri' })],
+        alignment: AlignmentType.JUSTIFIED,
+        spacing: { after: 80 }
+      }));
+    } else if (b.type === 'bullet') {
+      const runs = [];
+      if (b.sub) {
+        runs.push(new TextRun({ text: `• ${b.sub}: `, bold: true, size: 26, font: 'Calibri' }));
+        runs.push(new TextRun({ text: b.desc, size: 26, font: 'Calibri' }));
+      } else {
+        runs.push(new TextRun({ text: `• ${b.desc}`, size: 26, font: 'Calibri' }));
+      }
+      children.push(new Paragraph({
+        children: runs,
+        indent: { left: 432 },
+        spacing: { after: 60 }
+      }));
+    } else if (b.type === 'spacer') {
+      children.push(new Paragraph({ children: [] }));
+    }
+  }
+
+  const doc  = new Document({ sections: [{ properties: {}, children }] });
+  const blob = await Packer.toBlob(doc);
+  const url  = URL.createObjectURL(blob);
+
+  // Show Download Modal instead of inline button
+  document.getElementById('download-modo-text').textContent = modo;
+  
+  const container = document.getElementById('download-btn-container');
+  container.innerHTML = '';
+  
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `Asignacion_${modo}.docx`;
+  a.className = 'btn-primary';
+  a.style.display = 'block';
+  a.style.textDecoration = 'none';
+  a.style.fontSize = '1.2rem';
+  a.style.padding = '1.2rem';
+  a.innerHTML = '💾 Descargar Archivo';
+  
+  a.onclick = () => {
+    setTimeout(() => {
+      document.getElementById('download-modal-overlay').style.display = 'none';
+    }, 1500);
+  };
+  
+  container.appendChild(a);
+  document.getElementById('download-modal-overlay').style.display = 'flex';
+}
+
+// ═══════════════════════════════════════════
+// ADMIN PANEL LOGIC & ACTIONS
+// ═══════════════════════════════════════════
+function openAdminPanel() {
+  switchTab('admin', document.getElementById('tab-btn-admin'));
+}
+
+function switchAdminSubtab(subtab) {
+  document.getElementById('admin-section-pagos').style.display = subtab === 'pagos' ? 'block' : 'none';
+  document.getElementById('admin-section-usuarios').style.display = subtab === 'usuarios' ? 'block' : 'none';
+  
+  const btnPagos = document.getElementById('subtab-btn-pagos');
+  const btnUsers = document.getElementById('subtab-btn-usuarios');
+  if (subtab === 'pagos') {
+    btnPagos.style.background = '#2B1B17';
+    btnPagos.style.color = '#fff';
+    btnUsers.style.background = '#EAE2D5';
+    btnUsers.style.color = '#2B1B17';
+    loadAdminPagos();
+  } else {
+    btnUsers.style.background = '#2B1B17';
+    btnUsers.style.color = '#fff';
+    btnPagos.style.background = '#EAE2D5';
+    btnPagos.style.color = '#2B1B17';
+    loadAdminUsuarios();
+  }
+}
+
+async function forzarModoAdmin() {
+  if (!currentUser) return;
+  const isOwner = (currentUser.email || '').toLowerCase().trim() === 'maxrsilvagni@gmail.com';
+  if (!isOwner) {
+    showAlert("Acceso restringido únicamente para maxrsilvagni@gmail.com.", "Acceso Denegado");
+    return;
+  }
+  userData.plan = 'admin';
+  updateQuotaBadges();
+  try {
+    await firebase.firestore().collection('users').doc(currentUser.uid).set({
+      plan: 'admin',
+      email: currentUser.email
+    }, { merge: true });
+  } catch(e) {
+    console.error("Error guardando admin:", e);
+  }
+  const statEl = document.getElementById('admin-status-display');
+  if (statEl) statEl.textContent = 'Modo Admin Infinito (∞)';
+  showAlert("¡Modo Admin Infinito (∞) activado y guardado en tu cuenta!", "¡Felicidades!");
+}
+
+async function resetUnauthorizedAdmins() {
+  try {
+    const snap = await firebase.firestore().collection('users').get();
+    let count = 0;
+    const promises = [];
+    snap.forEach(doc => {
+      const d = doc.data();
+      const email = (d.email || '').toLowerCase().trim();
+      if (email !== 'maxrsilvagni@gmail.com' && (d.plan === 'admin' || d.isAdmin === true || d.role === 'admin')) {
+        promises.push(doc.ref.update({ plan: 'free', isAdmin: false, role: 'user' }));
+        count++;
+      }
+    });
+    if (promises.length > 0) {
+      await Promise.all(promises);
+      console.log(`Seguridad: Se resetearon ${count} usuario(s) que tenían rol admin no autorizado.`);
+    }
+    return count;
+  } catch(e) {
+    console.warn("Error en resetUnauthorizedAdmins:", e);
+    return 0;
+  }
+}
+
+async function manualResetAdmins() {
+  if (!confirm("¿Confirmas resetear a 'free' todos los usuarios con rol Admin excepto maxrsilvagni@gmail.com?")) return;
+  const count = await resetUnauthorizedAdmins();
+  showAlert(`Operación completada. Se resetearon ${count} usuario(s) no autorizados a plan gratuito.`, "Admins Reseteados");
+  loadAdminUsuarios();
+}
+
+async function loadAdminPagos() {
+  const tbody = document.getElementById('admin-pagos-body');
+  tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:1.5rem; opacity:0.7;">Cargando pagos...</td></tr>';
+  try {
+    const snap = await firebase.firestore().collection('payments').orderBy('timestamp', 'desc').limit(50).get();
+    if (snap.empty) {
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:1.5rem; opacity:0.7;">No hay pagos registrados aún en el sistema.</td></tr>';
+      return;
+    }
+    let html = '';
+    snap.forEach(doc => {
+      const d = doc.data();
+      const dateStr = d.fecha ? (new Date(d.fecha).toLocaleDateString() + ' ' + new Date(d.fecha).toLocaleTimeString()) : 'Reciente';
+      html += `<tr style="border-bottom: 1px solid #eee;">
+        <td style="padding:12px 10px;">${dateStr}</td>
+        <td style="padding:12px 10px;"><strong>${d.email}</strong></td>
+        <td style="padding:12px 10px;"><span class="quota-badge" style="background:#27ae60; margin:0;">${d.plan}</span></td>
+        <td style="padding:12px 10px; font-weight:bold; color:#2B1B17;">${d.monto_bs} Bs.</td>
+      </tr>`;
+    });
+    tbody.innerHTML = html;
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="4" style="color:#c0392b; padding:10px;">Error cargando pagos: ${e.message}</td></tr>`;
+  }
+}
+
+async function loadAdminUsuarios() {
+  const tbody = document.getElementById('admin-usuarios-body');
+  tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:1.5rem; opacity:0.7;">Cargando usuarios...</td></tr>';
+  try {
+    const snap = await firebase.firestore().collection('users').limit(100).get();
+    if (snap.empty) {
+      tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:1.5rem; opacity:0.7;">No hay usuarios registrados.</td></tr>';
+      return;
+    }
+    let html = '';
+    snap.forEach(doc => {
+      const d = doc.data();
+      const email = (d.email || '').toLowerCase().trim();
+      const isThisOwner = email === 'maxrsilvagni@gmail.com';
+      let isTempPremium = d.premium_until && d.premium_until > Date.now();
+      let planDisplay = isThisOwner ? 'admin (propietario)' : (isTempPremium ? 'premium (temporal)' : (d.plan || 'free'));
+      let badgeColor = isThisOwner ? '#2B1B17' : ((planDisplay === 'premium' || isTempPremium) ? '#27ae60' : '#888');
+      
+      let actionsHtml = isThisOwner 
+        ? `<span style="font-size:0.85rem; color:#888; font-weight:bold;">👑 Propietario</span>`
+        : `<button onclick="adminAction('${doc.id}', 'ban')" style="background:#c0392b; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; margin-right:6px; font-weight:bold;">Anular / Gratis</button>
+           <button onclick="adminAction('${doc.id}', 'premium7')" style="background:#f39c12; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:bold;">Regalar Premium (1 sem)</button>`;
+
+      html += `<tr style="border-bottom: 1px solid #eee;">
+        <td style="padding:12px 10px;">${d.email || doc.id}</td>
+        <td style="padding:12px 10px;"><span class="quota-badge" style="background:${badgeColor}; margin:0;">${planDisplay}</span></td>
+        <td style="padding:12px 10px; text-align:center;">${actionsHtml}</td>
+      </tr>`;
+    });
+    tbody.innerHTML = html;
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="3" style="color:#c0392b; padding:10px;">Error cargando usuarios: ${e.message}</td></tr>`;
+  }
+}
+
+async function adminAction(uid, action) {
+  if(!confirm('¿Confirmas realizar esta acción sobre este usuario?')) return;
+  try {
+    if (action === 'ban') {
+      await firebase.firestore().collection('users').doc(uid).update({ plan: 'free', premium_until: null });
+      showAlert("Usuario devuelto al plan gratuito.", "Éxito");
+    } else if (action === 'premium7') {
+      const oneWeek = Date.now() + (7 * 24 * 60 * 60 * 1000);
+      await firebase.firestore().collection('users').doc(uid).update({ plan: 'premium', premium_until: oneWeek });
+      showAlert("Usuario actualizado a Premium Ilimitado por 1 semana.", "Éxito");
+    }
+    loadAdminUsuarios();
+  } catch(e) {
+    showAlert("Error: " + e.message, "Error");
+  }
+}
+</script>
+
+</body>
+</html>
