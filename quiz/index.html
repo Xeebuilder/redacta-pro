@@ -415,6 +415,61 @@
       flex: 1;
     }
 
+    
+    /* ─── BONE / SKELETON SHIMMER (ESTILO BONE) ─── */
+    @keyframes boneShimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    .bone {
+      background: linear-gradient(
+        90deg,
+        rgba(43, 27, 23, 0.05) 0%,
+        rgba(43, 27, 23, 0.16) 50%,
+        rgba(43, 27, 23, 0.05) 100%
+      );
+      background-size: 200% 100%;
+      animation: boneShimmer 1.5s infinite linear;
+      border-radius: 6px;
+    }
+
+    .skeleton-card {
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 14px rgba(43, 27, 23, 0.04);
+      animation: fadeInSlide 0.25s ease-out;
+    }
+
+    .bone-line {
+      height: 14px;
+      margin-bottom: 10px;
+    }
+    .bone-line.short { width: 40%; height: 20px; margin-bottom: 14px; border-radius: 6px; }
+    .bone-line.medium { width: 75%; }
+    .bone-line.long { width: 100%; }
+    .bone-line.box { width: 100%; height: 38px; border-radius: 8px; margin-top: 12px; }
+
+    /* Estado de evaluación en el botón de opción */
+    .option-btn.evaluating {
+      border-color: var(--color-primary) !important;
+      background: rgba(43, 27, 23, 0.05) !important;
+      box-shadow: 0 0 0 3px rgba(43, 27, 23, 0.12) !important;
+    }
+    .option-eval-spinner {
+      width: 18px;
+      height: 18px;
+      border: 2.5px solid rgba(43,27,23,0.15);
+      border-top-color: var(--color-primary);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
     /* Option States */
     .option-btn.state-correct {
       background: var(--correct-bg) !important;
@@ -761,6 +816,18 @@
           <!-- Renderizado dinámico -->
         </div>
 
+                <!-- Shimmer Skeleton ("Estilo Bone") durante 3 segundos -->
+        <div class="skeleton-card" id="q-skeleton-box" style="display:none;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+            <div class="option-eval-spinner"></div>
+            <span style="font-weight:700; font-size:0.92rem; color:var(--color-primary);">Verificando respuesta y razonamiento con IA...</span>
+          </div>
+          <div class="bone bone-line short"></div>
+          <div class="bone bone-line long"></div>
+          <div class="bone bone-line medium"></div>
+          <div class="bone bone-line box"></div>
+        </div>
+
         <!-- Banner de Explicación Inmediata -->
         <div class="explanation-card" id="q-explanation-box">
           <div class="exp-header" id="exp-header-tag">
@@ -783,6 +850,29 @@
         </div>
       </div>
 
+    </section>
+
+        <!-- ─── VISTA INTERMEDIA: CALCULANDO DIAGNÓSTICO (ESTILO BONE) ─── -->
+    <section id="view-calculating-summary" style="display:none; width:100%;">
+      <div class="summary-card" style="padding:3.5rem 2rem;">
+        <div class="spinner" style="margin-bottom:1.5rem;"></div>
+        <h2 style="font-size:1.8rem; font-weight:800; color:var(--color-primary); margin-bottom:0.5rem;">Sintetizando Diagnóstico Pedagógico...</h2>
+        <p style="color:var(--text-muted); max-width:520px; margin:0 auto 2.2rem; font-size:0.98rem;">
+          Consolidando tus patrones de respuesta, racha de aciertos y curvas de retención en memoria activa.
+        </p>
+
+        <!-- Skeleton loaders imitando los resultados -->
+        <div style="max-width:580px; margin:0 auto;">
+          <div style="display:flex; justify-content:center; gap:16px; margin-bottom:1.8rem; flex-wrap:wrap;">
+            <div class="bone" style="width:140px; height:60px; border-radius:10px;"></div>
+            <div class="bone" style="width:140px; height:60px; border-radius:10px;"></div>
+            <div class="bone" style="width:140px; height:60px; border-radius:10px;"></div>
+          </div>
+          <div class="bone bone-line" style="height:22px; width:45%; margin:0 auto 12px; border-radius:6px;"></div>
+          <div class="bone bone-line long"></div>
+          <div class="bone bone-line medium" style="margin:0 auto 10px;"></div>
+        </div>
+      </div>
     </section>
 
     <!-- ─── 3. VISTA: RESUMEN DE SESIÓN ─── -->
@@ -1014,6 +1104,7 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos), sin bloques de
       document.getElementById('q-text').textContent = q.pregunta;
 
       // Ocultar explicaciones previas
+      const skel = document.getElementById('q-skeleton-box'); if (skel) skel.style.display = 'none';
       document.getElementById('q-explanation-box').style.display = 'none';
       document.getElementById('action-next-bar').style.display = 'none';
 
@@ -1049,7 +1140,7 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos), sin bloques de
       const q = state.queue[state.currentIndex];
       const isCorrect = (selectedIdx === q.correcta);
 
-      // Deshabilitar todas las opciones
+      // Deshabilitar todas las opciones inmediatamente para evitar doble selección
       const allBtns = document.querySelectorAll('.option-btn');
       allBtns.forEach(b => b.disabled = true);
 
@@ -1057,68 +1148,90 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos), sin bloques de
       const selectedBtn = document.getElementById(`opt-${selectedIdx}`);
       const correctBtn = document.getElementById(`opt-${q.correcta}`);
 
-      const streakBox = document.getElementById('streak-badge-box');
+      // 1. Mostrar estado de evaluación en el botón seleccionado
+      if (selectedBtn) {
+        selectedBtn.classList.add('evaluating');
+        const spinner = document.createElement('div');
+        spinner.className = 'option-eval-spinner';
+        spinner.id = 'active-eval-spinner';
+        selectedBtn.appendChild(spinner);
+      }
 
-      if (isCorrect) {
-        state.correctCount++;
-        state.streak++;
-        if (state.streak > state.maxStreak) state.maxStreak = state.streak;
-        if (selectedBtn) selectedBtn.classList.add('state-correct');
-        
-        // Animación de racha
-        streakBox.classList.remove('streak-pulse');
-        void streakBox.offsetWidth; // trigger reflow
-        streakBox.classList.add('streak-pulse');
+      // 2. Mostrar el Skeleton loader ("estilo bone") con animación de izquierda a derecha
+      const skeletonBox = document.getElementById('q-skeleton-box');
+      if (skeletonBox) skeletonBox.style.display = 'block';
 
-        if (q.categoria && !state.masteredConcepts.includes(q.categoria)) {
-          state.masteredConcepts.push(q.categoria);
+      // 3. Temporizador de 3 segundos exactos (3000ms)
+      setTimeout(() => {
+        // Ocultar Skeleton y quitar spinner del botón seleccionado
+        if (skeletonBox) skeletonBox.style.display = 'none';
+        const activeSpinner = document.getElementById('active-eval-spinner');
+        if (activeSpinner) activeSpinner.remove();
+        if (selectedBtn) selectedBtn.classList.remove('evaluating');
+
+        const streakBox = document.getElementById('streak-badge-box');
+
+        if (isCorrect) {
+          state.correctCount++;
+          state.streak++;
+          if (state.streak > state.maxStreak) state.maxStreak = state.streak;
+          if (selectedBtn) selectedBtn.classList.add('state-correct');
+          
+          // Animación de racha
+          streakBox.classList.remove('streak-pulse');
+          void streakBox.offsetWidth; // trigger reflow
+          streakBox.classList.add('streak-pulse');
+
+          if (q.categoria && !state.masteredConcepts.includes(q.categoria)) {
+            state.masteredConcepts.push(q.categoria);
+          }
+        } else {
+          state.streak = 0;
+          if (selectedBtn) selectedBtn.classList.add('state-incorrect');
+          if (correctBtn) correctBtn.classList.add('state-correct');
+
+          if (q.categoria && !state.weakConcepts.includes(q.categoria)) {
+            state.weakConcepts.push(q.categoria);
+          }
         }
-      } else {
-        state.streak = 0;
-        if (selectedBtn) selectedBtn.classList.add('state-incorrect');
-        if (correctBtn) correctBtn.classList.add('state-correct');
 
-        if (q.categoria && !state.weakConcepts.includes(q.categoria)) {
-          state.weakConcepts.push(q.categoria);
+        // Actualizar contador de racha en tiempo real
+        document.getElementById('metric-streak').textContent = `${state.streak} seguidas`;
+        const acc = Math.round((state.correctCount / state.totalAnswered) * 100);
+        document.getElementById('metric-accuracy').textContent = `${acc}%`;
+
+        // Mostrar Caja de Explicación Inmediata
+        const expBox = document.getElementById('q-explanation-box');
+        const expHeader = document.getElementById('exp-header-tag');
+        const expIcon = document.getElementById('exp-status-icon');
+        const expTitle = document.getElementById('exp-status-text');
+        const expBody = document.getElementById('exp-body-text');
+        const expTipBox = document.getElementById('exp-tip-box');
+        const expTipText = document.getElementById('exp-tip-text');
+
+        if (isCorrect) {
+          expHeader.className = 'exp-header correct';
+          expIcon.textContent = '✓';
+          expTitle.textContent = '¡Correcto! Excelente razonamiento.';
+        } else {
+          expHeader.className = 'exp-header incorrect';
+          expIcon.textContent = '✕';
+          expTitle.textContent = 'Incorrecto. Mira el concepto clave:';
         }
-      }
 
-      // Actualizar contador de racha en tiempo real
-      document.getElementById('metric-streak').textContent = `${state.streak} seguidas`;
-      const acc = Math.round((state.correctCount / state.totalAnswered) * 100);
-      document.getElementById('metric-accuracy').textContent = `${acc}%`;
+        expBody.textContent = q.explicacion;
 
-      // Mostrar Caja de Explicación Inmediata
-      const expBox = document.getElementById('q-explanation-box');
-      const expHeader = document.getElementById('exp-header-tag');
-      const expIcon = document.getElementById('exp-status-icon');
-      const expTitle = document.getElementById('exp-status-text');
-      const expBody = document.getElementById('exp-body-text');
-      const expTipBox = document.getElementById('exp-tip-box');
-      const expTipText = document.getElementById('exp-tip-text');
+        if (q.tip) {
+          expTipBox.style.display = 'block';
+          expTipText.textContent = q.tip;
+        } else {
+          expTipBox.style.display = 'none';
+        }
 
-      if (isCorrect) {
-        expHeader.className = 'exp-header correct';
-        expIcon.textContent = '✓';
-        expTitle.textContent = '¡Correcto! Excelente razonamiento.';
-      } else {
-        expHeader.className = 'exp-header incorrect';
-        expIcon.textContent = '✕';
-        expTitle.textContent = 'Incorrecto. Mira el concepto clave:';
-      }
-
-      expBody.textContent = q.explicacion;
-
-      if (q.tip) {
-        expTipBox.style.display = 'block';
-        expTipText.textContent = q.tip;
-      } else {
-        expTipBox.style.display = 'none';
-      }
-
-      expBox.style.display = 'block';
-      document.getElementById('action-next-bar').style.display = 'flex';
-      document.getElementById('btn-next-question').focus();
+        expBox.style.display = 'block';
+        document.getElementById('action-next-bar').style.display = 'flex';
+        document.getElementById('btn-next-question').focus();
+      }, 3000);
     }
 
     // ─── AVANZAR A SIGUIENTE PREGUNTA ───
@@ -1163,33 +1276,43 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos), sin bloques de
         return;
       }
 
+      // Ocultar quiz y mostrar vista intermedia con animación bone
       document.getElementById('view-quiz').style.display = 'none';
       document.getElementById('view-loading').style.display = 'none';
-      document.getElementById('view-summary').style.display = 'block';
+      document.getElementById('view-summary').style.display = 'none';
 
-      const pct = Math.round((state.correctCount / state.totalAnswered) * 100);
-      document.getElementById('sum-score-pct').textContent = `${pct}%`;
-      document.getElementById('sum-total-answered').textContent = state.totalAnswered;
-      document.getElementById('sum-correct-count').textContent = state.correctCount;
-      document.getElementById('sum-max-streak').textContent = `🔥 ${state.maxStreak}`;
+      const calcSummary = document.getElementById('view-calculating-summary');
+      if (calcSummary) calcSummary.style.display = 'block';
 
-      const titleEl = document.getElementById('sum-title');
-      const subEl = document.getElementById('sum-subtitle');
-      const feedEl = document.getElementById('sum-feedback-text');
+      // Esperar 2.5 segundos para dar sensación reflexiva y profesional
+      setTimeout(() => {
+        if (calcSummary) calcSummary.style.display = 'none';
+        document.getElementById('view-summary').style.display = 'block';
 
-      if (pct >= 85) {
-        titleEl.textContent = "🏆 ¡Dominio Sobresaliente!";
-        subEl.textContent = "Has demostrado un nivel de retención y comprensión excepcional sobre este tema.";
-        feedEl.innerHTML = `Tienes muy afianzados los conceptos clave de <strong>${state.topic}</strong>. Tu mejor racha fue de <strong>${state.maxStreak} preguntas consecutivas</strong>. ¡Estás más que preparado para el examen!`;
-      } else if (pct >= 60) {
-        titleEl.textContent = "📈 ¡Buen Progreso de Estudio!";
-        subEl.textContent = "Comprendes las bases sólidas, pero hay detalles específicos que conviene reforzar.";
-        feedEl.innerHTML = `Has respondido correctamente <strong>${state.correctCount} de ${state.totalAnswered}</strong> preguntas. Te sugerimos revisar con atención las explicaciones de los conceptos donde fallaste para consolidar el 100%.`;
-      } else {
-        titleEl.textContent = "💡 Sesión de Aprendizaje Inicial";
-        subEl.textContent = "El objetivo del Smart Study es precisamente detectar las lagunas antes del examen real.";
-        feedEl.innerHTML = `La práctica activa ha identificado varios puntos a fortalecer en <strong>${state.topic}</strong>. Te recomendamos volver a repasar tus notas y realizar otra ronda continua.`;
-      }
+        const pct = Math.round((state.correctCount / state.totalAnswered) * 100);
+        document.getElementById('sum-score-pct').textContent = `${pct}%`;
+        document.getElementById('sum-total-answered').textContent = state.totalAnswered;
+        document.getElementById('sum-correct-count').textContent = state.correctCount;
+        document.getElementById('sum-max-streak').textContent = `🔥 ${state.maxStreak}`;
+
+        const titleEl = document.getElementById('sum-title');
+        const subEl = document.getElementById('sum-subtitle');
+        const feedEl = document.getElementById('sum-feedback-text');
+
+        if (pct >= 85) {
+          titleEl.textContent = "🏆 ¡Dominio Sobresaliente!";
+          subEl.textContent = "Has demostrado un nivel de retención y comprensión excepcional sobre este tema.";
+          feedEl.innerHTML = `Tienes muy afianzados los conceptos clave de <strong>${state.topic}</strong>. Tu mejor racha fue de <strong>${state.maxStreak} preguntas consecutivas</strong>. ¡Estás más que preparado para el examen!`;
+        } else if (pct >= 60) {
+          titleEl.textContent = "📈 ¡Buen Progreso de Estudio!";
+          subEl.textContent = "Comprendes las bases sólidas, pero hay detalles específicos que conviene reforzar.";
+          feedEl.innerHTML = `Has respondido correctamente <strong>${state.correctCount} de ${state.totalAnswered}</strong> preguntas. Te sugerimos revisar con atención las explicaciones de los conceptos donde fallaste para consolidar el 100%.`;
+        } else {
+          titleEl.textContent = "💡 Sesión de Aprendizaje Inicial";
+          subEl.textContent = "El objetivo del Smart Study es precisamente detectar las lagunas antes del examen real.";
+          feedEl.innerHTML = `La práctica activa ha identificado varios puntos a fortalecer en <strong>${state.topic}</strong>. Te recomendamos volver a repasar tus notas y realizar otra ronda continua.`;
+        }
+      }, 2500);
     }
 
     function continueStudyingSameTopic() {
