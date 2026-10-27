@@ -1407,7 +1407,7 @@
                 <li><span class="check">✓</span> Soporte prioritario y procesamiento ultra rápido</li>
               </ul>
             </div>
-            <button class="btn-pricing primary" onclick="openPaymentModal('Pro Investigador ($4.99)')">Obtener Plan Pro ➜</button>
+            <button class="btn-pricing primary" onclick="openPaymentModal('Pro Investigador', 4.99)">Obtener Plan Pro ➜</button>
           </div>
 
           <!-- Plan Semestral -->
@@ -1430,7 +1430,7 @@
                 <li><span class="check">✓</span> Ahorro del 35% comparado con la mensualidad individual</li>
               </ul>
             </div>
-            <button class="btn-pricing outline" onclick="openPaymentModal('Campus Semestral ($19.99)')">Elegir Plan Semestral</button>
+            <button class="btn-pricing outline" onclick="openPaymentModal('Campus Semestral', 19.99)">Elegir Plan Semestral</button>
           </div>
         </div>
 
@@ -1865,30 +1865,59 @@
     </div>
   </div>
 
-  <!-- ─── PAYMENT / UPGRADE MODAL ─── -->
+  <!-- ─── CUSTOM ALERT / CELEBRATION MODAL ─── -->
+  <div class="modal-overlay" id="custom-alert-overlay" style="display:none; z-index: 9999;">
+    <div class="modal-card" style="max-width: 440px; text-align: center;">
+      <div style="font-size: 3.5rem; margin-bottom: 10px;">🎉</div>
+      <h3 style="margin-bottom: 0.5rem; color:#2B1B17; font-size: 1.8rem; font-weight: 800;">¡Pago Verificado con Éxito!</h3>
+      <p style="color: var(--color-secondary); margin-bottom: 1.5rem; font-size: 1rem; line-height: 1.5;" id="custom-alert-msg"></p>
+      <button class="btn-action" style="width: 100%;" id="custom-alert-btn">Comenzar a Usar Synapse Suite</button>
+    </div>
+  </div>
+
+  <!-- ─── PAYMENT & VOUCHER VERIFICATION MODAL ─── -->
   <div class="modal-overlay" id="payment-modal">
     <div class="modal-card" style="max-width:480px; text-align:left;">
       <button class="modal-close" onclick="closePaymentModal()">✕</button>
       <div style="text-align:center; margin-bottom:1.2rem;">
-        <h3 style="font-size:1.6rem; color:var(--color-primary); font-weight:800;" id="pay-plan-title">Plan Pro Investigador</h3>
-        <p style="color:var(--color-secondary); font-size:0.92rem;">Activación inmediata de acceso ilimitado</p>
+        <h3 style="font-size:1.6rem; color:var(--color-primary); font-weight:800;">Plan <span id="pay-plan-name">Pro Investigador</span></h3>
+        <p style="color:var(--color-secondary); font-size:0.92rem;">Para activar tu plan, realiza un Pago Móvil con los siguientes datos:</p>
       </div>
 
       <div style="background:var(--bg-subtle); padding:1.2rem; border-radius:12px; margin-bottom:1.2rem; border:1px solid var(--border-color);">
-        <h4 style="font-size:1rem; color:var(--color-primary); margin-bottom:6px; font-weight:700;">Datos para Pago Móvil (Venezuela):</h4>
-        <p style="font-size:0.9rem; color:var(--color-secondary); line-height:1.5;">
-          • <strong>Banco:</strong> Banesco (0134)<br>
-          • <strong>Teléfono:</strong> 0414-1234567<br>
-          • <strong>Cédula:</strong> V-28.123.456<br>
-          • <strong>Tasa:</strong> Oficial BCV al momento del pago
-        </p>
+        <p style="margin: 0 0 8px 0; font-size:0.95rem; color:var(--color-primary);"><strong>🏦 Banco:</strong> Banesco (0134)</p>
+        <p style="margin: 0 0 8px 0; font-size:0.95rem; color:var(--color-primary);"><strong>📱 Teléfono:</strong> 0412 046 6522</p>
+        <p style="margin: 0; font-size:0.95rem; color:var(--color-primary);"><strong>🪪 Cédula:</strong> V-34176801</p>
       </div>
 
-      <p style="font-size:0.88rem; color:var(--color-secondary); line-height:1.5; margin-bottom:1.2rem;">
-        Luego de realizar tu pago, haz clic en el botón de confirmación o contáctanos por WhatsApp para verificar la transacción y activar tu plan al instante.
-      </p>
+      <div style="text-align:center; margin-bottom: 1.4rem;">
+        <div style="font-size: 2.2rem; font-weight: 800; color: var(--color-primary);" id="pay-plan-bs">Calculando... Bs</div>
+        <div style="font-size: 1.05rem; font-weight: 600; color: var(--color-accent);" id="pay-plan-usd">$4.99 USD</div>
+        <div style="font-size: 0.85rem; color: var(--color-secondary); opacity: 0.8; margin-top: 4px;" id="pay-tasa-bcv">Tasa BCV: Cargando...</div>
+      </div>
 
-      <button class="btn-action" onclick="confirmPaymentWhatsApp()">📲 Notificar Pago por WhatsApp</button>
+      <!-- Sección de Subida de Comprobante -->
+      <div id="payment-upload-section">
+        <div class="file-drop" onclick="document.getElementById('voucher-file').click()" style="border: 2px dashed rgba(43,27,23,0.3); border-radius: 12px; padding: 1.4rem; cursor: pointer; transition: 0.2s; background: #fff; text-align: center; margin-bottom: 12px;">
+          <input type="file" id="voucher-file" accept=".jpg,.jpeg,.png" style="display:none;" onchange="handleVoucherUpload(event)"/>
+          <div style="font-size: 2.2rem;">📸</div>
+          <p style="margin: 8px 0 0 0; font-weight: 700; color: var(--color-primary);">Toca para subir tu comprobante de pago</p>
+          <span style="font-size: 0.8rem; color: var(--color-accent);">Captura o foto en formato JPG, JPEG o PNG</span>
+        </div>
+        
+        <img id="voucher-preview" style="max-width: 100%; max-height: 220px; object-fit: contain; border-radius: 12px; margin: 0 auto 12px auto; display: none; border: 1px solid rgba(43,27,23,0.15);" />
+        <div id="voucher-error" style="color: #c0392b; margin-bottom: 12px; display: none; font-weight: 700; background: #fde8e8; padding: 10px; border-radius: 8px; font-size: 0.9rem; line-height: 1.4;"></div>
+
+        <button class="btn-action" id="btn-verify" style="width: 100%; display: none; margin-bottom: 10px;" onclick="verificarPago()">🔍 Verificar Comprobante con IA</button>
+        <button class="btn-service secondary" style="width: 100%;" onclick="confirmPaymentWhatsApp()">💬 No tengo el comprobante / Ayuda por WhatsApp</button>
+      </div>
+
+      <!-- Spinner durante análisis de la IA -->
+      <div id="payment-loading" style="display:none; padding: 1.8rem 0; text-align: center;">
+        <div class="spinner"></div>
+        <p style="font-weight: 700; color: var(--color-primary); margin-top: 10px;">La Inteligencia Artificial está validando el comprobante de pago...</p>
+        <span style="font-size: 0.85rem; color: var(--color-secondary);">Verificando teléfono, cédula, monto y fecha de transacción</span>
+      </div>
     </div>
   </div>
 
@@ -1926,7 +1955,11 @@
       userAnswers: {},
       flashcards: [],
       currentCardIndex: 0,
-      authMode: 'login'
+      authMode: 'login',
+      pendingPlan: null,
+      pendingBsAmount: null,
+      voucherB64: null,
+      voucherMime: null
     };
     const GEMINI_MODEL = 'gemini-3.8-flash';
 
@@ -2049,21 +2082,190 @@
       }
     }
 
-    // ─── PAYMENT & CONTACT MODALS ───
-    function openPaymentModal(planTitle) {
-      document.getElementById('pay-plan-title').textContent = planTitle;
+    // ─── PAYMENT & VOUCHER VERIFICATION ───
+    async function openPaymentModal(nombre, usdPrice) {
+      state.pendingPlan = { nombre, usd: usdPrice };
+
+      if (!state.currentUser) {
+        openAuthModal('login');
+        showToast("Inicia sesión o regístrate para activar tu plan.");
+        return;
+      }
+
+      state.voucherB64 = null;
+      state.voucherMime = null;
+      const fileInput = document.getElementById('voucher-file');
+      if (fileInput) fileInput.value = '';
+      document.getElementById('voucher-preview').style.display = 'none';
+      document.getElementById('btn-verify').style.display = 'none';
+      document.getElementById('voucher-error').style.display = 'none';
+      document.getElementById('payment-upload-section').style.display = 'block';
+      document.getElementById('payment-loading').style.display = 'none';
+
+      document.getElementById('pay-plan-name').textContent = nombre;
+      document.getElementById('pay-plan-usd').textContent = `$${usdPrice.toFixed(2)} USD`;
+      document.getElementById('pay-plan-bs').textContent = `Calculando... Bs`;
+      document.getElementById('pay-tasa-bcv').textContent = `Tasa BCV: Consultando en vivo...`;
       document.getElementById('payment-modal').style.display = 'flex';
+
+      try {
+        const res = await fetch('https://ve.dolarapi.com/v1/dolares/oficial');
+        const data = await res.json();
+        const tasa = data.promedio;
+        const bolivares = (usdPrice * tasa).toFixed(2);
+        state.pendingBsAmount = bolivares;
+
+        document.getElementById('pay-plan-bs').textContent = `${bolivares} Bs.`;
+        document.getElementById('pay-tasa-bcv').textContent = `Tasa Oficial BCV: ${tasa} Bs/$`;
+      } catch(e) {
+        document.getElementById('pay-plan-bs').textContent = `Monto en Bs al cambio`;
+        document.getElementById('pay-tasa-bcv').textContent = `Tasa oficial BCV del día`;
+      }
     }
 
     function closePaymentModal() {
       document.getElementById('payment-modal').style.display = 'none';
     }
 
+    function handleVoucherUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      state.voucherMime = file.type || 'image/jpeg';
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        state.voucherB64 = e.target.result.split(',')[1];
+        const img = document.getElementById('voucher-preview');
+        img.src = e.target.result;
+        img.style.display = 'block';
+        document.getElementById('btn-verify').style.display = 'block';
+        document.getElementById('voucher-error').style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function verificarPago() {
+      if (!state.currentUser) {
+        openAuthModal('login');
+        return;
+      }
+      if (!state.voucherB64) {
+        alert("Por favor selecciona o sube tu comprobante de pago primero.");
+        return;
+      }
+
+      const upSec = document.getElementById('payment-upload-section');
+      const loadSec = document.getElementById('payment-loading');
+      const errEl = document.getElementById('voucher-error');
+
+      upSec.style.display = 'none';
+      loadSec.style.display = 'block';
+      errEl.style.display = 'none';
+
+      const todayStr = new Date().toLocaleDateString('es-VE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      const prompt = `Analiza este comprobante de Pago Móvil venezolano.
+La fecha actual de hoy es: ${todayStr}.
+VERIFICACIÓN ESTRICTA DE SEGURIDAD. Revisa minuciosamente que el texto de la imagen contenga TODO lo siguiente:
+1. Destino/Teléfono: Debe contener '04120466522' o '0412 046 6522'.
+2. Cédula: Debe contener '34176801' o '34.176.801'.
+3. Banco destino: 'Banesco' o '0134'.
+4. Monto: El pago DEBE coincidir con el monto de ${state.pendingBsAmount} (Bolívares o Bs).
+5. Fecha de Pago: La fecha del comprobante DEBE coincidir con hoy (${todayStr}) o máximo el día de ayer. Si la fecha dice el año 2026, es CORRECTA porque hoy estamos en 2026. No lo rechaces diciendo que es del futuro.
+
+Si TODOS los datos solicitados coinciden a la perfección (incluyendo la fecha), responde ÚNICAMENTE con la palabra: APROBADO.
+Si falta ALGÚN dato, el monto no coincide, o el comprobante es inválido/antiguo, responde ÚNICAMENTE con una frase corta explicando el motivo del rechazo.`;
+
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${state.apiKey}`;
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{
+              parts: [
+                { text: prompt },
+                { inline_data: { mime_type: state.voucherMime, data: state.voucherB64 } }
+              ]
+            }],
+            generationConfig: { temperature: 0.1 }
+          })
+        });
+        const data = await res.json();
+        if (!res.ok || data.error) throw new Error(data.error ? data.error.message : 'Error en comunicación con Gemini');
+        const result = data.candidates[0].content.parts[0].text.trim();
+
+        if (result.includes('APROBADO')) {
+          const planCode = state.pendingPlan.nombre.toLowerCase().includes('campus') ? 'campus' : 'pro';
+          
+          // 1. Actualizar plan del usuario en Firestore
+          await firebase.firestore().collection('users').doc(state.currentUser.uid).update({ plan: planCode });
+          if (state.userData) state.userData.plan = planCode;
+          document.getElementById('user-plan-badge').textContent = planCode.toUpperCase();
+
+          // 2. Registrar el pago en Firestore para el historial del administrador (maxrsilvagni)
+          try {
+            await firebase.firestore().collection('payments').add({
+              email: state.currentUser.email,
+              uid: state.currentUser.uid,
+              plan: state.pendingPlan.nombre,
+              monto_bs: state.pendingBsAmount,
+              fecha: new Date().toISOString(),
+              timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+          } catch(err) {
+            console.error("Error guardando historial de pago:", err);
+          }
+
+          // 3. Notificación al correo del administrador
+          try {
+            const revokeLink = `https://redacta-pro.vercel.app/dashboard.html?revoke_email=${encodeURIComponent(state.currentUser.email)}`;
+            await fetch("https://formsubmit.co/ajax/maxrsilvagni@gmail.com", {
+              method: "POST",
+              headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+              body: JSON.stringify({
+                _subject: `💰 ¡Nuevo Pago Aprobado! - Plan ${state.pendingPlan.nombre}`,
+                Cliente: state.currentUser.email,
+                Plan_Comprado: state.pendingPlan.nombre,
+                Monto_Bolivares: `${state.pendingBsAmount} Bs.`,
+                Mensaje: "La IA verificó el comprobante exitosamente y la cuenta fue activada de forma automática.",
+                ACCION_ADMIN: `Si revisas tu Banesco y el pago es FALSO, revoca aquí: ${revokeLink}`
+              })
+            });
+          } catch(e) {
+            console.error("No se pudo enviar la alerta al admin:", e);
+          }
+
+          closePaymentModal();
+          showCustomAlert(`Felicidades, la Inteligencia Artificial validó tu comprobante exitosamente. Tu suscripción a ${state.pendingPlan.nombre} ha sido activada de inmediato.`);
+        } else {
+          upSec.style.display = 'block';
+          loadSec.style.display = 'none';
+          errEl.textContent = `❌ Rechazado: ${result}`;
+          errEl.style.display = 'block';
+        }
+      } catch(e) {
+        upSec.style.display = 'block';
+        loadSec.style.display = 'none';
+        errEl.textContent = `❌ Error procesando comprobante: ${e.message}`;
+        errEl.style.display = 'block';
+      }
+    }
+
+    function showCustomAlert(msg, onConfirm) {
+      document.getElementById('custom-alert-msg').textContent = msg;
+      document.getElementById('custom-alert-overlay').style.display = 'flex';
+      document.getElementById('custom-alert-btn').onclick = () => {
+        document.getElementById('custom-alert-overlay').style.display = 'none';
+        if (onConfirm) onConfirm();
+        else window.location.href = 'dashboard.html';
+      };
+    }
+
     function confirmPaymentWhatsApp() {
+      const plan = state.pendingPlan ? state.pendingPlan.nombre : 'Pro Investigador';
       const email = state.currentUser ? state.currentUser.email : 'No registrado';
-      const text = encodeURIComponent(`Hola Synapse, he realizado el pago para activar mi suscripción al plan de Synapse. Mi correo es: ${email}`);
-      window.open(`https://wa.me/?text=${text}`, '_blank');
-      closePaymentModal();
+      const msg = `Hola Synapse, he realizado el Pago Móvil para el plan ${plan}. Mi correo registrado es: ${email}. Aquí adjunto mi comprobante / datos de referencia:`;
+      const num = "584120466522";
+      window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
     function handleContactSubmit(e) {
