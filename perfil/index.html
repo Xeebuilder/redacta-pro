@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Thea • Perfil de Usuario</title>
+  
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="../firebase-config.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    :root {
+      --bg-dark: #0A0718;
+      --bg-card: #130F2A;
+      --bg-subtle: #1B1538;
+      --border-purple: rgba(167, 139, 250, 0.22);
+      --border-purple-hover: rgba(167, 139, 250, 0.5);
+      --accent-lilac: #B8A2F8;
+      --accent-purple: #7C3AED;
+      --gold-crown: #FACC15;
+      --text-white: #FFFFFF;
+      --text-dim: #94A3B8;
+      --text-dimmer: #64748B;
+      --radius-lg: 16px;
+      --radius-sm: 8px;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-white);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1.5;
+    }
+
+    /* ─── TOP NAV (ESTILO THEA) ─── */
+    .top-nav {
+      width: 100%;
+      max-width: 1100px;
+      padding: 1.2rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+    }
+    .btn-back {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-white);
+      border: 1px solid var(--border-purple);
+      padding: 6px 14px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-back:hover {
+      background: rgba(255, 255, 255, 0.16);
+      transform: translateX(-2px);
+    }
+    .nav-tabs-center {
+      display: flex;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-purple);
+      padding: 4px;
+      border-radius: 24px;
+    }
+    .nav-tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .nav-tab-btn.active {
+      background: rgba(255, 255, 255, 0.15);
+      color: var(--text-white);
+    }
+
+    /* ─── CONTENEDOR PRINCIPAL ─── */
+    .profile-wrap {
+      width: 100%;
+      max-width: 1100px;
+      padding: 0 1.5rem 4rem;
+      flex: 1;
+    }
+
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.85rem;
+      color: var(--text-white);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .thea-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-purple);
+      border-radius: var(--radius-lg);
+      padding: 1.8rem 2.2rem;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    /* ─── 1. PERFIL DE USUARIO ─── */
+    .user-profile-grid {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .avatar-wrapper {
+      position: relative;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .avatar-ring {
+      width: 104px;
+      height: 104px;
+      border-radius: 50%;
+      padding: 4px;
+      background: conic-gradient(var(--accent-lilac) var(--progress, 70%), rgba(255, 255, 255, 0.1) 0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .avatar-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #1E1B4B;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .avatar-inner svg, .avatar-inner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .crown-pill {
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--gold-crown);
+      color: #0F172A;
+      font-weight: 800;
+      font-size: 0.82rem;
+      padding: 2px 10px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      z-index: 2;
+    }
+    .notification-dot {
+      position: absolute;
+      top: 2px;
+      right: 4px;
+      width: 14px;
+      height: 14px;
+      background: #EF4444;
+      border: 2px solid var(--bg-card);
+      border-radius: 50%;
+      z-index: 3;
+    }
+    .avatar-edit-icon {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(4px);
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      border: 1px solid var(--border-purple);
+    }
+
+    .user-info-col {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+      min-width: 200px;
+    }
+    .user-name-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .user-name {
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+    }
+    .user-role-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-dim);
+      font-size: 0.95rem;
+    }
+
+    .user-details-col {
+      display: flex;
+      gap: 3rem;
+      flex-wrap: wrap;
+    }
+    .detail-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .detail-label {
+      font-size: 0.82rem;
+      color: var(--text-dimmer);
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .detail-val-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+    .btn-edit-pencil {
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-size: 0.85rem;
+      padding: 2px 4px;
+      transition: color 0.2s;
+    }
+    .btn-edit-pencil:hover {
+      color: var(--accent-lilac);
+    }
+
+    /* ─── 2. SUSCRIPCIÓN ─── */
+    .sub-card-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+    .sub-plan-info {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .sub-plan-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text-white);
+    }
+    .reward-pill {
+      background: rgba(250, 204, 21, 0.15);
+      border: 1px solid var(--gold-crown);
+      color: var(--gold-crown);
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: 10px;
+    }
+    .btn-upgrade-thea {
+      background: linear-gradient(135deg, #A855F7, #EC4899);
+      color: #FFFFFF;
+      border: none;
+      padding: 0.75rem 1.8rem;
+      border-radius: 24px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 4px 18px rgba(168, 85, 247, 0.35);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-upgrade-thea:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(168, 85, 247, 0.5);
+    }
+
+    /* ─── 3. CONFIGURACIÓN DE LA CUENTA ─── */
+    .account-config-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .account-field-label {
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+    .account-field-value {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-white);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .copy-chip {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-purple);
+      border-radius: 6px;
+      padding: 2px 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      color: var(--text-dim);
+      transition: all 0.2s;
+    }
+    .copy-chip:hover {
+      color: var(--text-white);
+      background: rgba(255, 255, 255, 0.16);
+    }
+    .btn-edit-account {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--border-purple);
+      color: var(--text-white);
+      padding: 0.65rem 1.5rem;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.92rem;
+      cursor: pointer;
+      float: right;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-edit-account:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* ─── MODAL SELECCIONA TU AVATAR (IMAGEN 2) ─── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 3, 14, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal-box {
+      background: #110D27;
+      border: 1px solid var(--border-purple);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 480px;
+      padding: 2rem;
+      position: relative;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+      animation: modalPop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes modalPop {
+      from { opacity: 0; transform: scale(0.92); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .modal-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+    }
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      font-size: 1.3rem;
+      cursor: pointer;
+    }
+    .modal-close:hover { color: var(--text-white); }
+
+    .avatar-grid-picker {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 2rem;
+    }
+    .avatar-choice-btn {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      padding: 0;
+      background: transparent;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.2s, border-color 0.2s;
+      overflow: hidden;
+    }
+    .avatar-choice-btn:hover {
+      transform: scale(1.08);
+    }
+    .avatar-choice-btn.selected {
+      border: 2.5px dashed #FFFFFF !important;
+      transform: scale(1.06);
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.2);
+    }
+    .avatar-choice-btn svg, .avatar-choice-btn img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .btn-modal-cancel {
+      background: #2D264E;
+      color: var(--text-white);
+      border: none;
+      padding: 0.75rem 1.8rem;
+      border-radius: 24px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+    .btn-modal-cancel:hover { background: #3B3363; }
+    .btn-modal-submit {
+      background: var(--accent-lilac);
+      color: #110D27;
+      border: none;
+      padding: 0.75rem 2.2rem;
+      border-radius: 24px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+    .btn-modal-submit:hover { background: #C4B5FD; }
+
+    /* ─── MODAL EDITAR DATOS ─── */
+    .form-group-modal {
+      margin-bottom: 1.2rem;
+    }
+    .form-group-modal label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .form-group-modal input {
+      width: 100%;
+      background: #1B1538;
+      border: 1px solid var(--border-purple);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      color: #fff;
+      font-size: 1rem;
+      outline: none;
+    }
+    .form-group-modal input:focus {
+      border-color: var(--accent-lilac);
+    }
+
+    /* ─── FOOTER ─── */
+    .profile-footer {
+      width: 100%;
+      max-width: 1100px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.82rem;
+      color: var(--text-dimmer);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-links {
+      display: flex;
+      gap: 18px;
+    }
+    .footer-links a {
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--accent-lilac); }
+
+    @media (max-width: 768px) {
+      .user-profile-grid { flex-direction: column; align-items: flex-start; }
+      .account-config-grid { grid-template-columns: 1fr; }
+      .avatar-grid-picker { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+      .avatar-choice-btn { width: 56px; height: 56px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAV -->
+  <header class="top-nav">
+    <a href="../quiz/" class="btn-back">← Atrás</a>
+    
+    <div class="nav-tabs-center">
+      <button class="nav-tab-btn active">Perfil</button>
+      <button class="nav-tab-btn" onclick="alert('🏅 Tus logros e insignias se desbloquean al completar temas y subir de nivel!')">Logros</button>
+    </div>
+
+    <div style="width: 70px;"></div>
+  </header>
+
+  <main class="profile-wrap">
+
+    <!-- 1. PERFIL DE USUARIO -->
+    <div class="section-title">Perfil de usuario</div>
+    <div class="thea-card">
+      <div class="user-profile-grid">
+        
+        <!-- Avatar circular con corona -->
+        <div class="avatar-wrapper" onclick="openAvatarModal()" title="Cambiar avatar">
+          <div class="crown-pill">
+            <span>👑</span>
+            <span id="crown-level-num">1</span>
+          </div>
+          <div class="notification-dot"></div>
+          <div class="avatar-ring" id="user-avatar-ring">
+            <div class="avatar-inner" id="user-avatar-display">
+              <!-- SVG del avatar activo -->
+            </div>
+          </div>
+          <div class="avatar-edit-icon">✏️</div>
+        </div>
+
+        <!-- Nombre y rol -->
+        <div class="user-info-col">
+          <div class="user-name-row">
+            <span class="user-name" id="display-name">Max</span>
+            <button class="btn-edit-pencil" onclick="openEditModal('name')">✏️</button>
+          </div>
+          <div class="user-role-row">
+            <span id="display-role">Estudiante</span>
+            <button class="btn-edit-pencil" onclick="openEditModal('role')">✏️</button>
+          </div>
+          <div style="margin-top:8px; font-size:0.82rem; color:var(--text-dim);">
+            <span>Nivel de Cuenta: </span><strong style="color:var(--gold-crown);" id="display-xp-info">Nivel 1 • 0 XP</strong>
+          </div>
+        </div>
+
+        <!-- Escuela y Nivel Académico -->
+        <div class="user-details-col">
+          <div class="detail-group">
+            <span class="detail-label">Escuela</span>
+            <div class="detail-val-row">
+              <span id="display-school">Italo Venezolano</span>
+              <button class="btn-edit-pencil" onclick="openEditModal('school')">✏️</button>
+            </div>
+          </div>
+
+          <div class="detail-group">
+            <span class="detail-label">Nivel</span>
+            <div class="detail-val-row">
+              <span id="display-level">Secundaria/Preparatoria</span>
+              <button class="btn-edit-pencil" onclick="openEditModal('level')">✏️</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 2. SUSCRIPCIÓN -->
+    <div class="section-title" style="justify-content:space-between;">
+      <span>Suscripción <span style="cursor:pointer; font-size:0.9rem;" onclick="refreshSubscription()">🔄</span></span>
+      <span style="font-size:0.82rem; color:var(--text-dim); font-weight:normal; cursor:pointer;" onclick="alert('Soporte: Escríbenos a maxrsilvagni@gmail.com o vía WhatsApp.')">¿Tienes problemas?</span>
+    </div>
+    <div class="thea-card">
+      <div class="sub-card-row">
+        <div class="sub-plan-info">
+          <span style="font-size:0.85rem; color:var(--text-dimmer); text-transform:uppercase; font-weight:700;">Plan</span>
+          <div class="sub-plan-badge">
+            <span id="display-plan-name">Thea gratis</span>
+            <span class="reward-pill" id="display-reward-pill" style="display:none;">🎁 Recompensa Activa</span>
+          </div>
+          <span style="font-size:0.85rem; color:var(--text-dim);" id="display-plan-desc">Acceso a preguntas continuas de estudio y flashcards básicas.</span>
+        </div>
+
+        <button class="btn-upgrade-thea" onclick="window.location.href='../#precios'">
+          <span>✨</span> Obtén Thea+ <span>✨</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 3. CONFIGURACIÓN DE LA CUENTA -->
+    <div class="section-title">Configuración de la cuenta</div>
+    <div class="thea-card">
+      <div class="account-config-grid">
+        <div>
+          <div class="account-field-label">Nombre</div>
+          <div class="account-field-value" id="account-name-val">Max</div>
+        </div>
+
+        <div>
+          <div class="account-field-label">Correo electrónico</div>
+          <div class="account-field-value" id="account-email-val">roboticacademy.z@gmail.com</div>
+        </div>
+
+        <div>
+          <div class="account-field-label">Idioma preferido ⓘ</div>
+          <div class="account-field-value">Spanish</div>
+        </div>
+
+        <div>
+          <div class="account-field-label">ID de soporte ⓘ</div>
+          <div class="account-field-value">
+            <span id="account-support-id">thea_24b75c6060</span>
+            <span class="copy-chip" onclick="copySupportId()">📋 Copiar</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-edit-account" onclick="openEditModal('all')">
+        <span>✏️</span> Editar
+      </button>
+      <div style="clear:both;"></div>
+    </div>
+
+  </main>
+
+  <!-- MODAL: SELECCIONA TU AVATAR -->
+  <div class="modal-overlay" id="avatar-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">Selecciona tu avatar</h3>
+        <button class="modal-close" onclick="closeAvatarModal()">✕</button>
+      </div>
+
+      <div class="avatar-grid-picker" id="avatar-picker-grid">
+        <!-- Renderizado dinámico de los 20 avatares -->
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" onclick="closeAvatarModal()">Cancelar</button>
+        <button class="btn-modal-submit" onclick="saveSelectedAvatar()">Enviar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: EDITAR DATOS -->
+  <div class="modal-overlay" id="edit-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">Editar Información</h3>
+        <button class="modal-close" onclick="closeEditModal()">✕</button>
+      </div>
+
+      <div class="form-group-modal">
+        <label>Nombre:</label>
+        <input type="text" id="edit-input-name" value="Max">
+      </div>
+
+      <div class="form-group-modal">
+        <label>Rol / Ocupación:</label>
+        <input type="text" id="edit-input-role" value="Estudiante">
+      </div>
+
+      <div class="form-group-modal">
+        <label>Escuela / Colegio / Universidad:</label>
+        <input type="text" id="edit-input-school" value="Italo Venezolano">
+      </div>
+
+      <div class="form-group-modal">
+        <label>Nivel Académico:</label>
+        <input type="text" id="edit-input-level" value="Secundaria/Preparatoria">
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" onclick="closeEditModal()">Cancelar</button>
+        <button class="btn-modal-submit" onclick="saveProfileChanges()">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER ESTILO THEA -->
+  <footer class="profile-footer">
+    <div class="footer-links">
+      <a href="#">👾 Discord</a>
+      <a href="#">❓ Ayuda</a>
+      <a href="#">📖 Acerca de</a>
+      <a href="#">✉️ Contacto</a>
+      <a href="#">📷 Seguir</a>
+    </div>
+    <div>Derechos de autor © 2023-2026 Corporación Thea / Synapse</div>
+  </footer>
+
+  <script>
+    const AVATAR_SVGS = {"snake":"<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#FF7690\"/><path d=\"M50 25c-8 0-14 6-14 14v18c0 4 3 7 7 7h14c4 0 7 3 7 7v4c0 4-3 7-7 7H35\" fill=\"none\" stroke=\"#22C55E\" stroke-width=\"12\" stroke-linecap=\"round\"/><circle cx=\"46\" cy=\"35\" r=\"3\" fill=\"#15803D\"/><circle cx=\"54\" cy=\"35\" r=\"3\" fill=\"#15803D\"/><circle cx=\"36\" cy=\"78\" r=\"3\" fill=\"#15803D\"/><circle cx=\"50\" cy=\"78\" r=\"3\" fill=\"#15803D\"/><circle cx=\"64\" cy=\"78\" r=\"3\" fill=\"#15803D\"/></svg>","butterfly":"<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#CBE4F9\"/><path d=\"M35 38c-8-10-18-6-16 6 2 9 16 12 16 12s-14 3-16 12c-2 11 8 16 16 6 7-9 0-18 0-18s10 9 17 18c8 10 18 5 16-6-2-9-16-12-16-12s14-3 16-12c2-12-8-16-16-6-7 9-1 18-1 18s-9-9-16-18z\" fill=\"#F472B6\"/><path d=\"M50 28v44\" stroke=\"#475569\" stroke-width=\"3\" stroke-linecap=\"round\"/></svg>","deer":"<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#BFDBFE\"/><path d=\"M30 25l10 12m-6-6l6-4m30-2l-10 12m6-6l-6-4\" stroke=\"#92400E\" stroke-width=\"4\" stroke-linecap=\"round\"/><path d=\"M50 40c-14 0-22 10-22 24 0 15 12 24 22 24s22-9 22-24c0-14-8-24-22-24z\" fill=\"#D97706\"/><circle cx=\"42\" cy=\"54\" r=\"3.5\" fill=\"#1E293B\"/><circle cx=\"58\" cy=\"54\" r=\"3.5\" fill=\"#1E293B\"/><ellipse cx=\"50\" cy=\"72\" rx=\"7\" ry=\"5\" fill=\"#1E293B\"/></svg>","leopard":"<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#86EFAC\"/><circle cx=\"30\" cy=\"35\" r=\"10\" fill=\"#FBBF24\"/><circle cx=\"70\" cy=\"35\" r=\"10\" fill=\"#FBBF24\"/><ellipse cx=\"50\" cy=\"55\" rx=\"26\" ry=\"24\" fill=\"#FBBF24\"/><circle cx=\"42\" cy=\"50\" r=\"3\" fill=\"#1E293B\"/><circle cx=\"58\" cy=\"50\" r=\"3\" fill=\"#1E293B\"/><circle cx=\"50\" cy=\"62\" r=\"4\" fill=\"#1E293B\"/><circle cx=\"36\" cy=\"42\" r=\"2.5\" fill=\"#92400E\"/><circle cx=\"64\" cy=\"42\" r=\"2.5\" fill=\"#92400E\"/><circle cx=\"50\" cy=\"40\" r=\"2.5\" fill=\"#92400E\"/><circle cx=\"40\" cy=\"70\" r=\"2.5\" fill=\"#92400E\"/><circle cx=\"60\" cy=\"70\" r=\"2.5\" fill=\"#92400E\"/></svg>","koala":"<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#10B981\"/><circle cx=\"26\" cy=\"40\" r=\"14\" fill=\"#64748B\"/><circle cx=\"74\" cy=\"40\" r=\"14\" fill=\"#64748B\"/><circle cx=\"26\" cy=\"40\" r=\"8\" fill=\"#CBD5E1\"/><circle cx=\"74\" cy=\"40\" r=\"8\" fill=\"#CBD5E1\"/><ellipse cx=\"50\" cy=\"58\" rx=\"24\" ry=\"22\" fill=\"#64748B\"/><circle cx=\"40\" cy=\"52\" r=\"3\" fill=\"#0F172A\"/><circle cx=\"60\" cy=\"52\" r=\"3\" fill=\"#0F172A\"/><ellipse cx=\"50\" cy=\"62\" rx=\"7\" ry=\"11\" fill=\"#1E293B\"/></svg>","fish":"<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#16132F\"/><path d=\"M38 35c-8 6-12 16-8 25 4 8 13 9 18 3 3-4 3-10 1-14l4-8-15-6z\" fill=\"#EC4899\"/><polygon points=\"26,48 18,38 22,58\" fill=\"#EC4899\"/><circle cx=\"36\" cy=\"45\" r=\"2.5\" fill=\"#1E1B4B\"/><path d=\"M62 65c8-6 12-16 8-25-4-8-13-9-18-3-3 4-3 10-1 14l-4 8 15 6z\" fill=\"#FACC15\"/><polygon points=\"74,52 82,62 78,42\" fill=\"#FACC15\"/><circle cx=\"64\" cy=\"55\" r=\"2.5\" fill=\"#1E1B4B\"/></svg>","panda":"<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#F472B6\"/><circle cx=\"28\" cy=\"34\" r=\"11\" fill=\"#0F172A\"/><circle cx=\"72\" cy=\"34\" r=\"11\" fill=\"#0F172A\"/><circle cx=\"50\" cy=\"56\" r=\"25\" fill=\"#FFFFFF\"/><ellipse cx=\"39\" cy=\"53\" rx=\"6\" ry=\"8\" fill=\"#0F172A\" transform=\"rotate(-15 39 53)\"/><ellipse cx=\"61\" cy=\"53\" rx=\"6\" ry=\"8\" fill=\"#0F172A\" transform=\"rotate(15 61 53)\"/><circle cx=\"39\" cy=\"52\" r=\"2.5\" fill=\"#FFFFFF\"/><circle cx=\"61\" cy=\"52\" r=\"2.5\" fill=\"#FFFFFF\"/><ellipse cx=\"50\" cy=\"65\" rx=\"5\" ry=\"3.5\" fill=\"#0F172A\"/></svg>","penguin":"<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#FBBF24\"/><ellipse cx=\"50\" cy=\"55\" rx=\"25\" ry=\"28\" fill=\"#0F172A\"/><ellipse cx=\"50\" cy=\"60\" rx=\"17\" ry=\"20\" fill=\"#FFFFFF\"/><circle cx=\"42\" cy=\"46\" r=\"3\" fill=\"#0F172A\"/><circle cx=\"58\" cy=\"46\" r=\"3\" fill=\"#0F172A\"/><polygon points=\"50,50 44,57 56,57\" fill=\"#F97316\"/></svg>","rabbit":"<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#FDA4AF\"/><ellipse cx=\"38\" cy=\"30\" rx=\"6\" ry=\"18\" fill=\"#FFFFFF\"/><ellipse cx=\"62\" cy=\"30\" rx=\"6\" ry=\"18\" fill=\"#FFFFFF\"/><ellipse cx=\"38\" cy=\"30\" rx=\"3\" ry=\"12\" fill=\"#F472B6\"/><ellipse cx=\"62\" cy=\"30\" rx=\"3\" ry=\"12\" fill=\"#F472B6\"/><circle cx=\"50\" cy=\"60\" r=\"22\" fill=\"#FFFFFF\"/><circle cx=\"42\" cy=\"57\" r=\"3\" fill=\"#1E293B\"/><circle cx=\"58\" cy=\"57\" r=\"3\" fill=\"#1E293B\"/><ellipse cx=\"50\" cy=\"65\" rx=\"4\" ry=\"2.5\" fill=\"#F472B6\"/><circle cx=\"34\" cy=\"64\" r=\"3\" fill=\"#FECDD3\"/><circle cx=\"66\" cy=\"64\" r=\"3\" fill=\"#FECDD3\"/></svg>","turtle":"<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#FDE047\"/><circle cx=\"50\" cy=\"30\" r=\"8\" fill=\"#15803D\"/><ellipse cx=\"50\" cy=\"56\" rx=\"22\" ry=\"25\" fill=\"#B91C1C\"/><path d=\"M50 36v40M34 46h32M34 66h32\" stroke=\"#F59E0B\" stroke-width=\"2.5\"/><circle cx=\"30\" cy=\"42\" r=\"5\" fill=\"#15803D\"/><circle cx=\"70\" cy=\"42\" r=\"5\" fill=\"#15803D\"/><circle cx=\"32\" cy=\"72\" r=\"5\" fill=\"#15803D\"/><circle cx=\"68\" cy=\"72\" r=\"5\" fill=\"#15803D\"/></svg>","dog":"<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#A3E635\"/><ellipse cx=\"28\" cy=\"45\" rx=\"7\" ry=\"16\" fill=\"#92400E\" transform=\"rotate(-15 28 45)\"/><ellipse cx=\"72\" cy=\"45\" rx=\"7\" ry=\"16\" fill=\"#92400E\" transform=\"rotate(15 72 45)\"/><circle cx=\"50\" cy=\"55\" r=\"22\" fill=\"#FDE047\"/><circle cx=\"42\" cy=\"50\" r=\"3.5\" fill=\"#0F172A\"/><circle cx=\"58\" cy=\"50\" r=\"3.5\" fill=\"#0F172A\"/><ellipse cx=\"50\" cy=\"60\" rx=\"6\" ry=\"4\" fill=\"#0F172A\"/><path d=\"M50 64v5c0 3 2 5 4 5s4-2 4-5v-5z\" fill=\"#FB7185\"/></svg>","cat":"<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#A855F7\"/><polygon points=\"30,42 22,22 42,32\" fill=\"#F97316\"/><polygon points=\"70,42 78,22 58,32\" fill=\"#F97316\"/><circle cx=\"50\" cy=\"56\" r=\"24\" fill=\"#FB923C\"/><ellipse cx=\"40\" cy=\"52\" rx=\"3.5\" ry=\"5\" fill=\"#0F172A\"/><ellipse cx=\"60\" cy=\"52\" rx=\"3.5\" ry=\"5\" fill=\"#0F172A\"/><polygon points=\"50,60 46,64 54,64\" fill=\"#991B1B\"/><path d=\"M34 60h-8M34 64h-8M66 60h8M66 64h8\" stroke=\"#0F172A\" stroke-width=\"2\"/></svg>","monkey":"<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#FACC15\"/><circle cx=\"26\" cy=\"50\" r=\"9\" fill=\"#B45309\"/><circle cx=\"74\" cy=\"50\" r=\"9\" fill=\"#B45309\"/><circle cx=\"50\" cy=\"52\" r=\"22\" fill=\"#B45309\"/><ellipse cx=\"43\" cy=\"48\" rx=\"8\" ry=\"10\" fill=\"#FDE68A\"/><ellipse cx=\"57\" cy=\"48\" rx=\"8\" ry=\"10\" fill=\"#FDE68A\"/><ellipse cx=\"50\" cy=\"60\" rx=\"14\" ry=\"11\" fill=\"#FDE68A\"/><circle cx=\"42\" cy=\"48\" r=\"3\" fill=\"#1E293B\"/><circle cx=\"58\" cy=\"48\" r=\"3\" fill=\"#1E293B\"/><circle cx=\"47\" cy=\"58\" r=\"1.5\" fill=\"#1E293B\"/><circle cx=\"53\" cy=\"58\" r=\"1.5\" fill=\"#1E293B\"/><path d=\"M44 65c3 3 9 3 12 0\" fill=\"none\" stroke=\"#1E293B\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>","sheep":"<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#60A5FA\"/><ellipse cx=\"28\" cy=\"42\" rx=\"5\" ry=\"12\" fill=\"#3B82F6\" transform=\"rotate(-40 28 42)\"/><ellipse cx=\"72\" cy=\"42\" rx=\"5\" ry=\"12\" fill=\"#3B82F6\" transform=\"rotate(40 72 42)\"/><circle cx=\"50\" cy=\"48\" r=\"20\" fill=\"#FFFFFF\"/><polygon points=\"50,38 34,68 66,68\" fill=\"#FDE68A\"/><circle cx=\"42\" cy=\"52\" r=\"3\" fill=\"#1E293B\"/><circle cx=\"58\" cy=\"52\" r=\"3\" fill=\"#1E293B\"/><ellipse cx=\"50\" cy=\"62\" rx=\"4\" ry=\"2.5\" fill=\"#F472B6\"/></svg>","crocodile":"<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#FDE047\"/><circle cx=\"40\" cy=\"38\" r=\"6\" fill=\"#15803D\"/><circle cx=\"60\" cy=\"38\" r=\"6\" fill=\"#15803D\"/><circle cx=\"40\" cy=\"37\" r=\"2.5\" fill=\"#FFFFFF\"/><circle cx=\"60\" cy=\"37\" r=\"2.5\" fill=\"#FFFFFF\"/><path d=\"M35 48h30l-4 34c-6 4-16 4-22 0z\" fill=\"#16A34A\"/><polygon points=\"38,62 43,62 40.5,57\" fill=\"#FFFFFF\"/><polygon points=\"46,62 51,62 48.5,57\" fill=\"#FFFFFF\"/><polygon points=\"54,62 59,62 56.5,57\" fill=\"#FFFFFF\"/><circle cx=\"44\" cy=\"72\" r=\"2\" fill=\"#0F172A\"/><circle cx=\"56\" cy=\"72\" r=\"2\" fill=\"#0F172A\"/></svg>","shark":"<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#BAE6FD\"/><path d=\"M20 52c10-8 30-14 55-6l10-8-4 14 4 14-10-8c-25 8-45 2-55-6z\" fill=\"#0369A1\"/><polygon points=\"45,43 55,25 60,42\" fill=\"#0369A1\"/><circle cx=\"65\" cy=\"49\" r=\"2.5\" fill=\"#FFFFFF\"/><circle cx=\"66\" cy=\"49\" r=\"1.5\" fill=\"#0F172A\"/></svg>","chicken":"<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#FED7AA\"/><path d=\"M50 24c-3 0-5 3-4 6 0 3 3 5 4 5s4-2 4-5c1-3-1-6-4-6z\" fill=\"#DC2626\"/><circle cx=\"50\" cy=\"56\" r=\"22\" fill=\"#FFFFFF\"/><circle cx=\"42\" cy=\"52\" r=\"3\" fill=\"#0F172A\"/><circle cx=\"58\" cy=\"52\" r=\"3\" fill=\"#0F172A\"/><polygon points=\"50,54 44,62 56,62\" fill=\"#F97316\"/><path d=\"M48 64c0 3 2 5 2 5s2-2 2-5z\" fill=\"#DC2626\"/></svg>","tiger":"<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#FB923C\"/><circle cx=\"32\" cy=\"34\" r=\"9\" fill=\"#EA580C\"/><circle cx=\"68\" cy=\"34\" r=\"9\" fill=\"#EA580C\"/><ellipse cx=\"50\" cy=\"56\" rx=\"25\" ry=\"23\" fill=\"#F97316\"/><path d=\"M50 36v8M42 40l6 4M58 40l-6 4\" stroke=\"#0F172A\" stroke-width=\"2.5\" stroke-linecap=\"round\"/><circle cx=\"42\" cy=\"52\" r=\"3\" fill=\"#0F172A\"/><circle cx=\"58\" cy=\"52\" r=\"3\" fill=\"#0F172A\"/><ellipse cx=\"50\" cy=\"62\" rx=\"4\" ry=\"2.5\" fill=\"#0F172A\"/></svg>","dragonfly":"<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#34D399\"/><ellipse cx=\"32\" cy=\"45\" rx=\"18\" ry=\"4\" fill=\"#E0F2FE\" transform=\"rotate(-10 32 45)\"/><ellipse cx=\"68\" cy=\"45\" rx=\"18\" ry=\"4\" fill=\"#E0F2FE\" transform=\"rotate(10 68 45)\"/><ellipse cx=\"34\" cy=\"54\" rx=\"15\" ry=\"3.5\" fill=\"#E0F2FE\" transform=\"rotate(10 34 54)\"/><ellipse cx=\"66\" cy=\"54\" rx=\"15\" ry=\"3.5\" fill=\"#E0F2FE\" transform=\"rotate(-10 66 54)\"/><ellipse cx=\"50\" cy=\"38\" rx=\"5\" ry=\"4\" fill=\"#DC2626\"/><rect x=\"48\" y=\"42\" width=\"4\" height=\"38\" rx=\"2\" fill=\"#DC2626\"/></svg>","peacock":"<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#E9D5FF\"/><path d=\"M50 50L25 35M50 50L35 25M50 50L50 20M50 50L65 25M50 50L75 35\" stroke=\"#0284C7\" stroke-width=\"3\"/><circle cx=\"25\" cy=\"35\" r=\"4.5\" fill=\"#0284C7\"/><circle cx=\"35\" cy=\"25\" r=\"4.5\" fill=\"#0284C7\"/><circle cx=\"50\" cy=\"20\" r=\"4.5\" fill=\"#0284C7\"/><circle cx=\"65\" cy=\"25\" r=\"4.5\" fill=\"#0284C7\"/><circle cx=\"75\" cy=\"35\" r=\"4.5\" fill=\"#0284C7\"/><ellipse cx=\"50\" cy=\"58\" rx=\"11\" ry=\"18\" fill=\"#0369A1\"/><circle cx=\"50\" cy=\"44\" r=\"7\" fill=\"#0369A1\"/><polygon points=\"50,45 47,49 53,49\" fill=\"#F59E0B\"/></svg>"};
+
+    // Estado del Perfil
+    const profile = {
+      name: localStorage.getItem('synapse_name') || 'Max',
+      email: localStorage.getItem('synapse_email') || 'roboticacademy.z@gmail.com',
+      role: localStorage.getItem('synapse_role') || 'Estudiante',
+      school: localStorage.getItem('synapse_school') || 'Italo Venezolano',
+      level: localStorage.getItem('synapse_level') || 'Secundaria/Preparatoria',
+      avatarId: localStorage.getItem('synapse_avatar') || 'fish',
+      xp: parseInt(localStorage.getItem('synapse_xp') || '0', 10),
+      supportId: localStorage.getItem('synapse_support_id') || 'thea_24b75c6060'
+    };
+
+    let tempSelectedAvatar = profile.avatarId;
+
+    // Calcular nivel con dificultad duplicada
+    function calculateLevel(xp) {
+      if (xp >= 6600) return 10;
+      if (xp >= 5100) return 9;
+      if (xp >= 3800) return 8;
+      if (xp >= 2700) return 7;
+      if (xp >= 1800) return 6;
+      if (xp >= 1100) return 5;
+      if (xp >= 620) return 4;
+      if (xp >= 300) return 3;
+      if (xp >= 100) return 2;
+      return 1;
+    }
+
+    function renderProfile() {
+      document.getElementById('display-name').textContent = profile.name;
+      document.getElementById('account-name-val').textContent = profile.name;
+      document.getElementById('display-role').textContent = profile.role;
+      document.getElementById('display-school').textContent = profile.school;
+      document.getElementById('display-level').textContent = profile.level;
+      document.getElementById('account-email-val').textContent = profile.email;
+      document.getElementById('account-support-id').textContent = profile.supportId;
+
+      const lvl = calculateLevel(profile.xp);
+      document.getElementById('crown-level-num').textContent = lvl;
+      document.getElementById('display-xp-info').textContent = `Nivel ${lvl} • ${profile.xp} XP`;
+
+      // Render Avatar
+      const container = document.getElementById('user-avatar-display');
+      if (profile.avatarId === 'theafoto' || profile.avatarId.startsWith('http') || profile.avatarId.includes('/')) {
+        container.innerHTML = `<img src="${profile.avatarId}" alt="Avatar">`;
+      } else if (AVATAR_SVGS[profile.avatarId]) {
+        container.innerHTML = AVATAR_SVGS[profile.avatarId];
+      } else {
+        container.innerHTML = AVATAR_SVGS['fish'];
+      }
+
+      // Recompensas
+      const planName = document.getElementById('display-plan-name');
+      const rewardPill = document.getElementById('display-reward-pill');
+      const planDesc = document.getElementById('display-plan-desc');
+
+      if (lvl >= 10) {
+        planName.textContent = "Thea Pro (Semanal)";
+        rewardPill.style.display = "inline-flex";
+        rewardPill.textContent = "👑 Recompensa Nivel 10 Activa";
+        planDesc.textContent = "¡1 semana completa de estudio ilimitado desbloqueada por tu maestría!";
+      } else if (lvl >= 5) {
+        planName.textContent = "Thea Pro (Trial)";
+        rewardPill.style.display = "inline-flex";
+        rewardPill.textContent = "🎁 Recompensa Nivel 5 Activa";
+        planDesc.textContent = "¡3 días gratis de estudio ilimitado desbloqueados por tu progreso!";
+      } else {
+        planName.textContent = "Thea gratis";
+        rewardPill.style.display = "none";
+        planDesc.textContent = "Acceso a preguntas continuas de estudio y flashcards básicas.";
+      }
+    }
+
+    // Modal de Avatares
+    function openAvatarModal() {
+      tempSelectedAvatar = profile.avatarId;
+      const grid = document.getElementById('avatar-picker-grid');
+      grid.innerHTML = '';
+
+      Object.keys(AVATAR_SVGS).forEach(key => {
+        const btn = document.createElement('button');
+        btn.className = 'avatar-choice-btn' + (key === tempSelectedAvatar ? ' selected' : '');
+        btn.innerHTML = AVATAR_SVGS[key];
+        btn.onclick = () => {
+          document.querySelectorAll('.avatar-choice-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          tempSelectedAvatar = key;
+        };
+        grid.appendChild(btn);
+      });
+
+      document.getElementById('avatar-modal').style.display = 'flex';
+    }
+
+    function closeAvatarModal() {
+      document.getElementById('avatar-modal').style.display = 'none';
+    }
+
+    function saveSelectedAvatar() {
+      profile.avatarId = tempSelectedAvatar;
+      localStorage.setItem('synapse_avatar', profile.avatarId);
+      renderProfile();
+      closeAvatarModal();
+    }
+
+    // Modal de Edición
+    function openEditModal(field) {
+      document.getElementById('edit-input-name').value = profile.name;
+      document.getElementById('edit-input-role').value = profile.role;
+      document.getElementById('edit-input-school').value = profile.school;
+      document.getElementById('edit-input-level').value = profile.level;
+      document.getElementById('edit-modal').style.display = 'flex';
+    }
+
+    function closeEditModal() {
+      document.getElementById('edit-modal').style.display = 'none';
+    }
+
+    function saveProfileChanges() {
+      profile.name = document.getElementById('edit-input-name').value.trim() || 'Max';
+      profile.role = document.getElementById('edit-input-role').value.trim() || 'Estudiante';
+      profile.school = document.getElementById('edit-input-school').value.trim() || 'Italo Venezolano';
+      profile.level = document.getElementById('edit-input-level').value.trim() || 'Secundaria/Preparatoria';
+
+      localStorage.setItem('synapse_name', profile.name);
+      localStorage.setItem('synapse_role', profile.role);
+      localStorage.setItem('synapse_school', profile.school);
+      localStorage.setItem('synapse_level', profile.level);
+
+      renderProfile();
+      closeEditModal();
+    }
+
+    function copySupportId() {
+      navigator.clipboard.writeText(profile.supportId).then(() => {
+        alert("¡ID de soporte copiado al portapapeles!");
+      });
+    }
+
+    function refreshSubscription() {
+      alert("Suscripción actualizada. Tu estado de cuenta está al día.");
+    }
+
+    // Inicializar
+    renderProfile();
+  </script>
+</body>
+</html>

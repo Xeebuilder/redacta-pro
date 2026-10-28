@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Synapse Smart Study • Quizzes Continuos e Interactivos</title>
+  <title>Synapse • Smart Study Continuo (Thea)</title>
   
   <!-- Firebase Scripts -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -15,38 +15,38 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     
     :root {
-      --bg-main: #E5D8C8;
-      --bg-card: #FAF8F5;
-      --bg-pure: #FFFFFF;
-      --text-main: #2B1B17;
-      --text-muted: #6B5B54;
-      --color-primary: #2B1B17;
-      --color-accent: #8C6A53;
-      --color-accent-light: #D9C3B0;
-      --border-color: rgba(43, 27, 23, 0.12);
+      --bg-dark: #0A0718;
+      --bg-card: #130F2A;
+      --bg-option: #1B1538;
+      --bg-option-hover: #241D49;
+      --border-purple: rgba(167, 139, 250, 0.22);
+      --border-purple-hover: rgba(167, 139, 250, 0.5);
+      --accent-lilac: #B8A2F8;
+      --accent-purple: #7C3AED;
+      --gold-crown: #FACC15;
+      --text-white: #FFFFFF;
+      --text-dim: #94A3B8;
+      --text-dimmer: #64748B;
       
-      --correct-bg: #EAF7EE;
-      --correct-border: #1B7A43;
-      --correct-text: #0E512A;
+      --correct-bg: rgba(34, 197, 94, 0.18);
+      --correct-border: #22C55E;
+      --correct-text: #4ADE80;
       
-      --incorrect-bg: #FDF2F2;
-      --incorrect-border: #DC2626;
-      --incorrect-text: #991B1B;
+      --incorrect-bg: rgba(239, 68, 68, 0.18);
+      --incorrect-border: #EF4444;
+      --incorrect-text: #F87171;
       
-      --streak-color: #D97706;
-      --streak-bg: #FEF3C7;
+      --streak-color: #F59E0B;
+      --streak-bg: rgba(245, 158, 11, 0.15);
       
       --radius-sm: 8px;
       --radius-md: 14px;
       --radius-lg: 20px;
-      --shadow-sm: 0 4px 12px rgba(43, 27, 23, 0.05);
-      --shadow-md: 0 8px 24px rgba(43, 27, 23, 0.08);
-      --shadow-lg: 0 16px 36px rgba(43, 27, 23, 0.12);
     }
 
     body {
-      background-color: var(--bg-main);
-      color: var(--text-main);
+      background-color: var(--bg-dark);
+      color: var(--text-white);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       min-height: 100vh;
       display: flex;
@@ -55,250 +55,291 @@
       line-height: 1.5;
     }
 
-    /* ─── NAVBAR ─── */
-    .navbar {
+    /* ─── TOP NAVBAR ESTILO THEA ─── */
+    .thea-navbar {
       width: 100%;
-      background-color: var(--bg-card);
-      border-bottom: 1px solid var(--border-color);
-      padding: 0.85rem 2rem;
+      background: rgba(19, 15, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-purple);
+      padding: 0.75rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
     }
-    .nav-brand {
+    .brand-group {
       display: flex;
       align-items: center;
       gap: 12px;
       text-decoration: none;
-      color: var(--color-primary);
+      color: var(--text-white);
     }
-    .nav-logo {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      object-fit: cover;
-      border: 1px solid var(--border-color);
-    }
-    .brand-title {
-      font-weight: 800;
-      font-size: 1.25rem;
+    .brand-logo-thea {
+      font-size: 1.45rem;
+      font-weight: 900;
       letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #FFFFFF, var(--accent-lilac));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
     .brand-badge {
-      background: var(--color-primary);
-      color: #fff;
+      background: rgba(184, 162, 248, 0.15);
+      border: 1px solid var(--border-purple);
+      color: var(--accent-lilac);
       font-size: 0.72rem;
       font-weight: 700;
-      padding: 3px 8px;
+      padding: 3px 10px;
       border-radius: 20px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
-    .nav-links {
+    .nav-center-links {
       display: flex;
-      align-items: center;
-      gap: 18px;
+      gap: 20px;
     }
-    .nav-link {
+    .nav-center-link {
+      color: var(--text-dim);
       text-decoration: none;
-      color: var(--text-muted);
       font-weight: 600;
       font-size: 0.92rem;
       transition: color 0.2s;
     }
-    .nav-link:hover, .nav-link.active {
-      color: var(--color-primary);
+    .nav-center-link:hover, .nav-center-link.active {
+      color: var(--text-white);
     }
-    .user-pill {
+
+    /* Avatar con Corona de Nivel (Imagen 1) */
+    .user-avatar-pill {
       display: flex;
       align-items: center;
-      gap: 8px;
-      background: rgba(43,27,23,0.06);
-      padding: 5px 12px;
-      border-radius: 30px;
-      font-size: 0.85rem;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-purple);
+      padding: 4px 14px 4px 6px;
+      border-radius: 40px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .user-avatar-pill:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--border-purple-hover);
+      transform: translateY(-1px);
+    }
+    .nav-avatar-ring {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      padding: 2px;
+      background: conic-gradient(var(--accent-lilac) 45%, rgba(255, 255, 255, 0.1) 0);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .nav-avatar-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #1E1B4B;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .nav-avatar-inner svg, .nav-avatar-inner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .nav-crown-pill {
+      position: absolute;
+      top: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--gold-crown);
+      color: #0F172A;
+      font-weight: 800;
+      font-size: 0.68rem;
+      padding: 1px 6px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+      z-index: 2;
+    }
+    .nav-user-meta {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+    .nav-user-name {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-white);
+      line-height: 1.2;
+    }
+    .nav-user-xp {
+      font-size: 0.72rem;
+      color: var(--gold-crown);
       font-weight: 600;
     }
 
-    /* ─── APP CONTAINER ─── */
+    /* ─── CONTENEDOR DE LA APP ─── */
     #app {
       width: 100%;
-      max-width: 820px;
+      max-width: 840px;
       padding: 2rem 1.2rem 4rem;
       flex: 1;
       display: flex;
       flex-direction: column;
     }
 
-    /* ─── VIEW 1: LOBBY SETUP ─── */
+    /* ─── VISTA 1: LOBBY ─── */
     .lobby-card {
       background: var(--bg-card);
-      border: 1px solid var(--border-color);
+      border: 1px solid var(--border-purple);
       border-radius: var(--radius-lg);
-      padding: 2.5rem 2.2rem;
-      box-shadow: var(--shadow-md);
+      padding: 2.8rem 2.4rem;
       text-align: center;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.4);
     }
-    .lobby-badge {
+    .thea-chip {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: var(--streak-bg);
-      color: var(--streak-color);
+      background: rgba(184, 162, 248, 0.12);
+      border: 1px solid var(--border-purple);
+      color: var(--accent-lilac);
       padding: 6px 14px;
-      border-radius: 30px;
-      font-weight: 700;
+      border-radius: 20px;
       font-size: 0.82rem;
-      margin-bottom: 1rem;
-      border: 1px solid rgba(217,119,6,0.25);
+      font-weight: 700;
+      margin-bottom: 1.2rem;
     }
     .lobby-title {
-      font-size: 2.2rem;
-      font-weight: 800;
+      font-size: 2.4rem;
+      font-weight: 900;
       letter-spacing: -0.5px;
-      margin-bottom: 0.75rem;
-      color: var(--color-primary);
+      margin-bottom: 0.8rem;
     }
     .lobby-subtitle {
-      color: var(--text-muted);
+      color: var(--text-dim);
       font-size: 1.05rem;
-      max-width: 620px;
-      margin: 0 auto 2rem;
+      max-width: 600px;
+      margin: 0 auto 2.2rem;
     }
 
     .setup-box {
-      text-align: left;
-      background: var(--bg-pure);
-      border: 1px solid var(--border-color);
+      background: #181335;
+      border: 1px solid var(--border-purple);
       border-radius: var(--radius-md);
       padding: 1.8rem;
       margin-bottom: 2rem;
-    }
-    .form-group {
-      margin-bottom: 1.25rem;
-    }
-    .form-group:last-child {
-      margin-bottom: 0;
+      text-align: left;
     }
     .form-label {
       display: block;
       font-weight: 700;
       font-size: 0.95rem;
-      margin-bottom: 0.5rem;
-      color: var(--color-primary);
+      margin-bottom: 0.6rem;
+      color: var(--text-white);
     }
-    .input-text, .input-textarea, .select-level {
+    .input-text, .select-level {
       width: 100%;
-      background: var(--bg-card);
-      border: 1.5px solid var(--border-color);
+      background: #110D27;
+      border: 1.5px solid var(--border-purple);
       border-radius: var(--radius-sm);
-      padding: 0.85rem 1.1rem;
+      padding: 0.9rem 1.1rem;
       font-size: 1rem;
-      color: var(--text-main);
-      font-family: inherit;
+      color: var(--text-white);
       outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: all 0.2s;
     }
-    .input-text:focus, .input-textarea:focus, .select-level:focus {
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px rgba(43,27,23,0.1);
+    .input-text:focus, .select-level:focus {
+      border-color: var(--accent-lilac);
+      box-shadow: 0 0 0 3px rgba(184, 162, 248, 0.2);
     }
     .topic-presets {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-top: 0.75rem;
+      margin-top: 0.85rem;
     }
     .preset-pill {
-      background: rgba(43,27,23,0.05);
-      border: 1px solid var(--border-color);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-purple);
       border-radius: 20px;
-      padding: 5px 12px;
+      padding: 5px 14px;
       font-size: 0.82rem;
       font-weight: 600;
-      color: var(--text-main);
+      color: var(--text-dim);
       cursor: pointer;
       transition: all 0.2s;
     }
     .preset-pill:hover {
-      background: var(--color-primary);
-      color: #fff;
+      background: var(--accent-lilac);
+      color: #0F172A;
       transform: translateY(-1px);
     }
 
     .btn-start {
       width: 100%;
-      background: var(--color-primary);
+      background: linear-gradient(135deg, #A855F7, #7C3AED);
       color: #FFFFFF;
       border: none;
       border-radius: var(--radius-md);
       padding: 1.1rem;
       font-size: 1.15rem;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
-      box-shadow: var(--shadow-sm);
-      transition: all 0.25s ease;
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 10px;
+      box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+      transition: all 0.25s ease;
     }
     .btn-start:hover {
-      background: #4A322B;
       transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
+      box-shadow: 0 6px 26px rgba(124, 58, 237, 0.6);
     }
 
-    /* Pillars */
-    .pillars-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      margin-top: 2rem;
-    }
-    .pillar-card {
-      background: var(--bg-pure);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-sm);
-      padding: 1.2rem;
-      text-align: left;
-    }
-    .pillar-icon { font-size: 1.6rem; margin-bottom: 0.4rem; }
-    .pillar-title { font-size: 0.95rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.25rem; }
-    .pillar-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.4; }
-
-    /* ─── VIEW 2: ACTIVE QUIZ VIEW ─── */
+    /* ─── VISTA 2: ESTUDIO ACTIVO ─── */
     #view-quiz {
       display: none;
       width: 100%;
     }
 
-    /* Progress & Metrics Header */
-    .quiz-metrics-bar {
+    /* Barra Superior de Progresión por Niveles (Etapas 1, 2 y 3) */
+    .session-level-bar {
       background: var(--bg-card);
-      border: 1px solid var(--border-color);
+      border: 1px solid var(--border-purple);
       border-radius: var(--radius-md);
-      padding: 0.85rem 1.4rem;
+      padding: 1.1rem 1.4rem;
+      margin-bottom: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .session-level-meta {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.25rem;
-      box-shadow: var(--shadow-sm);
-      gap: 12px;
       flex-wrap: wrap;
+      gap: 8px;
     }
-    .metric-item {
+    .session-badge {
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: var(--accent-lilac);
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-weight: 700;
-      font-size: 0.95rem;
+      gap: 6px;
     }
-    .streak-badge {
+    .session-streak-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -307,68 +348,67 @@
       padding: 4px 12px;
       border-radius: 20px;
       font-weight: 800;
-      font-size: 0.95rem;
-      border: 1px solid rgba(217,119,6,0.3);
-      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      font-size: 0.92rem;
+      border: 1px solid rgba(245, 158, 11, 0.3);
     }
-    .streak-pulse {
+    .session-streak-badge.pulse {
       animation: pulseStreak 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
     @keyframes pulseStreak {
       0% { transform: scale(1); }
-      50% { transform: scale(1.18); background: #FDE68A; }
+      50% { transform: scale(1.18); }
       100% { transform: scale(1); }
     }
-    .btn-finish-session {
-      background: transparent;
-      border: 1.5px solid var(--border-color);
-      color: var(--text-muted);
-      padding: 5px 12px;
-      border-radius: var(--radius-sm);
-      font-weight: 600;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .btn-finish-session:hover {
-      background: rgba(43,27,23,0.08);
-      color: var(--color-primary);
-    }
-
-    /* Question Focused Card */
-    .question-box {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      padding: 2.2rem;
-      box-shadow: var(--shadow-md);
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
       position: relative;
     }
-    .question-meta {
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #A855F7, #EC4899);
+      width: 0%;
+      border-radius: 10px;
+      transition: width 0.4s ease;
+    }
+
+    /* Tarjeta de Pregunta en Foco */
+    .question-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-purple);
+      border-radius: var(--radius-lg);
+      padding: 2.2rem;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+    }
+    .q-meta {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.2rem;
     }
-    .meta-tag {
-      font-size: 0.78rem;
+    .q-tag {
+      background: rgba(184, 162, 248, 0.15);
+      color: var(--accent-lilac);
+      font-size: 0.8rem;
       font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--color-accent);
-      background: rgba(140, 106, 83, 0.12);
-      padding: 4px 10px;
+      padding: 3px 10px;
       border-radius: 6px;
+      text-transform: uppercase;
     }
-    .question-text {
+    .q-topic {
+      color: var(--text-dim);
+      font-size: 0.85rem;
+    }
+    .q-text {
       font-size: 1.35rem;
       font-weight: 700;
       line-height: 1.45;
-      color: var(--color-primary);
       margin-bottom: 1.8rem;
     }
 
-    /* Options List */
+    /* Opciones */
     .options-grid {
       display: flex;
       flex-direction: column;
@@ -376,369 +416,287 @@
       margin-bottom: 1.8rem;
     }
     .option-btn {
-      background: var(--bg-pure);
-      border: 2px solid var(--border-color);
+      background: var(--bg-option);
+      border: 1.5px solid var(--border-purple);
       border-radius: var(--radius-md);
       padding: 1.1rem 1.4rem;
+      color: var(--text-white);
       text-align: left;
       font-size: 1.05rem;
       font-weight: 500;
-      color: var(--text-main);
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 14px;
-      transition: all 0.2s ease;
-      position: relative;
+      transition: all 0.15s ease;
     }
     .option-btn:hover:not(:disabled) {
-      border-color: var(--color-primary);
-      background: #FDFBF8;
+      background: var(--bg-option-hover);
+      border-color: var(--border-purple-hover);
       transform: translateY(-2px);
-      box-shadow: 0 4px 14px rgba(43,27,23,0.06);
     }
     .option-letter {
       width: 32px;
       height: 32px;
       border-radius: 8px;
-      background: rgba(43,27,23,0.08);
-      color: var(--color-primary);
+      background: rgba(255, 255, 255, 0.08);
       font-weight: 800;
-      font-size: 0.95rem;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      transition: all 0.2s;
     }
-    .option-content {
-      flex: 1;
-    }
+    .option-content { flex: 1; }
 
-    
-    /* ─── BONE / SKELETON SHIMMER (ESTILO BONE) ─── */
-    @keyframes boneShimmer {
-      0% { background-position: -200% 0; }
-      100% { background-position: 200% 0; }
-    }
-
-    .bone {
-      background: linear-gradient(
-        90deg,
-        rgba(43, 27, 23, 0.05) 0%,
-        rgba(43, 27, 23, 0.16) 50%,
-        rgba(43, 27, 23, 0.05) 100%
-      );
-      background-size: 200% 100%;
-      animation: boneShimmer 1.5s infinite linear;
-      border-radius: 6px;
-    }
-
-    .skeleton-card {
-      background: #FFFFFF;
-      border: 1.5px solid var(--border-color);
-      border-radius: var(--radius-md);
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 4px 14px rgba(43, 27, 23, 0.04);
-      animation: fadeInSlide 0.25s ease-out;
-    }
-
-    .bone-line {
-      height: 14px;
-      margin-bottom: 10px;
-    }
-    .bone-line.short { width: 40%; height: 20px; margin-bottom: 14px; border-radius: 6px; }
-    .bone-line.medium { width: 75%; }
-    .bone-line.long { width: 100%; }
-    .bone-line.box { width: 100%; height: 38px; border-radius: 8px; margin-top: 12px; }
-
-    /* Estado de evaluación en el botón de opción */
-    .option-btn.evaluating {
-      border-color: var(--color-primary) !important;
-      background: rgba(43, 27, 23, 0.05) !important;
-      box-shadow: 0 0 0 3px rgba(43, 27, 23, 0.12) !important;
-    }
-    .option-eval-spinner {
-      width: 18px;
-      height: 18px;
-      border: 2.5px solid rgba(43,27,23,0.15);
-      border-top-color: var(--color-primary);
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      margin-left: auto;
-      flex-shrink: 0;
-    }
-
-    /* Option States */
+    /* Estados de opción instantáneos */
     .option-btn.state-correct {
       background: var(--correct-bg) !important;
       border-color: var(--correct-border) !important;
       color: var(--correct-text) !important;
-      box-shadow: 0 4px 16px rgba(27,122,67,0.15);
+      box-shadow: 0 4px 18px rgba(34, 197, 94, 0.2);
     }
     .option-btn.state-correct .option-letter {
       background: var(--correct-border);
-      color: #fff;
+      color: #0F172A;
     }
     .option-btn.state-incorrect {
       background: var(--incorrect-bg) !important;
       border-color: var(--incorrect-border) !important;
       color: var(--incorrect-text) !important;
-      box-shadow: 0 4px 16px rgba(220,38,38,0.15);
+      box-shadow: 0 4px 18px rgba(239, 68, 68, 0.2);
     }
     .option-btn.state-incorrect .option-letter {
       background: var(--incorrect-border);
-      color: #fff;
+      color: #FFFFFF;
     }
-    .option-btn:disabled {
-      cursor: default;
-    }
+    .option-btn:disabled { cursor: default; }
 
-    /* Explanation Banner */
-    .explanation-card {
-      display: none;
-      background: #FFFFFF;
-      border: 1.5px solid var(--border-color);
+    /* Skeleton Bone Shimmer (Exactamente 1 segundo) */
+    @keyframes boneShimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .bone {
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.05) 0%,
+        rgba(255, 255, 255, 0.15) 50%,
+        rgba(255, 255, 255, 0.05) 100%
+      );
+      background-size: 200% 100%;
+      animation: boneShimmer 1.2s infinite linear;
+      border-radius: 6px;
+    }
+    .skeleton-box {
+      background: #181335;
+      border: 1px solid var(--border-purple);
       border-radius: var(--radius-md);
       padding: 1.4rem;
       margin-bottom: 1.5rem;
-      animation: fadeInSlide 0.3s ease-out;
+      display: none;
+    }
+    .bone-line { height: 14px; margin-bottom: 10px; }
+    .bone-line.short { width: 35%; height: 18px; border-radius: 6px; margin-bottom: 12px; }
+    .bone-line.medium { width: 75%; }
+    .bone-line.long { width: 100%; }
+
+    /* Explicación */
+    .explanation-card {
+      background: #181335;
+      border: 1px solid var(--border-purple);
+      border-radius: var(--radius-md);
+      padding: 1.4rem;
+      margin-bottom: 1.5rem;
+      display: none;
+      animation: fadeInSlide 0.25s ease-out;
     }
     @keyframes fadeInSlide {
-      from { opacity: 0; transform: translateY(10px); }
+      from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    .exp-header {
+    .exp-title {
+      font-size: 1rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
       display: flex;
       align-items: center;
       gap: 8px;
-      font-weight: 800;
-      font-size: 1rem;
-      margin-bottom: 0.5rem;
     }
-    .exp-header.correct { color: var(--correct-border); }
-    .exp-header.incorrect { color: var(--incorrect-border); }
+    .exp-title.correct { color: var(--correct-text); }
+    .exp-title.incorrect { color: var(--incorrect-text); }
     .exp-body {
       font-size: 0.95rem;
-      color: var(--text-main);
-      line-height: 1.55;
+      color: var(--text-white);
+      line-height: 1.5;
       margin-bottom: 0.75rem;
     }
     .exp-tip {
-      background: rgba(140, 106, 83, 0.08);
-      border-left: 3px solid var(--color-accent);
+      background: rgba(184, 162, 248, 0.1);
+      border-left: 3px solid var(--accent-lilac);
       padding: 8px 12px;
       border-radius: 0 6px 6px 0;
       font-size: 0.88rem;
-      color: var(--text-main);
     }
 
-    /* Action Next Bar */
-    .action-next-bar {
-      display: none;
-      justify-content: flex-end;
-    }
-    .btn-next {
-      background: var(--color-primary);
-      color: #FFFFFF;
+    .btn-next-action {
+      background: var(--accent-lilac);
+      color: #0A0718;
       border: none;
-      border-radius: var(--radius-md);
-      padding: 0.95rem 2.2rem;
-      font-size: 1.05rem;
-      font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      box-shadow: var(--shadow-sm);
-      transition: all 0.2s ease;
-    }
-    .btn-next:hover {
-      background: #4A322B;
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-    }
-
-    /* ─── VIEW 3: SESSION SUMMARY ─── */
-    #view-summary {
-      display: none;
-      width: 100%;
-    }
-    .summary-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      padding: 2.8rem 2.2rem;
-      text-align: center;
-      box-shadow: var(--shadow-md);
-    }
-    .summary-score-circle {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      background: var(--bg-pure);
-      border: 4px solid var(--color-primary);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1.5rem;
-    }
-    .score-pct {
-      font-size: 2rem;
+      padding: 0.85rem 2rem;
+      border-radius: 24px;
       font-weight: 800;
-      color: var(--color-primary);
-      line-height: 1;
-    }
-    .score-lbl {
-      font-size: 0.72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-    .stats-row {
-      display: flex;
-      justify-content: center;
-      gap: 24px;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-    }
-    .stat-pill {
-      background: var(--bg-pure);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-sm);
-      padding: 10px 18px;
-      text-align: left;
-    }
-    .stat-val { font-size: 1.25rem; font-weight: 800; color: var(--color-primary); }
-    .stat-name { font-size: 0.78rem; font-weight: 600; color: var(--text-muted); }
-
-    .summary-feedback-box {
-      text-align: left;
-      background: var(--bg-pure);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-    }
-    .feedback-title {
-      font-weight: 700;
-      font-size: 0.95rem;
-      margin-bottom: 0.6rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .summary-actions {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    .btn-secondary {
-      background: transparent;
-      border: 2px solid var(--color-primary);
-      color: var(--color-primary);
-      padding: 0.9rem 1.6rem;
-      border-radius: var(--radius-md);
-      font-weight: 700;
       font-size: 1rem;
       cursor: pointer;
-      text-decoration: none;
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      float: right;
       transition: all 0.2s;
     }
-    .btn-secondary:hover {
-      background: rgba(43,27,23,0.06);
+    .btn-next-action:hover {
+      background: #C4B5FD;
+      transform: translateY(-2px);
     }
 
-    /* ─── LOADING STATE ─── */
-    .loading-overlay {
+    /* ─── MODAL DIAGNÓSTICO INTERMEDIO (NIVEL 1, 2, 3) ─── */
+    .milestone-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 3, 14, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
       display: none;
-      text-align: center;
-      padding: 3rem 1rem;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
     }
+    .milestone-card {
+      background: #110D27;
+      border: 1px solid var(--border-purple);
+      border-radius: 24px;
+      width: 100%;
+      max-width: 520px;
+      padding: 2.5rem 2.2rem;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+      animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes modalPop {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .milestone-badge {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      background: rgba(250, 204, 21, 0.15);
+      border: 3px solid var(--gold-crown);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      margin: 0 auto 1.2rem;
+    }
+    .milestone-stats-grid {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin: 1.8rem 0;
+    }
+    .m-stat-box {
+      background: #181335;
+      border: 1px solid var(--border-purple);
+      border-radius: var(--radius-sm);
+      padding: 10px 18px;
+      text-align: center;
+    }
+    .m-stat-val { font-size: 1.4rem; font-weight: 800; color: var(--accent-lilac); }
+    .m-stat-lbl { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700; }
+
     .spinner {
-      width: 48px;
-      height: 48px;
-      border: 4px solid rgba(43, 27, 23, 0.15);
-      border-top-color: var(--color-primary);
+      width: 44px;
+      height: 44px;
+      border: 3px solid rgba(255, 255, 255, 0.15);
+      border-top-color: var(--accent-lilac);
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
-      margin: 0 auto 1.2rem;
+      margin: 2rem auto;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     @media (max-width: 640px) {
-      .navbar { padding: 0.8rem 1rem; }
-      .lobby-title { font-size: 1.7rem; }
-      .pillars-grid { grid-template-columns: 1fr; }
-      .question-box { padding: 1.5rem 1.2rem; }
-      .question-text { font-size: 1.15rem; }
-      .option-btn { font-size: 0.95rem; padding: 0.9rem 1rem; }
+      .thea-navbar { padding: 0.75rem 1rem; }
+      .nav-center-links { display: none; }
+      .lobby-title { font-size: 1.8rem; }
+      .q-text { font-size: 1.15rem; }
     }
   </style>
 </head>
 <body>
 
-  <!-- NAVBAR UNIFICADA SYNAPSE -->
-  <header class="navbar">
-    <a href="../" class="nav-brand" title="Volver al Hub de Synapse">
-      <img src="../synapse-logo.jpg" alt="Synapse" class="nav-logo" onerror="this.style.display='none'">
-      <span class="brand-title">SYNAPSE</span>
+  <!-- THEA NAVBAR -->
+  <header class="thea-navbar">
+    <a href="../" class="brand-group">
+      <span class="brand-logo-thea">SYNAPSE</span>
       <span class="brand-badge">Smart Study</span>
     </a>
 
-    <nav class="nav-links">
-      <a href="../" class="nav-link">Hub Principal</a>
-      <a href="../redactapro/" class="nav-link">RedactaPro</a>
-      <a href="../quiz/" class="nav-link active">Quiz Continuo</a>
-      <a href="../flashcards/" class="nav-link">Flashcards</a>
-      <div id="user-display" class="user-pill" style="display:none;">
-        <span>👤</span>
-        <span id="user-email-text">Usuario</span>
-      </div>
+    <nav class="nav-center-links">
+      <a href="../" class="nav-center-link">Hub</a>
+      <a href="../redactapro/" class="nav-center-link">RedactaPro</a>
+      <a href="../quiz/" class="nav-center-link active">Quiz Continuo</a>
+      <a href="../flashcards/" class="nav-center-link">Flashcards</a>
     </nav>
+
+    <!-- Avatar con corona de nivel (Imagen 1) -->
+    <a href="../perfil/" class="user-avatar-pill" title="Ver mi perfil">
+      <div class="nav-avatar-ring" id="nav-avatar-ring">
+        <div class="nav-crown-pill">
+          <span>👑</span>
+          <span id="nav-crown-num">1</span>
+        </div>
+        <div class="nav-avatar-inner" id="nav-avatar-icon">
+          <!-- Avatar SVG -->
+        </div>
+      </div>
+      <div class="nav-user-meta">
+        <span class="nav-user-name" id="nav-user-name">Max</span>
+        <span class="nav-user-xp" id="nav-user-xp">0 XP</span>
+      </div>
+    </a>
   </header>
 
   <main id="app">
 
-    <!-- ─── 1. VISTA: LOBBY DE CONFIGURACIÓN ─── -->
+    <!-- ─── 1. VISTA: LOBBY ─── -->
     <section id="view-lobby" class="lobby-card">
-      <div class="lobby-badge">
-        <span>⚡</span> Aprendizaje Activo • Metodología Thea
-      </div>
+      <div class="thea-chip">⚡ Metodología Thea de Aprendizaje Activo</div>
       <h1 class="lobby-title">Quiz de Estudio Continuo</h1>
       <p class="lobby-subtitle">
-        Entrena tu memoria y razonamiento. Te haremos preguntas continuas una a una basadas en tu tema o apuntes, con explicaciones inmediatas y adaptación a tus errores.
+        Preguntas continuas paso a paso. La IA detecta lo que dominas y refuerza tus conceptos clave con feedback al segundo.
       </p>
 
       <div class="setup-box">
-        <div class="form-group">
-          <label class="form-label" for="study-topic">Tema a estudiar o pega tus apuntes / temario:</label>
-          <input type="text" id="study-topic" class="input-text" placeholder="Ej: Leyes de Kepler, Mitocondria y Respiración Celular, Guerra Fría...">
-          <div id="topic-error-msg" style="display:none; color:#DC2626; font-size:0.88rem; font-weight:700; margin-top:8px;">⚠️ Por favor ingresa un tema o selecciona uno de los temas sugeridos arriba.</div>
-          
+        <div style="margin-bottom: 1.25rem;">
+          <label class="form-label" for="study-topic">Tema a estudiar o notas de clase:</label>
+          <input type="text" id="study-topic" class="input-text" placeholder="Ej: Rotación y traslación, Python básico, Leyes de Newton...">
+          <div id="topic-error-msg" style="display:none; color:#EF4444; font-size:0.85rem; font-weight:700; margin-top:8px;">⚠️ Por favor ingresa un tema o selecciona uno de los temas sugeridos arriba.</div>
+
           <div class="topic-presets">
+            <span class="preset-pill" onclick="setTopic('Rotación y traslación de la Tierra')">🌍 Rotación y Traslación</span>
+            <span class="preset-pill" onclick="setTopic('Python básico para principiantes')">🐍 Python Básico</span>
             <span class="preset-pill" onclick="setTopic('Biología Celular y División Mitótica')">🧬 Biología Celular</span>
             <span class="preset-pill" onclick="setTopic('Leyes del Movimiento de Newton')">🍎 Física Mecánica</span>
-            <span class="preset-pill" onclick="setTopic('Segunda Guerra Mundial: Causas y Frentes')">📜 Segunda Guerra Mundial</span>
-            <span class="preset-pill" onclick="setTopic('Álgebra: Factorización y Ecuaciones')">📐 Álgebra y Matemáticas</span>
-            <span class="preset-pill" onclick="setTopic('Química Orgánica: Hidrocarburos y Enlaces')">🧪 Química Orgánica</span>
+            <span class="preset-pill" onclick="setTopic('Segunda Guerra Mundial: Causas')">📜 Segunda Guerra Mundial</span>
           </div>
         </div>
 
-        <div class="form-group">
-          <label class="form-label" for="study-level">Nivel de profundidad académica:</label>
+        <div>
+          <label class="form-label" for="study-level">Nivel Académico:</label>
           <select id="study-level" class="select-level">
             <option value="Secundaria Básica">Secundaria Básica (12 - 14 años)</option>
-            <option value="Bachillerato y 4to año" selected>Bachillerato / Preparatoria (15 - 17 años)</option>
-            <option value="Universitario Riguroso">Universitario / Superior (Conceptos avanzados y rigor)</option>
+            <option value="Bachillerato / Preparatoria" selected>Bachillerato / Preparatoria (15 - 17 años)</option>
+            <option value="Universitario">Universitario / Superior</option>
           </select>
         </div>
       </div>
@@ -746,193 +704,228 @@
       <button class="btn-start" onclick="startStudySession()">
         <span>🚀</span> Iniciar Modo Estudio Continuo
       </button>
-
-      <div class="pillars-grid">
-        <div class="pillar-card">
-          <div class="pillar-icon">🧠</div>
-          <div class="pillar-title">Active Recall</div>
-          <div class="pillar-desc">Te preguntamos en lugar de darte la respuesta servida. El esfuerzo cognitivo fija el conocimiento.</div>
-        </div>
-        <div class="pillar-card">
-          <div class="pillar-icon">⚡</div>
-          <div class="pillar-title">Feedback Inmediato</div>
-          <div class="pillar-desc">Conoce al instante por qué acertaste o fallaste con explicaciones concisas y reglas nemotécnicas.</div>
-        </div>
-        <div class="pillar-card">
-          <div class="pillar-icon">♾️</div>
-          <div class="pillar-title">Flujo Sin Esperas</div>
-          <div class="pillar-desc">Carga continua en segundo plano para que estudies a tu ritmo sin pantallas de espera intermedias.</div>
-        </div>
-      </div>
     </section>
 
-    <!-- ─── CARGANDO INICIAL ─── -->
-    <div id="view-loading" class="loading-overlay">
+    <!-- CARGANDO INICIAL -->
+    <div id="view-loading" style="display:none; text-align:center; padding:3rem 1rem;">
       <div class="spinner"></div>
-      <h3 style="font-size:1.3rem; font-weight:700; margin-bottom:6px;">Estructurando tus preguntas con IA...</h3>
-      <p style="color:var(--text-muted); font-size:0.95rem;">Extrayendo conceptos clave y formulando desafíos interactivos.</p>
+      <h3 style="font-size:1.3rem; font-weight:700; margin-bottom:6px;">Estructurando tus preguntas con Thea...</h3>
+      <p style="color:var(--text-dim); font-size:0.95rem;">Extrayendo conceptos clave para un aprendizaje activo.</p>
     </div>
 
-    <!-- ─── 2. VISTA: ESTUDIO ACTIVO (SMART STUDY LOOP) ─── -->
+    <!-- ─── 2. VISTA: ESTUDIO ACTIVO ─── -->
     <section id="view-quiz">
-      
-      <!-- Barra Superior de Métricas -->
-      <div class="quiz-metrics-bar">
-        <div class="metric-item">
-          <span style="color:var(--color-accent);">Pregunta</span>
-          <span id="metric-counter" style="color:var(--color-primary); font-size:1.1rem;">#1</span>
-        </div>
 
-        <div class="metric-item">
-          <div class="streak-badge" id="streak-badge-box">
-            <span id="streak-fire">🔥</span>
-            <span id="metric-streak">0 seguidas</span>
+      <!-- Barra de Progresión de Etapas (Nivel 1 ➔ Nivel 2 ➔ Nivel 3) -->
+      <div class="session-level-bar">
+        <div class="session-level-meta">
+          <div class="session-badge">
+            <span id="session-level-title">Nivel 1 de 3 • Fundamentos Clave</span>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="session-streak-badge" id="session-streak-box">
+              <span>🔥</span>
+              <span id="metric-streak">0 seguidas</span>
+            </div>
+
+            <button onclick="finishSession()" style="background:transparent; border:1px solid var(--border-purple); color:var(--text-dim); padding:4px 10px; border-radius:6px; cursor:pointer; font-size:0.8rem;">
+              Terminar ⏹
+            </button>
           </div>
         </div>
 
-        <div class="metric-item">
-          <span style="color:var(--text-muted); font-size:0.9rem;">Precisión:</span>
-          <span id="metric-accuracy" style="color:var(--correct-border);">100%</span>
+        <div class="progress-track">
+          <div class="progress-fill" id="session-progress-fill"></div>
         </div>
-
-        <button class="btn-finish-session" onclick="finishSession()">
-          Terminar Sesión ⏹
-        </button>
       </div>
 
-      <!-- Tarjeta Principal de Pregunta Única -->
-      <div class="question-box" id="question-card">
-        <div class="question-meta">
-          <span class="meta-tag" id="q-category-tag">Concepto Clave</span>
-          <span style="font-size:0.85rem; color:var(--text-muted);" id="q-topic-label">Tema</span>
+      <!-- Tarjeta de Pregunta en Foco -->
+      <div class="question-card">
+        <div class="q-meta">
+          <span class="q-tag" id="q-category-tag">Concepto Básico</span>
+          <span class="q-topic" id="q-topic-label">Tema</span>
         </div>
 
-        <div class="question-text" id="q-text">
-          Cargando pregunta...
-        </div>
+        <div class="q-text" id="q-text">Cargando pregunta...</div>
 
-        <!-- Opciones A, B, C, D -->
-        <div class="options-grid" id="q-options-container">
-          <!-- Renderizado dinámico -->
-        </div>
+        <!-- 4 Opciones A, B, C, D -->
+        <div class="options-grid" id="q-options-container"></div>
 
-                <!-- Shimmer Skeleton ("Estilo Bone") durante 3 segundos -->
-        <div class="skeleton-card" id="q-skeleton-box" style="display:none;">
-          <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
-            <div class="option-eval-spinner"></div>
-            <span style="font-weight:700; font-size:0.92rem; color:var(--color-primary);">Verificando respuesta y razonamiento con IA...</span>
-          </div>
+        <!-- Skeleton Shimmer de 1 segundo ("Estilo Bone") -->
+        <div class="skeleton-box" id="q-skeleton-box">
           <div class="bone bone-line short"></div>
           <div class="bone bone-line long"></div>
           <div class="bone bone-line medium"></div>
-          <div class="bone bone-line box"></div>
         </div>
 
-        <!-- Banner de Explicación Inmediata -->
+        <!-- Caja de Explicación Inmediata -->
         <div class="explanation-card" id="q-explanation-box">
-          <div class="exp-header" id="exp-header-tag">
-            <span id="exp-status-icon">✓</span>
-            <span id="exp-status-text">¡Correcto!</span>
+          <div class="exp-title" id="exp-title-box">
+            <span id="exp-icon">✓</span>
+            <span id="exp-text">¡Correcto!</span>
           </div>
-          <div class="exp-body" id="exp-body-text">
-            Explicación detallada...
-          </div>
+          <div class="exp-body" id="exp-body-text">Explicación...</div>
           <div class="exp-tip" id="exp-tip-box" style="display:none;">
             <strong>💡 Clave para recordar:</strong> <span id="exp-tip-text"></span>
           </div>
         </div>
 
-        <!-- Barra de Acción: Siguiente Pregunta -->
-        <div class="action-next-bar" id="action-next-bar">
-          <button class="btn-next" id="btn-next-question" onclick="nextQuestion()">
+        <!-- Botón Siguiente Pregunta -->
+        <div style="display:none; justify-content:flex-end;" id="action-next-bar">
+          <button class="btn-next-action" id="btn-next-question" onclick="nextQuestion()">
             <span>Siguiente Pregunta</span> ➔
           </button>
         </div>
+        <div style="clear:both;"></div>
       </div>
 
-    </section>
-
-        <!-- ─── VISTA INTERMEDIA: CALCULANDO DIAGNÓSTICO (ESTILO BONE) ─── -->
-    <section id="view-calculating-summary" style="display:none; width:100%;">
-      <div class="summary-card" style="padding:3.5rem 2rem;">
-        <div class="spinner" style="margin-bottom:1.5rem;"></div>
-        <h2 style="font-size:1.8rem; font-weight:800; color:var(--color-primary); margin-bottom:0.5rem;">Sintetizando Diagnóstico Pedagógico...</h2>
-        <p style="color:var(--text-muted); max-width:520px; margin:0 auto 2.2rem; font-size:0.98rem;">
-          Consolidando tus patrones de respuesta, racha de aciertos y curvas de retención en memoria activa.
-        </p>
-
-        <!-- Skeleton loaders imitando los resultados -->
-        <div style="max-width:580px; margin:0 auto;">
-          <div style="display:flex; justify-content:center; gap:16px; margin-bottom:1.8rem; flex-wrap:wrap;">
-            <div class="bone" style="width:140px; height:60px; border-radius:10px;"></div>
-            <div class="bone" style="width:140px; height:60px; border-radius:10px;"></div>
-            <div class="bone" style="width:140px; height:60px; border-radius:10px;"></div>
-          </div>
-          <div class="bone bone-line" style="height:22px; width:45%; margin:0 auto 12px; border-radius:6px;"></div>
-          <div class="bone bone-line long"></div>
-          <div class="bone bone-line medium" style="margin:0 auto 10px;"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ─── 3. VISTA: RESUMEN DE SESIÓN ─── -->
-    <section id="view-summary">
-      <div class="summary-card">
-        <div class="summary-score-circle">
-          <span class="score-pct" id="sum-score-pct">0%</span>
-          <span class="score-lbl">Precisión</span>
-        </div>
-
-        <h2 style="font-size:1.8rem; font-weight:800; margin-bottom:0.5rem;" id="sum-title">¡Gran Sesión de Estudio!</h2>
-        <p style="color:var(--text-muted); max-width:540px; margin:0 auto 1.8rem;" id="sum-subtitle">
-          Has completado una sesión de entrenamiento activo. Repasa los puntos destacados a continuación:
-        </p>
-
-        <div class="stats-row">
-          <div class="stat-pill">
-            <div class="stat-val" id="sum-total-answered">0</div>
-            <div class="stat-name">Preguntas Respondidas</div>
-          </div>
-          <div class="stat-pill">
-            <div class="stat-val" id="sum-correct-count" style="color:var(--correct-border);">0</div>
-            <div class="stat-name">Aciertos</div>
-          </div>
-          <div class="stat-pill">
-            <div class="stat-val" id="sum-max-streak" style="color:var(--streak-color);">🔥 0</div>
-            <div class="stat-name">Mejor Racha</div>
-          </div>
-        </div>
-
-        <div class="summary-feedback-box" id="sum-feedback-container">
-          <div class="feedback-title" style="color:var(--color-primary);">
-            <span>📋</span> Diagnóstico Pedagógico
-          </div>
-          <p id="sum-feedback-text" style="color:var(--text-main); font-size:0.95rem; line-height:1.5;">
-            Excelente ritmo de estudio. Continúa practicando para afianzar los conceptos antes de tu evaluación formal.
-          </p>
-        </div>
-
-        <div class="summary-actions">
-          <button class="btn-start" style="width:auto; padding:0.85rem 1.8rem;" onclick="continueStudyingSameTopic()">
-            🔄 Seguir con este Tema
-          </button>
-          <button class="btn-secondary" onclick="newTopicSession()">
-            📚 Estudiar Otro Tema
-          </button>
-          <a href="../" class="btn-secondary">
-            🏠 Volver al Hub
-          </a>
-        </div>
-      </div>
     </section>
 
   </main>
 
+  <!-- MODAL: DIAGNÓSTICO INTERMEDIO (NIVEL 1, 2 O 3) -->
+  <div class="milestone-overlay" id="milestone-modal">
+    <div class="milestone-card">
+      <div class="milestone-badge" id="m-badge-icon">🎯</div>
+      <h2 style="font-size:1.8rem; font-weight:800; margin-bottom:0.5rem;" id="m-modal-title">¡Nivel 1 Superado!</h2>
+      <p style="color:var(--text-dim); font-size:0.95rem; margin-bottom:1.5rem;" id="m-modal-subtitle">
+        Has completado los conceptos fundamentales de este tema. Aquí está tu diagnóstico:
+      </p>
+
+      <div class="milestone-stats-grid">
+        <div class="m-stat-box">
+          <div class="m-stat-val" id="m-stat-answered">5</div>
+          <div class="m-stat-lbl">Preguntas</div>
+        </div>
+        <div class="m-stat-box">
+          <div class="m-stat-val" id="m-stat-accuracy" style="color:var(--correct-text);">100%</div>
+          <div class="m-stat-lbl">Precisión</div>
+        </div>
+        <div class="m-stat-box">
+          <div class="m-stat-val" id="m-stat-xp" style="color:var(--gold-crown);">+175 XP</div>
+          <div class="m-stat-lbl">XP Ganado</div>
+        </div>
+      </div>
+
+      <div style="background:#181335; border:1px solid var(--border-purple); border-radius:12px; padding:1.1rem; text-align:left; margin-bottom:1.8rem;">
+        <span style="font-size:0.85rem; font-weight:700; color:var(--accent-lilac);">📋 Diagnóstico del Nivel:</span>
+        <p id="m-diagnostic-text" style="font-size:0.9rem; color:var(--text-white); margin-top:4px;">
+          Dominas perfectamente las bases esenciales del tema. Pasemos a la siguiente etapa de profundización.
+        </p>
+      </div>
+
+      <button class="btn-start" id="m-btn-continue" onclick="continueToNextStage()">
+        Continuar al Siguiente Nivel ➔
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: RECOMPENSA DE NIVEL DESBLOQUEADA -->
+  <div class="milestone-overlay" id="reward-modal">
+    <div class="milestone-card">
+      <div class="milestone-badge" style="border-color:#A855F7;">🎁</div>
+      <h2 style="font-size:1.9rem; font-weight:900; margin-bottom:0.5rem;" id="reward-title">¡Recompensa Desbloqueada!</h2>
+      <p style="color:var(--text-dim); margin-bottom:1.5rem;" id="reward-desc">
+        ¡Alcanzaste el Nivel 5 de cuenta! Te has ganado 3 días gratis de estudio ilimitado.
+      </p>
+      <button class="btn-start" onclick="document.getElementById('reward-modal').style.display='none'">
+        ¡Reclamar Recompensa! 🚀
+      </button>
+    </div>
+  </div>
+
   <script>
-    // ─── ESTADO GLOBAL DEL SMART STUDY ───
+    const AVATAR_SVGS = {
+  "snake": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#FF7690\"/><path d=\"M50 25c-8 0-14 6-14 14v18c0 4 3 7 7 7h14c4 0 7 3 7 7v4c0 4-3 7-7 7H35\" fill=\"none\" stroke=\"#22C55E\" stroke-width=\"12\" stroke-linecap=\"round\"/><circle cx=\"46\" cy=\"35\" r=\"3\" fill=\"#15803D\"/><circle cx=\"54\" cy=\"35\" r=\"3\" fill=\"#15803D\"/><circle cx=\"36\" cy=\"78\" r=\"3\" fill=\"#15803D\"/><circle cx=\"50\" cy=\"78\" r=\"3\" fill=\"#15803D\"/><circle cx=\"64\" cy=\"78\" r=\"3\" fill=\"#15803D\"/></svg>",
+  "butterfly": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#CBE4F9\"/><path d=\"M35 38c-8-10-18-6-16 6 2 9 16 12 16 12s-14 3-16 12c-2 11 8 16 16 6 7-9 0-18 0-18s10 9 17 18c8 10 18 5 16-6-2-9-16-12-16-12s14-3 16-12c2-12-8-16-16-6-7 9-1 18-1 18s-9-9-16-18z\" fill=\"#F472B6\"/><path d=\"M50 28v44\" stroke=\"#475569\" stroke-width=\"3\" stroke-linecap=\"round\"/></svg>",
+  "deer": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#BFDBFE\"/><path d=\"M30 25l10 12m-6-6l6-4m30-2l-10 12m6-6l-6-4\" stroke=\"#92400E\" stroke-width=\"4\" stroke-linecap=\"round\"/><path d=\"M50 40c-14 0-22 10-22 24 0 15 12 24 22 24s22-9 22-24c0-14-8-24-22-24z\" fill=\"#D97706\"/><circle cx=\"42\" cy=\"54\" r=\"3.5\" fill=\"#1E293B\"/><circle cx=\"58\" cy=\"54\" r=\"3.5\" fill=\"#1E293B\"/><ellipse cx=\"50\" cy=\"72\" rx=\"7\" ry=\"5\" fill=\"#1E293B\"/></svg>",
+  "leopard": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#86EFAC\"/><circle cx=\"30\" cy=\"35\" r=\"10\" fill=\"#FBBF24\"/><circle cx=\"70\" cy=\"35\" r=\"10\" fill=\"#FBBF24\"/><ellipse cx=\"50\" cy=\"55\" rx=\"26\" ry=\"24\" fill=\"#FBBF24\"/><circle cx=\"42\" cy=\"50\" r=\"3\" fill=\"#1E293B\"/><circle cx=\"58\" cy=\"50\" r=\"3\" fill=\"#1E293B\"/><circle cx=\"50\" cy=\"62\" r=\"4\" fill=\"#1E293B\"/><circle cx=\"36\" cy=\"42\" r=\"2.5\" fill=\"#92400E\"/><circle cx=\"64\" cy=\"42\" r=\"2.5\" fill=\"#92400E\"/><circle cx=\"50\" cy=\"40\" r=\"2.5\" fill=\"#92400E\"/><circle cx=\"40\" cy=\"70\" r=\"2.5\" fill=\"#92400E\"/><circle cx=\"60\" cy=\"70\" r=\"2.5\" fill=\"#92400E\"/></svg>",
+  "koala": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#10B981\"/><circle cx=\"26\" cy=\"40\" r=\"14\" fill=\"#64748B\"/><circle cx=\"74\" cy=\"40\" r=\"14\" fill=\"#64748B\"/><circle cx=\"26\" cy=\"40\" r=\"8\" fill=\"#CBD5E1\"/><circle cx=\"74\" cy=\"40\" r=\"8\" fill=\"#CBD5E1\"/><ellipse cx=\"50\" cy=\"58\" rx=\"24\" ry=\"22\" fill=\"#64748B\"/><circle cx=\"40\" cy=\"52\" r=\"3\" fill=\"#0F172A\"/><circle cx=\"60\" cy=\"52\" r=\"3\" fill=\"#0F172A\"/><ellipse cx=\"50\" cy=\"62\" rx=\"7\" ry=\"11\" fill=\"#1E293B\"/></svg>",
+  "fish": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#16132F\"/><path d=\"M38 35c-8 6-12 16-8 25 4 8 13 9 18 3 3-4 3-10 1-14l4-8-15-6z\" fill=\"#EC4899\"/><polygon points=\"26,48 18,38 22,58\" fill=\"#EC4899\"/><circle cx=\"36\" cy=\"45\" r=\"2.5\" fill=\"#1E1B4B\"/><path d=\"M62 65c8-6 12-16 8-25-4-8-13-9-18-3-3 4-3 10-1 14l-4 8 15 6z\" fill=\"#FACC15\"/><polygon points=\"74,52 82,62 78,42\" fill=\"#FACC15\"/><circle cx=\"64\" cy=\"55\" r=\"2.5\" fill=\"#1E1B4B\"/></svg>",
+  "panda": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#F472B6\"/><circle cx=\"28\" cy=\"34\" r=\"11\" fill=\"#0F172A\"/><circle cx=\"72\" cy=\"34\" r=\"11\" fill=\"#0F172A\"/><circle cx=\"50\" cy=\"56\" r=\"25\" fill=\"#FFFFFF\"/><ellipse cx=\"39\" cy=\"53\" rx=\"6\" ry=\"8\" fill=\"#0F172A\" transform=\"rotate(-15 39 53)\"/><ellipse cx=\"61\" cy=\"53\" rx=\"6\" ry=\"8\" fill=\"#0F172A\" transform=\"rotate(15 61 53)\"/><circle cx=\"39\" cy=\"52\" r=\"2.5\" fill=\"#FFFFFF\"/><circle cx=\"61\" cy=\"52\" r=\"2.5\" fill=\"#FFFFFF\"/><ellipse cx=\"50\" cy=\"65\" rx=\"5\" ry=\"3.5\" fill=\"#0F172A\"/></svg>",
+  "penguin": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#FBBF24\"/><ellipse cx=\"50\" cy=\"55\" rx=\"25\" ry=\"28\" fill=\"#0F172A\"/><ellipse cx=\"50\" cy=\"60\" rx=\"17\" ry=\"20\" fill=\"#FFFFFF\"/><circle cx=\"42\" cy=\"46\" r=\"3\" fill=\"#0F172A\"/><circle cx=\"58\" cy=\"46\" r=\"3\" fill=\"#0F172A\"/><polygon points=\"50,50 44,57 56,57\" fill=\"#F97316\"/></svg>",
+  "rabbit": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#FDA4AF\"/><ellipse cx=\"38\" cy=\"30\" rx=\"6\" ry=\"18\" fill=\"#FFFFFF\"/><ellipse cx=\"62\" cy=\"30\" rx=\"6\" ry=\"18\" fill=\"#FFFFFF\"/><ellipse cx=\"38\" cy=\"30\" rx=\"3\" ry=\"12\" fill=\"#F472B6\"/><ellipse cx=\"62\" cy=\"30\" rx=\"3\" ry=\"12\" fill=\"#F472B6\"/><circle cx=\"50\" cy=\"60\" r=\"22\" fill=\"#FFFFFF\"/><circle cx=\"42\" cy=\"57\" r=\"3\" fill=\"#1E293B\"/><circle cx=\"58\" cy=\"57\" r=\"3\" fill=\"#1E293B\"/><ellipse cx=\"50\" cy=\"65\" rx=\"4\" ry=\"2.5\" fill=\"#F472B6\"/><circle cx=\"34\" cy=\"64\" r=\"3\" fill=\"#FECDD3\"/><circle cx=\"66\" cy=\"64\" r=\"3\" fill=\"#FECDD3\"/></svg>",
+  "turtle": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#FDE047\"/><circle cx=\"50\" cy=\"30\" r=\"8\" fill=\"#15803D\"/><ellipse cx=\"50\" cy=\"56\" rx=\"22\" ry=\"25\" fill=\"#B91C1C\"/><path d=\"M50 36v40M34 46h32M34 66h32\" stroke=\"#F59E0B\" stroke-width=\"2.5\"/><circle cx=\"30\" cy=\"42\" r=\"5\" fill=\"#15803D\"/><circle cx=\"70\" cy=\"42\" r=\"5\" fill=\"#15803D\"/><circle cx=\"32\" cy=\"72\" r=\"5\" fill=\"#15803D\"/><circle cx=\"68\" cy=\"72\" r=\"5\" fill=\"#15803D\"/></svg>",
+  "dog": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#A3E635\"/><ellipse cx=\"28\" cy=\"45\" rx=\"7\" ry=\"16\" fill=\"#92400E\" transform=\"rotate(-15 28 45)\"/><ellipse cx=\"72\" cy=\"45\" rx=\"7\" ry=\"16\" fill=\"#92400E\" transform=\"rotate(15 72 45)\"/><circle cx=\"50\" cy=\"55\" r=\"22\" fill=\"#FDE047\"/><circle cx=\"42\" cy=\"50\" r=\"3.5\" fill=\"#0F172A\"/><circle cx=\"58\" cy=\"50\" r=\"3.5\" fill=\"#0F172A\"/><ellipse cx=\"50\" cy=\"60\" rx=\"6\" ry=\"4\" fill=\"#0F172A\"/><path d=\"M50 64v5c0 3 2 5 4 5s4-2 4-5v-5z\" fill=\"#FB7185\"/></svg>",
+  "cat": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#A855F7\"/><polygon points=\"30,42 22,22 42,32\" fill=\"#F97316\"/><polygon points=\"70,42 78,22 58,32\" fill=\"#F97316\"/><circle cx=\"50\" cy=\"56\" r=\"24\" fill=\"#FB923C\"/><ellipse cx=\"40\" cy=\"52\" rx=\"3.5\" ry=\"5\" fill=\"#0F172A\"/><ellipse cx=\"60\" cy=\"52\" rx=\"3.5\" ry=\"5\" fill=\"#0F172A\"/><polygon points=\"50,60 46,64 54,64\" fill=\"#991B1B\"/><path d=\"M34 60h-8M34 64h-8M66 60h8M66 64h8\" stroke=\"#0F172A\" stroke-width=\"2\"/></svg>",
+  "monkey": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#FACC15\"/><circle cx=\"26\" cy=\"50\" r=\"9\" fill=\"#B45309\"/><circle cx=\"74\" cy=\"50\" r=\"9\" fill=\"#B45309\"/><circle cx=\"50\" cy=\"52\" r=\"22\" fill=\"#B45309\"/><ellipse cx=\"43\" cy=\"48\" rx=\"8\" ry=\"10\" fill=\"#FDE68A\"/><ellipse cx=\"57\" cy=\"48\" rx=\"8\" ry=\"10\" fill=\"#FDE68A\"/><ellipse cx=\"50\" cy=\"60\" rx=\"14\" ry=\"11\" fill=\"#FDE68A\"/><circle cx=\"42\" cy=\"48\" r=\"3\" fill=\"#1E293B\"/><circle cx=\"58\" cy=\"48\" r=\"3\" fill=\"#1E293B\"/><circle cx=\"47\" cy=\"58\" r=\"1.5\" fill=\"#1E293B\"/><circle cx=\"53\" cy=\"58\" r=\"1.5\" fill=\"#1E293B\"/><path d=\"M44 65c3 3 9 3 12 0\" fill=\"none\" stroke=\"#1E293B\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>",
+  "sheep": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#60A5FA\"/><ellipse cx=\"28\" cy=\"42\" rx=\"5\" ry=\"12\" fill=\"#3B82F6\" transform=\"rotate(-40 28 42)\"/><ellipse cx=\"72\" cy=\"42\" rx=\"5\" ry=\"12\" fill=\"#3B82F6\" transform=\"rotate(40 72 42)\"/><circle cx=\"50\" cy=\"48\" r=\"20\" fill=\"#FFFFFF\"/><polygon points=\"50,38 34,68 66,68\" fill=\"#FDE68A\"/><circle cx=\"42\" cy=\"52\" r=\"3\" fill=\"#1E293B\"/><circle cx=\"58\" cy=\"52\" r=\"3\" fill=\"#1E293B\"/><ellipse cx=\"50\" cy=\"62\" rx=\"4\" ry=\"2.5\" fill=\"#F472B6\"/></svg>",
+  "crocodile": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#FDE047\"/><circle cx=\"40\" cy=\"38\" r=\"6\" fill=\"#15803D\"/><circle cx=\"60\" cy=\"38\" r=\"6\" fill=\"#15803D\"/><circle cx=\"40\" cy=\"37\" r=\"2.5\" fill=\"#FFFFFF\"/><circle cx=\"60\" cy=\"37\" r=\"2.5\" fill=\"#FFFFFF\"/><path d=\"M35 48h30l-4 34c-6 4-16 4-22 0z\" fill=\"#16A34A\"/><polygon points=\"38,62 43,62 40.5,57\" fill=\"#FFFFFF\"/><polygon points=\"46,62 51,62 48.5,57\" fill=\"#FFFFFF\"/><polygon points=\"54,62 59,62 56.5,57\" fill=\"#FFFFFF\"/><circle cx=\"44\" cy=\"72\" r=\"2\" fill=\"#0F172A\"/><circle cx=\"56\" cy=\"72\" r=\"2\" fill=\"#0F172A\"/></svg>",
+  "shark": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#BAE6FD\"/><path d=\"M20 52c10-8 30-14 55-6l10-8-4 14 4 14-10-8c-25 8-45 2-55-6z\" fill=\"#0369A1\"/><polygon points=\"45,43 55,25 60,42\" fill=\"#0369A1\"/><circle cx=\"65\" cy=\"49\" r=\"2.5\" fill=\"#FFFFFF\"/><circle cx=\"66\" cy=\"49\" r=\"1.5\" fill=\"#0F172A\"/></svg>",
+  "chicken": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#FED7AA\"/><path d=\"M50 24c-3 0-5 3-4 6 0 3 3 5 4 5s4-2 4-5c1-3-1-6-4-6z\" fill=\"#DC2626\"/><circle cx=\"50\" cy=\"56\" r=\"22\" fill=\"#FFFFFF\"/><circle cx=\"42\" cy=\"52\" r=\"3\" fill=\"#0F172A\"/><circle cx=\"58\" cy=\"52\" r=\"3\" fill=\"#0F172A\"/><polygon points=\"50,54 44,62 56,62\" fill=\"#F97316\"/><path d=\"M48 64c0 3 2 5 2 5s2-2 2-5z\" fill=\"#DC2626\"/></svg>",
+  "tiger": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#FB923C\"/><circle cx=\"32\" cy=\"34\" r=\"9\" fill=\"#EA580C\"/><circle cx=\"68\" cy=\"34\" r=\"9\" fill=\"#EA580C\"/><ellipse cx=\"50\" cy=\"56\" rx=\"25\" ry=\"23\" fill=\"#F97316\"/><path d=\"M50 36v8M42 40l6 4M58 40l-6 4\" stroke=\"#0F172A\" stroke-width=\"2.5\" stroke-linecap=\"round\"/><circle cx=\"42\" cy=\"52\" r=\"3\" fill=\"#0F172A\"/><circle cx=\"58\" cy=\"52\" r=\"3\" fill=\"#0F172A\"/><ellipse cx=\"50\" cy=\"62\" rx=\"4\" ry=\"2.5\" fill=\"#0F172A\"/></svg>",
+  "dragonfly": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#34D399\"/><ellipse cx=\"32\" cy=\"45\" rx=\"18\" ry=\"4\" fill=\"#E0F2FE\" transform=\"rotate(-10 32 45)\"/><ellipse cx=\"68\" cy=\"45\" rx=\"18\" ry=\"4\" fill=\"#E0F2FE\" transform=\"rotate(10 68 45)\"/><ellipse cx=\"34\" cy=\"54\" rx=\"15\" ry=\"3.5\" fill=\"#E0F2FE\" transform=\"rotate(10 34 54)\"/><ellipse cx=\"66\" cy=\"54\" rx=\"15\" ry=\"3.5\" fill=\"#E0F2FE\" transform=\"rotate(-10 66 54)\"/><ellipse cx=\"50\" cy=\"38\" rx=\"5\" ry=\"4\" fill=\"#DC2626\"/><rect x=\"48\" y=\"42\" width=\"4\" height=\"38\" rx=\"2\" fill=\"#DC2626\"/></svg>",
+  "peacock": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#E9D5FF\"/><path d=\"M50 50L25 35M50 50L35 25M50 50L50 20M50 50L65 25M50 50L75 35\" stroke=\"#0284C7\" stroke-width=\"3\"/><circle cx=\"25\" cy=\"35\" r=\"4.5\" fill=\"#0284C7\"/><circle cx=\"35\" cy=\"25\" r=\"4.5\" fill=\"#0284C7\"/><circle cx=\"50\" cy=\"20\" r=\"4.5\" fill=\"#0284C7\"/><circle cx=\"65\" cy=\"25\" r=\"4.5\" fill=\"#0284C7\"/><circle cx=\"75\" cy=\"35\" r=\"4.5\" fill=\"#0284C7\"/><ellipse cx=\"50\" cy=\"58\" rx=\"11\" ry=\"18\" fill=\"#0369A1\"/><circle cx=\"50\" cy=\"44\" r=\"7\" fill=\"#0369A1\"/><polygon points=\"50,45 47,49 53,49\" fill=\"#F59E0B\"/></svg>"
+};
+
+    // Estado del usuario y de gamificación (dificultad duplicada)
+    const user = {
+      name: localStorage.getItem('synapse_name') || 'Max',
+      avatarId: localStorage.getItem('synapse_avatar') || 'fish',
+      xp: parseInt(localStorage.getItem('synapse_xp') || '0', 10),
+      unlockedTrial5: localStorage.getItem('synapse_unlocked_5') === 'true',
+      unlockedTrial10: localStorage.getItem('synapse_unlocked_10') === 'true'
+    };
+
+    // Curva de niveles (duplicada)
+    function calculateUserLevel(xp) {
+      if (xp >= 6600) return 10;
+      if (xp >= 5100) return 9;
+      if (xp >= 3800) return 8;
+      if (xp >= 2700) return 7;
+      if (xp >= 1800) return 6;
+      if (xp >= 1100) return 5;
+      if (xp >= 620) return 4;
+      if (xp >= 300) return 3;
+      if (xp >= 100) return 2;
+      return 1;
+    }
+
+    function updateUserNavbar() {
+      const lvl = calculateUserLevel(user.xp);
+      document.getElementById('nav-crown-num').textContent = lvl;
+      document.getElementById('nav-user-name').textContent = user.name;
+      document.getElementById('nav-user-xp').textContent = `${user.xp} XP`;
+
+      const iconEl = document.getElementById('nav-avatar-icon');
+      if (user.avatarId === 'theafoto' || user.avatarId.startsWith('http') || user.avatarId.includes('/')) {
+        iconEl.innerHTML = `<img src="${user.avatarId}" alt="Avatar">`;
+      } else if (AVATAR_SVGS[user.avatarId]) {
+        iconEl.innerHTML = AVATAR_SVGS[user.avatarId];
+      } else {
+        iconEl.innerHTML = AVATAR_SVGS['fish'];
+      }
+    }
+
+    function addXP(amount) {
+      const prevLvl = calculateUserLevel(user.xp);
+      user.xp += amount;
+      localStorage.setItem('synapse_xp', user.xp);
+      const newLvl = calculateUserLevel(user.xp);
+      updateUserNavbar();
+
+      // Chequear recompensas de nivel
+      if (prevLvl < 5 && newLvl >= 5 && !user.unlockedTrial5) {
+        user.unlockedTrial5 = true;
+        localStorage.setItem('synapse_unlocked_5', 'true');
+        showRewardModal("🎁 ¡Nivel 5 Alcanzado!", "Has demostrado gran dedicación. Se han activado 3 DÍAS GRATIS de estudio ilimitado en tu cuenta.");
+      } else if (prevLvl < 10 && newLvl >= 10 && !user.unlockedTrial10) {
+        user.unlockedTrial10 = true;
+        localStorage.setItem('synapse_unlocked_10', 'true');
+        showRewardModal("👑 ¡Nivel 10 de Maestría!", "¡Eres un estudiante de élite! Has ganado 1 SEMANA COMPLETA de estudio ilimitado.");
+      }
+    }
+
+    function showRewardModal(title, desc) {
+      document.getElementById('reward-title').textContent = title;
+      document.getElementById('reward-desc').textContent = desc;
+      document.getElementById('reward-modal').style.display = 'flex';
+    }
+
+    // Estado del Quiz y Progresión por Etapas (Nivel 1, 2, 3)
     const state = {
       apiKey: atob('QVEuQWI4Uk42SnBsdlYxX0F3RzdJYWVfWWlLZFpDTFlidFBvRUV0WEVjX2pWczdFRFFPaXc='),
-      currentUser: null,
       topic: '',
       level: '',
       queue: [],
@@ -944,38 +937,26 @@
       weakConcepts: [],
       masteredConcepts: [],
       isFetchingBatch: false,
-      answeredCurrent: false
+      answeredCurrent: false,
+
+      // Etapas de sesión (1 a 3)
+      stageLevel: 1,
+      questionsPerStage: 5,
+      stageAnswered: 0,
+      stageCorrect: 0
     };
 
     const GEMINI_MODEL = 'gemini-3.8-flash';
 
-    // ─── AUTHENTICATION STATE ───
-    firebase.auth().onAuthStateChanged((user) => {
-      state.currentUser = user;
-      const userDisplay = document.getElementById('user-display');
-      const emailText = document.getElementById('user-email-text');
-      if (user) {
-        userDisplay.style.display = 'flex';
-        emailText.textContent = user.displayName || user.email.split('@')[0];
-      } else {
-        userDisplay.style.display = 'none';
-      }
-    });
-
     function setTopic(text) {
       document.getElementById('study-topic').value = text;
-      const err = document.getElementById('topic-error-msg');
-      if (err) err.style.display = 'none';
-      document.getElementById('study-topic').style.borderColor = 'var(--border-color)';
+      document.getElementById('topic-error-msg').style.display = 'none';
     }
 
-    // ─── LLAMADA A GEMINI HELPER ───
     async function askGemini(prompt, systemInstruction = null) {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${state.apiKey}`;
       const body = { contents: [{ role: 'user', parts: [{ text: prompt }] }] };
-      if (systemInstruction) {
-        body.system_instruction = { parts: [{ text: systemInstruction }] };
-      }
+      if (systemInstruction) body.system_instruction = { parts: [{ text: systemInstruction }] };
       const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -986,20 +967,16 @@
       return data.candidates[0].content.parts[0].text;
     }
 
-    // ─── INICIAR SESIÓN DE ESTUDIO ───
     async function startStudySession() {
-      let topicInput = document.getElementById('study-topic').value.trim();
+      const topicInput = document.getElementById('study-topic').value.trim();
       const errEl = document.getElementById('topic-error-msg');
-      const field = document.getElementById('study-topic');
 
       if (!topicInput) {
         if (errEl) errEl.style.display = 'block';
-        field.style.borderColor = '#DC2626';
-        field.focus();
+        document.getElementById('study-topic').focus();
         return;
       }
       if (errEl) errEl.style.display = 'none';
-      field.style.borderColor = 'var(--border-color)';
 
       state.topic = topicInput;
       state.level = document.getElementById('study-level').value;
@@ -1011,16 +988,15 @@
       state.totalAnswered = 0;
       state.weakConcepts = [];
       state.masteredConcepts = [];
+      state.stageLevel = 1;
+      state.stageAnswered = 0;
+      state.stageCorrect = 0;
 
       document.getElementById('view-lobby').style.display = 'none';
-      document.getElementById('view-summary').style.display = 'none';
       document.getElementById('view-loading').style.display = 'block';
 
       try {
-        await fetchQuestionBatch(3); // Carga inicial de 3 preguntas
-        if (!state.queue || state.queue.length === 0) {
-          throw new Error("No se pudieron obtener preguntas del servidor. Revisa tu conexión o intenta con otro tema.");
-        }
+        await fetchQuestionBatch(4);
         document.getElementById('view-loading').style.display = 'none';
         document.getElementById('view-quiz').style.display = 'block';
         renderQuestion();
@@ -1031,31 +1007,31 @@
       }
     }
 
-    // ─── FETCHING ASÍNCRONO DE PREGUNTAS (PREFETCH STREAM) ───
-    async function fetchQuestionBatch(count = 3) {
+    async function fetchQuestionBatch(count = 4) {
       if (state.isFetchingBatch) return;
       state.isFetchingBatch = true;
 
-      let weakContext = "";
-      if (state.weakConcepts.length > 0) {
-        weakContext = `El estudiante ha fallado previamente en los siguientes conceptos: "${state.weakConcepts.slice(-3).join(', ')}". Incluye al menos una pregunta que refuerce y aclare esos puntos débiles.`;
-      }
+      const stageLabels = {
+        1: "Conceptos Fundamentales y Definiciones Básicas",
+        2: "Aplicación Práctica y Casos Escolares",
+        3: "Dominio Completo y Razonamiento Clave"
+      };
 
       const prompt = `Eres el tutor pedagógico de Synapse Smart Study (estilo Thea).
 Tu misión es generar ${count} preguntas de estudio y active recall sobre el tema: "${state.topic}".
 Nivel del estudiante: "${state.level}".
-${weakContext}
+Enfoque de esta etapa: ${stageLabels[state.stageLevel] || 'Conceptos Clave'}.
 
-REGLAS DE ORO DE SIMPLICIDAD Y ENFOQUE FUNDAMENTAL (CRÍTICO):
-1. Enseña y evalúa LO BÁSICO, LO FUNDAMENTAL Y LO MÁS IMPORTANTE del tema. Las ideas y definiciones que un estudiante debe comprender para dominar la materia escolar/académica.
-2. CERO preguntas rebuscadas, CERO casos extremos de física teórica o de la NASA, CERO acertijos o trampas de compilador:
-   - Si el tema es escolar/ciencias (ej: "rotación y traslación", "fotosíntesis", "la célula"): pregunta sobre el día y la noche, las estaciones del año, duración de giros (24h, 365 días), inclinación del eje, organelos principales, etc. Prohibido hablar de proyectiles balísticos, efecto Coriolis en misiles o distancias astronómicas en millones de kilómetros.
-   - Si el tema es programación (ej: "Python básico"): pregunta sobre print(), variables, tipos de datos simples (int, str, bool), operadores y condicionales if/else. Prohibido hacer preguntas de slicing con saltos complejos [2:8:2] o comportamientos extraños de operadores.
-3. Preguntas directas, cotidianas y comprensibles para un estudiante de 14 a 16 años (o del nivel seleccionado).
-4. 4 opciones de respuesta cortas y claras (A, B, C, D) con 1 respuesta correcta inequívoca.
-5. Explicación clara y pedagógica (máximo 2 oraciones sencillas) y un tip nemotécnico o regla fácil de recordar ("tip").
+REGLAS DE ORO DE SIMPLICIDAD Y ENFOQUE FUNDAMENTAL:
+1. Enseña y evalúa LO BÁSICO, LO FUNDAMENTAL Y LO MÁS IMPORTANTE del tema. Aquello que un profesor escolar de bachillerato o colegio realmente evalúa.
+2. CERO preguntas rebuscadas, CERO casos de física de la NASA o jerga astronómica compleja, CERO trampas de compilador:
+   - Si el tema es "Rotación y traslación": pregunta sobre el día y la noche (24h), las estaciones del año (365 días), la inclinación del eje, etc. NADA de proyectiles balísticos ni efecto Coriolis en misiles.
+   - Si el tema es "Python básico": pregunta sobre print(), variables, tipos de datos simples (int, str, bool), condicionales if/else. NADA de slicing [2:8:2] ni trucos oscuros.
+3. Preguntas directas, cotidianas y comprensibles para un estudiante de 14 a 16 años.
+4. 4 opciones de respuesta cortas y claras (A, B, C, D) con 1 respuesta correcta indiscutible.
+5. Explicación breve y amigable (máximo 2 oraciones sencillas) y un tip nemotécnico útil.
 
-Responde ÚNICAMENTE en JSON plano válido (un array de objetos), sin bloques de markdown:
+Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
 [
   {
     "pregunta": "¿Pregunta clara, directa y fundamental?",
@@ -1073,18 +1049,25 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos), sin bloques de
         const batch = JSON.parse(clean);
         if (Array.isArray(batch) && batch.length > 0) {
           state.queue.push(...batch);
-        } else {
-          throw new Error("Formato de preguntas no reconocido por la IA.");
         }
       } catch (e) {
-        console.error("Error obteniendo preguntas:", e);
-        if (state.queue.length === 0) throw e;
+        console.error("Error obteniendo lote:", e);
       } finally {
         state.isFetchingBatch = false;
       }
     }
 
-    // ─── RENDERIZAR LA PREGUNTA ACTUAL ───
+    function updateSessionProgressBar() {
+      const titles = {
+        1: "Nivel 1 de 3 • Fundamentos Clave",
+        2: "Nivel 2 de 3 • Profundización y Aplicación",
+        3: "Nivel 3 de 3 • Dominio Total de la Materia"
+      };
+      document.getElementById('session-level-title').textContent = titles[state.stageLevel] || 'Estudio Activo';
+      const pct = Math.min(100, Math.round((state.stageAnswered / state.questionsPerStage) * 100));
+      document.getElementById('session-progress-fill').style.width = `${pct}%`;
+    }
+
     function renderQuestion() {
       const q = state.queue[state.currentIndex];
       if (!q) {
@@ -1094,24 +1077,16 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos), sin bloques de
 
       state.answeredCurrent = false;
 
-      // Actualizar Métricas
-      document.getElementById('metric-counter').textContent = `#${state.currentIndex + 1}`;
+      updateSessionProgressBar();
       document.getElementById('metric-streak').textContent = `${state.streak} seguidas`;
-      
-      const acc = state.totalAnswered > 0 ? Math.round((state.correctCount / state.totalAnswered) * 100) : 100;
-      document.getElementById('metric-accuracy').textContent = `${acc}%`;
-
-      // Actualizar Textos
-      document.getElementById('q-category-tag').textContent = q.categoria || 'Concepto Clave';
+      document.getElementById('q-category-tag').textContent = q.categoria || `Nivel ${state.stageLevel}`;
       document.getElementById('q-topic-label').textContent = state.topic;
       document.getElementById('q-text').textContent = q.pregunta;
 
-      // Ocultar explicaciones previas
-      const skel = document.getElementById('q-skeleton-box'); if (skel) skel.style.display = 'none';
+      document.getElementById('q-skeleton-box').style.display = 'none';
       document.getElementById('q-explanation-box').style.display = 'none';
       document.getElementById('action-next-bar').style.display = 'none';
 
-      // Renderizar Opciones
       const container = document.getElementById('q-options-container');
       container.innerHTML = '';
 
@@ -1128,93 +1103,77 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos), sin bloques de
         container.appendChild(btn);
       });
 
-      // Prefetching inteligente: si quedan menos de 2 preguntas en la cola, pedir más en background
+      // Prefetching inteligente
       if (state.queue.length - state.currentIndex <= 2) {
-        fetchQuestionBatch(3);
+        fetchQuestionBatch(4);
       }
     }
 
-    // ─── EVALUAR RESPUESTA CON FEEDBACK INMEDIATO ───
+    // ─── EVALUAR RESPUESTA: COLOR INSTANTÁNEO + 1 SEGUNDO DE EXPLICACIÓN ───
     function handleAnswer(selectedIdx) {
       if (state.answeredCurrent) return;
       state.answeredCurrent = true;
       state.totalAnswered++;
+      state.stageAnswered++;
 
       const q = state.queue[state.currentIndex];
       const isCorrect = (selectedIdx === q.correcta);
 
-      // 1. Deshabilitar todas las opciones inmediatamente
+      // Bloquear opciones de inmediato
       const allBtns = document.querySelectorAll(".option-btn");
       allBtns.forEach(b => b.disabled = true);
 
-      // Elementos seleccionados y correctos
       const selectedBtn = document.getElementById(`opt-${selectedIdx}`);
       const correctBtn = document.getElementById(`opt-${q.correcta}`);
-      const streakBox = document.getElementById("streak-badge-box");
+      const streakBox = document.getElementById("session-streak-box");
 
-      // 2. FEEDBACK DE COLOR Y MÉTRICAS INSTANTÁNEO
+      // COLOR INSTANTÁNEO
       if (isCorrect) {
         state.correctCount++;
+        state.stageCorrect++;
         state.streak++;
         if (state.streak > state.maxStreak) state.maxStreak = state.streak;
         if (selectedBtn) selectedBtn.classList.add("state-correct");
         
-        // Animación de fuego en la racha
-        streakBox.classList.remove("streak-pulse");
-        void streakBox.offsetWidth; // trigger reflow
-        streakBox.classList.add("streak-pulse");
+        // Sumar XP a la cuenta
+        addXP(25);
 
-        if (q.categoria && !state.masteredConcepts.includes(q.categoria)) {
-          state.masteredConcepts.push(q.categoria);
-        }
+        streakBox.classList.remove("pulse");
+        void streakBox.offsetWidth;
+        streakBox.classList.add("pulse");
       } else {
         state.streak = 0;
         if (selectedBtn) selectedBtn.classList.add("state-incorrect");
         if (correctBtn) correctBtn.classList.add("state-correct");
-
-        if (q.categoria && !state.weakConcepts.includes(q.categoria)) {
-          state.weakConcepts.push(q.categoria);
-        }
       }
 
-      // Actualizar contador y precisión al instante
       document.getElementById("metric-streak").textContent = `${state.streak} seguidas`;
-      const acc = Math.round((state.correctCount / state.totalAnswered) * 100);
-      document.getElementById("metric-accuracy").textContent = `${acc}%`;
+      updateSessionProgressBar();
 
-      // 3. MOSTRAR SKELETON LOADER ("ESTILO BONE")
+      // MOSTRAR SKELETON SHIMMER BONE
       const skeletonBox = document.getElementById("q-skeleton-box");
-      if (skeletonBox) {
-        skeletonBox.style.display = "block";
-        const titleSpan = skeletonBox.querySelector("span");
-        if (titleSpan) {
-          titleSpan.textContent = isCorrect 
-            ? "¡Correcto! Preparando explicación y tip clave..." 
-            : "Preparando explicación conceptual del error...";
-        }
-      }
+      if (skeletonBox) skeletonBox.style.display = "block";
 
-      // 4. LA EXPLICACIÓN TARDA EXACTAMENTE 2 SEGUNDOS
+      // EXACTAMENTE 1 SEGUNDO (1000ms) DE RETARDO PARA LA EXPLICACIÓN
       setTimeout(() => {
         if (skeletonBox) skeletonBox.style.display = "none";
 
-        // Mostrar Caja de Explicación
         const expBox = document.getElementById("q-explanation-box");
-        const expHeader = document.getElementById("exp-header-tag");
-        const expIcon = document.getElementById("exp-status-icon");
-        const expTitle = document.getElementById("exp-status-text");
+        const expTitle = document.getElementById("exp-title-box");
+        const expIcon = document.getElementById("exp-icon");
+        const expText = document.getElementById("exp-text");
         const expBody = document.getElementById("exp-body-text");
         const expTipBox = document.getElementById("exp-tip-box");
         const expTipText = document.getElementById("exp-tip-text");
 
         if (isCorrect) {
-          expHeader.className = "exp-header correct";
+          expTitle.className = "exp-title correct";
           expIcon.textContent = "✓";
-          expTitle.textContent = "¡Correcto! Excelente razonamiento.";
+          expText.textContent = "¡Correcto! Excelente razonamiento.";
         } else {
-          expHeader.className = "exp-header incorrect";
+          expTitle.className = "exp-title incorrect";
           expIcon.textContent = "✕";
-          expTitle.textContent = "Incorrecto. Mira el concepto clave:";
+          expText.textContent = "Incorrecto. Mira el concepto clave:";
         }
 
         expBody.textContent = q.explicacion;
@@ -1229,34 +1188,90 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos), sin bloques de
         expBox.style.display = "block";
         document.getElementById("action-next-bar").style.display = "flex";
         document.getElementById("btn-next-question").focus();
-      }, 2000);
+      }, 1000);
     }
 
-    // ─── AVANZAR A SIGUIENTE PREGUNTA ───
     function nextQuestion() {
+      // Verificar si completó la etapa de nivel (5 preguntas)
+      if (state.stageAnswered >= state.questionsPerStage) {
+        showMilestoneModal();
+        return;
+      }
+
       state.currentIndex++;
       if (state.currentIndex < state.queue.length) {
         renderQuestion();
       } else {
-        // Si aún está descargando lote, mostrar brevemente espera
-        if (state.isFetchingBatch) {
-          document.getElementById('view-quiz').style.display = 'none';
-          document.getElementById('view-loading').style.display = 'block';
-          const interval = setInterval(() => {
-            if (!state.isFetchingBatch && state.queue.length > state.currentIndex) {
-              clearInterval(interval);
-              document.getElementById('view-loading').style.display = 'none';
-              document.getElementById('view-quiz').style.display = 'block';
-              renderQuestion();
-            }
-          }, 300);
-        } else {
-          finishSession();
-        }
+        finishSession();
       }
     }
 
-    // Tecla Enter o Espacio para avanzar rápido
+    // Modal de diagnóstico intermedio de nivel
+    function showMilestoneModal() {
+      const modal = document.getElementById('milestone-modal');
+      const title = document.getElementById('m-modal-title');
+      const subtitle = document.getElementById('m-modal-subtitle');
+      const badgeIcon = document.getElementById('m-badge-icon');
+      const answered = document.getElementById('m-stat-answered');
+      const accuracy = document.getElementById('m-stat-accuracy');
+      const xpBonus = document.getElementById('m-stat-xp');
+      const diagText = document.getElementById('m-diagnostic-text');
+      const continueBtn = document.getElementById('m-btn-continue');
+
+      const accPct = Math.round((state.stageCorrect / state.stageAnswered) * 100);
+      answered.textContent = state.stageAnswered;
+      accuracy.textContent = `${accPct}%`;
+
+      // Bono por completar nivel
+      addXP(50);
+      xpBonus.textContent = `+${(state.stageCorrect * 25) + 50} XP`;
+
+      if (state.stageLevel === 1) {
+        badgeIcon.textContent = "🎯";
+        title.textContent = "¡Nivel 1 Completado!";
+        subtitle.textContent = "Has completado la etapa de fundamentos clave. Diagnóstico de tu progreso:";
+        diagText.textContent = accPct >= 80 
+          ? `Excelente retención en los fundamentos de "${state.topic}". Tienes una base sólida.`
+          : `Bases iniciales comprendidas. En el Nivel 2 reforzaremos los puntos con aplicación práctica.`;
+        continueBtn.textContent = "Avanzar a Nivel 2: Profundización ➔";
+      } else if (state.stageLevel === 2) {
+        badgeIcon.textContent = "🚀";
+        title.textContent = "¡Nivel 2 Superado!";
+        subtitle.textContent = "Has dominado las aplicaciones y casos prácticos. Diagnóstico:";
+        diagText.textContent = `Gran evolución. Llevas un promedio general de ${Math.round((state.correctCount / state.totalAnswered)*100)}% de aciertos. Listo para la maestría total.`;
+        continueBtn.textContent = "Avanzar a Nivel 3: Dominio Total ➔";
+      } else {
+        badgeIcon.textContent = "🏆";
+        title.textContent = "¡Tema Completado con Maestría!";
+        subtitle.textContent = "Has superado los 3 niveles de este tema. ¡Estás 100% listo para tu evaluación!";
+        diagText.textContent = `Completaste todos los niveles con ${state.correctCount} aciertos de ${state.totalAnswered} preguntas. Racha máxima: ${state.maxStreak}.`;
+        continueBtn.textContent = "Finalizar y Ver Resumen Completo ➔";
+      }
+
+      modal.style.display = 'flex';
+    }
+
+    function continueToNextStage() {
+      document.getElementById('milestone-modal').style.display = 'none';
+
+      if (state.stageLevel < 3) {
+        state.stageLevel++;
+        state.stageAnswered = 0;
+        state.stageCorrect = 0;
+        state.currentIndex++;
+        renderQuestion();
+      } else {
+        finishSession();
+      }
+    }
+
+    function finishSession() {
+      alert(`¡Gran sesión de estudio! Respondiste ${state.totalAnswered} preguntas (${state.correctCount} correctas). Mejor racha: ${state.maxStreak}.`);
+      document.getElementById('view-quiz').style.display = 'none';
+      document.getElementById('view-lobby').style.display = 'block';
+      document.getElementById('study-topic').value = '';
+    }
+
     window.addEventListener('keydown', (e) => {
       if ((e.key === 'Enter' || e.key === ' ') && state.answeredCurrent) {
         const nextBar = document.getElementById('action-next-bar');
@@ -1267,68 +1282,8 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos), sin bloques de
       }
     });
 
-    // ─── FINALIZAR SESIÓN Y MOSTRAR REPORTE ───
-    function finishSession() {
-      if (state.totalAnswered === 0) {
-        newTopicSession();
-        return;
-      }
-
-      // Ocultar quiz y mostrar vista intermedia con animación bone
-      document.getElementById('view-quiz').style.display = 'none';
-      document.getElementById('view-loading').style.display = 'none';
-      document.getElementById('view-summary').style.display = 'none';
-
-      const calcSummary = document.getElementById('view-calculating-summary');
-      if (calcSummary) calcSummary.style.display = 'block';
-
-      // Esperar 2.5 segundos para dar sensación reflexiva y profesional
-      setTimeout(() => {
-        if (calcSummary) calcSummary.style.display = 'none';
-        document.getElementById('view-summary').style.display = 'block';
-
-        const pct = Math.round((state.correctCount / state.totalAnswered) * 100);
-        document.getElementById('sum-score-pct').textContent = `${pct}%`;
-        document.getElementById('sum-total-answered').textContent = state.totalAnswered;
-        document.getElementById('sum-correct-count').textContent = state.correctCount;
-        document.getElementById('sum-max-streak').textContent = `🔥 ${state.maxStreak}`;
-
-        const titleEl = document.getElementById('sum-title');
-        const subEl = document.getElementById('sum-subtitle');
-        const feedEl = document.getElementById('sum-feedback-text');
-
-        if (pct >= 85) {
-          titleEl.textContent = "🏆 ¡Dominio Sobresaliente!";
-          subEl.textContent = "Has demostrado un nivel de retención y comprensión excepcional sobre este tema.";
-          feedEl.innerHTML = `Tienes muy afianzados los conceptos clave de <strong>${state.topic}</strong>. Tu mejor racha fue de <strong>${state.maxStreak} preguntas consecutivas</strong>. ¡Estás más que preparado para el examen!`;
-        } else if (pct >= 60) {
-          titleEl.textContent = "📈 ¡Buen Progreso de Estudio!";
-          subEl.textContent = "Comprendes las bases sólidas, pero hay detalles específicos que conviene reforzar.";
-          feedEl.innerHTML = `Has respondido correctamente <strong>${state.correctCount} de ${state.totalAnswered}</strong> preguntas. Te sugerimos revisar con atención las explicaciones de los conceptos donde fallaste para consolidar el 100%.`;
-        } else {
-          titleEl.textContent = "💡 Sesión de Aprendizaje Inicial";
-          subEl.textContent = "El objetivo del Smart Study es precisamente detectar las lagunas antes del examen real.";
-          feedEl.innerHTML = `La práctica activa ha identificado varios puntos a fortalecer en <strong>${state.topic}</strong>. Te recomendamos volver a repasar tus notas y realizar otra ronda continua.`;
-        }
-      }, 2500);
-    }
-
-    function continueStudyingSameTopic() {
-      document.getElementById('view-summary').style.display = 'none';
-      document.getElementById('view-loading').style.display = 'block';
-      fetchQuestionBatch(3).then(() => {
-        document.getElementById('view-loading').style.display = 'none';
-        document.getElementById('view-quiz').style.display = 'block';
-        renderQuestion();
-      });
-    }
-
-    function newTopicSession() {
-      document.getElementById('view-summary').style.display = 'none';
-      document.getElementById('view-quiz').style.display = 'none';
-      document.getElementById('view-lobby').style.display = 'block';
-      document.getElementById('study-topic').value = '';
-    }
+    // Iniciar navbar
+    updateUserNavbar();
   </script>
 </body>
 </html>
