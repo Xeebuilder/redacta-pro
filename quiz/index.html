@@ -17,13 +17,15 @@
     :root {
       --bg-dark: #0A0718;
       --bg-card: #130F2A;
-      --bg-option: #1B1538;
-      --bg-option-hover: #241D49;
+      --bg-card-hover: #1E1742;
+      --bg-option: #181335;
+      --bg-option-hover: #231C4D;
       --border-purple: rgba(167, 139, 250, 0.22);
       --border-purple-hover: rgba(167, 139, 250, 0.5);
       --accent-lilac: #B8A2F8;
       --accent-purple: #7C3AED;
       --gold-crown: #FACC15;
+      --cyan-spark: #38BDF8;
       --text-white: #FFFFFF;
       --text-dim: #94A3B8;
       --text-dimmer: #64748B;
@@ -53,6 +55,7 @@
       flex-direction: column;
       align-items: center;
       line-height: 1.5;
+      overflow-x: hidden;
     }
 
     /* ─── TOP NAVBAR ESTILO THEA ─── */
@@ -203,19 +206,19 @@
     /* ─── CONTENEDOR DE LA APP ─── */
     #app {
       width: 100%;
-      max-width: 840px;
-      padding: 2rem 1.2rem 4rem;
+      max-width: 920px;
+      padding: 1.5rem 1.2rem 4rem;
       flex: 1;
       display: flex;
       flex-direction: column;
     }
 
-    /* ─── VISTA 1: LOBBY ─── */
+    /* ─── VISTA 1: LOBBY & SUBIDA DE IMAGEN ─── */
     .lobby-card {
       background: var(--bg-card);
       border: 1px solid var(--border-purple);
       border-radius: var(--radius-lg);
-      padding: 2.8rem 2.4rem;
+      padding: 2.4rem 2.2rem;
       text-align: center;
       box-shadow: 0 16px 40px rgba(0,0,0,0.4);
     }
@@ -233,16 +236,45 @@
       margin-bottom: 1.2rem;
     }
     .lobby-title {
-      font-size: 2.4rem;
+      font-size: 2.2rem;
       font-weight: 900;
       letter-spacing: -0.5px;
       margin-bottom: 0.8rem;
     }
     .lobby-subtitle {
       color: var(--text-dim);
-      font-size: 1.05rem;
-      max-width: 600px;
-      margin: 0 auto 2.2rem;
+      font-size: 1.02rem;
+      max-width: 640px;
+      margin: 0 auto 1.8rem;
+    }
+
+    /* Tabs para elegir entre Tema Escrito o Subir Foto */
+    .lobby-tabs {
+      display: inline-flex;
+      background: #110D27;
+      border: 1px solid var(--border-purple);
+      border-radius: 30px;
+      padding: 4px;
+      margin-bottom: 1.5rem;
+    }
+    .lobby-tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      padding: 8px 18px;
+      border-radius: 24px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .lobby-tab-btn.active {
+      background: var(--accent-lilac);
+      color: #110D27;
+      box-shadow: 0 2px 8px rgba(184, 162, 248, 0.3);
     }
 
     .setup-box {
@@ -250,7 +282,7 @@
       border: 1px solid var(--border-purple);
       border-radius: var(--radius-md);
       padding: 1.8rem;
-      margin-bottom: 2rem;
+      margin-bottom: 1.8rem;
       text-align: left;
     }
     .form-label {
@@ -275,6 +307,68 @@
       border-color: var(--accent-lilac);
       box-shadow: 0 0 0 3px rgba(184, 162, 248, 0.2);
     }
+
+    /* Zona de Carga de Imagen */
+    .image-drop-zone {
+      border: 2px dashed rgba(167, 139, 250, 0.4);
+      background: rgba(17, 13, 39, 0.6);
+      border-radius: 14px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .image-drop-zone:hover, .image-drop-zone.dragover {
+      border-color: var(--accent-lilac);
+      background: rgba(184, 162, 248, 0.08);
+      transform: translateY(-2px);
+    }
+    .image-preview-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: #110D27;
+      border: 1px solid var(--border-purple);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-top: 12px;
+    }
+    .image-thumb {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .image-details {
+      flex: 1;
+      text-align: left;
+    }
+    .image-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #fff;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .image-size {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+    .btn-remove-img {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid #EF4444;
+      color: #F87171;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-remove-img:hover { background: #EF4444; color: #fff; }
+
     .topic-presets {
       display: flex;
       flex-wrap: wrap;
@@ -320,119 +414,140 @@
       box-shadow: 0 6px 26px rgba(124, 58, 237, 0.6);
     }
 
-    /* ─── VISTA 2: ESTUDIO ACTIVO ─── */
+    /* ─── VISTA 2: ESTUDIO ACTIVO (ESTILO THEA VIDEO) ─── */
     #view-quiz {
       display: none;
       width: 100%;
     }
 
-    /* Barra Superior de Progresión por Niveles (Etapas 1, 2 y 3) */
-    .session-level-bar {
-      background: var(--bg-card);
-      border: 1px solid var(--border-purple);
-      border-radius: var(--radius-md);
-      padding: 1.1rem 1.4rem;
-      margin-bottom: 1.4rem;
+    /* Barra Superior de Progresión Estilo Thea con Diamantes de Hito */
+    .thea-top-bar {
       display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .session-level-meta {
-      display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
+      gap: 14px;
+      margin-bottom: 1.8rem;
+      width: 100%;
     }
-    .session-badge {
+    .thea-progress-container {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex: 1;
+      max-width: 580px;
+      margin: 0 auto;
+    }
+    .thea-progress-track {
+      flex: 1;
+      height: 24px;
+      background: rgba(30, 64, 175, 0.25);
+      border: 1.5px solid rgba(59, 130, 246, 0.4);
+      border-radius: 999px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.4);
+    }
+    .thea-progress-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: linear-gradient(90deg, #F59E0B, #FBBF24);
+      border-radius: 999px;
+      transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.6);
+    }
+    .thea-progress-label {
+      position: relative;
+      z-index: 2;
+      font-size: 0.8rem;
       font-weight: 800;
-      font-size: 0.95rem;
-      color: var(--accent-lilac);
+      color: #FFFFFF;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+      letter-spacing: 0.4px;
+    }
+    .thea-milestones {
       display: flex;
       align-items: center;
       gap: 6px;
     }
-    .session-streak-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--streak-bg);
-      color: var(--streak-color);
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-weight: 800;
-      font-size: 0.92rem;
-      border: 1px solid rgba(245, 158, 11, 0.3);
+    .diamond-milestone {
+      font-size: 1.25rem;
+      color: rgba(255, 255, 255, 0.22);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor: default;
     }
-    .session-streak-badge.pulse {
-      animation: pulseStreak 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    .diamond-milestone.active-cyan {
+      color: var(--cyan-spark) !important;
+      text-shadow: 0 0 12px var(--cyan-spark), 0 0 20px rgba(56, 189, 248, 0.6) !important;
+      transform: scale(1.15);
     }
-    @keyframes pulseStreak {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.18); }
-      100% { transform: scale(1); }
-    }
-    .progress-track {
-      width: 100%;
-      height: 8px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      overflow: hidden;
-      position: relative;
-    }
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #A855F7, #EC4899);
-      width: 0%;
-      border-radius: 10px;
-      transition: width 0.4s ease;
+    .diamond-milestone.active-gold {
+      color: var(--gold-crown) !important;
+      text-shadow: 0 0 12px var(--gold-crown), 0 0 20px rgba(250, 204, 21, 0.6) !important;
+      transform: scale(1.22);
     }
 
-    /* Tarjeta de Pregunta en Foco */
+    .btn-top-guide {
+      background: rgba(184, 162, 248, 0.15);
+      border: 1px solid var(--border-purple);
+      color: var(--accent-lilac);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-top-guide:hover {
+      background: var(--accent-lilac);
+      color: #0A0718;
+    }
+
+    /* Tarjeta de Pregunta en Foco (Thea Layout) */
     .question-card {
       background: var(--bg-card);
       border: 1px solid var(--border-purple);
       border-radius: var(--radius-lg);
-      padding: 2.2rem;
+      padding: 2.2rem 2.4rem;
       box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+      margin-bottom: 1.5rem;
     }
-    .q-meta {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 1.2rem;
-    }
-    .q-tag {
-      background: rgba(184, 162, 248, 0.15);
-      color: var(--accent-lilac);
-      font-size: 0.8rem;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 6px;
-      text-transform: uppercase;
-    }
-    .q-topic {
-      color: var(--text-dim);
-      font-size: 0.85rem;
-    }
-    .q-text {
-      font-size: 1.35rem;
+    .q-text-thea {
+      font-size: 1.38rem;
       font-weight: 700;
       line-height: 1.45;
-      margin-bottom: 1.8rem;
+      text-align: center;
+      margin: 0.5rem 0 2rem;
+      color: #FFFFFF;
+    }
+    .q-text-thea .key-term {
+      border-bottom: 2px dotted var(--accent-lilac);
+      cursor: help;
     }
 
-    /* Opciones */
-    .options-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-bottom: 1.8rem;
+    /* Cuadrícula 2x2 de Opciones (Thea Video Exact Layout) */
+    .options-grid-2x2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 2rem;
     }
-    .option-btn {
+    @media (max-width: 680px) {
+      .options-grid-2x2 { grid-template-columns: 1fr; }
+    }
+
+    .thea-option-btn {
       background: var(--bg-option);
       border: 1.5px solid var(--border-purple);
       border-radius: var(--radius-md);
-      padding: 1.1rem 1.4rem;
+      padding: 1.15rem 1.4rem;
       color: var(--text-white);
       text-align: left;
       font-size: 1.05rem;
@@ -442,47 +557,168 @@
       align-items: center;
       gap: 14px;
       transition: all 0.15s ease;
+      min-height: 72px;
     }
-    .option-btn:hover:not(:disabled) {
+    .thea-option-btn:hover:not(:disabled) {
       background: var(--bg-option-hover);
       border-color: var(--border-purple-hover);
       transform: translateY(-2px);
     }
-    .option-letter {
+    .thea-option-num {
       width: 32px;
       height: 32px;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.08);
+      border-radius: 50%;
+      background: #C4B5FD;
+      color: #110D27;
       font-weight: 800;
+      font-size: 0.95rem;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      transition: all 0.2s;
     }
-    .option-content { flex: 1; }
+    .thea-option-content { flex: 1; }
 
-    /* Estados de opción instantáneos */
-    .option-btn.state-correct {
+    /* Estados Instantáneos de Respuesta */
+    .thea-option-btn.state-correct {
+      border: 2px solid var(--correct-border) !important;
+      box-shadow: 0 0 16px rgba(34, 197, 94, 0.35) !important;
       background: var(--correct-bg) !important;
-      border-color: var(--correct-border) !important;
       color: var(--correct-text) !important;
-      box-shadow: 0 4px 18px rgba(34, 197, 94, 0.2);
     }
-    .option-btn.state-correct .option-letter {
-      background: var(--correct-border);
-      color: #0F172A;
+    .thea-option-btn.state-correct .thea-option-num {
+      background: var(--correct-border) !important;
+      color: #0F172A !important;
     }
-    .option-btn.state-incorrect {
+    .thea-option-btn.state-incorrect {
+      border: 2px solid var(--incorrect-border) !important;
+      box-shadow: 0 0 16px rgba(239, 68, 68, 0.35) !important;
       background: var(--incorrect-bg) !important;
-      border-color: var(--incorrect-border) !important;
       color: var(--incorrect-text) !important;
-      box-shadow: 0 4px 18px rgba(239, 68, 68, 0.2);
     }
-    .option-btn.state-incorrect .option-letter {
-      background: var(--incorrect-border);
-      color: #FFFFFF;
+    .thea-option-btn.state-incorrect .thea-option-num {
+      background: var(--incorrect-border) !important;
+      color: #FFFFFF !important;
     }
-    .option-btn:disabled { cursor: default; }
+    .thea-option-btn:disabled { cursor: default; }
+
+    /* Barra Inferior de Acciones (Historial, Siguiente Pregunta, Feedback) */
+    .thea-question-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .btn-action-pill-subtle {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-purple);
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-action-pill-subtle:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+    .btn-next-thea {
+      background: var(--accent-lilac);
+      color: #0A0718;
+      border: none;
+      padding: 0.8rem 2.4rem;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 1.05rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(184, 162, 248, 0.3);
+      transition: all 0.2s;
+    }
+    .btn-next-thea:hover {
+      background: #C4B5FD;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(184, 162, 248, 0.45);
+    }
+    .thea-feedback-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-thumb {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .btn-thumb:hover { transform: scale(1.15); }
+    .btn-thumb.up { background: #22C55E; color: #fff; }
+    .btn-thumb.down { background: #EF4444; color: #fff; }
+
+    /* Explicación en Viñetas (Bullet Points estilo Thea) */
+    .thea-explanation-box {
+      background: #181335;
+      border: 1px solid var(--border-purple);
+      border-radius: var(--radius-md);
+      padding: 1.6rem 1.8rem;
+      margin-top: 1.5rem;
+      display: none;
+      text-align: left;
+      animation: fadeInSlide 0.25s ease-out;
+    }
+    .thea-exp-bullets {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: #E2E8F0;
+    }
+    .thea-exp-bullets li {
+      position: relative;
+      padding-left: 20px;
+    }
+    .thea-exp-bullets li::before {
+      content: "•";
+      color: var(--accent-lilac);
+      font-size: 1.4rem;
+      position: absolute;
+      left: 0;
+      top: -4px;
+    }
+    .btn-more-info {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-purple);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--accent-lilac);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 14px;
+    }
+    .btn-more-info:hover {
+      background: var(--accent-lilac);
+      color: #0A0718;
+    }
 
     /* Skeleton Bone Shimmer (Exactamente 1 segundo) */
     @keyframes boneShimmer {
@@ -490,12 +726,7 @@
       100% { background-position: 200% 0; }
     }
     .bone {
-      background: linear-gradient(
-        90deg,
-        rgba(255, 255, 255, 0.05) 0%,
-        rgba(255, 255, 255, 0.15) 50%,
-        rgba(255, 255, 255, 0.05) 100%
-      );
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.05) 100%);
       background-size: 200% 100%;
       animation: boneShimmer 1.2s infinite linear;
       border-radius: 6px;
@@ -505,7 +736,7 @@
       border: 1px solid var(--border-purple);
       border-radius: var(--radius-md);
       padding: 1.4rem;
-      margin-bottom: 1.5rem;
+      margin-top: 1.5rem;
       display: none;
     }
     .bone-line { height: 14px; margin-bottom: 10px; }
@@ -513,63 +744,138 @@
     .bone-line.medium { width: 75%; }
     .bone-line.long { width: 100%; }
 
-    /* Explicación */
-    .explanation-card {
-      background: #181335;
-      border: 1px solid var(--border-purple);
-      border-radius: var(--radius-md);
-      padding: 1.4rem;
-      margin-bottom: 1.5rem;
-      display: none;
-      animation: fadeInSlide 0.25s ease-out;
+    /* ─── TOAST NOTIFICATIONS PERSONALIZADAS ESTILO THEA (FRAME 012) ─── */
+    #thea-toast-container {
+      position: fixed;
+      top: 80px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+      max-width: 380px;
     }
-    @keyframes fadeInSlide {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .exp-title {
-      font-size: 1rem;
-      font-weight: 800;
-      margin-bottom: 0.5rem;
+    .thea-toast-card {
+      pointer-events: auto;
+      background: rgba(22, 19, 47, 0.95);
+      backdrop-filter: blur(14px);
+      border: 1.5px solid rgba(167, 139, 250, 0.35);
+      border-radius: 14px;
+      padding: 12px 16px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 14px;
+      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.6), 0 0 20px rgba(167, 139, 250, 0.15);
+      animation: toastSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.3s ease;
     }
-    .exp-title.correct { color: var(--correct-text); }
-    .exp-title.incorrect { color: var(--incorrect-text); }
-    .exp-body {
+    .thea-toast-card.fade-out {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    @keyframes toastSlideIn {
+      from { opacity: 0; transform: translateX(40px) scale(0.95); }
+      to { opacity: 1; transform: translateX(0) scale(1); }
+    }
+    .thea-toast-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: rgba(147, 51, 234, 0.25);
+      border: 1px solid rgba(167, 139, 250, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .thea-toast-body {
+      flex: 1;
+      text-align: left;
+    }
+    .thea-toast-title {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin-bottom: 2px;
+    }
+    .thea-toast-subtitle {
+      font-size: 0.78rem;
+      color: #C4B5FD;
+      line-height: 1.3;
+    }
+    .thea-toast-close {
+      background: transparent;
+      border: none;
+      color: #94A3B8;
+      font-size: 0.85rem;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .thea-toast-close:hover { color: #fff; }
+
+    /* ─── DRAWER / PANEL GUÍA DE ESTUDIO ─── */
+    .guide-drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 3, 14, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none;
+      justify-content: flex-end;
+    }
+    .guide-drawer {
+      width: 100%;
+      max-width: 580px;
+      height: 100%;
+      background: #110D27;
+      border-left: 1px solid var(--border-purple);
+      padding: 2.2rem;
+      overflow-y: auto;
+      box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+      animation: drawerSlide 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    @keyframes drawerSlide {
+      from { transform: translateX(100%); }
+      to { transform: translateX(0); }
+    }
+    .guide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 1rem;
+    }
+    .guide-section-card {
+      background: #181335;
+      border: 1px solid var(--border-purple);
+      border-radius: 12px;
+      padding: 1.2rem;
+      margin-bottom: 1.2rem;
+      text-align: left;
+    }
+    .guide-section-title {
       font-size: 0.95rem;
-      color: var(--text-white);
-      line-height: 1.5;
-      margin-bottom: 0.75rem;
+      font-weight: 800;
+      color: var(--accent-lilac);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
-    .exp-tip {
-      background: rgba(184, 162, 248, 0.1);
+    .concept-item {
+      background: rgba(17, 13, 39, 0.6);
       border-left: 3px solid var(--accent-lilac);
       padding: 8px 12px;
-      border-radius: 0 6px 6px 0;
-      font-size: 0.88rem;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 8px;
     }
-
-    .btn-next-action {
-      background: var(--accent-lilac);
-      color: #0A0718;
-      border: none;
-      padding: 0.85rem 2rem;
-      border-radius: 24px;
-      font-weight: 800;
-      font-size: 1rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      float: right;
-      transition: all 0.2s;
-    }
-    .btn-next-action:hover {
-      background: #C4B5FD;
-      transform: translateY(-2px);
-    }
+    .concept-term { font-weight: 700; color: #fff; font-size: 0.9rem; }
+    .concept-def { font-size: 0.85rem; color: #CBD5E1; margin-top: 2px; }
 
     /* ─── MODAL DIAGNÓSTICO INTERMEDIO (NIVEL 1, 2, 3) ─── */
     .milestone-overlay {
@@ -641,11 +947,14 @@
       .thea-navbar { padding: 0.75rem 1rem; }
       .nav-center-links { display: none; }
       .lobby-title { font-size: 1.8rem; }
-      .q-text { font-size: 1.15rem; }
+      .q-text-thea { font-size: 1.15rem; }
     }
   </style>
 </head>
 <body>
+
+  <!-- THEA TOAST CONTAINER -->
+  <div id="thea-toast-container"></div>
 
   <!-- THEA NAVBAR -->
   <header class="thea-navbar">
@@ -661,7 +970,7 @@
       <a href="../flashcards/" class="nav-center-link">Flashcards</a>
     </nav>
 
-    <!-- Header Actions idénticos a Thea (Invitar, Comentarios, Avatar con corona y punto rojo) -->
+    <!-- Header Actions (Invitar, Comentarios, Avatar con corona y punto rojo) -->
     <div style="display:flex; align-items:center; gap:10px;">
       <button class="btn-thea-pill" onclick="handleInviteClick()" title="Invitar compañeros">
         <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
@@ -689,16 +998,28 @@
 
   <main id="app">
 
-    <!-- ─── 1. VISTA: LOBBY ─── -->
+    <!-- ─── 1. VISTA: LOBBY & SUBIDA DE IMAGEN ─── -->
     <section id="view-lobby" class="lobby-card">
       <div class="thea-chip">⚡ Metodología Thea de Aprendizaje Activo</div>
       <h1 class="lobby-title">Quiz de Estudio Continuo</h1>
       <p class="lobby-subtitle">
-        Preguntas continuas paso a paso. La IA detecta lo que dominas y refuerza tus conceptos clave con feedback al segundo.
+        Preguntas continuas paso a paso. Puedes escribir un tema o subir una foto de tus apuntes/guía escolar para que la IA extraiga el temario y cree tu guía de estudio.
       </p>
 
+      <!-- Selector de Modo: Tema Escrito vs Foto de Apuntes -->
+      <div class="lobby-tabs">
+        <button class="lobby-tab-btn active" id="tab-btn-text" onclick="switchLobbyMode('text')">
+          <span>✏️</span> Escribir Tema
+        </button>
+        <button class="lobby-tab-btn" id="tab-btn-image" onclick="switchLobbyMode('image')">
+          <span>📷</span> Subir Foto de Apuntes / Guía
+        </button>
+      </div>
+
       <div class="setup-box">
-        <div style="margin-bottom: 1.25rem;">
+        
+        <!-- MODO 1: TEMA ESCRITO -->
+        <div id="mode-text-box" style="margin-bottom: 1.25rem;">
           <label class="form-label" for="study-topic">Tema a estudiar o notas de clase:</label>
           <input type="text" id="study-topic" class="input-text" placeholder="Ej: Rotación y traslación, Python básico, Leyes de Newton...">
           <div id="topic-error-msg" style="display:none; color:#EF4444; font-size:0.85rem; font-weight:700; margin-top:8px;">⚠️ Por favor ingresa un tema o selecciona uno de los temas sugeridos arriba.</div>
@@ -712,6 +1033,35 @@
           </div>
         </div>
 
+        <!-- MODO 2: SUBIR IMAGEN / APUNTES -->
+        <div id="mode-image-box" style="display:none; margin-bottom: 1.25rem;">
+          <label class="form-label">Sube una foto de tus apuntes, temario o página de libro:</label>
+          
+          <div class="image-drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+            <input type="file" id="file-input" accept="image/*" style="display:none;" onchange="handleFileSelect(event)">
+            <div style="font-size:2.4rem; margin-bottom:6px;">📸</div>
+            <div style="font-weight:700; font-size:1rem; color:#fff; margin-bottom:4px;">Haz clic o arrastra una imagen aquí</div>
+            <div style="font-size:0.82rem; color:var(--text-dim);">Soporta fotos de cuadernos, guías, diapositivas (PNG, JPG, WEBP)</div>
+          </div>
+
+          <div id="image-preview-container" style="display:none;">
+            <div class="image-preview-card">
+              <img id="image-preview-thumb" class="image-thumb" src="" alt="Vista previa">
+              <div class="image-details">
+                <div class="image-name" id="image-preview-name">foto_apuntes.jpg</div>
+                <div class="image-size" id="image-preview-size">1.2 MB</div>
+              </div>
+              <button class="btn-remove-img" onclick="removeSelectedImage()">Eliminar ✕</button>
+            </div>
+          </div>
+
+          <div style="margin-top: 1rem;">
+            <label class="form-label" for="study-instructions">Enfoque adicional (opcional):</label>
+            <input type="text" id="study-instructions" class="input-text" placeholder="Ej: 'Prioriza las definiciones y fórmulas que salen en la imagen'">
+          </div>
+        </div>
+
+        <!-- Nivel Académico Unificado (3 Opciones Oficiales) -->
         <div>
           <label class="form-label" for="study-level">Nivel Académico:</label>
           <select id="study-level" class="select-level">
@@ -722,7 +1072,7 @@
         </div>
       </div>
 
-      <button class="btn-start" onclick="startStudySession()">
+      <button class="btn-start" id="btn-start-session" onclick="startStudySession()">
         <span>🚀</span> Iniciar Modo Estudio Continuo
       </button>
     </section>
@@ -730,48 +1080,68 @@
     <!-- CARGANDO INICIAL -->
     <div id="view-loading" style="display:none; text-align:center; padding:3rem 1rem;">
       <div class="spinner"></div>
-      <h3 style="font-size:1.3rem; font-weight:700; margin-bottom:6px;">Estructurando tus preguntas con Thea...</h3>
-      <p style="color:var(--text-dim); font-size:0.95rem;">Extrayendo conceptos clave para un aprendizaje activo.</p>
+      <h3 style="font-size:1.35rem; font-weight:800; margin-bottom:6px;" id="loading-title">Estructurando tus preguntas con Thea...</h3>
+      <p style="color:var(--text-dim); font-size:0.95rem;" id="loading-subtitle">Extrayendo conceptos clave para un aprendizaje activo.</p>
     </div>
 
-    <!-- ─── 2. VISTA: ESTUDIO ACTIVO ─── -->
+    <!-- ─── VISTA 2: ESTUDIO ACTIVO (ESTILO THEA VIDEO) ─── -->
     <section id="view-quiz">
 
-      <!-- Barra de Progresión de Etapas (Nivel 1 ➔ Nivel 2 ➔ Nivel 3) -->
-      <div class="session-level-bar">
-        <div class="session-level-meta">
-          <div class="session-badge">
-            <span id="session-level-title">Nivel 1 de 3 • Fundamentos Clave</span>
+      <!-- Top Bar: Barra de Progreso Thea + 3 Diamantes de Hito + Botón Guía -->
+      <div class="thea-top-bar">
+        <button class="btn-top-guide" onclick="openGuideDrawer()" id="btn-open-guide" style="display:none;">
+          <span>📖</span> Guía de Estudio
+        </button>
+
+        <!-- Barra de Progreso con Diamantes de Hito (Thea Video) -->
+        <div class="thea-progress-container">
+          <div class="thea-progress-track">
+            <div class="thea-progress-fill" id="thea-progress-fill" style="width: 0%;"></div>
+            <span class="thea-progress-label" id="thea-progress-label">Nivel 1: 0%</span>
           </div>
 
-          <div style="display:flex; align-items:center; gap:12px;">
-            <div class="session-streak-badge" id="session-streak-box">
-              <span>🔥</span>
-              <span id="metric-streak">0 seguidas</span>
-            </div>
-
-            <button onclick="finishSession()" style="background:transparent; border:1px solid var(--border-purple); color:var(--text-dim); padding:4px 10px; border-radius:6px; cursor:pointer; font-size:0.8rem;">
-              Terminar ⏹
-            </button>
+          <div class="thea-milestones">
+            <span class="diamond-milestone" id="diamond-star-1" title="Meta Nivel 1">✦</span>
+            <span class="diamond-milestone" id="diamond-star-2" title="Meta Nivel 2">✦</span>
+            <span class="diamond-milestone" id="diamond-star-3" title="Meta Nivel 3">✦</span>
           </div>
         </div>
 
-        <div class="progress-track">
-          <div class="progress-fill" id="session-progress-fill"></div>
-        </div>
+        <button onclick="finishSession()" class="btn-action-pill-subtle" title="Finalizar sesión">
+          Terminar ⏹
+        </button>
       </div>
 
-      <!-- Tarjeta de Pregunta en Foco -->
+      <!-- Tarjeta de Pregunta en Foco (Thea 2x2 Layout) -->
       <div class="question-card">
-        <div class="q-meta">
-          <span class="q-tag" id="q-category-tag">Concepto Básico</span>
-          <span class="q-topic" id="q-topic-label">Tema</span>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+          <span style="background:rgba(184,162,248,0.15); color:var(--accent-lilac); font-size:0.78rem; font-weight:700; padding:3px 10px; border-radius:6px; text-transform:uppercase;" id="q-category-tag">Concepto Básico</span>
+          <span style="color:var(--text-dim); font-size:0.85rem;" id="q-topic-label">Tema</span>
         </div>
 
-        <div class="q-text" id="q-text">Cargando pregunta...</div>
+        <!-- Pregunta Centrada -->
+        <div class="q-text-thea" id="q-text">Cargando pregunta...</div>
 
-        <!-- 4 Opciones A, B, C, D -->
-        <div class="options-grid" id="q-options-container"></div>
+        <!-- Cuadrícula 2x2 de Opciones (Thea Video Exacto) -->
+        <div class="options-grid-2x2" id="q-options-container"></div>
+
+        <!-- Barra de Acciones Thea: Historial + Siguiente + Feedback -->
+        <div class="thea-question-actions">
+          <button class="btn-action-pill-subtle" onclick="openHistoryModal()">
+            Historial de preguntas
+          </button>
+
+          <div id="action-next-wrap" style="display:none;">
+            <button class="btn-next-thea" id="btn-next-question" onclick="nextQuestion()">
+              <span>Siguiente pregunta</span> ➔
+            </button>
+          </div>
+
+          <div class="thea-feedback-group">
+            <button class="btn-thumb up" onclick="handleQuestionFeedback(true)" title="Buena pregunta">👍</button>
+            <button class="btn-thumb down" onclick="handleQuestionFeedback(false)" title="Pregunta confusa">👎</button>
+          </div>
+        </div>
 
         <!-- Skeleton Shimmer de 1 segundo ("Estilo Bone") -->
         <div class="skeleton-box" id="q-skeleton-box">
@@ -780,30 +1150,73 @@
           <div class="bone bone-line medium"></div>
         </div>
 
-        <!-- Caja de Explicación Inmediata -->
-        <div class="explanation-card" id="q-explanation-box">
-          <div class="exp-title" id="exp-title-box">
-            <span id="exp-icon">✓</span>
-            <span id="exp-text">¡Correcto!</span>
-          </div>
-          <div class="exp-body" id="exp-body-text">Explicación...</div>
-          <div class="exp-tip" id="exp-tip-box" style="display:none;">
-            <strong>💡 Clave para recordar:</strong> <span id="exp-tip-text"></span>
+        <!-- Explicación en Viñetas (Bullet Points estilo Thea) -->
+        <div class="thea-explanation-box" id="q-explanation-box">
+          <ul class="thea-exp-bullets" id="thea-exp-bullets-list">
+            <!-- Viñetas de explicación -->
+          </ul>
+          <div style="display:flex; justify-content:flex-end;">
+            <button class="btn-more-info" onclick="openGuideDrawer()">
+              <span>Más información</span> ⊕
+            </button>
           </div>
         </div>
 
-        <!-- Botón Siguiente Pregunta -->
-        <div style="display:none; justify-content:flex-end;" id="action-next-bar">
-          <button class="btn-next-action" id="btn-next-question" onclick="nextQuestion()">
-            <span>Siguiente Pregunta</span> ➔
-          </button>
-        </div>
-        <div style="clear:both;"></div>
       </div>
 
     </section>
 
   </main>
+
+  <!-- DRAWER / PANEL: GUÍA DE ESTUDIO GENERADA -->
+  <div class="guide-drawer-overlay" id="guide-drawer-overlay" onclick="closeGuideDrawer()">
+    <div class="guide-drawer" onclick="event.stopPropagation()">
+      <div class="guide-header">
+        <div>
+          <span style="font-size:0.75rem; text-transform:uppercase; color:var(--accent-lilac); font-weight:800;">Documento Pedagógico</span>
+          <h2 style="font-size:1.45rem; font-weight:900; color:#fff;" id="guide-doc-title">Guía de Estudio</h2>
+        </div>
+        <button style="background:transparent; border:none; color:#fff; font-size:1.4rem; cursor:pointer;" onclick="closeGuideDrawer()">✕</button>
+      </div>
+
+      <div class="guide-section-card">
+        <div class="guide-section-title">📌 Resumen Ejecutivo del Tema</div>
+        <p style="font-size:0.9rem; color:#CBD5E1; line-height:1.5;" id="guide-doc-summary">Cargando resumen...</p>
+      </div>
+
+      <div class="guide-section-card">
+        <div class="guide-section-title">💡 Conceptos Clave y Definiciones</div>
+        <div id="guide-doc-concepts">
+          <!-- Lista de conceptos clave -->
+        </div>
+      </div>
+
+      <div class="guide-section-card">
+        <div class="guide-section-title">🔍 Datos Relevantes y Puntos de Examen</div>
+        <ul style="padding-left:18px; font-size:0.88rem; color:#CBD5E1; line-height:1.5;" id="guide-doc-facts">
+          <!-- Datos adicionales -->
+        </ul>
+      </div>
+
+      <button class="btn-start" style="margin-top:auto;" onclick="closeGuideDrawer()">
+        Volver al Quiz Continuo ➔
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: HISTORIAL DE PREGUNTAS -->
+  <div class="milestone-overlay" id="history-modal">
+    <div class="milestone-card" style="max-width: 640px; text-align:left;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem;">
+        <h3 style="font-size:1.3rem; font-weight:800; color:#fff;">Historial de Preguntas de esta Sesión</h3>
+        <button style="background:transparent; border:none; color:#94A3B8; font-size:1.2rem; cursor:pointer;" onclick="closeHistoryModal()">✕</button>
+      </div>
+      <div id="history-list-container" style="max-height:400px; overflow-y:auto; display:flex; flex-direction:column; gap:10px;">
+        <!-- Lista de preguntas respondidas -->
+      </div>
+      <button class="btn-start" style="margin-top:1.2rem;" onclick="closeHistoryModal()">Cerrar</button>
+    </div>
+  </div>
 
   <!-- MODAL: DIAGNÓSTICO INTERMEDIO (NIVEL 1, 2 O 3) -->
   <div class="milestone-overlay" id="milestone-modal">
@@ -838,6 +1251,36 @@
 
       <button class="btn-start" id="m-btn-continue" onclick="continueToNextStage()">
         Continuar al Siguiente Nivel ➔
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: RESUMEN FINAL DE SESIÓN (REEMPLAZA EL ALERT NATIVO) -->
+  <div class="milestone-overlay" id="summary-modal">
+    <div class="milestone-card">
+      <div class="milestone-badge" style="border-color:#38BDF8;">🏆</div>
+      <h2 style="font-size:1.9rem; font-weight:900; margin-bottom:0.5rem;">¡Sesión Finalizada!</h2>
+      <p style="color:var(--text-dim); margin-bottom:1.5rem;" id="summary-modal-desc">
+        Gran trabajo en tu sesión de estudio activo.
+      </p>
+
+      <div class="milestone-stats-grid">
+        <div class="m-stat-box">
+          <div class="m-stat-val" id="sum-stat-total">0</div>
+          <div class="m-stat-lbl">Total</div>
+        </div>
+        <div class="m-stat-box">
+          <div class="m-stat-val" id="sum-stat-accuracy" style="color:var(--correct-text);">0%</div>
+          <div class="m-stat-lbl">Precisión</div>
+        </div>
+        <div class="m-stat-box">
+          <div class="m-stat-val" id="sum-stat-streak" style="color:var(--streak-color);">0</div>
+          <div class="m-stat-lbl">Mejor Racha</div>
+        </div>
+      </div>
+
+      <button class="btn-start" onclick="closeSummaryModalAndReturn()">
+        Volver al Menú Principal 🚀
       </button>
     </div>
   </div>
@@ -920,19 +1363,50 @@
       }
     }
 
+    /* ─── SISTEMA DE TOASTS ESTILO THEA (FRAME 012) ─── */
+    function showTheaToast(title, subtitle, icon = "✨") {
+      const container = document.getElementById('thea-toast-container');
+      if (!container) return;
+
+      const toast = document.createElement('div');
+      toast.className = 'thea-toast-card';
+      toast.innerHTML = `
+        <div class="thea-toast-icon">${icon}</div>
+        <div class="thea-toast-body">
+          <div class="thea-toast-title">${title}</div>
+          <div class="thea-toast-subtitle">${subtitle}</div>
+        </div>
+        <button class="thea-toast-close" onclick="this.parentElement.remove()">✕</button>
+      `;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.add('fade-out');
+        setTimeout(() => toast.remove(), 350);
+      }, 4500);
+    }
+
     function handleInviteClick() {
       const shareUrl = window.location.origin;
       navigator.clipboard.writeText(shareUrl).then(() => {
-        alert("¡Enlace de invitación copiado! Compártelo con tus amigos para estudiar en Synapse.");
+        showTheaToast("¡Enlace Copiado!", "Compártelo con tus compañeros para estudiar en Synapse 📋", "📋");
       }).catch(() => {
-        alert("Comparte Synapse con tus amigos: " + shareUrl);
+        showTheaToast("Enlace de Invitación", shareUrl, "🔗");
       });
     }
 
     function handleFeedbackClick() {
       const text = prompt("💬 Envíanos tus comentarios, sugerencias o reporte sobre el Quiz:");
       if (text && text.trim()) {
-        alert("¡Muchas gracias por tus comentarios! Nos ayudan a seguir mejorando Synapse.");
+        showTheaToast("¡Comentario Recibido!", "Muchas gracias por ayudarnos a mejorar Synapse 💬", "💬");
+      }
+    }
+
+    function handleQuestionFeedback(isPositive) {
+      if (isPositive) {
+        showTheaToast("¡Gracias por calificar!", "Registramos que esta pregunta fue clara y útil 👍", "👍");
+      } else {
+        showTheaToast("Feedback registrado", "Anotamos que esta pregunta puede mejorar en claridad 👎", "👎");
       }
     }
 
@@ -966,14 +1440,16 @@
       apiKey: atob('QVEuQWI4Uk42SnBsdlYxX0F3RzdJYWVfWWlLZFpDTFlidFBvRUV0WEVjX2pWczdFRFFPaXc='),
       topic: '',
       level: '',
+      mode: 'text', // 'text' o 'image'
+      selectedImage: null, // { base64, mimeType, name, size }
+      studyGuide: null, // Guía de estudio estructurada
       queue: [],
+      history: [],
       currentIndex: 0,
       streak: 0,
       maxStreak: 0,
       correctCount: 0,
       totalAnswered: 0,
-      weakConcepts: [],
-      masteredConcepts: [],
       isFetchingBatch: false,
       answeredCurrent: false,
 
@@ -986,15 +1462,116 @@
 
     const GEMINI_MODEL = 'gemini-3.8-flash';
 
+    /* ─── CAMBIO DE MODO: TEMA ESCRITO VS FOTO ─── */
+    function switchLobbyMode(mode) {
+      state.mode = mode;
+      const tabText = document.getElementById('tab-btn-text');
+      const tabImage = document.getElementById('tab-btn-image');
+      const boxText = document.getElementById('mode-text-box');
+      const boxImage = document.getElementById('mode-image-box');
+      const btnStart = document.getElementById('btn-start-session');
+
+      if (mode === 'text') {
+        tabText.classList.add('active');
+        tabImage.classList.remove('active');
+        boxText.style.display = 'block';
+        boxImage.style.display = 'none';
+        btnStart.innerHTML = '<span>🚀</span> Iniciar Modo Estudio Continuo';
+      } else {
+        tabText.classList.remove('active');
+        tabImage.classList.add('active');
+        boxText.style.display = 'none';
+        boxImage.style.display = 'block';
+        btnStart.innerHTML = '<span>📸</span> Analizar Foto y Crear Guía de Estudio';
+      }
+    }
+
     function setTopic(text) {
       document.getElementById('study-topic').value = text;
       document.getElementById('topic-error-msg').style.display = 'none';
     }
 
-    async function askGemini(prompt, systemInstruction = null) {
+    /* ─── MANEJO DE ARCHIVOS DE IMAGEN ─── */
+    function handleFileSelect(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      processImageFile(file);
+    }
+
+    // Drag and Drop
+    const dropZone = document.getElementById('drop-zone');
+    if (dropZone) {
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropZone.classList.add('dragover');
+        }, false);
+      });
+      ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropZone.classList.remove('dragover');
+        }, false);
+      });
+      dropZone.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const file = dt.files && dt.files[0];
+        if (file) processImageFile(file);
+      }, false);
+    }
+
+    function processImageFile(file) {
+      if (!file.type.startsWith('image/')) {
+        showTheaToast("Formato no válido", "Por favor sube un archivo de imagen (PNG, JPG, WEBP)", "⚠️");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const fullBase64 = evt.target.result;
+        const pureBase64 = fullBase64.split(',')[1];
+        state.selectedImage = {
+          base64: pureBase64,
+          mimeType: file.type,
+          name: file.name,
+          size: (file.size / 1024 / 1024).toFixed(2) + ' MB'
+        };
+
+        document.getElementById('drop-zone').style.display = 'none';
+        document.getElementById('image-preview-thumb').src = fullBase64;
+        document.getElementById('image-preview-name').textContent = file.name;
+        document.getElementById('image-preview-size').textContent = state.selectedImage.size;
+        document.getElementById('image-preview-container').style.display = 'block';
+
+        showTheaToast("Foto Cargada", "Imagen lista para analizar: " + file.name, "📷");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removeSelectedImage() {
+      state.selectedImage = null;
+      document.getElementById('file-input').value = '';
+      document.getElementById('image-preview-container').style.display = 'none';
+      document.getElementById('drop-zone').style.display = 'block';
+    }
+
+    /* ─── LLAMADAS A GEMINI CON SOPORTE MULTIMODAL ─── */
+    async function askGemini(prompt, systemInstruction = null, imageBase64 = null, mimeType = null) {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${state.apiKey}`;
-      const body = { contents: [{ role: 'user', parts: [{ text: prompt }] }] };
+      const parts = [];
+      if (imageBase64 && mimeType) {
+        parts.push({
+          inline_data: {
+            mime_type: mimeType,
+            data: imageBase64
+          }
+        });
+      }
+      parts.push({ text: prompt });
+      const body = { contents: [{ role: 'user', parts }] };
       if (systemInstruction) body.system_instruction = { parts: [{ text: systemInstruction }] };
+
       const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1005,46 +1582,177 @@
       return data.candidates[0].content.parts[0].text;
     }
 
+    /* ─── INICIAR SESIÓN DE ESTUDIO ─── */
     async function startStudySession() {
-      const topicInput = document.getElementById('study-topic').value.trim();
-      const errEl = document.getElementById('topic-error-msg');
-
-      if (!topicInput) {
-        if (errEl) errEl.style.display = 'block';
-        document.getElementById('study-topic').focus();
-        return;
-      }
-      if (errEl) errEl.style.display = 'none';
-
-      state.topic = topicInput;
       state.level = document.getElementById('study-level').value;
       state.queue = [];
+      state.history = [];
       state.currentIndex = 0;
       state.streak = 0;
       state.maxStreak = 0;
       state.correctCount = 0;
       state.totalAnswered = 0;
-      state.weakConcepts = [];
-      state.masteredConcepts = [];
       state.stageLevel = 1;
       state.stageAnswered = 0;
       state.stageCorrect = 0;
 
-      document.getElementById('view-lobby').style.display = 'none';
-      document.getElementById('view-loading').style.display = 'block';
+      // Si es modo imagen y hay imagen cargada
+      if (state.mode === 'image') {
+        if (!state.selectedImage) {
+          showTheaToast("Falta Imagen", "Por favor selecciona una foto de tus apuntes o guía", "⚠️");
+          return;
+        }
+        await processImageAndCreateGuide();
+      } else {
+        // Modo texto
+        const topicInput = document.getElementById('study-topic').value.trim();
+        const errEl = document.getElementById('topic-error-msg');
+        if (!topicInput) {
+          if (errEl) errEl.style.display = 'block';
+          document.getElementById('study-topic').focus();
+          return;
+        }
+        if (errEl) errEl.style.display = 'none';
+        state.topic = topicInput;
+        state.studyGuide = null;
+        document.getElementById('btn-open-guide').style.display = 'none';
 
-      try {
-        await fetchQuestionBatch(4);
-        document.getElementById('view-loading').style.display = 'none';
-        document.getElementById('view-quiz').style.display = 'block';
-        renderQuestion();
-      } catch (err) {
-        document.getElementById('view-loading').style.display = 'none';
-        document.getElementById('view-lobby').style.display = 'block';
-        alert("No se pudo iniciar la sesión: " + err.message);
+        startQuizQuestions();
       }
     }
 
+    /* ─── ANALIZAR IMAGEN Y GENERAR GUÍA DE ESTUDIO ─── */
+    async function processImageAndCreateGuide() {
+      const loadingEl = document.getElementById('view-loading');
+      const lobbyEl = document.getElementById('view-lobby');
+      const titleEl = document.getElementById('loading-title');
+      const subEl = document.getElementById('loading-subtitle');
+
+      lobbyEl.style.display = 'none';
+      loadingEl.style.display = 'block';
+      titleEl.textContent = 'Analizando tu imagen con Visión de IA...';
+      subEl.textContent = 'Leyendo apuntes, extrayendo temario y redactando tu Guía de Estudio pedagógica.';
+
+      const extraInst = document.getElementById('study-instructions').value.trim();
+
+      const prompt = `Analiza detalladamente esta imagen de apuntes escolares, libro de texto o temario.
+Nivel académico del estudiante: "${state.level}".
+${extraInst ? 'Instrucción específica del alumno: ' + extraInst : ''}
+
+Tu objetivo es estructurar una GUÍA DE ESTUDIO limpia, pedagógica y completa para que el estudiante aprenda y repase antes del quiz.
+Extrae los conceptos nucleares, definiciones cotidianas y puntos clave de examen.
+
+Responde ÚNICAMENTE en JSON plano válido con esta estructura:
+{
+  "tema": "Título exacto del tema escolar identificado",
+  "resumen": "Resumen ejecutivo claro de 2-3 párrafos explicando de qué trata la materia y lo más importante a comprender.",
+  "conceptosClave": [
+    {
+      "termino": "Nombre del Concepto 1",
+      "definicion": "Definición directa, clara y amigable para un estudiante.",
+      "importancia": "Por qué es relevante para el tema"
+    }
+  ],
+  "datosRelevantes": [
+    "Dato relevante, regla mnemotécnica o curiosidad 1",
+    "Dato relevante 2"
+  ],
+  "puntosExamen": [
+    "Pregunta clave o punto típico de evaluación 1",
+    "Pregunta clave o punto típico de evaluación 2"
+  ]
+}`;
+
+      try {
+        const raw = await askGemini(prompt, "Eres un profesor cercano y pedagógico. Extrae información fielmente en JSON.", state.selectedImage.base64, state.selectedImage.mimeType);
+        const clean = raw.replace(/```json/gi, "").replace(/```/gi, "").trim();
+        const guide = JSON.parse(clean);
+
+        state.topic = guide.tema || "Tema de Apuntes";
+        state.studyGuide = guide;
+
+        // Renderizar en el Drawer de Guía
+        renderStudyGuideDrawer(guide);
+        document.getElementById('btn-open-guide').style.display = 'flex';
+
+        showTheaToast("¡Guía Generada con Éxito!", `Tema detectado: "${state.topic}"`, "📖");
+
+        // Continuar a buscar preguntas
+        titleEl.textContent = 'Generando preguntas continuas estilo Thea...';
+        subEl.textContent = 'Preguntas basadas exactamente en los apuntes de tu imagen.';
+        await fetchQuestionBatch(4);
+
+        loadingEl.style.display = 'none';
+        document.getElementById('view-quiz').style.display = 'block';
+        renderQuestion();
+
+        // Abrir la guía al inicio para que el alumno la vea
+        openGuideDrawer();
+      } catch (err) {
+        console.error("Error al procesar imagen:", err);
+        loadingEl.style.display = 'none';
+        lobbyEl.style.display = 'block';
+        showTheaToast("Error en Análisis", "No se pudo extraer la guía de la imagen: " + err.message, "❌");
+      }
+    }
+
+    function renderStudyGuideDrawer(guide) {
+      document.getElementById('guide-doc-title').textContent = guide.tema;
+      document.getElementById('guide-doc-summary').textContent = guide.resumen;
+
+      const conceptsContainer = document.getElementById('guide-doc-concepts');
+      conceptsContainer.innerHTML = '';
+      if (Array.isArray(guide.conceptosClave)) {
+        guide.conceptosClave.forEach(c => {
+          const card = document.createElement('div');
+          card.className = 'concept-item';
+          card.innerHTML = `
+            <div class="concept-term">${c.termino}</div>
+            <div class="concept-def">${c.definicion}</div>
+            ${c.importancia ? `<div style="font-size:0.78rem; color:#94A3B8; margin-top:4px;">💡 ${c.importancia}</div>` : ''}
+          `;
+          conceptsContainer.appendChild(card);
+        });
+      }
+
+      const factsList = document.getElementById('guide-doc-facts');
+      factsList.innerHTML = '';
+      const allFacts = [...(guide.datosRelevantes || []), ...(guide.puntosExamen || [])];
+      allFacts.forEach(f => {
+        const li = document.createElement('li');
+        li.textContent = f;
+        li.style.marginBottom = '6px';
+        factsList.appendChild(li);
+      });
+    }
+
+    function openGuideDrawer() {
+      document.getElementById('guide-drawer-overlay').style.display = 'flex';
+    }
+
+    function closeGuideDrawer() {
+      document.getElementById('guide-drawer-overlay').style.display = 'none';
+    }
+
+    async function startQuizQuestions() {
+      const loadingEl = document.getElementById('view-loading');
+      const lobbyEl = document.getElementById('view-lobby');
+      lobbyEl.style.display = 'none';
+      loadingEl.style.display = 'block';
+
+      try {
+        await fetchQuestionBatch(4);
+        loadingEl.style.display = 'none';
+        document.getElementById('view-quiz').style.display = 'block';
+        renderQuestion();
+      } catch (err) {
+        loadingEl.style.display = 'none';
+        lobbyEl.style.display = 'block';
+        showTheaToast("Error", "No se pudo iniciar la sesión: " + err.message, "❌");
+      }
+    }
+
+    /* ─── OBTENER PREGUNTAS CONTINUAS (ESTILO THEA) ─── */
     async function fetchQuestionBatch(count = 4) {
       if (state.isFetchingBatch) return;
       state.isFetchingBatch = true;
@@ -1055,10 +1763,26 @@
         3: "Dominio Completo y Razonamiento Clave"
       };
 
-      const prompt = `Eres el tutor pedagógico de Synapse Smart Study (estilo Thea).
+      let guideContext = "";
+      if (state.studyGuide) {
+        guideContext = `
+IMPORTANTE: BÁSATE ESTRICTAMENTE EN ESTA GUÍA DE ESTUDIO EXTRAÍDA DE LOS APUNTES DEL ESTUDIANTE:
+` +
+          `Tema: ${state.studyGuide.tema}
+` +
+          `Resumen: ${state.studyGuide.resumen}
+` +
+          `Conceptos: ${JSON.stringify(state.studyGuide.conceptosClave)}
+` +
+          `Puntos de Examen: ${JSON.stringify(state.studyGuide.puntosExamen)}
+`;
+      }
+
+      const prompt = `Eres el tutor pedagógico de Synapse Smart Study (idéntico a Thea).
 Tu misión es generar ${count} preguntas de estudio y active recall sobre el tema: "${state.topic}".
 Nivel del estudiante: "${state.level}".
-Enfoque de esta etapa: ${stageLabels[state.stageLevel] || 'Conceptos Clave'}.
+Etapa actual: Nivel ${state.stageLevel} de 3 (${stageLabels[state.stageLevel] || 'Conceptos Clave'}).
+${guideContext}
 
 REGLAS DE ORO DE SIMPLICIDAD Y ENFOQUE FUNDAMENTAL:
 1. Enseña y evalúa LO BÁSICO, LO FUNDAMENTAL Y LO MÁS IMPORTANTE del tema. Aquello que un profesor escolar de bachillerato o colegio realmente evalúa.
@@ -1066,18 +1790,21 @@ REGLAS DE ORO DE SIMPLICIDAD Y ENFOQUE FUNDAMENTAL:
    - Si el tema es "Rotación y traslación": pregunta sobre el día y la noche (24h), las estaciones del año (365 días), la inclinación del eje, etc. NADA de proyectiles balísticos ni efecto Coriolis en misiles.
    - Si el tema es "Python básico": pregunta sobre print(), variables, tipos de datos simples (int, str, bool), condicionales if/else. NADA de slicing [2:8:2] ni trucos oscuros.
 3. Preguntas directas, cotidianas y comprensibles para un estudiante de 14 a 16 años.
-4. 4 opciones de respuesta cortas y claras (A, B, C, D) con 1 respuesta correcta indiscutible.
-5. Explicación breve y amigable (máximo 2 oraciones sencillas) y un tip nemotécnico útil.
+4. 4 opciones de respuesta cortas y claras (1, 2, 3, 4) con 1 respuesta correcta indiscutible.
+5. Explicación estructurada en 2 o 3 viñetas breves (bullets) explicando el razonamiento de forma clara y un tip para el examen.
 
 Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
 [
   {
     "pregunta": "¿Pregunta clara, directa y fundamental?",
     "categoria": "Concepto Básico",
-    "opciones": ["Opción A", "Opción B", "Opción C", "Opción D"],
+    "opciones": ["Opción 1", "Opción 2", "Opción 3", "Opción 4"],
     "correcta": 0,
-    "explicacion": "Explicación sencilla y amigable del porqué.",
-    "tip": "Tip corto y fácil de recordar para el examen."
+    "bullets": [
+      "La razón principal de este fenómeno es...",
+      "Durante este proceso ocurre que...",
+      "Clave para el examen: Recuerda que..."
+    ]
   }
 ]`;
 
@@ -1095,17 +1822,38 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       }
     }
 
-    function updateSessionProgressBar() {
-      const titles = {
-        1: "Nivel 1 de 3 • Fundamentos Clave",
-        2: "Nivel 2 de 3 • Profundización y Aplicación",
-        3: "Nivel 3 de 3 • Dominio Total de la Materia"
-      };
-      document.getElementById('session-level-title').textContent = titles[state.stageLevel] || 'Estudio Activo';
+    /* ─── ACTUALIZAR BARRA THEA CON DIAMANTES (THEA VIDEO) ─── */
+    function updateTheaProgress() {
       const pct = Math.min(100, Math.round((state.stageAnswered / state.questionsPerStage) * 100));
-      document.getElementById('session-progress-fill').style.width = `${pct}%`;
+      
+      const fillEl = document.getElementById('thea-progress-fill');
+      const labelEl = document.getElementById('thea-progress-label');
+      if (fillEl) fillEl.style.width = `${pct}%`;
+      if (labelEl) labelEl.textContent = `Nivel ${state.stageLevel}: ${pct}%`;
+
+      // Actualizar diamantes de hitos
+      const d1 = document.getElementById('diamond-star-1');
+      const d2 = document.getElementById('diamond-star-2');
+      const d3 = document.getElementById('diamond-star-3');
+
+      [d1, d2, d3].forEach(d => {
+        if (d) d.className = 'diamond-milestone';
+      });
+
+      if (state.stageLevel > 1 || (state.stageLevel === 1 && pct === 100)) {
+        if (d1) d1.classList.add('active-cyan');
+      }
+      if (state.stageLevel > 2 || (state.stageLevel === 2 && pct === 100)) {
+        if (d2) d2.classList.add('active-cyan');
+      }
+      if (state.stageLevel === 3 && pct === 100) {
+        if (d3) d3.classList.add('active-gold');
+      } else if (state.stageLevel === 3 && pct > 0) {
+        if (d3) d3.classList.add('active-cyan');
+      }
     }
 
+    /* ─── RENDERIZAR PREGUNTA (CUADRÍCULA 2X2 ESTILO THEA) ─── */
     function renderQuestion() {
       const q = state.queue[state.currentIndex];
       if (!q) {
@@ -1115,39 +1863,37 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
 
       state.answeredCurrent = false;
 
-      updateSessionProgressBar();
-      document.getElementById('metric-streak').textContent = `${state.streak} seguidas`;
+      updateTheaProgress();
       document.getElementById('q-category-tag').textContent = q.categoria || `Nivel ${state.stageLevel}`;
       document.getElementById('q-topic-label').textContent = state.topic;
       document.getElementById('q-text').textContent = q.pregunta;
 
       document.getElementById('q-skeleton-box').style.display = 'none';
       document.getElementById('q-explanation-box').style.display = 'none';
-      document.getElementById('action-next-bar').style.display = 'none';
+      document.getElementById('action-next-wrap').style.display = 'none';
 
       const container = document.getElementById('q-options-container');
       container.innerHTML = '';
 
       q.opciones.forEach((optText, idx) => {
-        const letter = String.fromCharCode(65 + idx);
         const btn = document.createElement('button');
-        btn.className = 'option-btn';
+        btn.className = 'thea-option-btn';
         btn.id = `opt-${idx}`;
         btn.onclick = () => handleAnswer(idx);
         btn.innerHTML = `
-          <span class="option-letter">${letter}</span>
-          <span class="option-content">${optText}</span>
+          <span class="thea-option-num" id="opt-num-${idx}">${idx + 1}</span>
+          <span class="thea-option-content">${optText}</span>
         `;
         container.appendChild(btn);
       });
 
-      // Prefetching inteligente
+      // Prefetching inteligente de preguntas
       if (state.queue.length - state.currentIndex <= 2) {
         fetchQuestionBatch(4);
       }
     }
 
-    // ─── EVALUAR RESPUESTA: COLOR INSTANTÁNEO + 1 SEGUNDO DE EXPLICACIÓN ───
+    /* ─── EVALUAR RESPUESTA: COLOR INSTANTÁNEO + 1 SEGUNDO DE SKELETON ─── */
     function handleAnswer(selectedIdx) {
       if (state.answeredCurrent) return;
       state.answeredCurrent = true;
@@ -1157,13 +1903,22 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       const q = state.queue[state.currentIndex];
       const isCorrect = (selectedIdx === q.correcta);
 
+      // Guardar en historial
+      state.history.push({
+        pregunta: q.pregunta,
+        elegida: q.opciones[selectedIdx],
+        correcta: q.opciones[q.correcta],
+        isCorrect: isCorrect
+      });
+
       // Bloquear opciones de inmediato
-      const allBtns = document.querySelectorAll(".option-btn");
+      const allBtns = document.querySelectorAll(".thea-option-btn");
       allBtns.forEach(b => b.disabled = true);
 
       const selectedBtn = document.getElementById(`opt-${selectedIdx}`);
+      const selectedNum = document.getElementById(`opt-num-${selectedIdx}`);
       const correctBtn = document.getElementById(`opt-${q.correcta}`);
-      const streakBox = document.getElementById("session-streak-box");
+      const correctNum = document.getElementById(`opt-num-${q.correcta}`);
 
       // COLOR INSTANTÁNEO
       if (isCorrect) {
@@ -1171,22 +1926,33 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
         state.stageCorrect++;
         state.streak++;
         if (state.streak > state.maxStreak) state.maxStreak = state.streak;
+
         if (selectedBtn) selectedBtn.classList.add("state-correct");
-        
-        // Sumar XP a la cuenta
+        if (selectedNum) selectedNum.innerHTML = "✓";
+
+        // Sumar XP
         addXP(25);
 
-        streakBox.classList.remove("pulse");
-        void streakBox.offsetWidth;
-        streakBox.classList.add("pulse");
+        // Notificaciones Thea de Racha (reemplazando cualquier alert)
+        if (state.streak === 3) {
+          showTheaToast("¡Buena Racha!", "3 preguntas consecutivas correctas 🔥", "🔥");
+        } else if (state.streak === 5) {
+          showTheaToast("¡Desafío completado!", "Obtén preguntas consecutivas correctas en Estudio Inteligente (5/5) ✓", "✨");
+        } else if (state.streak === 7) {
+          showTheaToast("¡Racha Imparable!", "7 preguntas consecutivas correctas sin fallar (7/7) ⚡", "⚡");
+        } else if (state.streak === 10) {
+          showTheaToast("¡Maestría Absoluta!", "10 respuestas correctas seguidas 👑", "👑");
+        }
       } else {
         state.streak = 0;
         if (selectedBtn) selectedBtn.classList.add("state-incorrect");
+        if (selectedNum) selectedNum.innerHTML = "✕";
+
         if (correctBtn) correctBtn.classList.add("state-correct");
+        if (correctNum) correctNum.innerHTML = "✓";
       }
 
-      document.getElementById("metric-streak").textContent = `${state.streak} seguidas`;
-      updateSessionProgressBar();
+      updateTheaProgress();
 
       // MOSTRAR SKELETON SHIMMER BONE
       const skeletonBox = document.getElementById("q-skeleton-box");
@@ -1197,34 +1963,22 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
         if (skeletonBox) skeletonBox.style.display = "none";
 
         const expBox = document.getElementById("q-explanation-box");
-        const expTitle = document.getElementById("exp-title-box");
-        const expIcon = document.getElementById("exp-icon");
-        const expText = document.getElementById("exp-text");
-        const expBody = document.getElementById("exp-body-text");
-        const expTipBox = document.getElementById("exp-tip-box");
-        const expTipText = document.getElementById("exp-tip-text");
+        const bulletsList = document.getElementById("thea-exp-bullets-list");
+        bulletsList.innerHTML = '';
 
-        if (isCorrect) {
-          expTitle.className = "exp-title correct";
-          expIcon.textContent = "✓";
-          expText.textContent = "¡Correcto! Excelente razonamiento.";
-        } else {
-          expTitle.className = "exp-title incorrect";
-          expIcon.textContent = "✕";
-          expText.textContent = "Incorrecto. Mira el concepto clave:";
-        }
+        const bullets = q.bullets || [
+          isCorrect ? "¡Excelente razonamiento! Concepto retenido con precisión." : "Revisa el concepto fundamental de esta pregunta.",
+          q.explicacion || "Este principio es clave para resolver problemas similares en la evaluación."
+        ];
 
-        expBody.textContent = q.explicacion;
-
-        if (q.tip) {
-          expTipBox.style.display = "block";
-          expTipText.textContent = q.tip;
-        } else {
-          expTipBox.style.display = "none";
-        }
+        bullets.forEach(b => {
+          const li = document.createElement('li');
+          li.textContent = b;
+          bulletsList.appendChild(li);
+        });
 
         expBox.style.display = "block";
-        document.getElementById("action-next-bar").style.display = "flex";
+        document.getElementById("action-next-wrap").style.display = "block";
         document.getElementById("btn-next-question").focus();
       }, 1000);
     }
@@ -1244,7 +1998,7 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       }
     }
 
-    // Modal de diagnóstico intermedio de nivel
+    /* ─── MODAL DE DIAGNÓSTICO INTERMEDIO (HITO TEMPORAL) ─── */
     function showMilestoneModal() {
       const modal = document.getElementById('milestone-modal');
       const title = document.getElementById('m-modal-title');
@@ -1263,6 +2017,8 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       // Bono por completar nivel
       addXP(50);
       xpBonus.textContent = `+${(state.stageCorrect * 25) + 50} XP`;
+
+      showTheaToast("¡Hito de Nivel Completado!", `Nivel ${state.stageLevel} superado con ${accPct}% de precisión • +50 XP 🎯`, "🎯");
 
       if (state.stageLevel === 1) {
         badgeIcon.textContent = "🎯";
@@ -1303,17 +2059,61 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       }
     }
 
+    /* ─── FINALIZAR SESIÓN (RESUMEN THEA SIN ALERTS NATIVOS) ─── */
     function finishSession() {
-      alert(`¡Gran sesión de estudio! Respondiste ${state.totalAnswered} preguntas (${state.correctCount} correctas). Mejor racha: ${state.maxStreak}.`);
+      const modal = document.getElementById('summary-modal');
+      const accPct = state.totalAnswered > 0 ? Math.round((state.correctCount / state.totalAnswered) * 100) : 0;
+      
+      document.getElementById('sum-stat-total').textContent = state.totalAnswered;
+      document.getElementById('sum-stat-accuracy').textContent = `${accPct}%`;
+      document.getElementById('sum-stat-streak').textContent = `${state.maxStreak} seguidas`;
+      document.getElementById('summary-modal-desc').textContent = 
+        `Completaste tu sesión sobre "${state.topic}". Respondiste ${state.totalAnswered} preguntas con ${state.correctCount} aciertos.`;
+
+      modal.style.display = 'flex';
+    }
+
+    function closeSummaryModalAndReturn() {
+      document.getElementById('summary-modal').style.display = 'none';
       document.getElementById('view-quiz').style.display = 'none';
       document.getElementById('view-lobby').style.display = 'block';
       document.getElementById('study-topic').value = '';
+      removeSelectedImage();
+    }
+
+    /* ─── MODAL DE HISTORIAL DE PREGUNTAS ─── */
+    function openHistoryModal() {
+      const container = document.getElementById('history-list-container');
+      container.innerHTML = '';
+
+      if (state.history.length === 0) {
+        container.innerHTML = '<p style="color:var(--text-dim); text-align:center; padding:1.5rem;">Aún no has respondido preguntas en esta sesión.</p>';
+      } else {
+        state.history.forEach((h, i) => {
+          const item = document.createElement('div');
+          item.style.cssText = 'background:#181335; border:1px solid var(--border-purple); border-radius:10px; padding:10px 14px;';
+          item.innerHTML = `
+            <div style="font-weight:700; color:#fff; font-size:0.9rem; margin-bottom:4px;">${i+1}. ${h.pregunta}</div>
+            <div style="font-size:0.82rem; color:${h.isCorrect ? '#4ADE80' : '#F87171'};">
+              ${h.isCorrect ? '✓ Correcta: ' : '✕ Tu respuesta: '} ${h.elegida}
+              ${!h.isCorrect ? ` • <span style="color:#4ADE80;">(Correcta: ${h.correcta})</span>` : ''}
+            </div>
+          `;
+          container.appendChild(item);
+        });
+      }
+
+      document.getElementById('history-modal').style.display = 'flex';
+    }
+
+    function closeHistoryModal() {
+      document.getElementById('history-modal').style.display = 'none';
     }
 
     window.addEventListener('keydown', (e) => {
       if ((e.key === 'Enter' || e.key === ' ') && state.answeredCurrent) {
-        const nextBar = document.getElementById('action-next-bar');
-        if (nextBar && nextBar.style.display === 'flex') {
+        const nextWrap = document.getElementById('action-next-wrap');
+        if (nextWrap && nextWrap.style.display === 'block') {
           e.preventDefault();
           nextQuestion();
         }
