@@ -7,7 +7,7 @@
   <meta name="description" content="Apoya la Opción 7 en las elecciones presidenciales de tu colegio y obtén 3 días de acceso ilimitado a Synapse+ para estudiar con inteligencia artificial." />
 
   <!-- Favicon sin emojis -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23B8A2F8'><polygon points='13 2 3 14 12 14 11 22 21 10 12 10 13 2'/></svg>">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232B1B17'><polygon points='13 2 3 14 12 14 11 22 21 10 12 10 13 2'/></svg>">
 
   <!-- Firebase Scripts -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -22,56 +22,41 @@
     }
 
     :root {
-      --bg-dark: #0A0718;
-      --bg-card: #130F2A;
-      --bg-card-hover: #1A1438;
-      --bg-input: #1B1538;
-      --border-purple: rgba(167, 139, 250, 0.22);
-      --border-purple-hover: rgba(167, 139, 250, 0.55);
-      --accent-lilac: #B8A2F8;
-      --accent-purple: #7C3AED;
-      --accent-purple-glow: rgba(124, 58, 237, 0.4);
-      --gold-crown: #FACC15;
-      --text-white: #FFFFFF;
-      --text-dim: #94A3B8;
-      --text-dimmer: #64748B;
-      --color-success: #4ADE80;
+      --bg-page: #E5D8C8;
+      --bg-card: #FAF8F5;
+      --bg-white: #FFFFFF;
+      --bg-subtle: #EAE2D5;
+      --color-primary: #2B1B17;
+      --color-secondary: #4A322B;
+      --color-accent: #8C6A53;
+      --border-color: rgba(43, 27, 23, 0.14);
+      --border-strong: #2B1B17;
+      --color-success: #15803D;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
     body {
-      background-color: var(--bg-dark);
-      color: var(--text-white);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--color-primary);
+      font-family: var(--font-family);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      line-height: 1.5;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
       position: relative;
-      overflow-x: hidden;
     }
 
-    /* Resplandor ambiental de fondo */
-    .glow-aura {
-      position: absolute;
-      top: -150px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 700px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(139, 92, 246, 0.22) 0%, rgba(184, 162, 248, 0.08) 45%, rgba(10, 7, 24, 0) 70%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* ─── TOP BAR ─── */
+    /* ─── NAVBAR EDITORIAL CÁLIDA ─── */
     .top-bar {
       width: 100%;
       max-width: 1000px;
-      padding: 1.5rem 1.5rem;
+      padding: 1.2rem 1.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
       position: relative;
       z-index: 10;
     }
@@ -81,47 +66,53 @@
       align-items: center;
       gap: 10px;
       text-decoration: none;
-      color: var(--text-white);
+      color: var(--color-primary);
       font-weight: 800;
-      font-size: 1.15rem;
-      letter-spacing: -0.3px;
+      font-size: 1.25rem;
+      letter-spacing: -0.4px;
     }
     .brand-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 9px;
-      background: linear-gradient(135deg, #B8A2F8, #7C3AED);
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: var(--color-primary);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #0A0718;
-      box-shadow: 0 4px 12px rgba(184, 162, 248, 0.35);
+      color: var(--bg-card);
     }
 
-    .btn-nav-quiz {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid var(--border-purple);
-      color: var(--text-white);
-      padding: 6px 14px;
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-nav-action {
+      background: var(--bg-card);
+      border: 1px solid var(--border-strong);
+      color: var(--color-primary);
+      padding: 7px 16px;
       border-radius: 20px;
       font-size: 0.85rem;
-      font-weight: 600;
+      font-weight: 700;
       text-decoration: none;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 6px;
       transition: all 0.2s;
     }
-    .btn-nav-quiz:hover {
-      background: rgba(255, 255, 255, 0.12);
-      border-color: var(--accent-lilac);
+    .btn-nav-action:hover {
+      background: var(--color-primary);
+      color: var(--bg-card);
     }
 
     /* ─── CONTENEDOR HERO ─── */
     .vota7-wrap {
       width: 100%;
       max-width: 820px;
-      padding: 1rem 1.5rem 4rem;
+      padding: 2.5rem 1.5rem 4rem;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -130,38 +121,35 @@
       z-index: 5;
     }
 
-    .campaign-pill {
-      background: rgba(184, 162, 248, 0.12);
-      border: 1px solid rgba(184, 162, 248, 0.35);
-      padding: 6px 16px;
+    .campaign-badge {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-strong);
+      padding: 6px 18px;
       border-radius: 24px;
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      font-size: 0.86rem;
-      font-weight: 700;
-      color: var(--accent-lilac);
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--color-accent);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
       margin-bottom: 1.5rem;
-      box-shadow: 0 0 20px rgba(184, 162, 248, 0.15);
-      animation: pulsePill 3s infinite ease-in-out;
-    }
-    @keyframes pulsePill {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.02); }
     }
 
     .hero-number-badge {
-      width: 54px;
-      height: 54px;
+      width: 68px;
+      height: 68px;
       border-radius: 16px;
-      background: linear-gradient(135deg, #FACC15, #D97706);
-      color: #0A0718;
-      font-size: 2rem;
+      background: var(--bg-card);
+      border: 2.5px solid var(--border-strong);
+      color: var(--color-primary);
+      font-size: 2.5rem;
       font-weight: 900;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 8px 24px rgba(250, 204, 21, 0.4);
+      box-shadow: 0 4px 16px rgba(43, 27, 23, 0.08);
       margin-bottom: 1.2rem;
     }
 
@@ -170,58 +158,56 @@
       font-weight: 900;
       line-height: 1.15;
       letter-spacing: -0.8px;
-      margin-bottom: 1rem;
-      color: var(--text-white);
+      margin-bottom: 0.8rem;
+      color: var(--color-primary);
     }
     .hero-title .highlight {
-      background: linear-gradient(135deg, #B8A2F8 0%, #E9D5FF 60%, #8B5CF6 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: var(--color-accent);
     }
 
     .hero-desc {
       font-size: 1.05rem;
-      color: var(--text-dim);
-      max-width: 620px;
+      color: var(--color-secondary);
+      max-width: 640px;
       line-height: 1.6;
       margin-bottom: 2rem;
     }
 
-    /* ─── BENEFICIOS (PILLS) ─── */
+    /* ─── BENEFICIOS ─── */
     .benefits-grid {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 10px;
       margin-bottom: 2.2rem;
-      max-width: 680px;
+      max-width: 700px;
     }
     .benefit-item {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border-purple);
-      border-radius: 12px;
-      padding: 8px 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 8px 16px;
       font-size: 0.85rem;
-      font-weight: 600;
-      color: #E2E8F0;
+      font-weight: 700;
+      color: var(--color-primary);
       display: inline-flex;
       align-items: center;
       gap: 6px;
     }
     .benefit-item svg {
-      color: var(--accent-lilac);
+      color: var(--color-accent);
       flex-shrink: 0;
     }
 
     /* ─── TARJETA DEL FORMULARIO ─── */
     .vota7-card {
       background: var(--bg-card);
-      border: 1px solid var(--border-purple);
+      border: 2px solid var(--border-strong);
       border-radius: 20px;
       padding: 2.4rem 2.2rem;
       width: 100%;
       max-width: 480px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(184, 162, 248, 0.08);
+      box-shadow: 0 12px 35px rgba(43, 27, 23, 0.08);
       position: relative;
       text-align: left;
     }
@@ -231,12 +217,12 @@
     }
     .form-label {
       display: block;
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--text-dim);
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--color-accent);
       margin-bottom: 6px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.6px;
     }
     .form-input-wrap {
       position: relative;
@@ -246,28 +232,30 @@
     .form-input-icon {
       position: absolute;
       left: 14px;
-      color: var(--text-dimmer);
+      color: var(--color-accent);
       pointer-events: none;
       display: flex;
       align-items: center;
     }
     .form-input {
       width: 100%;
-      background: var(--bg-input);
-      border: 1.5px solid var(--border-purple);
+      background: var(--bg-white);
+      border: 1.5px solid var(--border-color);
       border-radius: 12px;
       padding: 12px 14px 12px 42px;
-      color: var(--text-white);
+      color: var(--color-primary);
       font-size: 0.95rem;
+      font-weight: 600;
       outline: none;
       transition: all 0.2s;
     }
     .form-input:focus {
-      border-color: var(--accent-lilac);
-      box-shadow: 0 0 16px rgba(184, 162, 248, 0.25);
+      border-color: var(--border-strong);
+      box-shadow: 0 0 10px rgba(43, 27, 23, 0.12);
     }
     .form-input::placeholder {
-      color: var(--text-dimmer);
+      color: #9CA3AF;
+      font-weight: 400;
     }
 
     .pledge-row {
@@ -275,29 +263,29 @@
       align-items: flex-start;
       gap: 10px;
       margin-bottom: 1.6rem;
-      background: rgba(184, 162, 248, 0.06);
-      border: 1px solid rgba(184, 162, 248, 0.18);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
       border-radius: 10px;
       padding: 10px 12px;
     }
     .pledge-checkbox {
       margin-top: 3px;
-      accent-color: var(--accent-purple);
+      accent-color: var(--border-strong);
       width: 16px;
       height: 16px;
       cursor: pointer;
     }
     .pledge-text {
       font-size: 0.82rem;
-      color: #CBD5E1;
+      color: var(--color-secondary);
       line-height: 1.4;
       cursor: pointer;
     }
 
     .btn-submit-vota7 {
       width: 100%;
-      background: linear-gradient(135deg, #B8A2F8 0%, #8B5CF6 100%);
-      color: #0A0718;
+      background: var(--border-strong);
+      color: var(--bg-card);
       border: none;
       padding: 14px 20px;
       border-radius: 12px;
@@ -309,11 +297,12 @@
       justify-content: center;
       gap: 10px;
       transition: all 0.2s;
-      box-shadow: 0 6px 20px rgba(184, 162, 248, 0.35);
+      box-shadow: 0 4px 14px rgba(43, 27, 23, 0.25);
     }
     .btn-submit-vota7:hover {
+      background: #3F2923;
       transform: translateY(-2px);
-      box-shadow: 0 8px 26px rgba(184, 162, 248, 0.5);
+      box-shadow: 0 6px 20px rgba(43, 27, 23, 0.35);
     }
     .btn-submit-vota7:active {
       transform: translateY(0);
@@ -324,76 +313,74 @@
       transform: none;
     }
 
-    /* ─── PANTALLA DE ÉXITO (CELEBRACIÓN) ─── */
+    /* ─── PANTALLA DE ÉXITO ─── */
     #vota7-success-view {
       display: none;
       flex-direction: column;
       align-items: center;
       text-align: center;
-      animation: fadeInScale 0.35s ease-out;
+      animation: fadeInScale 0.3s ease-out;
     }
     @keyframes fadeInScale {
-      from { opacity: 0; transform: scale(0.95); }
+      from { opacity: 0; transform: scale(0.96); }
       to { opacity: 1; transform: scale(1); }
     }
 
     .success-badge-icon {
-      width: 72px;
-      height: 72px;
+      width: 68px;
+      height: 68px;
       border-radius: 50%;
-      background: rgba(74, 222, 128, 0.15);
+      background: rgba(21, 128, 61, 0.12);
       border: 2px solid var(--color-success);
       color: var(--color-success);
       display: flex;
       align-items: center;
       justify-content: center;
       margin-bottom: 1.2rem;
-      box-shadow: 0 0 30px rgba(74, 222, 128, 0.3);
     }
 
     .success-title {
       font-size: 1.5rem;
       font-weight: 900;
-      color: #fff;
+      color: var(--color-primary);
       margin-bottom: 0.5rem;
     }
 
     .success-desc {
       font-size: 0.92rem;
-      color: var(--text-dim);
+      color: var(--color-secondary);
       line-height: 1.5;
       margin-bottom: 1.5rem;
     }
 
     .vota7-reminder-card {
       width: 100%;
-      background: linear-gradient(135deg, rgba(250, 204, 21, 0.1), rgba(245, 158, 11, 0.05));
-      border: 1px solid rgba(250, 204, 21, 0.3);
+      background: var(--bg-subtle);
+      border: 1.5px solid var(--border-strong);
       border-radius: 12px;
       padding: 14px 16px;
       margin-bottom: 1.6rem;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
       text-align: left;
     }
     .reminder-number {
-      font-size: 2rem;
+      font-size: 2.2rem;
       font-weight: 900;
-      color: var(--gold-crown);
+      color: var(--color-primary);
       line-height: 1;
-      padding-right: 4px;
     }
     .reminder-text {
       font-size: 0.85rem;
-      color: #FDE68A;
+      color: var(--color-secondary);
       line-height: 1.35;
     }
 
     .btn-go-quiz {
       width: 100%;
-      background: linear-gradient(135deg, #B8A2F8 0%, #8B5CF6 100%);
-      color: #0A0718;
+      background: var(--border-strong);
+      color: var(--bg-card);
       border: none;
       padding: 13px 20px;
       border-radius: 12px;
@@ -406,22 +393,21 @@
       gap: 8px;
       transition: all 0.2s;
       margin-bottom: 8px;
-      box-shadow: 0 6px 20px rgba(184, 162, 248, 0.35);
     }
     .btn-go-quiz:hover {
+      background: #3F2923;
       transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(184, 162, 248, 0.5);
     }
 
     .btn-go-profile {
       width: 100%;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid var(--border-purple);
-      color: var(--text-white);
+      background: var(--bg-white);
+      border: 1px solid var(--border-color);
+      color: var(--color-primary);
       padding: 10px 18px;
       border-radius: 12px;
       font-size: 0.88rem;
-      font-weight: 600;
+      font-weight: 700;
       text-decoration: none;
       display: flex;
       align-items: center;
@@ -430,7 +416,31 @@
       transition: all 0.2s;
     }
     .btn-go-profile:hover {
-      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--border-strong);
+    }
+
+    /* ─── MODAL QR Y AFICHE BEIGE ─── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(43, 27, 23, 0.7);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .modal-card {
+      background: var(--bg-card);
+      border: 2px solid var(--border-strong);
+      border-radius: 20px;
+      max-width: 460px;
+      width: 100%;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(43, 27, 23, 0.25);
+      position: relative;
     }
 
     /* ─── TOASTS ─── */
@@ -446,11 +456,11 @@
     }
     .syn-toast {
       pointer-events: auto;
-      background: #181335;
-      border: 1px solid var(--border-purple);
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-strong);
       border-radius: 12px;
       padding: 12px 18px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 10px 30px rgba(43, 27, 23, 0.15);
       display: flex;
       align-items: center;
       gap: 12px;
@@ -464,13 +474,13 @@
       to { transform: translateX(0); opacity: 1; }
     }
     .syn-toast-title {
-      font-weight: 700;
+      font-weight: 800;
       font-size: 0.9rem;
-      color: #fff;
+      color: var(--color-primary);
     }
     .syn-toast-desc {
       font-size: 0.82rem;
-      color: var(--text-dim);
+      color: var(--color-secondary);
       margin-top: 2px;
     }
 
@@ -479,14 +489,14 @@
       width: 100%;
       max-width: 1000px;
       padding: 2rem 1.5rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      border-top: 1px solid var(--border-color);
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 1rem;
       font-size: 0.85rem;
-      color: var(--text-dimmer);
+      color: var(--color-secondary);
       margin-top: auto;
     }
 
@@ -499,8 +509,6 @@
 </head>
 <body>
 
-  <div class="glow-aura"></div>
-
   <!-- TOP BAR -->
   <header class="top-bar">
     <a href="../" class="brand-logo">
@@ -512,13 +520,13 @@
       <span>Synapse</span>
     </a>
 
-    <div style="display:flex; align-items:center; gap:10px;">
-      <button onclick="openQrModal()" class="btn-nav-quiz" style="cursor:pointer; background:rgba(184,162,248,0.1); border-color:var(--accent-lilac);">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+    <div class="nav-actions">
+      <button onclick="openQrModal()" class="btn-nav-action" title="Ver código QR para imprimir">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
         <span>Código QR</span>
       </button>
 
-      <a href="../quiz/" class="btn-nav-quiz">
+      <a href="../quiz/" class="btn-nav-action">
         <span>Estudio Inteligente</span>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
       </a>
@@ -529,9 +537,9 @@
   <main class="vota7-wrap">
 
     <!-- Insignia de Campaña -->
-    <div class="campaign-pill">
+    <div class="campaign-badge">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-      <span>Elecciones Presidenciales Estudiantiles • Opción 7</span>
+      <span>Elecciones Presidenciales • Opción 7</span>
     </div>
 
     <!-- Número 7 Distintivo -->
@@ -543,7 +551,7 @@
     </h1>
 
     <p class="hero-desc">
-      Apoya la candidatura de la <strong>Opción 7</strong> para la presidencia estudiantil. Déjanos solo tu nombre y tu Gmail para activar tu prueba premium de 3 días de inmediato, sin tarjetas de crédito ni complicaciones.
+      Apoya la candidatura de la <strong>Opción 7</strong> para la presidencia estudiantil. Solo ingresa tu nombre y tu Gmail para activar tu prueba premium de 3 días de inmediato, sin tarjetas de crédito ni complicaciones.
     </p>
 
     <!-- Beneficios incluidos -->
@@ -614,7 +622,7 @@
 
         <h2 class="success-title">¡Synapse+ Activado!</h2>
         <p class="success-desc">
-          Tu prueba de <strong>3 días de estudio ilimitado</strong> está lista para <span id="confirmed-email" style="color:#fff; font-weight:700;"></span>.
+          Tu prueba de <strong>3 días de estudio ilimitado</strong> está lista para <span id="confirmed-email" style="color:var(--color-primary); font-weight:700;"></span>.
         </p>
 
         <div class="vota7-reminder-card">
@@ -638,49 +646,49 @@
 
   </main>
 
-  <!-- FOOTER -->
-  <footer class="vota7-footer">
-    <div>Derechos de autor © 2023-2026 Synapse Suite Académica • Campaña Oficial Opción 7</div>
-    <div style="display:flex; gap:16px;">
-      <a href="../quiz/" style="color:var(--text-dim); text-decoration:none;">Quizzes</a>
-      <a href="../perfil/" style="color:var(--text-dim); text-decoration:none;">Perfil</a>
-      <a href="mailto:maxrsilvagni@gmail.com" style="color:var(--text-dim); text-decoration:none;">Contacto</a>
-    </div>
-  </footer>
-
-  <!-- MODAL: CÓDIGO QR Y AFICHE DE CAMPAÑA -->
-  <div id="qr-modal" style="display:none; position:fixed; inset:0; background:rgba(10, 7, 24, 0.85); backdrop-filter:blur(8px); z-index:1000; align-items:center; justify-content:center; padding:1.5rem;">
-    <div style="background:#130F2A; border:1px solid var(--border-purple); border-radius:20px; max-width:440px; width:100%; padding:2rem; text-align:center; box-shadow:0 20px 50px rgba(0,0,0,0.6); position:relative;">
+  <!-- MODAL: CÓDIGO QR Y AFICHE BEIGE -->
+  <div class="modal-overlay" id="qr-modal" onclick="closeQrModal()">
+    <div class="modal-card" onclick="event.stopPropagation()">
       
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem;">
-        <h3 style="font-size:1.2rem; font-weight:800; color:#fff;">Código QR • Vota 7</h3>
-        <button onclick="closeQrModal()" style="background:transparent; border:none; color:var(--text-dim); cursor:pointer; display:flex; align-items:center;">
+        <h3 style="font-size:1.2rem; font-weight:800; color:var(--color-primary);">Código QR • Vota 7</h3>
+        <button onclick="closeQrModal()" style="background:transparent; border:none; color:var(--color-secondary); cursor:pointer; display:flex; align-items:center;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
       </div>
 
-      <p style="font-size:0.86rem; color:var(--text-dim); margin-bottom:1.2rem;">
-        Escanea este código con cualquier cámara de teléfono para abrir directamente <strong>redacta-pro.vercel.app/vota7</strong> y activar los 3 días gratis.
+      <p style="font-size:0.86rem; color:var(--color-secondary); margin-bottom:1.2rem;">
+        Código limpio sin obstrucciones de alta velocidad de escaneo para abrir <strong>redacta-pro.vercel.app/vota7</strong>.
       </p>
 
-      <div style="background:#fff; padding:16px; border-radius:16px; display:inline-block; margin-bottom:1.5rem; box-shadow:0 8px 24px rgba(0,0,0,0.3);">
+      <div style="background:#fff; padding:16px; border-radius:16px; border:1.5px solid var(--border-strong); display:inline-block; margin-bottom:1.5rem; box-shadow:0 8px 24px rgba(43,27,23,0.08);">
         <img src="qr-vota7.png" alt="Código QR Vota 7" style="width:220px; height:220px; display:block;" />
       </div>
 
       <div style="display:flex; flex-direction:column; gap:10px;">
         <a href="qr-vota7.png" download="qr-vota7-synapse.png" class="btn-submit-vota7" style="text-decoration:none; padding:11px 18px; font-size:0.92rem;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-          <span>Descargar Código QR (PNG)</span>
+          <span>Descargar Código QR (PNG Limpio)</span>
         </a>
 
         <a href="afiche-vota7.png" download="afiche-vota7-synapse.png" class="btn-go-profile" style="text-decoration:none; padding:11px 18px; font-size:0.92rem;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-          <span>Descargar Afiche Completo para Imprimir</span>
+          <span>Descargar Afiche Beige Minimalista (PNG)</span>
         </a>
       </div>
 
     </div>
   </div>
+
+  <!-- FOOTER -->
+  <footer class="vota7-footer">
+    <div>Derechos de autor © 2023-2026 Synapse Suite Académica • Campaña Oficial Opción 7</div>
+    <div style="display:flex; gap:16px;">
+      <a href="../quiz/" style="color:var(--color-secondary); text-decoration:none;">Quizzes</a>
+      <a href="../perfil/" style="color:var(--color-secondary); text-decoration:none;">Perfil</a>
+      <a href="mailto:maxrsilvagni@gmail.com" style="color:var(--color-secondary); text-decoration:none;">Contacto</a>
+    </div>
+  </footer>
 
   <script>
     function openQrModal() {
@@ -690,7 +698,7 @@
       document.getElementById('qr-modal').style.display = 'none';
     }
 
-    // Si el usuario ya canjeó previamente Vota 7, pre-llenar los campos o mostrar estado
+    // Pre-llenar si ya tiene datos
     window.addEventListener('DOMContentLoaded', () => {
       const savedName = localStorage.getItem('synapse_name');
       const savedEmail = localStorage.getItem('synapse_email');
@@ -753,7 +761,7 @@
           });
         }
       } catch (err) {
-        console.warn("Aviso al guardar en Firestore (continuando localmente):", err);
+        console.warn("Aviso Firestore (continuando localmente):", err);
       }
 
       // 2. Guardar en LocalStorage para activar Synapse+
@@ -764,7 +772,6 @@
       localStorage.setItem('synapse_trial_active', 'true');
       localStorage.setItem('synapse_trial_end', trialEndTime.toString());
 
-      // Bono de bienvenida en XP para motivar el uso
       const currentXP = parseInt(localStorage.getItem('synapse_xp') || '0', 10);
       if (currentXP < 100) {
         localStorage.setItem('synapse_xp', '100');
@@ -797,7 +804,7 @@
           <div class="syn-toast-title">${title}</div>
           <div class="syn-toast-desc">${desc}</div>
         </div>
-        <button style="background:transparent; border:none; color:#94A3B8; cursor:pointer;" onclick="this.parentElement.remove()">
+        <button style="background:transparent; border:none; color:var(--color-secondary); cursor:pointer;" onclick="this.parentElement.remove()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
       `;
