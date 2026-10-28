@@ -109,36 +109,53 @@
       color: var(--text-white);
     }
 
-    /* Avatar con Corona de Nivel (Imagen 1) */
-    .user-avatar-pill {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border-purple);
-      padding: 4px 14px 4px 6px;
-      border-radius: 40px;
+    /* ─── THEA HEADER BUTTONS & AVATAR ─── */
+    .btn-thea-pill {
+      background: #DDE2F4;
+      color: #1A1538;
+      border: 1px solid rgba(167, 139, 250, 0.25);
+      border-radius: 999px;
+      padding: 0.45rem 1rem;
+      font-size: 0.84rem;
+      font-weight: 700;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
       text-decoration: none;
-      transition: all 0.2s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
     }
-    .user-avatar-pill:hover {
-      background: rgba(255, 255, 255, 0.12);
-      border-color: var(--border-purple-hover);
+    .btn-thea-pill:hover {
+      background: #C8D1EC;
       transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
     }
-    .nav-avatar-ring {
-      width: 40px;
-      height: 40px;
+    .btn-thea-pill svg {
+      width: 14px;
+      height: 14px;
+      fill: none;
+      stroke: currentColor;
+    }
+
+    .thea-avatar-circle {
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
-      padding: 2px;
+      padding: 2.5px;
       background: conic-gradient(var(--accent-lilac) 45%, rgba(255, 255, 255, 0.1) 0);
-      position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s;
+      position: relative;
     }
-    .nav-avatar-inner {
+    .thea-avatar-circle:hover {
+      transform: scale(1.06);
+    }
+    .thea-avatar-inner {
       width: 100%;
       height: 100%;
       border-radius: 50%;
@@ -148,43 +165,39 @@
       align-items: center;
       justify-content: center;
     }
-    .nav-avatar-inner svg, .nav-avatar-inner img {
+    .thea-avatar-inner svg, .thea-avatar-inner img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
-    .nav-crown-pill {
+    .thea-crown-badge {
       position: absolute;
-      top: -6px;
+      top: -7px;
       left: 50%;
       transform: translateX(-50%);
       background: var(--gold-crown);
       color: #0F172A;
       font-weight: 800;
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       padding: 1px 6px;
       border-radius: 10px;
       display: flex;
       align-items: center;
       gap: 2px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-      z-index: 2;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+      z-index: 3;
+      white-space: nowrap;
     }
-    .nav-user-meta {
-      display: flex;
-      flex-direction: column;
-      text-align: left;
-    }
-    .nav-user-name {
-      font-size: 0.88rem;
-      font-weight: 700;
-      color: var(--text-white);
-      line-height: 1.2;
-    }
-    .nav-user-xp {
-      font-size: 0.72rem;
-      color: var(--gold-crown);
-      font-weight: 600;
+    .thea-notif-dot {
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      width: 10px;
+      height: 10px;
+      background-color: #EF4444;
+      border-radius: 50%;
+      border: 2px solid var(--bg-dark);
+      z-index: 4;
     }
 
     /* ─── CONTENEDOR DE LA APP ─── */
@@ -648,22 +661,30 @@
       <a href="../flashcards/" class="nav-center-link">Flashcards</a>
     </nav>
 
-    <!-- Avatar con corona de nivel (Imagen 1) -->
-    <a href="../perfil/" class="user-avatar-pill" title="Ver mi perfil">
-      <div class="nav-avatar-ring" id="nav-avatar-ring">
-        <div class="nav-crown-pill">
+    <!-- Header Actions idénticos a Thea (Invitar, Comentarios, Avatar con corona y punto rojo) -->
+    <div style="display:flex; align-items:center; gap:10px;">
+      <button class="btn-thea-pill" onclick="handleInviteClick()" title="Invitar compañeros">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        <span>Invitar</span>
+      </button>
+
+      <button class="btn-thea-pill" onclick="handleFeedbackClick()" title="Comentarios">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        <span>Comentarios</span>
+      </button>
+
+      <!-- Avatar circular estilo Thea (media_1793147831388.png) -->
+      <a href="../perfil/" class="thea-avatar-circle" title="Ver mi perfil">
+        <div class="thea-crown-badge">
           <span>👑</span>
           <span id="nav-crown-num">1</span>
         </div>
-        <div class="nav-avatar-inner" id="nav-avatar-icon">
+        <div class="thea-notif-dot"></div>
+        <div class="thea-avatar-inner" id="nav-avatar-icon">
           <!-- Avatar SVG -->
         </div>
-      </div>
-      <div class="nav-user-meta">
-        <span class="nav-user-name" id="nav-user-name">Max</span>
-        <span class="nav-user-xp" id="nav-user-xp">0 XP</span>
-      </div>
-    </a>
+      </a>
+    </div>
   </header>
 
   <main id="app">
@@ -884,17 +905,34 @@
 
     function updateUserNavbar() {
       const lvl = calculateUserLevel(user.xp);
-      document.getElementById('nav-crown-num').textContent = lvl;
-      document.getElementById('nav-user-name').textContent = user.name;
-      document.getElementById('nav-user-xp').textContent = `${user.xp} XP`;
+      const crownEl = document.getElementById('nav-crown-num');
+      if (crownEl) crownEl.textContent = lvl;
 
       const iconEl = document.getElementById('nav-avatar-icon');
-      if (user.avatarId === 'theafoto' || user.avatarId.startsWith('http') || user.avatarId.includes('/')) {
-        iconEl.innerHTML = `<img src="${user.avatarId}" alt="Avatar">`;
-      } else if (AVATAR_SVGS[user.avatarId]) {
-        iconEl.innerHTML = AVATAR_SVGS[user.avatarId];
-      } else {
-        iconEl.innerHTML = AVATAR_SVGS['fish'];
+      if (iconEl) {
+        if (user.avatarId === 'theafoto' || user.avatarId.startsWith('http') || user.avatarId.includes('/')) {
+          iconEl.innerHTML = `<img src="${user.avatarId}" alt="Avatar">`;
+        } else if (AVATAR_SVGS[user.avatarId]) {
+          iconEl.innerHTML = AVATAR_SVGS[user.avatarId];
+        } else {
+          iconEl.innerHTML = AVATAR_SVGS['fish'];
+        }
+      }
+    }
+
+    function handleInviteClick() {
+      const shareUrl = window.location.origin;
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        alert("¡Enlace de invitación copiado! Compártelo con tus amigos para estudiar en Synapse.");
+      }).catch(() => {
+        alert("Comparte Synapse con tus amigos: " + shareUrl);
+      });
+    }
+
+    function handleFeedbackClick() {
+      const text = prompt("💬 Envíanos tus comentarios, sugerencias o reporte sobre el Quiz:");
+      if (text && text.trim()) {
+        alert("¡Muchas gracias por tus comentarios! Nos ayudan a seguir mejorando Synapse.");
       }
     }
 

@@ -198,6 +198,175 @@
       color: #fff;
     }
 
+    /* ─── THEA HEADER WIDGET (INVITAR, COMENTARIOS, AVATAR CON CORONA) ─── */
+    .btn-thea-pill {
+      background: #DDE2F4;
+      color: #1A1538;
+      border: 1px solid rgba(167, 139, 250, 0.25);
+      border-radius: 999px;
+      padding: 0.45rem 1rem;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .btn-thea-pill:hover {
+      background: #C8D1EC;
+      transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+    .btn-thea-pill svg {
+      width: 14px;
+      height: 14px;
+      fill: none;
+      stroke: currentColor;
+    }
+
+    .thea-avatar-box {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 4px;
+    }
+    .thea-avatar-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      padding: 2.5px;
+      background: conic-gradient(#B8A2F8 var(--xp-pct, 45%), rgba(43, 27, 23, 0.15) 0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s;
+      position: relative;
+    }
+    .thea-avatar-circle:hover {
+      transform: scale(1.06);
+    }
+    .thea-avatar-img-wrap {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: #110D27;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .thea-avatar-img-wrap svg, .thea-avatar-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .thea-crown-badge {
+      position: absolute;
+      top: -7px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #FACC15;
+      color: #0F172A;
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      z-index: 3;
+      white-space: nowrap;
+      border: 1px solid rgba(0,0,0,0.12);
+    }
+    .thea-notif-dot {
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      width: 10px;
+      height: 10px;
+      background-color: #EF4444;
+      border-radius: 50%;
+      border: 2px solid #FAF8F5;
+      z-index: 4;
+    }
+
+    .thea-profile-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 240px;
+      background: #130F2A;
+      border: 1px solid rgba(167, 139, 250, 0.3);
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+      display: none;
+      flex-direction: column;
+      z-index: 1001;
+      animation: ddSlideIn 0.2s ease-out;
+    }
+    @keyframes ddSlideIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .thea-avatar-box:hover .thea-profile-dropdown,
+    .thea-avatar-box:focus-within .thea-profile-dropdown {
+      display: flex;
+    }
+    .thea-dd-header {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .thea-dd-email {
+      color: #94A3B8;
+      font-size: 0.78rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .thea-dd-link {
+      color: #FAF8F5;
+      text-decoration: none;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .thea-dd-link:hover {
+      background: rgba(184, 162, 248, 0.15);
+      color: #B8A2F8;
+    }
+    .thea-dd-logout {
+      margin-top: 6px;
+      background: transparent;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #F87171;
+      padding: 7px 10px;
+      border-radius: 8px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+    }
+    .thea-dd-logout:hover {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: #EF4444;
+    }
+
+
     /* ─── CORPORATE CONTAINER ─── */
     .container {
       max-width: 1200px;
@@ -1313,7 +1482,6 @@
       <a class="nav-link" href="#servicios">Servicios</a>
       <a class="nav-link" href="redactapro/">RedactaPro</a>
       <a class="nav-link" href="quiz/">Quiz Continuo</a>
-      <a class="nav-link" href="perfil/">Mi Perfil 👑</a>
       <a class="nav-link" href="#workspace">Consolas</a>
       <a class="nav-link" href="#contacto">Contacto</a>
     </nav>
@@ -1321,10 +1489,47 @@
     <div class="nav-user">
       <button class="nav-btn-highlight" id="btn-admin-panel" style="display:none; background:#8C6A53; border:none; padding:6px 12px; font-size:0.85rem;" onclick="openAdminModal()">👑 Panel Admin</button>
 
-      <div id="user-logged-in-view" style="display:none; align-items:center; gap:10px;">
-        <span class="badge-plan" id="user-plan-badge">Free</span>
-        <span class="user-email-text" id="user-email-display">usuario</span>
-        <button class="btn-logout" onclick="logoutUser()">Salir</button>
+      <!-- Thea Header UI: Invitar, Comentarios, Avatar Circular con Corona y Nivel -->
+      <div id="user-logged-in-view" style="display:none; align-items:center; gap:8px;">
+        <button class="btn-thea-pill" onclick="handleInviteClick()" title="Invitar compañeros">
+          <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+          <span>Invitar</span>
+        </button>
+
+        <button class="btn-thea-pill" onclick="handleFeedbackClick()" title="Comentarios">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          <span>Comentarios</span>
+        </button>
+
+        <div class="thea-avatar-box">
+          <a href="perfil/" class="thea-avatar-circle" id="nav-thea-avatar-circle" title="Ver mi perfil">
+            <div class="thea-crown-badge">
+              <span>👑</span>
+              <span id="thea-nav-crown-num">1</span>
+            </div>
+            <div class="thea-notif-dot"></div>
+            <div class="thea-avatar-img-wrap" id="thea-nav-avatar-icon">
+              <!-- SVG Avatar -->
+            </div>
+          </a>
+
+          <!-- Dropdown al pasar cursor -->
+          <div class="thea-profile-dropdown" id="thea-profile-dropdown">
+            <div class="thea-dd-header">
+              <strong id="display-user-name" style="color:#FFFFFF; font-size:0.95rem;">Max</strong>
+              <span class="thea-dd-email" id="user-email-display">usuario</span>
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-top:6px;">
+                <span id="display-user-level" style="color:#FACC15; font-size:0.75rem; font-weight:700;">Nivel 1 • 0 XP</span>
+                <span class="badge-plan" id="user-plan-badge" style="font-size:0.68rem; padding:2px 8px;">FREE</span>
+              </div>
+            </div>
+            <hr style="border:none; border-top:1px solid rgba(255,255,255,0.1); margin:8px 0;">
+            <a href="perfil/" class="thea-dd-link">👤 Mi Perfil</a>
+            <a href="quiz/" class="thea-dd-link">⚡ Quiz Continuo</a>
+            <a href="redactapro/" class="thea-dd-link">📝 RedactaPro</a>
+            <button class="thea-dd-logout" onclick="logoutUser()">🚪 Cerrar Sesión</button>
+          </div>
+        </div>
       </div>
 
       <div id="user-logged-out-view" style="display:flex; align-items:center; gap:8px;">
@@ -2010,6 +2215,65 @@
     const GEMINI_MODEL = 'gemini-3.8-flash';
 
     // ─── AUTHENTICATION LISTENERS ───
+    
+    const THEA_AVATARS = {"snake": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#FF7690\"/><path d=\"M50 25c-8 0-14 6-14 14v18c0 4 3 7 7 7h14c4 0 7 3 7 7v4c0 4-3 7-7 7H35\" fill=\"none\" stroke=\"#22C55E\" stroke-width=\"12\" stroke-linecap=\"round\"/><circle cx=\"46\" cy=\"35\" r=\"3\" fill=\"#15803D\"/><circle cx=\"54\" cy=\"35\" r=\"3\" fill=\"#15803D\"/><circle cx=\"36\" cy=\"78\" r=\"3\" fill=\"#15803D\"/><circle cx=\"50\" cy=\"78\" r=\"3\" fill=\"#15803D\"/><circle cx=\"64\" cy=\"78\" r=\"3\" fill=\"#15803D\"/></svg>", "butterfly": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#CBE4F9\"/><path d=\"M35 38c-8-10-18-6-16 6 2 9 16 12 16 12s-14 3-16 12c-2 11 8 16 16 6 7-9 0-18 0-18s10 9 17 18c8 10 18 5 16-6-2-9-16-12-16-12s14-3 16-12c2-12-8-16-16-6-7 9-1 18-1 18s-9-9-16-18z\" fill=\"#F472B6\"/><path d=\"M50 28v44\" stroke=\"#475569\" stroke-width=\"3\" stroke-linecap=\"round\"/></svg>", "deer": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#BFDBFE\"/><path d=\"M30 25l10 12m-6-6l6-4m30-2l-10 12m6-6l-6-4\" stroke=\"#92400E\" stroke-width=\"4\" stroke-linecap=\"round\"/><path d=\"M50 40c-14 0-22 10-22 24 0 15 12 24 22 24s22-9 22-24c0-14-8-24-22-24z\" fill=\"#D97706\"/><circle cx=\"42\" cy=\"54\" r=\"3.5\" fill=\"#1E293B\"/><circle cx=\"58\" cy=\"54\" r=\"3.5\" fill=\"#1E293B\"/><ellipse cx=\"50\" cy=\"72\" rx=\"7\" ry=\"5\" fill=\"#1E293B\"/></svg>", "leopard": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#86EFAC\"/><circle cx=\"30\" cy=\"35\" r=\"10\" fill=\"#FBBF24\"/><circle cx=\"70\" cy=\"35\" r=\"10\" fill=\"#FBBF24\"/><ellipse cx=\"50\" cy=\"55\" rx=\"26\" ry=\"24\" fill=\"#FBBF24\"/><circle cx=\"42\" cy=\"50\" r=\"3\" fill=\"#1E293B\"/><circle cx=\"58\" cy=\"50\" r=\"3\" fill=\"#1E293B\"/><circle cx=\"50\" cy=\"62\" r=\"4\" fill=\"#1E293B\"/><circle cx=\"36\" cy=\"42\" r=\"2.5\" fill=\"#92400E\"/><circle cx=\"64\" cy=\"42\" r=\"2.5\" fill=\"#92400E\"/><circle cx=\"50\" cy=\"40\" r=\"2.5\" fill=\"#92400E\"/><circle cx=\"40\" cy=\"70\" r=\"2.5\" fill=\"#92400E\"/><circle cx=\"60\" cy=\"70\" r=\"2.5\" fill=\"#92400E\"/></svg>", "koala": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#10B981\"/><circle cx=\"26\" cy=\"40\" r=\"14\" fill=\"#64748B\"/><circle cx=\"74\" cy=\"40\" r=\"14\" fill=\"#64748B\"/><circle cx=\"26\" cy=\"40\" r=\"8\" fill=\"#CBD5E1\"/><circle cx=\"74\" cy=\"40\" r=\"8\" fill=\"#CBD5E1\"/><ellipse cx=\"50\" cy=\"58\" rx=\"24\" ry=\"22\" fill=\"#64748B\"/><circle cx=\"40\" cy=\"52\" r=\"3\" fill=\"#0F172A\"/><circle cx=\"60\" cy=\"52\" r=\"3\" fill=\"#0F172A\"/><ellipse cx=\"50\" cy=\"62\" rx=\"7\" ry=\"11\" fill=\"#1E293B\"/></svg>", "fish": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#16132F\"/><path d=\"M38 35c-8 6-12 16-8 25 4 8 13 9 18 3 3-4 3-10 1-14l4-8-15-6z\" fill=\"#EC4899\"/><polygon points=\"26,48 18,38 22,58\" fill=\"#EC4899\"/><circle cx=\"36\" cy=\"45\" r=\"2.5\" fill=\"#1E1B4B\"/><path d=\"M62 65c8-6 12-16 8-25-4-8-13-9-18-3-3 4-3 10-1 14l-4 8 15 6z\" fill=\"#FACC15\"/><polygon points=\"74,52 82,62 78,42\" fill=\"#FACC15\"/><circle cx=\"64\" cy=\"55\" r=\"2.5\" fill=\"#1E1B4B\"/></svg>", "panda": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#F472B6\"/><circle cx=\"28\" cy=\"34\" r=\"11\" fill=\"#0F172A\"/><circle cx=\"72\" cy=\"34\" r=\"11\" fill=\"#0F172A\"/><circle cx=\"50\" cy=\"56\" r=\"25\" fill=\"#FFFFFF\"/><ellipse cx=\"39\" cy=\"53\" rx=\"6\" ry=\"8\" fill=\"#0F172A\" transform=\"rotate(-15 39 53)\"/><ellipse cx=\"61\" cy=\"53\" rx=\"6\" ry=\"8\" fill=\"#0F172A\" transform=\"rotate(15 61 53)\"/><circle cx=\"39\" cy=\"52\" r=\"2.5\" fill=\"#FFFFFF\"/><circle cx=\"61\" cy=\"52\" r=\"2.5\" fill=\"#FFFFFF\"/><ellipse cx=\"50\" cy=\"65\" rx=\"5\" ry=\"3.5\" fill=\"#0F172A\"/></svg>", "penguin": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#FBBF24\"/><ellipse cx=\"50\" cy=\"55\" rx=\"25\" ry=\"28\" fill=\"#0F172A\"/><ellipse cx=\"50\" cy=\"60\" rx=\"17\" ry=\"20\" fill=\"#FFFFFF\"/><circle cx=\"42\" cy=\"46\" r=\"3\" fill=\"#0F172A\"/><circle cx=\"58\" cy=\"46\" r=\"3\" fill=\"#0F172A\"/><polygon points=\"50,50 44,57 56,57\" fill=\"#F97316\"/></svg>", "rabbit": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#FDA4AF\"/><ellipse cx=\"38\" cy=\"30\" rx=\"6\" ry=\"18\" fill=\"#FFFFFF\"/><ellipse cx=\"62\" cy=\"30\" rx=\"6\" ry=\"18\" fill=\"#FFFFFF\"/><ellipse cx=\"38\" cy=\"30\" rx=\"3\" ry=\"12\" fill=\"#F472B6\"/><ellipse cx=\"62\" cy=\"30\" rx=\"3\" ry=\"12\" fill=\"#F472B6\"/><circle cx=\"50\" cy=\"60\" r=\"22\" fill=\"#FFFFFF\"/><circle cx=\"42\" cy=\"57\" r=\"3\" fill=\"#1E293B\"/><circle cx=\"58\" cy=\"57\" r=\"3\" fill=\"#1E293B\"/><ellipse cx=\"50\" cy=\"65\" rx=\"4\" ry=\"2.5\" fill=\"#F472B6\"/><circle cx=\"34\" cy=\"64\" r=\"3\" fill=\"#FECDD3\"/><circle cx=\"66\" cy=\"64\" r=\"3\" fill=\"#FECDD3\"/></svg>", "turtle": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#FDE047\"/><circle cx=\"50\" cy=\"30\" r=\"8\" fill=\"#15803D\"/><ellipse cx=\"50\" cy=\"56\" rx=\"22\" ry=\"25\" fill=\"#B91C1C\"/><path d=\"M50 36v40M34 46h32M34 66h32\" stroke=\"#F59E0B\" stroke-width=\"2.5\"/><circle cx=\"30\" cy=\"42\" r=\"5\" fill=\"#15803D\"/><circle cx=\"70\" cy=\"42\" r=\"5\" fill=\"#15803D\"/><circle cx=\"32\" cy=\"72\" r=\"5\" fill=\"#15803D\"/><circle cx=\"68\" cy=\"72\" r=\"5\" fill=\"#15803D\"/></svg>", "dog": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#A3E635\"/><ellipse cx=\"28\" cy=\"45\" rx=\"7\" ry=\"16\" fill=\"#92400E\" transform=\"rotate(-15 28 45)\"/><ellipse cx=\"72\" cy=\"45\" rx=\"7\" ry=\"16\" fill=\"#92400E\" transform=\"rotate(15 72 45)\"/><circle cx=\"50\" cy=\"55\" r=\"22\" fill=\"#FDE047\"/><circle cx=\"42\" cy=\"50\" r=\"3.5\" fill=\"#0F172A\"/><circle cx=\"58\" cy=\"50\" r=\"3.5\" fill=\"#0F172A\"/><ellipse cx=\"50\" cy=\"60\" rx=\"6\" ry=\"4\" fill=\"#0F172A\"/><path d=\"M50 64v5c0 3 2 5 4 5s4-2 4-5v-5z\" fill=\"#FB7185\"/></svg>", "cat": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#A855F7\"/><polygon points=\"30,42 22,22 42,32\" fill=\"#F97316\"/><polygon points=\"70,42 78,22 58,32\" fill=\"#F97316\"/><circle cx=\"50\" cy=\"56\" r=\"24\" fill=\"#FB923C\"/><ellipse cx=\"40\" cy=\"52\" rx=\"3.5\" ry=\"5\" fill=\"#0F172A\"/><ellipse cx=\"60\" cy=\"52\" rx=\"3.5\" ry=\"5\" fill=\"#0F172A\"/><polygon points=\"50,60 46,64 54,64\" fill=\"#991B1B\"/><path d=\"M34 60h-8M34 64h-8M66 60h8M66 64h8\" stroke=\"#0F172A\" stroke-width=\"2\"/></svg>", "monkey": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#FACC15\"/><circle cx=\"26\" cy=\"50\" r=\"9\" fill=\"#B45309\"/><circle cx=\"74\" cy=\"50\" r=\"9\" fill=\"#B45309\"/><circle cx=\"50\" cy=\"52\" r=\"22\" fill=\"#B45309\"/><ellipse cx=\"43\" cy=\"48\" rx=\"8\" ry=\"10\" fill=\"#FDE68A\"/><ellipse cx=\"57\" cy=\"48\" rx=\"8\" ry=\"10\" fill=\"#FDE68A\"/><ellipse cx=\"50\" cy=\"60\" rx=\"14\" ry=\"11\" fill=\"#FDE68A\"/><circle cx=\"42\" cy=\"48\" r=\"3\" fill=\"#1E293B\"/><circle cx=\"58\" cy=\"48\" r=\"3\" fill=\"#1E293B\"/><circle cx=\"47\" cy=\"58\" r=\"1.5\" fill=\"#1E293B\"/><circle cx=\"53\" cy=\"58\" r=\"1.5\" fill=\"#1E293B\"/><path d=\"M44 65c3 3 9 3 12 0\" fill=\"none\" stroke=\"#1E293B\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>", "sheep": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#60A5FA\"/><ellipse cx=\"28\" cy=\"42\" rx=\"5\" ry=\"12\" fill=\"#3B82F6\" transform=\"rotate(-40 28 42)\"/><ellipse cx=\"72\" cy=\"42\" rx=\"5\" ry=\"12\" fill=\"#3B82F6\" transform=\"rotate(40 72 42)\"/><circle cx=\"50\" cy=\"48\" r=\"20\" fill=\"#FFFFFF\"/><polygon points=\"50,38 34,68 66,68\" fill=\"#FDE68A\"/><circle cx=\"42\" cy=\"52\" r=\"3\" fill=\"#1E293B\"/><circle cx=\"58\" cy=\"52\" r=\"3\" fill=\"#1E293B\"/><ellipse cx=\"50\" cy=\"62\" rx=\"4\" ry=\"2.5\" fill=\"#F472B6\"/></svg>", "crocodile": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#FDE047\"/><circle cx=\"40\" cy=\"38\" r=\"6\" fill=\"#15803D\"/><circle cx=\"60\" cy=\"38\" r=\"6\" fill=\"#15803D\"/><circle cx=\"40\" cy=\"37\" r=\"2.5\" fill=\"#FFFFFF\"/><circle cx=\"60\" cy=\"37\" r=\"2.5\" fill=\"#FFFFFF\"/><path d=\"M35 48h30l-4 34c-6 4-16 4-22 0z\" fill=\"#16A34A\"/><polygon points=\"38,62 43,62 40.5,57\" fill=\"#FFFFFF\"/><polygon points=\"46,62 51,62 48.5,57\" fill=\"#FFFFFF\"/><polygon points=\"54,62 59,62 56.5,57\" fill=\"#FFFFFF\"/><circle cx=\"44\" cy=\"72\" r=\"2\" fill=\"#0F172A\"/><circle cx=\"56\" cy=\"72\" r=\"2\" fill=\"#0F172A\"/></svg>", "shark": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#BAE6FD\"/><path d=\"M20 52c10-8 30-14 55-6l10-8-4 14 4 14-10-8c-25 8-45 2-55-6z\" fill=\"#0369A1\"/><polygon points=\"45,43 55,25 60,42\" fill=\"#0369A1\"/><circle cx=\"65\" cy=\"49\" r=\"2.5\" fill=\"#FFFFFF\"/><circle cx=\"66\" cy=\"49\" r=\"1.5\" fill=\"#0F172A\"/></svg>", "chicken": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#FED7AA\"/><path d=\"M50 24c-3 0-5 3-4 6 0 3 3 5 4 5s4-2 4-5c1-3-1-6-4-6z\" fill=\"#DC2626\"/><circle cx=\"50\" cy=\"56\" r=\"22\" fill=\"#FFFFFF\"/><circle cx=\"42\" cy=\"52\" r=\"3\" fill=\"#0F172A\"/><circle cx=\"58\" cy=\"52\" r=\"3\" fill=\"#0F172A\"/><polygon points=\"50,54 44,62 56,62\" fill=\"#F97316\"/><path d=\"M48 64c0 3 2 5 2 5s2-2 2-5z\" fill=\"#DC2626\"/></svg>", "tiger": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#FB923C\"/><circle cx=\"32\" cy=\"34\" r=\"9\" fill=\"#EA580C\"/><circle cx=\"68\" cy=\"34\" r=\"9\" fill=\"#EA580C\"/><ellipse cx=\"50\" cy=\"56\" rx=\"25\" ry=\"23\" fill=\"#F97316\"/><path d=\"M50 36v8M42 40l6 4M58 40l-6 4\" stroke=\"#0F172A\" stroke-width=\"2.5\" stroke-linecap=\"round\"/><circle cx=\"42\" cy=\"52\" r=\"3\" fill=\"#0F172A\"/><circle cx=\"58\" cy=\"52\" r=\"3\" fill=\"#0F172A\"/><ellipse cx=\"50\" cy=\"62\" rx=\"4\" ry=\"2.5\" fill=\"#0F172A\"/></svg>", "dragonfly": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#34D399\"/><ellipse cx=\"32\" cy=\"45\" rx=\"18\" ry=\"4\" fill=\"#E0F2FE\" transform=\"rotate(-10 32 45)\"/><ellipse cx=\"68\" cy=\"45\" rx=\"18\" ry=\"4\" fill=\"#E0F2FE\" transform=\"rotate(10 68 45)\"/><ellipse cx=\"34\" cy=\"54\" rx=\"15\" ry=\"3.5\" fill=\"#E0F2FE\" transform=\"rotate(10 34 54)\"/><ellipse cx=\"66\" cy=\"54\" rx=\"15\" ry=\"3.5\" fill=\"#E0F2FE\" transform=\"rotate(-10 66 54)\"/><ellipse cx=\"50\" cy=\"38\" rx=\"5\" ry=\"4\" fill=\"#DC2626\"/><rect x=\"48\" y=\"42\" width=\"4\" height=\"38\" rx=\"2\" fill=\"#DC2626\"/></svg>", "peacock": "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#E9D5FF\"/><path d=\"M50 50L25 35M50 50L35 25M50 50L50 20M50 50L65 25M50 50L75 35\" stroke=\"#0284C7\" stroke-width=\"3\"/><circle cx=\"25\" cy=\"35\" r=\"4.5\" fill=\"#0284C7\"/><circle cx=\"35\" cy=\"25\" r=\"4.5\" fill=\"#0284C7\"/><circle cx=\"50\" cy=\"20\" r=\"4.5\" fill=\"#0284C7\"/><circle cx=\"65\" cy=\"25\" r=\"4.5\" fill=\"#0284C7\"/><circle cx=\"75\" cy=\"35\" r=\"4.5\" fill=\"#0284C7\"/><ellipse cx=\"50\" cy=\"58\" rx=\"11\" ry=\"18\" fill=\"#0369A1\"/><circle cx=\"50\" cy=\"44\" r=\"7\" fill=\"#0369A1\"/><polygon points=\"50,45 47,49 53,49\" fill=\"#F59E0B\"/></svg>"};
+
+    function calculateTheaLevel(xp) {
+      if (xp >= 6600) return 10;
+      if (xp >= 5100) return 9;
+      if (xp >= 3800) return 8;
+      if (xp >= 2700) return 7;
+      if (xp >= 1800) return 6;
+      if (xp >= 1100) return 5;
+      if (xp >= 620) return 4;
+      if (xp >= 300) return 3;
+      if (xp >= 100) return 2;
+      return 1;
+    }
+
+    function updateTheaNavbar() {
+      const name = localStorage.getItem('synapse_name') || 'Max';
+      const avatarId = localStorage.getItem('synapse_avatar') || 'fish';
+      const xp = parseInt(localStorage.getItem('synapse_xp') || '0', 10);
+      const lvl = calculateTheaLevel(xp);
+
+      const crownEl = document.getElementById('thea-nav-crown-num');
+      if (crownEl) crownEl.textContent = lvl;
+
+      const nameEl = document.getElementById('display-user-name');
+      if (nameEl) nameEl.textContent = name;
+
+      const lvlEl = document.getElementById('display-user-level');
+      if (lvlEl) lvlEl.textContent = 'Nivel ' + lvl + ' • ' + xp + ' XP';
+
+      const iconEl = document.getElementById('thea-nav-avatar-icon');
+      if (iconEl) {
+        if (avatarId === 'theafoto' || avatarId.startsWith('http') || avatarId.includes('/')) {
+          iconEl.innerHTML = '<img src="' + avatarId + '" alt="Avatar">';
+        } else if (THEA_AVATARS && THEA_AVATARS[avatarId]) {
+          iconEl.innerHTML = THEA_AVATARS[avatarId];
+        } else {
+          iconEl.innerHTML = THEA_AVATARS['fish'] || '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="#16132F"/></svg>';
+        }
+      }
+    }
+
+    function handleInviteClick() {
+      const shareUrl = window.location.origin;
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        alert("¡Enlace de invitación copiado! Compártelo con tus compañeros para estudiar en Synapse.");
+      }).catch(() => {
+        alert("Comparte Synapse con tus amigos: " + shareUrl);
+      });
+    }
+
+    function handleFeedbackClick() {
+      const text = prompt("💬 Envíanos tus comentarios o sugerencias:");
+      if (text && text.trim()) {
+        alert("¡Muchas gracias por tus comentarios! Nos ayudan a seguir mejorando Synapse.");
+      }
+    }
+
     firebase.auth().onAuthStateChanged(async (user) => {
       state.currentUser = user;
       const loggedInView = document.getElementById('user-logged-in-view');
@@ -2020,6 +2284,7 @@
         loggedInView.style.display = 'flex';
         loggedOutView.style.display = 'none';
         document.getElementById('user-email-display').textContent = user.email;
+        updateTheaNavbar();
 
         const isOwner = user.email && user.email.toLowerCase().trim() === 'maxrsilvagni@gmail.com';
         
@@ -2733,6 +2998,7 @@ Responde ÚNICAMENTE en formato JSON plano (un array de objetos), sin bloques de
       await firebase.firestore().collection('users').doc(uid).update({ plan: 'free', premium_until: null });
       loadAdminUsuarios();
     }
+    updateTheaNavbar();
   </script>
 </body>
 </html>
