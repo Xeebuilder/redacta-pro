@@ -2656,6 +2656,17 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
     renderDashboard();
     showActiveView('view-dashboard');
 
+    // Notificación de bienvenida si activó el trial Vota 7
+    if (localStorage.getItem('synapse_vota7') === 'true') {
+      const trialNotified = sessionStorage.getItem('synapse_vota7_notified');
+      if (!trialNotified) {
+        sessionStorage.setItem('synapse_vota7_notified', 'true');
+        setTimeout(() => {
+          showToast("¡Campaña Vota 7!", "3 días de Synapse+ activo por apoyar la Opción 7");
+        }, 800);
+      }
+    }
+
   </script>
 </body>
 </html>

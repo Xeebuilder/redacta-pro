@@ -1073,11 +1073,20 @@
       const rewardText = document.getElementById('display-reward-text');
       const planDesc = document.getElementById('display-plan-desc');
 
+      const isVota7 = localStorage.getItem('synapse_vota7') === 'true';
+      const trialEnd = parseInt(localStorage.getItem('synapse_trial_end') || '0', 10);
+      const isVota7Active = isVota7 && (!trialEnd || trialEnd > Date.now());
+
       if (lvl >= 10) {
         planName.textContent = "Synapse+ (Semanal)";
         rewardPill.style.display = "inline-flex";
         rewardText.textContent = "Recompensa Nivel 10 Activa";
         planDesc.textContent = "¡1 semana completa de estudio ilimitado desbloqueada por tu maestría!";
+      } else if (isVota7Active) {
+        planName.textContent = "Synapse+ (Campaña Vota 7)";
+        rewardPill.style.display = "inline-flex";
+        rewardText.textContent = "3 Días Gratis Activos • Vota 7";
+        planDesc.textContent = "¡Acceso ilimitado desbloqueado por apoyar la Opción 7 en las elecciones estudiantiles!";
       } else if (lvl >= 5) {
         planName.textContent = "Synapse+ (Trial)";
         rewardPill.style.display = "inline-flex";
