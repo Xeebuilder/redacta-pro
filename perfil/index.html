@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Synapse • Perfil de Usuario</title>
   
+  <!-- Favicon sin emojis -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23B8A2F8'><polygon points='13 2 3 14 12 14 11 22 21 10 12 10 13 2'/></svg>">
+
   <!-- Firebase Scripts -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
@@ -81,12 +84,18 @@
       background: transparent;
       border: none;
       color: var(--text-dim);
-      padding: 6px 18px;
+      padding: 6px 20px;
       border-radius: 20px;
       font-size: 0.88rem;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-tab-btn:hover {
+      color: #fff;
     }
     .nav-tab-btn.active {
       background: rgba(255, 255, 255, 0.15);
@@ -149,7 +158,7 @@
       height: 100%;
       border-radius: 50%;
       overflow: hidden;
-      background: #1E1B4B;
+      background: #1E1B38;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -161,52 +170,55 @@
     }
     .crown-pill {
       position: absolute;
-      top: -8px;
+      top: -6px;
       left: 50%;
       transform: translateX(-50%);
-      background: var(--gold-crown);
-      color: #0F172A;
-      font-weight: 800;
-      font-size: 0.82rem;
-      padding: 2px 10px;
+      background: #1E1B38;
+      border: 1.5px solid var(--gold-crown);
       border-radius: 12px;
+      padding: 2px 8px;
       display: flex;
       align-items: center;
       gap: 4px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--gold-crown);
       z-index: 2;
     }
     .notification-dot {
       position: absolute;
-      top: 2px;
+      bottom: 4px;
       right: 4px;
-      width: 14px;
-      height: 14px;
-      background: #EF4444;
-      border: 2px solid var(--bg-card);
+      width: 12px;
+      height: 12px;
       border-radius: 50%;
-      z-index: 3;
+      background: #10B981;
+      border: 2px solid var(--bg-card);
+      z-index: 2;
     }
     .avatar-edit-icon {
       position: absolute;
-      bottom: 2px;
-      right: 2px;
-      background: rgba(255,255,255,0.2);
-      backdrop-filter: blur(4px);
-      width: 26px;
-      height: 26px;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(184, 162, 248, 0.2);
+      border: 1px solid var(--accent-lilac);
       border-radius: 50%;
+      width: 22px;
+      height: 22px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.75rem;
-      border: 1px solid var(--border-purple);
+      color: var(--accent-lilac);
+      transition: all 0.2s;
+    }
+    .avatar-wrapper:hover .avatar-edit-icon {
+      background: var(--accent-lilac);
+      color: #0A0718;
+      transform: translateX(-50%) scale(1.1);
     }
 
     .user-info-col {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
       flex: 1;
       min-width: 200px;
     }
@@ -214,11 +226,29 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      margin-bottom: 2px;
     }
     .user-name {
       font-size: 1.6rem;
       font-weight: 800;
+      color: var(--text-white);
       letter-spacing: -0.3px;
+    }
+    .btn-edit-pencil {
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .btn-edit-pencil:hover {
+      color: var(--accent-lilac);
+      background: rgba(255, 255, 255, 0.08);
     }
     .user-role-row {
       display: flex;
@@ -230,48 +260,38 @@
 
     .user-details-col {
       display: flex;
-      gap: 3rem;
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 12px;
+      min-width: 260px;
     }
     .detail-group {
       display: flex;
       flex-direction: column;
-      gap: 4px;
     }
     .detail-label {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       color: var(--text-dimmer);
       text-transform: uppercase;
       font-weight: 700;
       letter-spacing: 0.5px;
+      margin-bottom: 2px;
     }
     .detail-val-row {
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 1.05rem;
+      font-size: 0.95rem;
       font-weight: 600;
-    }
-    .btn-edit-pencil {
-      background: transparent;
-      border: none;
-      color: var(--text-dim);
-      cursor: pointer;
-      font-size: 0.85rem;
-      padding: 2px 4px;
-      transition: color 0.2s;
-    }
-    .btn-edit-pencil:hover {
-      color: var(--accent-lilac);
+      color: var(--text-white);
     }
 
     /* ─── 2. SUSCRIPCIÓN ─── */
     .sub-card-row {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
+      justify-content: space-between;
       gap: 1.5rem;
+      flex-wrap: wrap;
     }
     .sub-plan-info {
       display: flex;
@@ -279,44 +299,42 @@
       gap: 6px;
     }
     .sub-plan-badge {
-      display: inline-flex;
+      display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 1.4rem;
+      gap: 10px;
+      font-size: 1.3rem;
       font-weight: 800;
-      color: var(--text-white);
     }
     .reward-pill {
-      background: rgba(250, 204, 21, 0.15);
+      background: linear-gradient(135deg, rgba(250, 204, 21, 0.2), rgba(245, 158, 11, 0.2));
       border: 1px solid var(--gold-crown);
       color: var(--gold-crown);
+      font-size: 0.75rem;
+      font-weight: 800;
       padding: 3px 10px;
-      border-radius: 12px;
-      font-size: 0.8rem;
-      font-weight: 700;
+      border-radius: 20px;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      margin-left: 10px;
+      gap: 5px;
     }
     .btn-upgrade-thea {
-      background: linear-gradient(135deg, #A855F7, #EC4899);
-      color: #FFFFFF;
+      background: linear-gradient(135deg, #B8A2F8 0%, #8B5CF6 100%);
+      color: #0A0718;
       border: none;
-      padding: 0.75rem 1.8rem;
+      padding: 12px 24px;
       border-radius: 24px;
-      font-weight: 800;
       font-size: 0.95rem;
+      font-weight: 800;
       cursor: pointer;
-      box-shadow: 0 4px 18px rgba(168, 85, 247, 0.35);
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: all 0.2s;
+      box-shadow: 0 4px 14px rgba(184, 162, 248, 0.35);
     }
     .btn-upgrade-thea:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 24px rgba(168, 85, 247, 0.5);
+      box-shadow: 0 6px 20px rgba(184, 162, 248, 0.5);
     }
 
     /* ─── 3. CONFIGURACIÓN DE LA CUENTA ─── */
@@ -327,12 +345,14 @@
       margin-bottom: 1.5rem;
     }
     .account-field-label {
-      font-size: 0.88rem;
-      color: var(--text-dim);
+      font-size: 0.8rem;
+      color: var(--text-dimmer);
+      text-transform: uppercase;
+      font-weight: 700;
       margin-bottom: 4px;
     }
     .account-field-value {
-      font-size: 1.05rem;
+      font-size: 0.95rem;
       font-weight: 600;
       color: var(--text-white);
       display: flex;
@@ -342,143 +362,272 @@
     .copy-chip {
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid var(--border-purple);
+      padding: 2px 8px;
       border-radius: 6px;
-      padding: 2px 6px;
       font-size: 0.75rem;
+      color: var(--accent-lilac);
       cursor: pointer;
-      color: var(--text-dim);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
       transition: all 0.2s;
     }
     .copy-chip:hover {
-      color: var(--text-white);
-      background: rgba(255, 255, 255, 0.16);
+      background: rgba(184, 162, 248, 0.2);
     }
     .btn-edit-account {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.06);
       border: 1px solid var(--border-purple);
       color: var(--text-white);
-      padding: 0.65rem 1.5rem;
+      padding: 9px 18px;
       border-radius: 10px;
-      font-weight: 700;
-      font-size: 0.92rem;
+      font-size: 0.9rem;
+      font-weight: 600;
       cursor: pointer;
-      float: right;
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      float: right;
       transition: all 0.2s;
     }
     .btn-edit-account:hover {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--accent-lilac);
     }
 
-    /* ─── MODAL SELECCIONA TU AVATAR (IMAGEN 2) ─── */
+    /* ─── VISTA: LOGROS E INSIGNIAS (SIN ALERT) ─── */
+    .logros-summary-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(184, 162, 248, 0.12);
+      border: 1px solid rgba(184, 162, 248, 0.3);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .logros-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+      margin-bottom: 2rem;
+    }
+    .logro-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-purple);
+      border-radius: 16px;
+      padding: 1.3rem 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+    .logro-card:hover {
+      border-color: var(--border-purple-hover);
+      transform: translateY(-2px);
+    }
+    .logro-card.locked {
+      opacity: 0.65;
+      background: rgba(19, 15, 42, 0.6);
+    }
+    .logro-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .logro-icon-box {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      background: rgba(184, 162, 248, 0.12);
+      border: 1px solid rgba(184, 162, 248, 0.28);
+      color: var(--accent-lilac);
+    }
+    .logro-card.locked .logro-icon-box {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.08);
+      color: var(--text-dimmer);
+    }
+    .logro-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.25;
+    }
+    .logro-desc {
+      font-size: 0.84rem;
+      color: var(--text-dim);
+      line-height: 1.45;
+    }
+    .logro-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .logro-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 12px;
+    }
+    .logro-status-pill.unlocked {
+      background: rgba(74, 222, 128, 0.15);
+      border: 1px solid rgba(74, 222, 128, 0.35);
+      color: #4ADE80;
+    }
+    .logro-status-pill.locked {
+      background: rgba(148, 163, 184, 0.1);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      color: #94A3B8;
+    }
+    .logro-xp-tag {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--gold-crown);
+    }
+
+    /* ─── TOASTS FLOTANTES ─── */
+    .syn-toast-container {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+    .syn-toast {
+      pointer-events: auto;
+      background: #181335;
+      border: 1px solid var(--border-purple);
+      border-radius: 12px;
+      padding: 12px 18px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 280px;
+      max-width: 380px;
+      animation: slideInToast 0.25s ease-out;
+      transition: all 0.25s ease;
+    }
+    @keyframes slideInToast {
+      from { transform: translateX(40px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    .syn-toast-title {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #fff;
+    }
+    .syn-toast-desc {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+    .syn-toast-close {
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+    }
+
+    /* ─── MODALES ─── */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(5, 3, 14, 0.85);
+      background: rgba(10, 7, 24, 0.85);
       backdrop-filter: blur(8px);
-      z-index: 1000;
       display: none;
       align-items: center;
       justify-content: center;
+      z-index: 1000;
       padding: 1rem;
     }
     .modal-box {
-      background: #110D27;
+      background: var(--bg-card);
       border: 1px solid var(--border-purple);
       border-radius: 20px;
       width: 100%;
-      max-width: 480px;
+      max-width: 520px;
       padding: 2rem;
-      position: relative;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-      animation: modalPop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    @keyframes modalPop {
-      from { opacity: 0; transform: scale(0.92); }
-      to { opacity: 1; transform: scale(1); }
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      max-height: 90vh;
+      overflow-y: auto;
     }
     .modal-header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       margin-bottom: 1.5rem;
     }
     .modal-title {
-      font-size: 1.35rem;
-      font-weight: 700;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-white);
     }
     .modal-close {
       background: transparent;
       border: none;
       color: var(--text-dim);
-      font-size: 1.3rem;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      transition: color 0.2s;
     }
     .modal-close:hover { color: var(--text-white); }
 
     .avatar-grid-picker {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      margin-bottom: 2rem;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 1.5rem;
     }
     .avatar-choice-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid transparent;
+      border-radius: 50%;
       width: 68px;
       height: 68px;
-      border-radius: 50%;
-      border: 2px solid transparent;
-      padding: 0;
-      background: transparent;
+      padding: 3px;
       cursor: pointer;
-      position: relative;
-      transition: transform 0.2s, border-color 0.2s;
-      overflow: hidden;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .avatar-choice-btn:hover {
       transform: scale(1.08);
+      border-color: rgba(184, 162, 248, 0.4);
     }
     .avatar-choice-btn.selected {
-      border: 2.5px dashed #FFFFFF !important;
-      transform: scale(1.06);
-      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.2);
+      border-color: var(--accent-lilac);
+      box-shadow: 0 0 16px rgba(184, 162, 248, 0.5);
+      background: rgba(184, 162, 248, 0.15);
     }
-    .avatar-choice-btn svg, .avatar-choice-btn img {
+    .avatar-choice-btn svg {
       width: 100%;
       height: 100%;
       border-radius: 50%;
     }
 
-    .modal-actions {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-    }
-    .btn-modal-cancel {
-      background: #2D264E;
-      color: var(--text-white);
-      border: none;
-      padding: 0.75rem 1.8rem;
-      border-radius: 24px;
-      font-weight: 700;
-      font-size: 0.95rem;
-      cursor: pointer;
-    }
-    .btn-modal-cancel:hover { background: #3B3363; }
-    .btn-modal-submit {
-      background: var(--accent-lilac);
-      color: #110D27;
-      border: none;
-      padding: 0.75rem 2.2rem;
-      border-radius: 24px;
-      font-weight: 800;
-      font-size: 0.95rem;
-      cursor: pointer;
-    }
-    .btn-modal-submit:hover { background: #C4B5FD; }
-
-    /* ─── MODAL EDITAR DATOS ─── */
     .form-group-modal {
       margin-bottom: 1.2rem;
     }
@@ -493,29 +642,60 @@
       width: 100%;
       background: #1B1538;
       border: 1px solid var(--border-purple);
-      border-radius: 8px;
-      padding: 0.75rem 1rem;
-      color: #fff;
-      font-size: 1rem;
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: var(--text-white);
+      font-size: 0.95rem;
       outline: none;
     }
     .form-group-modal input:focus, .form-group-modal select:focus {
       border-color: var(--accent-lilac);
     }
 
-    /* ─── FOOTER ─── */
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 1.5rem;
+    }
+    .btn-modal-cancel {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-purple);
+      color: var(--text-white);
+      padding: 9px 18px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-modal-submit {
+      background: var(--accent-purple);
+      border: none;
+      color: var(--text-white);
+      padding: 9px 22px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+    }
+    .btn-modal-submit:hover {
+      background: #6D28D9;
+    }
+
+    /* ─── FOOTER ESTILO THEA ─── */
     .profile-footer {
       width: 100%;
       max-width: 1100px;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      padding: 1.5rem;
+      padding: 2rem 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      font-size: 0.82rem;
-      color: var(--text-dimmer);
+      justify-content: space-between;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 1rem;
+      font-size: 0.85rem;
+      color: var(--text-dimmer);
     }
     .footer-links {
       display: flex;
@@ -525,6 +705,9 @@
       color: var(--text-dim);
       text-decoration: none;
       transition: color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
     }
     .footer-links a:hover { color: var(--accent-lilac); }
 
@@ -533,6 +716,7 @@
       .account-config-grid { grid-template-columns: 1fr; }
       .avatar-grid-picker { grid-template-columns: repeat(4, 1fr); gap: 10px; }
       .avatar-choice-btn { width: 56px; height: 56px; }
+      .logros-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -540,11 +724,14 @@
 
   <!-- TOP NAV -->
   <header class="top-nav">
-    <a href="../quiz/" class="btn-back">← Atrás</a>
+    <a href="../quiz/" class="btn-back">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      Atrás
+    </a>
     
     <div class="nav-tabs-center">
-      <button class="nav-tab-btn active">Perfil</button>
-      <button class="nav-tab-btn" onclick="alert('🏅 Tus logros e insignias se desbloquean al completar temas y subir de nivel!')">Logros</button>
+      <button class="nav-tab-btn active" id="tab-btn-perfil" onclick="switchProfileTab('perfil')">Perfil</button>
+      <button class="nav-tab-btn" id="tab-btn-logros" onclick="switchProfileTab('logros')">Logros</button>
     </div>
 
     <div style="width: 70px;"></div>
@@ -552,117 +739,182 @@
 
   <main class="profile-wrap">
 
-    <!-- 1. PERFIL DE USUARIO -->
-    <div class="section-title">Perfil de usuario</div>
-    <div class="thea-card">
-      <div class="user-profile-grid">
-        
-        <!-- Avatar circular con corona -->
-        <div class="avatar-wrapper" onclick="openAvatarModal()" title="Cambiar avatar">
-          <div class="crown-pill">
-            <span>👑</span>
-            <span id="crown-level-num">1</span>
-          </div>
-          <div class="notification-dot"></div>
-          <div class="avatar-ring" id="user-avatar-ring">
-            <div class="avatar-inner" id="user-avatar-display">
-              <!-- SVG del avatar activo -->
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <!-- PESTAÑA 1: PERFIL DE USUARIO                                 -->
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <div id="section-perfil-view">
+      
+      <!-- 1. PERFIL DE USUARIO -->
+      <div class="section-title">Perfil de usuario</div>
+      <div class="thea-card">
+        <div class="user-profile-grid">
+          
+          <!-- Avatar circular con corona -->
+          <div class="avatar-wrapper" onclick="openAvatarModal()" title="Cambiar avatar">
+            <div class="crown-pill">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>
+              <span id="crown-level-num">1</span>
             </div>
-          </div>
-          <div class="avatar-edit-icon">✏️</div>
-        </div>
-
-        <!-- Nombre y rol -->
-        <div class="user-info-col">
-          <div class="user-name-row">
-            <span class="user-name" id="display-name">Max</span>
-            <button class="btn-edit-pencil" onclick="openEditModal('name')">✏️</button>
-          </div>
-          <div class="user-role-row">
-            <span id="display-role">Estudiante</span>
-            <button class="btn-edit-pencil" onclick="openEditModal('role')">✏️</button>
-          </div>
-          <div style="margin-top:8px; font-size:0.82rem; color:var(--text-dim);">
-            <span>Nivel de Cuenta: </span><strong style="color:var(--gold-crown);" id="display-xp-info">Nivel 1 • 0 XP</strong>
-          </div>
-        </div>
-
-        <!-- Escuela y Nivel Académico -->
-        <div class="user-details-col">
-          <div class="detail-group">
-            <span class="detail-label">Escuela</span>
-            <div class="detail-val-row">
-              <span id="display-school">Italo Venezolano</span>
-              <button class="btn-edit-pencil" onclick="openEditModal('school')">✏️</button>
+            <div class="notification-dot"></div>
+            <div class="avatar-ring" id="user-avatar-ring">
+              <div class="avatar-inner" id="user-avatar-display">
+                <!-- SVG del avatar activo -->
+              </div>
+            </div>
+            <div class="avatar-edit-icon">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
             </div>
           </div>
 
-          <div class="detail-group">
-            <span class="detail-label">Nivel</span>
-            <div class="detail-val-row">
-              <span id="display-level">Bachillerato / Preparatoria (15 - 17 años)</span>
-              <button class="btn-edit-pencil" onclick="openEditModal('level')">✏️</button>
+          <!-- Nombre y rol -->
+          <div class="user-info-col">
+            <div class="user-name-row">
+              <span class="user-name" id="display-name">Max</span>
+              <button class="btn-edit-pencil" onclick="openEditModal('name')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+              </button>
+            </div>
+            <div class="user-role-row">
+              <span id="display-role">Estudiante</span>
+              <button class="btn-edit-pencil" onclick="openEditModal('role')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+              </button>
+            </div>
+            <div style="margin-top:8px; font-size:0.82rem; color:var(--text-dim);">
+              <span>Nivel de Cuenta: </span><strong style="color:var(--gold-crown);" id="display-xp-info">Nivel 1 • 0 XP</strong>
             </div>
           </div>
-        </div>
 
+          <!-- Escuela y Nivel Académico -->
+          <div class="user-details-col">
+            <div class="detail-group">
+              <span class="detail-label">Escuela</span>
+              <div class="detail-val-row">
+                <span id="display-school">Italo Venezolano</span>
+                <button class="btn-edit-pencil" onclick="openEditModal('school')">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="detail-group">
+              <span class="detail-label">Nivel</span>
+              <div class="detail-val-row">
+                <span id="display-level">Bachillerato / Preparatoria (15 - 17 años)</span>
+                <button class="btn-edit-pencil" onclick="openEditModal('level')">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
-    </div>
 
-    <!-- 2. SUSCRIPCIÓN -->
-    <div class="section-title" style="justify-content:space-between;">
-      <span>Suscripción <span style="cursor:pointer; font-size:0.9rem;" onclick="refreshSubscription()">🔄</span></span>
-      <span style="font-size:0.82rem; color:var(--text-dim); font-weight:normal; cursor:pointer;" onclick="alert('Soporte: Escríbenos a maxrsilvagni@gmail.com o vía WhatsApp.')">¿Tienes problemas?</span>
-    </div>
-    <div class="thea-card">
-      <div class="sub-card-row">
-        <div class="sub-plan-info">
-          <span style="font-size:0.85rem; color:var(--text-dimmer); text-transform:uppercase; font-weight:700;">Plan</span>
-          <div class="sub-plan-badge">
-            <span id="display-plan-name">Synapse gratis</span>
-            <span class="reward-pill" id="display-reward-pill" style="display:none;">🎁 Recompensa Activa</span>
+      <!-- 2. SUSCRIPCIÓN -->
+      <div class="section-title" style="justify-content:space-between;">
+        <span style="display:inline-flex; align-items:center; gap:8px;">
+          Suscripción 
+          <span style="cursor:pointer; display:inline-flex; align-items:center;" onclick="refreshSubscription()" title="Actualizar estado">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+          </span>
+        </span>
+        <span style="font-size:0.82rem; color:var(--text-dim); font-weight:normal; cursor:pointer;" onclick="showSupportHelp()">¿Tienes problemas?</span>
+      </div>
+      <div class="thea-card">
+        <div class="sub-card-row">
+          <div class="sub-plan-info">
+            <span style="font-size:0.85rem; color:var(--text-dimmer); text-transform:uppercase; font-weight:700;">Plan</span>
+            <div class="sub-plan-badge">
+              <span id="display-plan-name">Synapse gratis</span>
+              <span class="reward-pill" id="display-reward-pill" style="display:none;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>
+                <span id="display-reward-text">Recompensa Activa</span>
+              </span>
+            </div>
+            <span style="font-size:0.85rem; color:var(--text-dim);" id="display-plan-desc">Acceso a preguntas continuas de estudio y flashcards básicas.</span>
           </div>
-          <span style="font-size:0.85rem; color:var(--text-dim);" id="display-plan-desc">Acceso a preguntas continuas de estudio y flashcards básicas.</span>
+
+          <button class="btn-upgrade-thea" onclick="window.location.href='../#precios'">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4 7.6 2.6-7.6 2.6L12 22l-2.4-7.4L2 12l7.6-2.6z"/></svg>
+            Obtén Synapse+
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4 7.6 2.6-7.6 2.6L12 22l-2.4-7.4L2 12l7.6-2.6z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. CONFIGURACIÓN DE LA CUENTA -->
+      <div class="section-title">Configuración de la cuenta</div>
+      <div class="thea-card">
+        <div class="account-config-grid">
+          <div>
+            <div class="account-field-label">Nombre</div>
+            <div class="account-field-value" id="account-name-val">Max</div>
+          </div>
+
+          <div>
+            <div class="account-field-label">Correo electrónico</div>
+            <div class="account-field-value" id="account-email-val">maxrsilvagni@gmail.com</div>
+          </div>
+
+          <div>
+            <div class="account-field-label">Idioma preferido</div>
+            <div class="account-field-value">Spanish</div>
+          </div>
+
+          <div>
+            <div class="account-field-label">ID de soporte</div>
+            <div class="account-field-value">
+              <span id="account-support-id">syn_24b75c6060</span>
+              <span class="copy-chip" onclick="copySupportId()">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Copiar
+              </span>
+            </div>
+          </div>
         </div>
 
-        <button class="btn-upgrade-thea" onclick="window.location.href='../#precios'">
-          <span>✨</span> Obtén Synapse+ <span>✨</span>
+        <button class="btn-edit-account" onclick="openEditModal('all')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+          Editar
         </button>
+        <div style="clear:both;"></div>
       </div>
+
     </div>
 
-    <!-- 3. CONFIGURACIÓN DE LA CUENTA -->
-    <div class="section-title">Configuración de la cuenta</div>
-    <div class="thea-card">
-      <div class="account-config-grid">
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <!-- PESTAÑA 2: LOGROS E INSIGNIAS (MODERNO EN-APP DASHBOARD)       -->
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <div id="section-logros-view" style="display:none;">
+      
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:1.2rem; flex-wrap:wrap; gap:12px;">
         <div>
-          <div class="account-field-label">Nombre</div>
-          <div class="account-field-value" id="account-name-val">Max</div>
+          <h1 style="font-size:1.6rem; font-weight:900; color:#fff; letter-spacing:-0.4px;">Logros y Reconocimientos</h1>
+          <p style="color:var(--text-dim); font-size:0.9rem;">Desbloquea insignias al responder preguntas, mantener rachas y subir de nivel.</p>
         </div>
-
-        <div>
-          <div class="account-field-label">Correo electrónico</div>
-          <div class="account-field-value" id="account-email-val">maxrsilvagni@gmail.com</div>
-        </div>
-
-        <div>
-          <div class="account-field-label">Idioma preferido ⓘ</div>
-          <div class="account-field-value">Spanish</div>
-        </div>
-
-        <div>
-          <div class="account-field-label">ID de soporte ⓘ</div>
-          <div class="account-field-value">
-            <span id="account-support-id">syn_24b75c6060</span>
-            <span class="copy-chip" onclick="copySupportId()">📋 Copiar</span>
-          </div>
+        <div class="logros-summary-chip">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="color:var(--accent-lilac);"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <span id="logros-unlocked-count">0 / 12 Desbloqueados</span>
         </div>
       </div>
 
-      <button class="btn-edit-account" onclick="openEditModal('all')">
-        <span>✏️</span> Editar
-      </button>
-      <div style="clear:both;"></div>
+      <!-- Barra de Progreso Global de Logros -->
+      <div class="thea-card" style="padding:1.4rem 1.8rem; margin-bottom:1.5rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <span style="font-size:0.85rem; font-weight:700; color:var(--text-dim);">Progreso General de Insignias</span>
+          <span id="logros-pct-label" style="font-size:0.88rem; font-weight:800; color:var(--accent-lilac);">0%</span>
+        </div>
+        <div style="width:100%; height:8px; background:rgba(255,255,255,0.08); border-radius:10px; overflow:hidden;">
+          <div id="logros-progress-bar" style="width:0%; height:100%; background:linear-gradient(90deg, #8B5CF6, #B8A2F8); border-radius:10px; transition:width 0.4s ease;"></div>
+        </div>
+      </div>
+
+      <!-- Grid de Tarjetas de Logros -->
+      <div class="logros-grid" id="logros-cards-container">
+        <!-- Renderizado dinámico -->
+      </div>
+
     </div>
 
   </main>
@@ -672,7 +924,9 @@
     <div class="modal-box">
       <div class="modal-header">
         <h3 class="modal-title">Selecciona tu avatar</h3>
-        <button class="modal-close" onclick="closeAvatarModal()">✕</button>
+        <button class="modal-close" onclick="closeAvatarModal()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
       </div>
 
       <div class="avatar-grid-picker" id="avatar-picker-grid">
@@ -681,7 +935,7 @@
 
       <div class="modal-actions">
         <button class="btn-modal-cancel" onclick="closeAvatarModal()">Cancelar</button>
-        <button class="btn-modal-submit" onclick="saveSelectedAvatar()">Enviar</button>
+        <button class="btn-modal-submit" onclick="saveSelectedAvatar()">Guardar</button>
       </div>
     </div>
   </div>
@@ -691,7 +945,9 @@
     <div class="modal-box">
       <div class="modal-header">
         <h3 class="modal-title">Editar Información</h3>
-        <button class="modal-close" onclick="closeEditModal()">✕</button>
+        <button class="modal-close" onclick="closeEditModal()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
       </div>
 
       <div class="form-group-modal">
@@ -733,11 +989,26 @@
   <!-- FOOTER ESTILO THEA -->
   <footer class="profile-footer">
     <div class="footer-links">
-      <a href="#">👾 Discord</a>
-      <a href="#">❓ Ayuda</a>
-      <a href="#">📖 Acerca de</a>
-      <a href="#">✉️ Contacto</a>
-      <a href="#">📷 Seguir</a>
+      <a href="#">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        Discord
+      </a>
+      <a href="#" onclick="showSupportHelp(); return false;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        Ayuda
+      </a>
+      <a href="../#nosotros">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+        Acerca de
+      </a>
+      <a href="mailto:maxrsilvagni@gmail.com">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+        Contacto
+      </a>
+      <a href="#">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+        Seguir
+      </a>
     </div>
     <div>Derechos de autor © 2023-2026 Synapse Suite Académica</div>
   </footer>
@@ -799,23 +1070,237 @@
       // Recompensas
       const planName = document.getElementById('display-plan-name');
       const rewardPill = document.getElementById('display-reward-pill');
+      const rewardText = document.getElementById('display-reward-text');
       const planDesc = document.getElementById('display-plan-desc');
 
       if (lvl >= 10) {
         planName.textContent = "Synapse+ (Semanal)";
         rewardPill.style.display = "inline-flex";
-        rewardPill.textContent = "👑 Recompensa Nivel 10 Activa";
+        rewardText.textContent = "Recompensa Nivel 10 Activa";
         planDesc.textContent = "¡1 semana completa de estudio ilimitado desbloqueada por tu maestría!";
       } else if (lvl >= 5) {
         planName.textContent = "Synapse+ (Trial)";
         rewardPill.style.display = "inline-flex";
-        rewardPill.textContent = "🎁 Recompensa Nivel 5 Activa";
+        rewardText.textContent = "Recompensa Nivel 5 Activa";
         planDesc.textContent = "¡3 días gratis de estudio ilimitado desbloqueados por tu progreso!";
       } else {
         planName.textContent = "Synapse gratis";
         rewardPill.style.display = "none";
         planDesc.textContent = "Acceso a preguntas continuas de estudio y flashcards básicas.";
       }
+    }
+
+    /* ─── SISTEMA DE PESTAÑAS (PERFIL VS LOGROS) ─── */
+    function switchProfileTab(tab) {
+      const btnPerfil = document.getElementById('tab-btn-perfil');
+      const btnLogros = document.getElementById('tab-btn-logros');
+      const viewPerfil = document.getElementById('section-perfil-view');
+      const viewLogros = document.getElementById('section-logros-view');
+
+      if (tab === 'logros') {
+        btnPerfil.classList.remove('active');
+        btnLogros.classList.add('active');
+        viewPerfil.style.display = 'none';
+        viewLogros.style.display = 'block';
+        renderLogros();
+      } else {
+        btnLogros.classList.remove('active');
+        btnPerfil.classList.add('active');
+        viewLogros.style.display = 'none';
+        viewPerfil.style.display = 'block';
+      }
+    }
+
+    /* ─── RENDERIZADO DE LOGROS E INSIGNIAS (SIN ALERTAS NATIVAS) ─── */
+    const ACHIEVEMENTS_LIST = [
+      {
+        id: 'first_step',
+        title: 'Primer Paso',
+        desc: 'Responde tu primera pregunta en la plataforma de estudio inteligente.',
+        xpReward: 25,
+        icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>',
+        check: (xp, lvl, kits) => xp > 0
+      },
+      {
+        id: 'creator',
+        title: 'Creador de Contenido',
+        desc: 'Crea tu primer kit de estudio inteligente a partir de una foto o notas.',
+        xpReward: 50,
+        icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>',
+        check: (xp, lvl, kits) => kits > 0 || xp >= 50
+      },
+      {
+        id: 'streak_5',
+        title: 'Racha de Fuego',
+        desc: 'Consigue 5 respuestas correctas seguidas en una sesión de estudio.',
+        xpReward: 50,
+        icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg>',
+        check: (xp, lvl, kits) => xp >= 125
+      },
+      {
+        id: 'streak_10',
+        title: 'Mente Imparable',
+        desc: 'Alcanza una racha perfecta de 10 aciertos consecutivos sin fallar.',
+        xpReward: 100,
+        icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>',
+        check: (xp, lvl, kits) => xp >= 300
+      },
+      {
+        id: 'level_3',
+        title: 'Ascenso a Nivel 3',
+        desc: 'Alcanza el Nivel 3 y supera el diagnóstico inicial de progreso.',
+        xpReward: 100,
+        icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>',
+        check: (xp, lvl, kits) => lvl >= 3
+      },
+      {
+        id: 'level_5',
+        title: 'Maestría Nivel 5 (3 Días Gratis)',
+        desc: 'Desbloquea 3 días gratis de estudio ilimitado en Synapse+ por tu esfuerzo.',
+        xpReward: 200,
+        icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>',
+        check: (xp, lvl, kits) => lvl >= 5
+      },
+      {
+        id: 'level_10',
+        title: 'Leyenda Nivel 10 (Semana Gratis)',
+        desc: 'Desbloquea 1 semana completa de Synapse+ ilimitado por tu maestría.',
+        xpReward: 500,
+        icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>',
+        check: (xp, lvl, kits) => lvl >= 10
+      },
+      {
+        id: 'guide_analyst',
+        title: 'Analista de Guías',
+        desc: 'Genera y estudia los esquemas y conceptos clave de una guía con IA.',
+        xpReward: 50,
+        icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>',
+        check: (xp, lvl, kits) => xp >= 100
+      },
+      {
+        id: 'accuracy_80',
+        title: 'Precisión Quirúrgica',
+        desc: 'Supera una evaluación de etapa con una precisión de aciertos superior al 80%.',
+        xpReward: 75,
+        icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>',
+        check: (xp, lvl, kits) => xp >= 175
+      },
+      {
+        id: 'study_1000',
+        title: 'Dedicación Académica',
+        desc: 'Acumula más de 1,000 XP en tus sesiones de estudio continuas.',
+        xpReward: 150,
+        icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>',
+        check: (xp, lvl, kits) => xp >= 1000
+      },
+      {
+        id: 'strategist',
+        title: 'Gran Estratega',
+        desc: 'Domina múltiples áreas de estudio creando más de 3 kits temáticos.',
+        xpReward: 100,
+        icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>',
+        check: (xp, lvl, kits) => kits >= 3 || xp >= 400
+      },
+      {
+        id: 'identity',
+        title: 'Identidad Synapse',
+        desc: 'Personaliza tu avatar y completa tu información académica en tu perfil.',
+        xpReward: 30,
+        icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>',
+        check: (xp, lvl, kits) => profile.avatarId !== 'fish' || profile.school !== ''
+      }
+    ];
+
+    function renderLogros() {
+      const container = document.getElementById('logros-cards-container');
+      container.innerHTML = '';
+
+      let userKits = 0;
+      try {
+        const storedKits = JSON.parse(localStorage.getItem('synapse_study_kits') || '[]');
+        userKits = Array.isArray(storedKits) ? storedKits.length : 0;
+      } catch (e) {}
+
+      const lvl = calculateLevel(profile.xp);
+      let unlockedCount = 0;
+
+      ACHIEVEMENTS_LIST.forEach(ach => {
+        const isUnlocked = ach.check(profile.xp, lvl, userKits);
+        if (isUnlocked) unlockedCount++;
+
+        const card = document.createElement('div');
+        card.className = `logro-card ${isUnlocked ? 'unlocked' : 'locked'}`;
+        card.innerHTML = `
+          <div class="logro-header">
+            <div class="logro-icon-box">${ach.icon}</div>
+            <div>
+              <div class="logro-title">${ach.title}</div>
+              <div class="logro-xp-tag">+${ach.xpReward} XP</div>
+            </div>
+          </div>
+          <p class="logro-desc">${ach.desc}</p>
+          <div class="logro-footer">
+            <span class="logro-status-pill ${isUnlocked ? 'unlocked' : 'locked'}">
+              ${isUnlocked 
+                ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Desbloqueado'
+                : '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg> En progreso'
+              }
+            </span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      // Actualizar Barra de Progreso
+      const total = ACHIEVEMENTS_LIST.length;
+      const pct = Math.round((unlockedCount / total) * 100);
+      document.getElementById('logros-unlocked-count').textContent = `${unlockedCount} / ${total} Desbloqueados`;
+      document.getElementById('logros-pct-label').textContent = `${pct}%`;
+      document.getElementById('logros-progress-bar').style.width = `${pct}%`;
+    }
+
+    /* ─── TOASTS DEL SISTEMA (REEMPLAZAN ALERT NATIVO) ─── */
+    function showToast(title, desc) {
+      let container = document.getElementById('syn-toast-container');
+      if (!container) {
+        container = document.createElement('div');
+        container.id = 'syn-toast-container';
+        container.className = 'syn-toast-container';
+        document.body.appendChild(container);
+      }
+      const toast = document.createElement('div');
+      toast.className = 'syn-toast';
+      toast.innerHTML = `
+        <div style="flex:1;">
+          <div class="syn-toast-title">${title}</div>
+          <div class="syn-toast-desc">${desc}</div>
+        </div>
+        <button class="syn-toast-close" onclick="this.parentElement.remove()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      `;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-10px)';
+        setTimeout(() => toast.remove(), 250);
+      }, 3500);
+    }
+
+    function showSupportHelp() {
+      showToast("Soporte Synapse", "Escríbenos a maxrsilvagni@gmail.com o contáctanos por WhatsApp para asistencia inmediata.");
+    }
+
+    function copySupportId() {
+      navigator.clipboard.writeText(profile.supportId).then(() => {
+        showToast("ID Copiado", "¡ID de soporte copiado al portapapeles!");
+      }).catch(() => {
+        showToast("ID de Soporte", profile.supportId);
+      });
+    }
+
+    function refreshSubscription() {
+      showToast("Suscripción Actualizada", "Tu estado de cuenta y plan Synapse están completamente al día.");
     }
 
     // Modal de Avatares
@@ -846,18 +1331,19 @@
     function saveSelectedAvatar() {
       profile.avatarId = tempSelectedAvatar;
       localStorage.setItem('synapse_avatar', profile.avatarId);
-          if (typeof firebase !== 'undefined' && firebase.auth) {
-      firebase.auth().onAuthStateChanged((user) => {
-        if (user && user.email) {
-          profile.email = user.email;
-          localStorage.setItem('synapse_email', user.email);
-          renderProfile();
-        }
-      });
-    }
+      if (typeof firebase !== 'undefined' && firebase.auth) {
+        firebase.auth().onAuthStateChanged((user) => {
+          if (user && user.email) {
+            profile.email = user.email;
+            localStorage.setItem('synapse_email', user.email);
+            renderProfile();
+          }
+        });
+      }
 
-    renderProfile();
+      renderProfile();
       closeAvatarModal();
+      showToast("Avatar Actualizado", "Tu nuevo avatar se guardó correctamente.");
     }
 
     // Modal de Edición
@@ -903,16 +1389,7 @@
 
       renderProfile();
       closeEditModal();
-    }
-
-    function copySupportId() {
-      navigator.clipboard.writeText(profile.supportId).then(() => {
-        alert("¡ID de soporte copiado al portapapeles!");
-      });
-    }
-
-    function refreshSubscription() {
-      alert("Suscripción actualizada. Tu estado de cuenta está al día.");
+      showToast("Perfil Guardado", "Tus datos académicos se actualizaron con éxito.");
     }
 
     // Inicializar

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Synapse • Estudio Inteligente</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23B8A2F8'><polygon points='13 2 3 14 12 14 11 22 21 10 12 10 13 2'/></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   
   <style>
@@ -75,8 +75,7 @@
       font-size: 1.45rem;
       letter-spacing: -0.5px;
     }
-    .brand-logo-syn span.spark-icon {
-      font-size: 1.5rem;
+    .brand-icon-svg {
       color: var(--accent-lilac);
       filter: drop-shadow(0 0 10px rgba(184, 162, 248, 0.6));
     }
@@ -96,7 +95,7 @@
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       transition: all 0.2s ease;
     }
     .btn-pill-action:hover {
@@ -104,6 +103,8 @@
       border-color: var(--accent-lilac);
       transform: translateY(-1px);
     }
+    .btn-pill-action svg { stroke: currentColor; }
+
     .syn-avatar-circle {
       width: 40px;
       height: 40px;
@@ -143,7 +144,7 @@
       border-radius: 10px;
       display: flex;
       align-items: center;
-      gap: 2px;
+      gap: 3px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.4);
       z-index: 3;
       white-space: nowrap;
@@ -160,8 +161,9 @@
       z-index: 4;
     }
 
-    /* ─── VISTA 1: DASHBOARD DE KITS & HISTORIAL (FRAME 001 ATHEA) ─── */
+    /* ─── VISTA 1: DASHBOARD DE KITS & HISTORIAL ─── */
     #view-dashboard {
+      display: block; /* Solo esta vista visible por defecto */
       flex: 1;
       max-width: 1280px;
       width: 100%;
@@ -178,15 +180,15 @@
       flex-wrap: wrap;
     }
 
-    /* Botón "Crea un kit de estudio" */
+    /* Botón "Crea un kit de estudio" con icono SVG limpio */
     .btn-create-kit-syn {
       background: linear-gradient(135deg, rgba(30, 24, 66, 0.95), rgba(46, 20, 94, 0.95));
       border: 1.5px solid rgba(184, 162, 248, 0.35);
       border-radius: 16px;
-      padding: 1rem 1.8rem;
+      padding: 0.9rem 1.6rem;
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
       cursor: pointer;
       transition: all 0.25s ease;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
@@ -198,10 +200,9 @@
       background: linear-gradient(135deg, rgba(38, 30, 84, 0.98), rgba(58, 26, 118, 0.98));
     }
     .create-kit-icon-badge {
-      font-size: 1.4rem;
       background: rgba(184, 162, 248, 0.18);
-      width: 44px;
-      height: 44px;
+      width: 42px;
+      height: 42px;
       border-radius: 12px;
       display: flex;
       align-items: center;
@@ -248,7 +249,7 @@
     .subject-header {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
       margin-bottom: 1.2rem;
     }
     .subject-title {
@@ -260,19 +261,22 @@
     .subject-actions {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
     .subject-btn-icon {
       background: transparent;
       border: none;
       color: #94A3B8;
       cursor: pointer;
-      font-size: 0.95rem;
-      padding: 4px;
+      padding: 6px;
       border-radius: 6px;
-      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s, background 0.2s;
     }
-    .subject-btn-icon:hover { color: #fff; }
+    .subject-btn-icon:hover { color: #fff; background: rgba(255,255,255,0.06); }
+    .subject-btn-icon svg { width: 15px; height: 15px; stroke: currentColor; }
 
     /* Grilla de Tarjetas de Kits */
     .kits-cards-grid {
@@ -326,7 +330,7 @@
       right: 14px;
       background: rgba(0, 0, 0, 0.2);
       border: none;
-      color: rgba(255, 255, 255, 0.7);
+      color: rgba(255, 255, 255, 0.8);
       width: 28px;
       height: 28px;
       border-radius: 50%;
@@ -334,23 +338,61 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.1rem;
-      z-index: 3;
+      z-index: 5;
       transition: all 0.2s;
     }
     .kit-card-dots:hover { background: rgba(0, 0, 0, 0.5); color: #fff; }
 
-    /* Watermark de fondo en la tarjeta */
+    /* Menú flotante in-app para la tarjeta (Reemplaza confirm/opera) */
+    .kit-menu-dropdown {
+      position: absolute;
+      top: 48px;
+      right: 14px;
+      background: #140F2E;
+      border: 1.5px solid var(--border-purple);
+      border-radius: 12px;
+      padding: 6px;
+      z-index: 20;
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+      min-width: 170px;
+      animation: fadeInSlide 0.15s ease-out;
+    }
+    .kit-menu-dropdown.active { display: flex; }
+    .kit-menu-item {
+      background: transparent;
+      border: none;
+      color: #E2E8F0;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 8px 12px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s;
+    }
+    .kit-menu-item:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
+    .kit-menu-item.text-danger:hover { background: rgba(239, 68, 68, 0.2); color: #F87171; }
+    .kit-menu-item svg { width: 14px; height: 14px; stroke: currentColor; }
+
+    /* Watermark vectorial sutil en la tarjeta (Cero emojis) */
     .kit-card-watermark {
       position: absolute;
-      bottom: -6px;
-      right: 2px;
-      font-size: 4.8rem;
-      opacity: 0.22;
+      bottom: -10px;
+      right: -10px;
+      width: 110px;
+      height: 110px;
+      opacity: 0.15;
       pointer-events: none;
       z-index: 1;
-      transform: rotate(-10deg);
+      color: #FFFFFF;
     }
+    .kit-card-watermark svg { width: 100%; height: 100%; stroke: currentColor; fill: none; }
 
     /* Barra de progreso inferior de la tarjeta */
     .kit-card-progress-track {
@@ -369,13 +411,10 @@
       box-shadow: 0 0 10px rgba(253, 224, 71, 0.6);
     }
 
-    /* ─── MODAL: PROPORCIONA TUS MATERIALES (FRAME 003 ATHEA) ─── */
+    /* ─── MODAL: PROPORCIONA TUS MATERIALES ─── */
     .modal-materials-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
+      top: 0; left: 0; width: 100vw; height: 100vh;
       background: rgba(7, 5, 18, 0.85);
       backdrop-filter: blur(8px);
       display: none;
@@ -383,7 +422,6 @@
       justify-content: center;
       z-index: 2000;
       padding: 1.5rem;
-      animation: fadeInSlide 0.2s ease-out;
     }
     .modal-materials-card {
       background: #140F2E;
@@ -413,8 +451,9 @@
     }
     .modal-mat-info-btn {
       color: var(--text-dim);
-      font-size: 1rem;
       cursor: help;
+      display: flex;
+      align-items: center;
     }
     .modal-mat-close-btn {
       background: transparent;
@@ -426,7 +465,7 @@
     }
     .modal-mat-close-btn:hover { color: #fff; }
 
-    /* Cuadrícula de Opciones de Entrada: Subir (Recomendado) vs Pegar */
+    /* Métodos: Subir (Recomendado) vs Pegar */
     .materials-grid-options {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -470,20 +509,15 @@
       letter-spacing: 0.4px;
     }
     .mat-opt-icon {
-      font-size: 2.2rem;
       color: var(--accent-lilac);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2px;
     }
-    .mat-opt-label {
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: #FFFFFF;
-    }
-    .mat-opt-sub {
-      font-size: 0.8rem;
-      color: var(--text-dim);
-    }
+    .mat-opt-label { font-size: 1.1rem; font-weight: 800; color: #FFFFFF; }
+    .mat-opt-sub { font-size: 0.8rem; color: var(--text-dim); }
 
-    /* Paneles de Contenido de Material */
     .mat-dropzone-box {
       border: 2px dashed rgba(184, 162, 248, 0.35);
       background: rgba(17, 13, 39, 0.6);
@@ -524,7 +558,7 @@
       border: none;
       border-radius: var(--radius-md);
       padding: 1rem;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: 800;
       cursor: pointer;
       display: flex;
@@ -539,61 +573,51 @@
       box-shadow: 0 6px 26px rgba(124, 58, 237, 0.6);
     }
 
-    /* ─── VISTA: CARGANDO CON ARCOS PULSANTES (FRAME 012 ATHEA) ─── */
+    /* ─── VISTA: CARGANDO CON EXACTO ARCO PULSANTE DE THEA (FRAME 012) ─── */
     #view-loading {
-      display: none;
-      flex: 1;
+      display: none; /* Oculto por defecto */
       width: 100%;
-      min-height: 480px;
-      display: flex;
+      min-height: calc(100vh - 100px);
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 4rem 1rem;
+      padding: 2rem 1rem;
     }
-    .pulsing-arcs-wrap {
-      width: 90px;
-      height: 55px;
-      position: relative;
-      margin: 0 auto 1.8rem;
+    .thea-arc-loader {
+      display: block;
+      margin: 0 auto 1.5rem;
+      overflow: visible;
+      filter: drop-shadow(0 0 12px rgba(184, 162, 248, 0.4));
     }
-    @keyframes arcPulseAnimation {
-      0%, 100% { opacity: 0.35; transform: translateX(-50%) scale(0.96); }
-      50% { opacity: 1; transform: translateX(-50%) scale(1.04); }
+    @keyframes arcPulseWave {
+      0%, 100% { opacity: 0.35; transform: scale(0.97); }
+      50% { opacity: 1; transform: scale(1.02); filter: drop-shadow(0 0 8px rgba(184, 162, 248, 0.8)); }
     }
-    .pulsing-arc-ring {
-      position: absolute;
-      left: 50%;
-      bottom: 0;
-      transform: translateX(-50%);
-      border: 3.5px solid #C4B5FD;
-      border-bottom: none;
-      border-radius: 999px 999px 0 0;
-      animation: arcPulseAnimation 1.6s ease-in-out infinite;
+    .arc-line {
+      transform-origin: 80px 85px;
+      animation: arcPulseWave 1.4s ease-in-out infinite;
     }
-    .ring-1 { width: 36px; height: 20px; border-color: rgba(196, 181, 253, 0.45); animation-delay: 0s; }
-    .ring-2 { width: 62px; height: 34px; border-color: rgba(196, 181, 253, 0.75); animation-delay: 0.25s; }
-    .ring-3 { width: 88px; height: 48px; border-color: rgba(196, 181, 253, 1.0); animation-delay: 0.5s; }
-    .loading-status-text {
+    .arc-outer { animation-delay: 0s; }
+    .arc-middle { animation-delay: 0.22s; }
+    .arc-inner { animation-delay: 0.44s; }
+    .loading-label-thea {
       font-size: 1.25rem;
-      font-weight: 700;
-      color: #E2E8F0;
+      font-weight: 600;
+      color: #FFFFFF;
       font-style: italic;
-      letter-spacing: 0.2px;
+      letter-spacing: -0.2px;
     }
 
-    /* ─── VISTA 2: ESTUDIO ACTIVO (CON SIDEBAR FRAME 012 & 016 ATHEA) ─── */
+    /* ─── VISTA 2: ESTUDIO ACTIVO (OCULTO POR DEFECTO PARA NO VERSE ABAJO) ─── */
     #view-study-screen {
-      display: none;
-      flex: 1;
-      display: flex;
+      display: none; /* Oculto por defecto */
       width: 100%;
       height: calc(100vh - 65px);
       overflow: hidden;
     }
 
-    /* Sidebar Izquierda (Inicio, Materiales, Estudio Inteligente, Guía...) */
+    /* Sidebar Izquierda con Iconos SVG Limpios */
     .study-sidebar {
       width: 240px;
       background: var(--bg-sidebar);
@@ -629,7 +653,7 @@
       color: var(--accent-lilac);
       box-shadow: 0 0 12px rgba(184, 162, 248, 0.15);
     }
-    .sidebar-nav-btn span.icon { font-size: 1.15rem; }
+    .sidebar-nav-btn svg { width: 18px; height: 18px; stroke: currentColor; flex-shrink: 0; }
 
     /* Área Principal de Estudio */
     .study-main-area {
@@ -704,11 +728,14 @@
       background: transparent;
       border: none;
       color: var(--text-dim);
-      font-size: 1.2rem;
       cursor: pointer;
-      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s, transform 0.2s;
     }
     .btn-gear-settings:hover { color: #fff; transform: rotate(45deg); }
+    .btn-gear-settings svg { width: 22px; height: 22px; stroke: currentColor; }
 
     /* Tarjeta de Pregunta en Foco */
     .question-card-syn {
@@ -797,7 +824,7 @@
       color: #FFFFFF !important;
     }
 
-    /* Barra Inferior de Acciones (Mostrar respuesta, Saltar, Feedback Thumbs) */
+    /* Barra Inferior de Acciones */
     .study-actions-row {
       display: flex;
       align-items: center;
@@ -821,7 +848,6 @@
       color: #fff;
     }
 
-    /* Botón Siguiente Pregunta (Lilac Centrado) */
     .btn-next-action-lilac {
       background: var(--accent-lilac);
       color: #0F172A;
@@ -853,15 +879,15 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.95rem;
       cursor: pointer;
       transition: transform 0.2s;
     }
     .thumb-btn:hover { transform: scale(1.15); }
     .thumb-btn.up { background: #22C55E; color: #fff; }
     .thumb-btn.down { background: #EF4444; color: #fff; }
+    .thumb-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; }
 
-    /* Explicación en Viñetas + Más información */
+    /* Explicación en Viñetas */
     .explanation-bullets-box {
       background: #181335;
       border: 1px solid var(--border-purple);
@@ -937,10 +963,7 @@
     /* ─── DRAWER LATERAL: GUÍA DE ESTUDIO ─── */
     .guide-drawer-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
+      top: 0; left: 0; width: 100vw; height: 100vh;
       background: rgba(7, 5, 18, 0.7);
       backdrop-filter: blur(6px);
       z-index: 3000;
@@ -1025,9 +1048,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.25rem;
+      color: var(--accent-lilac);
       flex-shrink: 0;
     }
+    .syn-toast-icon svg { width: 20px; height: 20px; stroke: currentColor; fill: none; }
     .syn-toast-body { flex: 1; }
     .syn-toast-title { font-weight: 800; font-size: 0.92rem; color: #fff; margin-bottom: 2px; }
     .syn-toast-subtitle { font-size: 0.82rem; color: #CBD5E1; line-height: 1.35; }
@@ -1071,9 +1095,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2.4rem;
+      color: var(--gold-crown);
       margin: 0 auto 1.2rem;
     }
+    .milestone-badge svg { width: 34px; height: 34px; stroke: currentColor; fill: none; }
     .milestone-stats-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -1103,20 +1128,24 @@
   <!-- NAVBAR SYNAPSE -->
   <header class="syn-navbar">
     <a href="/" class="brand-logo-syn">
-      <span class="spark-icon">⚡</span>
+      <svg class="brand-icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+      </svg>
       <span>Synapse</span>
     </a>
 
     <div class="nav-actions-right">
       <button class="btn-pill-action" onclick="handleInviteClick()" title="Invitar compañeros">
-        ✈ Invitar
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        <span>Invitar</span>
       </button>
       <button class="btn-pill-action" onclick="handleFeedbackClick()" title="Enviar comentarios">
-        💬 Comentarios
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        <span>Comentarios</span>
       </button>
       <a href="/perfil/" class="syn-avatar-circle" id="nav-avatar-circle" title="Mi Perfil">
         <div class="syn-crown-badge">
-          👑 <span id="nav-crown-num">1</span>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px; margin-right:3px;"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg><span id="nav-crown-num">1</span>
         </div>
         <div class="syn-notif-dot"></div>
         <div class="syn-avatar-inner" id="nav-avatar-icon">
@@ -1127,64 +1156,81 @@
   </header>
 
   <!-- ══════════════════════════════════════════════════════════════ -->
-  <!-- 1. VISTA: DASHBOARD DE KITS & HISTORIAL (FRAME 001 ATHEA)     -->
+  <!-- 1. VISTA: DASHBOARD DE KITS & HISTORIAL (SOLO ESTA VISIBLE)   -->
   <!-- ══════════════════════════════════════════════════════════════ -->
   <main id="view-dashboard">
 
     <div class="dashboard-top-row">
       <!-- Botón destacado "Crea un kit de estudio" -->
       <button class="btn-create-kit-syn" onclick="openMaterialsModal()">
-        <div class="create-kit-icon-badge">✨</div>
+        <div class="create-kit-icon-badge">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3v3m6.366-.366l-2.12 2.12M21 12h-3m.366 6.366l-2.12-2.12M12 21v-3m-6.366.366l2.12-2.12M3 12h3m-.366-6.366l2.12 2.12"/>
+          </svg>
+        </div>
         <div style="text-align:left;">
           <div style="font-size:1.1rem; font-weight:900; color:#fff;">Crea un kit de estudio</div>
           <div style="font-size:0.8rem; color:var(--text-dim);">Sube tus apuntes, fotos o pega texto</div>
         </div>
-        <span style="font-size:1.3rem; color:var(--accent-lilac); margin-left:10px;">➔</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-lilac)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:8px;">
+          <line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
       </button>
 
       <!-- Barra de Búsqueda de Kits -->
       <div class="dashboard-search-bar">
         <div class="search-input-box">
-          <span style="color:var(--text-dim);">🔍</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
           <input type="text" id="dashboard-search-input" placeholder="Buscar en tus kits..." oninput="handleSearchKits(this.value)">
         </div>
         <button class="btn-pill-action" style="padding:8px 16px;">
-          📁 Clase ⌵
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg> <span>Clase</span> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </button>
       </div>
     </div>
 
     <!-- Contenedor dinámico de secciones de Kits organizados por Materia -->
-    <div id="kits-sections-container">
-      <!-- RENDERIZADO DESDE JAVASCRIPT / LOCALSTORAGE -->
-    </div>
+    <div id="kits-sections-container"></div>
 
   </main>
 
   <!-- ══════════════════════════════════════════════════════════════ -->
-  <!-- MODAL: PROPORCIONA TUS MATERIALES (FRAME 003 ATHEA - NO YOUTUBE) -->
+  <!-- MODAL: PROPORCIONA TUS MATERIALES                            -->
   <!-- ══════════════════════════════════════════════════════════════ -->
   <div class="modal-materials-overlay" id="modal-materials" onclick="closeMaterialsModal()">
     <div class="modal-materials-card" onclick="event.stopPropagation()">
       <div class="modal-mat-header">
         <div class="modal-mat-title-box">
           <h2 class="modal-mat-title">Proporciona tus materiales</h2>
-          <span class="modal-mat-info-btn" title="Crea un kit de estudio inteligente a partir de tus notas">ⓘ</span>
+          <span class="modal-mat-info-btn" title="Crea un kit de estudio inteligente a partir de tus notas">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          </span>
         </div>
-        <button class="modal-mat-close-btn" onclick="closeMaterialsModal()">✕</button>
+        <button class="modal-mat-close-btn" onclick="closeMaterialsModal()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
       </div>
 
-      <!-- Métodos: Subir (Recomendado) vs Pegar (SIN YOUTUBE) -->
+      <!-- Métodos: Subir (Recomendado) vs Pegar -->
       <div class="materials-grid-options">
         <div class="mat-option-btn active" id="btn-method-upload" onclick="switchMaterialMethod('upload')">
           <span class="mat-rec-pill">Recomendado</span>
-          <div class="mat-opt-icon">☁️</div>
+          <div class="mat-opt-icon">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
+              <polyline points="12 12 12 17"></polyline>
+              <polyline points="9 14 12 11 15 14"></polyline>
+            </svg>
+          </div>
           <div class="mat-opt-label">Subir</div>
           <div class="mat-opt-sub">Sube tus archivos o imágenes</div>
         </div>
 
         <div class="mat-option-btn" id="btn-method-paste" onclick="switchMaterialMethod('paste')">
-          <div class="mat-opt-icon">📋</div>
+          <div class="mat-opt-icon">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+              <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+            </svg>
+          </div>
           <div class="mat-opt-label">Pegar</div>
           <div class="mat-opt-sub">Pega tus notas o términos</div>
         </div>
@@ -1194,7 +1240,11 @@
       <div id="panel-method-upload">
         <div class="mat-dropzone-box" id="modal-drop-zone" onclick="document.getElementById('file-upload-input').click()">
           <input type="file" id="file-upload-input" accept="image/*" style="display:none;" onchange="handleModalFileSelect(event)">
-          <div style="font-size:2.4rem; margin-bottom:8px;">📸</div>
+          <div style="color:var(--accent-lilac); margin-bottom:8px;">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+          </div>
           <div style="font-weight:700; font-size:1.05rem; color:#fff; margin-bottom:4px;">Haz clic o arrastra tu imagen aquí</div>
           <div style="font-size:0.84rem; color:var(--text-dim);">Soporta Business Model Canvas, esquemas, notas de clase (PNG, JPG, WEBP)</div>
         </div>
@@ -1206,7 +1256,7 @@
               <div id="modal-file-name" style="font-weight:700; font-size:0.9rem; color:#fff;">archivo.png</div>
               <div id="modal-file-size" style="font-size:0.78rem; color:var(--text-dim);">1.2 MB</div>
             </div>
-            <button onclick="removeModalFile()" style="background:rgba(239,68,68,0.2); border:1px solid #EF4444; color:#F87171; border-radius:8px; padding:5px 10px; font-size:0.8rem; cursor:pointer;">✕</button>
+            <button onclick="removeModalFile()" style="background:rgba(239,68,68,0.2); border:1px solid #EF4444; color:#F87171; border-radius:8px; padding:5px 10px; font-size:0.8rem; cursor:pointer;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
           </div>
         </div>
       </div>
@@ -1228,52 +1278,53 @@
       </div>
 
       <button class="btn-mat-submit" onclick="submitCreateKit()">
-        <span>🚀</span> Generar Kit y Estudio Inteligente
+        <span>Generar Kit y Estudio Inteligente</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
       </button>
     </div>
   </div>
 
   <!-- ══════════════════════════════════════════════════════════════ -->
-  <!-- VISTA: CARGANDO CON ARCOS PULSANTES (FRAME 012 ATHEA)        -->
+  <!-- VISTA: CARGANDO CON EL ARCO PULSANTE DE THEA (FRAME 012)     -->
   <!-- ══════════════════════════════════════════════════════════════ -->
   <section id="view-loading">
-    <div class="pulsing-arcs-wrap">
-      <div class="pulsing-arc-ring ring-1"></div>
-      <div class="pulsing-arc-ring ring-2"></div>
-      <div class="pulsing-arc-ring ring-3"></div>
-    </div>
-    <div class="loading-status-text">Generando preguntas</div>
+    <svg class="thea-arc-loader" width="160" height="90" viewBox="0 0 160 90" fill="none">
+      <path d="M 15 80 A 75 75 0 0 1 145 80" stroke="#B8A2F8" stroke-width="7" stroke-linecap="round" class="arc-line arc-outer" />
+      <path d="M 32 82 A 58 58 0 0 1 128 82" stroke="#E9D5FF" stroke-width="7" stroke-linecap="round" class="arc-line arc-middle" />
+      <path d="M 49 84 A 41 41 0 0 1 111 84" stroke="#8B5CF6" stroke-width="7" stroke-linecap="round" class="arc-line arc-inner" />
+    </svg>
+    <div class="loading-label-thea">Generando preguntas</div>
   </section>
 
   <!-- ══════════════════════════════════════════════════════════════ -->
-  <!-- 2. VISTA: ESTUDIO ACTIVO CON SIDEBAR (FRAME 012 & 016 ATHEA) -->
+  <!-- 2. VISTA: ESTUDIO ACTIVO (OCULTO HASTA QUE SE ABRE UN KIT)   -->
   <!-- ══════════════════════════════════════════════════════════════ -->
   <section id="view-study-screen">
 
-    <!-- Sidebar Izquierda de Navegación -->
+    <!-- Sidebar Izquierda con Iconos SVG Limpios -->
     <aside class="study-sidebar">
       <button class="sidebar-nav-btn" onclick="returnToDashboard()">
-        <span class="icon">🏠</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
         <span>Inicio</span>
       </button>
       <button class="sidebar-nav-btn" onclick="openGuideDrawer()">
-        <span class="icon">📄</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
         <span>Materiales</span>
       </button>
       <button class="sidebar-nav-btn active">
-        <span class="icon">✨</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
         <span>Estudio inteligente</span>
       </button>
       <button class="sidebar-nav-btn" onclick="openGuideDrawer()">
-        <span class="icon">📖</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
         <span>Guía de Estudio</span>
       </button>
-      <button class="sidebar-nav-btn" onclick="showToast('Tarjetas de Estudio', 'Modo flashcards disponible en tu kit de estudio', '🃏')">
-        <span class="icon">🃏</span>
+      <button class="sidebar-nav-btn" onclick="showToast('Tarjetas de Estudio', 'Modo flashcards disponible en tu kit')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="16" height="13" rx="2" ry="2"></rect><path d="M6 3h12a2 2 0 0 1 2 2v12"></path></svg>
         <span>Tarjetas de estudio</span>
       </button>
-      <button class="sidebar-nav-btn" onclick="showToast('Modo Prueba', 'Completa tu sesión para generar un examen formal', '📝')">
-        <span class="icon">📝</span>
+      <button class="sidebar-nav-btn" onclick="showToast('Modo Prueba', 'Completa tu sesión para generar un examen formal')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
         <span>Prueba</span>
       </button>
     </aside>
@@ -1289,29 +1340,29 @@
         </div>
 
         <div class="thea-milestones">
-          <span class="diamond-milestone" id="diamond-star-1" title="Meta Nivel 1">✦</span>
-          <span class="diamond-milestone" id="diamond-star-2" title="Meta Nivel 2">✦</span>
-          <span class="diamond-milestone" id="diamond-star-3" title="Meta Nivel 3">✦</span>
+          <span class="diamond-milestone" id="diamond-star-1" title="Meta Nivel 1"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
+          <span class="diamond-milestone" id="diamond-star-2" title="Meta Nivel 2"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
+          <span class="diamond-milestone" id="diamond-star-3" title="Meta Nivel 3"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
         </div>
 
         <button class="btn-gear-settings" onclick="finishSession()" title="Opciones / Terminar">
-          ⚙
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
         </button>
       </div>
 
       <!-- Tarjeta de Pregunta en Foco -->
       <div class="question-card-syn">
         
-        <!-- Pregunta Centrada (Sin pastillas invasivas) -->
+        <!-- Pregunta Centrada -->
         <div class="q-text-centered" id="q-text">Cargando pregunta...</div>
 
-        <!-- Cuadrícula 2x2 de Opciones (Posiciones Aleatorias Uniformes) -->
+        <!-- Cuadrícula 2x2 de Opciones -->
         <div class="options-grid-2x2" id="q-options-container"></div>
 
         <!-- Fila de Acciones: Mostrar respuesta / Saltar / Historial / Siguiente -->
         <div class="study-actions-row">
           
-          <!-- Botón Izquierdo: "Mostrar respuesta" antes de contestar, "Historial" después -->
+          <!-- Botón Izquierdo -->
           <div id="action-left-wrap">
             <button class="action-pill-btn" id="btn-show-answer" onclick="handleShowAnswer()">
               Mostrar respuesta
@@ -1321,7 +1372,7 @@
             </button>
           </div>
 
-          <!-- Botón Central: "Saltar" antes de contestar, "Siguiente pregunta" después -->
+          <!-- Botón Central -->
           <div id="action-center-wrap">
             <button class="action-pill-btn" id="btn-skip-question" onclick="handleSkipQuestion()">
               Saltar
@@ -1331,10 +1382,14 @@
             </button>
           </div>
 
-          <!-- Botones de Feedback a la Derecha -->
+          <!-- Botones de Feedback a la Derecha con SVGs limpios -->
           <div class="feedback-thumbs-box">
-            <button class="thumb-btn up" onclick="handleQuestionFeedback(true)" title="Buena pregunta">👍</button>
-            <button class="thumb-btn down" onclick="handleQuestionFeedback(false)" title="Pregunta confusa">👎</button>
+            <button class="thumb-btn up" onclick="handleQuestionFeedback(true)" title="Buena pregunta">
+              <svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+            </button>
+            <button class="thumb-btn down" onclick="handleQuestionFeedback(false)" title="Pregunta confusa">
+              <svg viewBox="0 0 24 24"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"></path></svg>
+            </button>
           </div>
 
         </div>
@@ -1346,7 +1401,7 @@
           <div class="bone bone-line medium"></div>
         </div>
 
-        <!-- Explicación en Viñetas (Bullet Points) -->
+        <!-- Explicación en Viñetas -->
         <div class="explanation-bullets-box" id="q-explanation-box">
           <ul class="exp-bullets-list" id="q-bullets-list"></ul>
           <div style="display:flex; justify-content:center; margin-top:14px;">
@@ -1362,7 +1417,7 @@
   </section>
 
   <!-- ══════════════════════════════════════════════════════════════ -->
-  <!-- DRAWER: GUÍA DE ESTUDIO (SE ABRE SÓLO POR DEMANDA DEL USUARIO) -->
+  <!-- DRAWER: GUÍA DE ESTUDIO (SOLO POR DEMANDA)                   -->
   <!-- ══════════════════════════════════════════════════════════════ -->
   <div class="guide-drawer-overlay" id="guide-drawer-overlay" onclick="closeGuideDrawer()">
     <div class="guide-drawer" onclick="event.stopPropagation()">
@@ -1371,32 +1426,31 @@
           <span style="font-size:0.75rem; text-transform:uppercase; color:var(--accent-lilac); font-weight:800;">Documento Pedagógico</span>
           <h2 style="font-size:1.45rem; font-weight:900; color:#fff;" id="guide-doc-title">Guía de Estudio</h2>
         </div>
-        <button style="background:transparent; border:none; color:#fff; font-size:1.4rem; cursor:pointer;" onclick="closeGuideDrawer()">✕</button>
+        <button style="background:transparent; border:none; color:#fff; cursor:pointer; display:flex; align-items:center;" onclick="closeGuideDrawer()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
       </div>
 
       <div class="guide-section-card">
-        <div class="guide-section-title">📌 Resumen Ejecutivo del Tema</div>
+        <div class="guide-section-title"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg> Resumen Ejecutivo del Tema</div>
         <p style="font-size:0.9rem; color:#CBD5E1; line-height:1.55;" id="guide-doc-summary">Cargando resumen...</p>
       </div>
 
-      <!-- Secciones detalladas (Canvas, bloques de esquema) -->
       <div class="guide-section-card" id="guide-doc-sections-box" style="display:none;">
-        <div class="guide-section-title">📊 Estructura y Secciones Clave del Esquema</div>
+        <div class="guide-section-title"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> Estructura y Secciones Clave del Esquema</div>
         <div id="guide-doc-sections" style="display:flex; flex-direction:column; gap:12px;"></div>
       </div>
 
       <div class="guide-section-card">
-        <div class="guide-section-title">💡 Conceptos Clave y Definiciones</div>
+        <div class="guide-section-title"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="9" y1="18" x2="15" y2="18"></line><line x1="10" y1="22" x2="14" y2="22"></line><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"></path></svg> Conceptos Clave y Definiciones</div>
         <div id="guide-doc-concepts"></div>
       </div>
 
       <div class="guide-section-card">
-        <div class="guide-section-title">🔍 Datos Relevantes y Puntos de Examen</div>
+        <div class="guide-section-title"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Datos Relevantes y Puntos de Examen</div>
         <ul style="padding-left:18px; font-size:0.88rem; color:#CBD5E1; line-height:1.5;" id="guide-doc-facts"></ul>
       </div>
 
       <button class="btn-mat-submit" style="margin-top:auto;" onclick="closeGuideDrawer()">
-        Continuar Estudiando ➔
+        Continuar Estudiando <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:middle; margin-left:6px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
       </button>
     </div>
   </div>
@@ -1408,7 +1462,7 @@
     <div class="milestone-card" style="max-width: 640px; text-align:left;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem;">
         <h3 style="font-size:1.3rem; font-weight:800; color:#fff;">Historial de Preguntas de esta Sesión</h3>
-        <button style="background:transparent; border:none; color:#94A3B8; font-size:1.2rem; cursor:pointer;" onclick="closeHistoryModal()">✕</button>
+        <button style="background:transparent; border:none; color:#94A3B8; cursor:pointer; display:flex; align-items:center;" onclick="closeHistoryModal()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
       </div>
       <div id="history-list-container" style="max-height:400px; overflow-y:auto; display:flex; flex-direction:column; gap:10px;"></div>
       <button class="btn-mat-submit" style="margin-top:1.2rem;" onclick="closeHistoryModal()">Cerrar</button>
@@ -1416,11 +1470,13 @@
   </div>
 
   <!-- ══════════════════════════════════════════════════════════════ -->
-  <!-- MODAL: HITO TEMPORAL DE NIVEL (1, 2, 3...)                   -->
+  <!-- MODAL: HITO TEMPORAL DE NIVEL                                -->
   <!-- ══════════════════════════════════════════════════════════════ -->
   <div class="milestone-overlay" id="milestone-modal">
     <div class="milestone-card">
-      <div class="milestone-badge" id="m-badge-icon">🎯</div>
+      <div class="milestone-badge" id="m-badge-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polygon points="12 6 15 11 20 11 16 14 17 19 12 16 7 19 8 14 4 11 9 11 12 6"></polygon></svg>
+      </div>
       <h2 style="font-size:1.8rem; font-weight:800; margin-bottom:0.5rem;" id="m-modal-title">¡Nivel Superado!</h2>
       <p style="color:var(--text-dim); font-size:0.95rem; margin-bottom:1.5rem;" id="m-modal-subtitle">
         Has completado una etapa clave de tu estudio inteligente.
@@ -1442,24 +1498,26 @@
       </div>
 
       <div style="background:#181335; border:1px solid var(--border-purple); border-radius:12px; padding:1.1rem; text-align:left; margin-bottom:1.8rem;">
-        <span style="font-size:0.85rem; font-weight:700; color:var(--accent-lilac);">📋 Diagnóstico de Progreso:</span>
+        <span style="font-size:0.85rem; font-weight:700; color:var(--accent-lilac);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px; margin-right:4px;"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg> Diagnóstico de Progreso:</span>
         <p id="m-diagnostic-text" style="font-size:0.9rem; color:var(--text-white); margin-top:4px;">
           Dominas perfectamente las bases esenciales de este tema.
         </p>
       </div>
 
       <button class="btn-mat-submit" id="m-btn-continue" onclick="continueToNextStage()">
-        Continuar al Siguiente Nivel ➔
+        Continuar al Siguiente Nivel <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:middle; margin-left:6px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
       </button>
     </div>
   </div>
 
   <!-- ══════════════════════════════════════════════════════════════ -->
-  <!-- MODAL: RESUMEN FINAL DE SESIÓN (REEMPLAZA EL ALERT NATIVO)   -->
+  <!-- MODAL: RESUMEN FINAL DE SESIÓN                               -->
   <!-- ══════════════════════════════════════════════════════════════ -->
   <div class="milestone-overlay" id="summary-modal">
     <div class="milestone-card">
-      <div class="milestone-badge" style="border-color:#38BDF8;">🏆</div>
+      <div class="milestone-badge" style="border-color:#38BDF8; color:#38BDF8;">
+        <svg viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>
+      </div>
       <h2 style="font-size:1.9rem; font-weight:900; margin-bottom:0.5rem;">¡Sesión Finalizada!</h2>
       <p style="color:var(--text-dim); margin-bottom:1.5rem;" id="summary-modal-desc">
         Gran trabajo en tu sesión de estudio activo.
@@ -1481,16 +1539,16 @@
       </div>
 
       <button class="btn-mat-submit" onclick="closeSummaryModalAndReturn()">
-        Volver a mis Kits de Estudio 🚀
+        Volver a mis Kits de Estudio <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:middle; margin-left:6px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
       </button>
     </div>
   </div>
 
   <!-- ══════════════════════════════════════════════════════════════ -->
-  <!-- JAVASCRIPT: LÓGICA DE KITS, DEDUPLICACIÓN Y ALEATORIZACIÓN   -->
+  <!-- JAVASCRIPT: LÓGICA DE CONTROL TOTAL                          -->
   <!-- ══════════════════════════════════════════════════════════════ -->
   <script>
-    /* ─── KITS DE ESTUDIO POR DEFECTO (HISTORIAL ESTILO FRAME 001) ─── */
+    /* ─── KITS DE ESTUDIO POR DEFECTO CON WATERMARKS VECTORIALES ─── */
     const DEFAULT_KITS = [
       {
         id: "kit_canvas",
@@ -1498,7 +1556,7 @@
         title: "Business Model Canvas (Robótica e IA para el Turismo)",
         progress: 40,
         colorTheme: "theme-green",
-        watermark: "💼",
+        watermarkSvg: '<svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>',
         level: "Bachillerato / Preparatoria (15 - 17 años)"
       },
       {
@@ -1507,7 +1565,7 @@
         title: "Astronomía y Ciencias de la Tierra",
         progress: 85,
         colorTheme: "theme-green",
-        watermark: "🌍",
+        watermarkSvg: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>',
         level: "Bachillerato / Preparatoria (15 - 17 años)"
       },
       {
@@ -1516,7 +1574,7 @@
         title: "Examen de GHC y Derecho Ciudadano",
         progress: 25,
         colorTheme: "theme-purple",
-        watermark: "⚖️",
+        watermarkSvg: '<svg viewBox="0 0 24 24"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"></path></svg>',
         level: "Bachillerato / Preparatoria (15 - 17 años)"
       },
       {
@@ -1525,25 +1583,7 @@
         title: "Clasificación y características de los hongos",
         progress: 15,
         colorTheme: "theme-blue",
-        watermark: "🧬",
-        level: "Bachillerato / Preparatoria (15 - 17 años)"
-      },
-      {
-        id: "kit_bio_algas",
-        subject: "Biología",
-        title: "Algas: clorofitas y rodofitas",
-        progress: 0,
-        colorTheme: "theme-blue",
-        watermark: "🧬",
-        level: "Bachillerato / Preparatoria (15 - 17 años)"
-      },
-      {
-        id: "kit_bio_monera",
-        subject: "Biología",
-        title: "Reino Monera y Bacterias",
-        progress: 30,
-        colorTheme: "theme-blue",
-        watermark: "🧬",
+        watermarkSvg: '<svg viewBox="0 0 24 24"><path d="M2 15c6.667-6 13.333 0 20-6"></path><path d="M9 22c1.798-1.998 2.518-3.995 2.807-5.993"></path><path d="M15 2c-1.798 1.998-2.518 3.995-2.807 5.993"></path><path d="m17 6-2.5-2.5"></path><path d="m14 8-1-1"></path><path d="m7 18 2.5 2.5"></path><path d="m3.5 14.5.5.5"></path><path d="m20 9 .5.5"></path><path d="m6.5 12.5 1 1"></path><path d="m16.5 10.5 1 1"></path><path d="m10 16 1.5 1.5"></path></svg>',
         level: "Bachillerato / Preparatoria (15 - 17 años)"
       },
       {
@@ -1552,25 +1592,7 @@
         title: "Clasificación y nomenclatura biológica",
         progress: 75,
         colorTheme: "theme-blue",
-        watermark: "🧬",
-        level: "Bachillerato / Preparatoria (15 - 17 años)"
-      },
-      {
-        id: "kit_bio_biodiv",
-        subject: "Biología",
-        title: "Biodiversidad y conservación ecológica",
-        progress: 0,
-        colorTheme: "theme-blue",
-        watermark: "🧬",
-        level: "Bachillerato / Preparatoria (15 - 17 años)"
-      },
-      {
-        id: "kit_bio_evol",
-        subject: "Biología",
-        title: "Fundamentos de la Evolución Biológica",
-        progress: 45,
-        colorTheme: "theme-blue",
-        watermark: "🧬",
+        watermarkSvg: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"></path></svg>',
         level: "Bachillerato / Preparatoria (15 - 17 años)"
       }
     ];
@@ -1593,11 +1615,11 @@
       isFetchingBatch: false,
       answeredCurrent: false,
 
-      // Material seleccionado en el modal
-      modalMethod: 'upload', // 'upload' o 'paste'
+      // Modal
+      modalMethod: 'upload',
       modalSelectedFile: null,
 
-      // Etapas de sesión continuas
+      // Etapas continuas
       stageLevel: 1,
       questionsPerStage: 5,
       stageAnswered: 0,
@@ -1605,6 +1627,22 @@
     };
 
     const GEMINI_MODEL = 'gemini-3.8-flash';
+
+    /* ─── CONTROL DE VISTAS (SOLO UNA ACTIVA A LA VEZ) ─── */
+    function showActiveView(activeId) {
+      const views = {
+        'view-dashboard': 'block',
+        'view-loading': 'flex',
+        'view-study-screen': 'flex'
+      };
+
+      Object.keys(views).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.style.display = (id === activeId) ? views[id] : 'none';
+        }
+      });
+    }
 
     /* ─── GESTIÓN DE USUARIO Y PERFIL ─── */
     const user = {
@@ -1637,20 +1675,24 @@
       updateNavbar();
     }
 
-    /* ─── NOTIFICACIONES TOAST SYNAPSE ─── */
-    function showToast(title, subtitle, icon = "✨") {
+    /* ─── TOAST NOTIFICATIONS SYNAPSE (CON ICONOS SVG) ─── */
+    function showToast(title, subtitle, iconSvg = null) {
       const container = document.getElementById('syn-toast-container');
       if (!container) return;
 
       const toast = document.createElement('div');
       toast.className = 'syn-toast-card';
+      
+      const defaultSvg = '<svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>';
+      const iconContent = iconSvg || defaultSvg;
+
       toast.innerHTML = `
-        <div class="syn-toast-icon">${icon}</div>
+        <div class="syn-toast-icon">${iconContent}</div>
         <div class="syn-toast-body">
           <div class="syn-toast-title">${title}</div>
           <div class="syn-toast-subtitle">${subtitle}</div>
         </div>
-        <button class="syn-toast-close" onclick="this.parentElement.remove()">✕</button>
+        <button class="syn-toast-close" onclick="this.parentElement.remove()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
       `;
 
       container.appendChild(toast);
@@ -1663,28 +1705,28 @@
     function handleInviteClick() {
       const shareUrl = window.location.origin;
       navigator.clipboard.writeText(shareUrl).then(() => {
-        showToast("¡Enlace Copiado!", "Compártelo con tus compañeros para estudiar en Synapse 📋", "📋");
+        showToast("¡Enlace Copiado!", "Compártelo con tus compañeros para estudiar en Synapse");
       }).catch(() => {
-        showToast("Enlace de Invitación", shareUrl, "🔗");
+        showToast("Enlace de Invitación", shareUrl);
       });
     }
 
     function handleFeedbackClick() {
       const text = prompt("¿Qué sugerencia o comentario tienes para mejorar tu experiencia en Synapse?");
       if (text && text.trim()) {
-        showToast("¡Comentario Recibido!", "Muchas gracias por ayudarnos a mejorar Synapse 💬", "💬");
+        showToast("¡Comentario Recibido!", "Muchas gracias por ayudarnos a mejorar Synapse");
       }
     }
 
     function handleQuestionFeedback(isPositive) {
       if (isPositive) {
-        showToast("¡Gracias por calificar!", "Registramos que esta pregunta fue clara y útil 👍", "👍");
+        showToast("¡Gracias por calificar!", "Registramos que esta pregunta fue clara y útil");
       } else {
-        showToast("Feedback registrado", "Anotamos que esta pregunta puede mejorar en claridad 👎", "👎");
+        showToast("Feedback registrado", "Anotamos que esta pregunta puede mejorar en claridad");
       }
     }
 
-    /* ─── RENDERIZADO DEL DASHBOARD DE KITS (FRAME 001) ─── */
+    /* ─── DASHBOARD DE KITS ─── */
     function loadKitsFromStorage() {
       const saved = localStorage.getItem('synapse_study_kits');
       if (saved) {
@@ -1708,7 +1750,6 @@
       if (!container) return;
       container.innerHTML = '';
 
-      // Agrupar por Materia
       const grouped = {};
       state.kits.forEach(k => {
         if (filterQuery && !k.title.toLowerCase().includes(filterQuery.toLowerCase()) && !k.subject.toLowerCase().includes(filterQuery.toLowerCase())) {
@@ -1722,7 +1763,6 @@
       if (subjects.length === 0) {
         container.innerHTML = `
           <div style="text-align:center; padding:3rem; color:var(--text-dim);">
-            <div style="font-size:2.5rem; margin-bottom:10px;">🔍</div>
             <div style="font-weight:700; font-size:1.1rem; color:#fff;">No se encontraron kits de estudio</div>
             <p style="font-size:0.9rem; margin-top:6px;">Prueba con otra búsqueda o crea uno nuevo con el botón de arriba.</p>
           </div>
@@ -1739,9 +1779,15 @@
         header.innerHTML = `
           <h3 class="subject-title">${subj}</h3>
           <div class="subject-actions">
-            <button class="subject-btn-icon" title="Editar materia">✏️</button>
-            <button class="subject-btn-icon" title="Color de materia">🎨</button>
-            <button class="subject-btn-icon" title="Compartir materia">👤+</button>
+            <button class="subject-btn-icon" title="Editar materia">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+            </button>
+            <button class="subject-btn-icon" title="Color de materia">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="13.5" cy="6.5" r=".5"></circle><circle cx="17.5" cy="10.5" r=".5"></circle><circle cx="8.5" cy="7.5" r=".5"></circle><circle cx="6.5" cy="12.5" r=".5"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.563-2.512 5.563-5.563C22 6.5 17.5 2 12 2Z"></path></svg>
+            </button>
+            <button class="subject-btn-icon" title="Compartir materia">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+            </button>
           </div>
         `;
         section.appendChild(header);
@@ -1755,8 +1801,21 @@
           card.onclick = () => openKitStudy(kit.id);
           card.innerHTML = `
             <div class="kit-card-title">${kit.title}</div>
-            <button class="kit-card-dots" onclick="handleKitMenu(event, '${kit.id}')" title="Opciones">⋮</button>
-            <div class="kit-card-watermark">${kit.watermark || '⚡'}</div>
+            <button class="kit-card-dots" onclick="toggleKitMenu(event, '${kit.id}')" title="Opciones">⋮</button>
+            
+            <!-- Menú flotante in-app (reemplaza confirm del navegador) -->
+            <div class="kit-menu-dropdown" id="menu-${kit.id}">
+              <button class="kit-menu-item" onclick="resetKitProgress(event, '${kit.id}')">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+                <span>Reiniciar progreso</span>
+              </button>
+              <button class="kit-menu-item text-danger" onclick="deleteKit(event, '${kit.id}')">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                <span>Eliminar kit</span>
+              </button>
+            </div>
+
+            <div class="kit-card-watermark">${kit.watermarkSvg || '<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>'}</div>
             <div class="kit-card-progress-track">
               <div class="kit-card-progress-fill" style="width: ${kit.progress || 0}%;"></div>
             </div>
@@ -1773,15 +1832,39 @@
       renderDashboard(val.trim());
     }
 
-    function handleKitMenu(e, kitId) {
+    // Toggle menú contextual in-app
+    function toggleKitMenu(e, kitId) {
       e.stopPropagation();
-      const action = confirm("¿Deseas reiniciar el progreso o eliminar este kit de estudio?");
-      if (action) {
-        state.kits = state.kits.filter(k => k.id !== kitId);
+      const allMenus = document.querySelectorAll('.kit-menu-dropdown');
+      allMenus.forEach(m => {
+        if (m.id !== `menu-${kitId}`) m.classList.remove('active');
+      });
+      const targetMenu = document.getElementById(`menu-${kitId}`);
+      if (targetMenu) targetMenu.classList.toggle('active');
+    }
+
+    // Cerrar menús al hacer clic fuera
+    window.addEventListener('click', () => {
+      document.querySelectorAll('.kit-menu-dropdown').forEach(m => m.classList.remove('active'));
+    });
+
+    function resetKitProgress(e, kitId) {
+      e.stopPropagation();
+      const kit = state.kits.find(k => k.id === kitId);
+      if (kit) {
+        kit.progress = 0;
         saveKitsToStorage();
         renderDashboard();
-        showToast("Kit Eliminado", "Se removió de tu lista de kits de estudio", "🗑️");
+        showToast("Progreso Reiniciado", `Se reinició el progreso de "${kit.title}"`);
       }
+    }
+
+    function deleteKit(e, kitId) {
+      e.stopPropagation();
+      state.kits = state.kits.filter(k => k.id !== kitId);
+      saveKitsToStorage();
+      renderDashboard();
+      showToast("Kit Eliminado", "Se removió de tu lista de kits de estudio");
     }
 
     /* ─── MODAL PROPORCIONA TUS MATERIALES ─── */
@@ -1821,7 +1904,6 @@
       processModalFile(file);
     }
 
-    // Drag and drop para el modal
     const modalDropZone = document.getElementById('modal-drop-zone');
     if (modalDropZone) {
       ['dragenter', 'dragover'].forEach(name => {
@@ -1845,7 +1927,7 @@
 
     function processModalFile(file) {
       if (!file.type.startsWith('image/')) {
-        showToast("Formato no válido", "Por favor sube una imagen (PNG, JPG, WEBP)", "⚠️");
+        showToast("Formato no válido", "Por favor sube una imagen (PNG, JPG, WEBP)");
         return;
       }
       const reader = new FileReader();
@@ -1864,7 +1946,7 @@
         document.getElementById('modal-file-name').textContent = file.name;
         document.getElementById('modal-file-size').textContent = state.modalSelectedFile.size;
         document.getElementById('modal-file-preview-wrap').style.display = 'block';
-        showToast("Foto Lista", "Imagen preparada para análisis: " + file.name, "📷");
+        showToast("Foto Lista", "Imagen preparada para análisis: " + file.name);
       };
       reader.readAsDataURL(file);
     }
@@ -1876,24 +1958,26 @@
       document.getElementById('modal-drop-zone').style.display = 'block';
     }
 
-    /* ─── CREAR Y ENVIAR MATERIALES AL MOTOR DE IA ─── */
+    /* ─── CREAR Y ENVIAR MATERIALES (SOLUCIONA EL ERROR BASE64) ─── */
     async function submitCreateKit() {
       state.level = document.getElementById('modal-academic-level').value;
 
       if (state.modalMethod === 'upload') {
         if (!state.modalSelectedFile) {
-          showToast("Falta Archivo", "Por favor selecciona o arrastra una imagen o foto de tus apuntes", "⚠️");
+          showToast("Falta Archivo", "Por favor selecciona o arrastra una imagen o foto de tus apuntes");
           return;
         }
-        closeMaterialsModal();
-        await processNewImageKit();
+        // Guardamos referencia segura ANTES de cerrar modal para evitar error base64
+        const fileData = { ...state.modalSelectedFile };
+        document.getElementById('modal-materials').style.display = 'none';
+        await processNewImageKit(fileData);
       } else {
         const text = document.getElementById('modal-paste-textarea').value.trim();
         if (!text) {
-          showToast("Falta Contenido", "Por favor escribe o pega el contenido a estudiar", "⚠️");
+          showToast("Falta Contenido", "Por favor escribe o pega el contenido a estudiar");
           return;
         }
-        closeMaterialsModal();
+        document.getElementById('modal-materials').style.display = 'none';
         await processNewTextKit(text);
       }
     }
@@ -1924,7 +2008,7 @@
       return data.candidates[0].content.parts[0].text;
     }
 
-    /* ─── FIX CRÍTICO: ALEATORIZACIÓN MATEMÁTICA 100% UNIFORME DE OPCIONES ─── */
+    /* ─── ALEATORIZACIÓN MATEMÁTICA 100% UNIFORME DE OPCIONES ─── */
     function randomizeQuestionOptions(q) {
       if (!Array.isArray(q.opciones) || q.opciones.length < 2) return q;
       const correctText = q.opciones[q.correcta];
@@ -1943,14 +2027,8 @@
     }
 
     /* ─── PROCESAR NUEVO KIT POR IMAGEN ─── */
-    async function processNewImageKit() {
-      const dashboard = document.getElementById('view-dashboard');
-      const loading = document.getElementById('view-loading');
-      const studyScreen = document.getElementById('view-study-screen');
-
-      dashboard.style.display = 'none';
-      studyScreen.style.display = 'none';
-      loading.style.display = 'flex';
+    async function processNewImageKit(fileData) {
+      showActiveView('view-loading');
 
       const prompt = `Analiza detalladamente esta imagen de apuntes escolares, Business Model Canvas, esquema conceptual o temario.
 Nivel académico del estudiante: "${state.level}".
@@ -1980,30 +2058,27 @@ Responde ÚNICAMENTE en JSON plano válido con esta estructura:
 }`;
 
       try {
-        const raw = await askGemini(prompt, "Eres un profesor pedagógico. Extrae fielmente en JSON.", state.modalSelectedFile.base64, state.modalSelectedFile.mimeType);
+        const raw = await askGemini(prompt, "Eres un profesor pedagógico. Extrae fielmente en JSON.", fileData.base64, fileData.mimeType);
         const clean = raw.replace(/```json/gi, "").replace(/```/gi, "").trim();
         const guide = JSON.parse(clean);
 
         state.topic = guide.tema || "Tema de Apuntes";
         state.studyGuide = guide;
 
-        // Renderizar drawer
         renderGuideDrawerContent(guide);
 
-        // Crear kit en el dashboard
         const newKit = {
           id: "kit_" + Date.now(),
           subject: guide.materia || "General",
           title: state.topic,
           progress: 5,
           colorTheme: "theme-green",
-          watermark: "💼",
+          watermarkSvg: '<svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>',
           level: state.level
         };
         state.kits.unshift(newKit);
         saveKitsToStorage();
 
-        // Obtener primer lote de preguntas con deduplicación y aleatorización
         state.queue = [];
         state.history = [];
         state.currentIndex = 0;
@@ -2013,30 +2088,21 @@ Responde ÚNICAMENTE en JSON plano válido con esta estructura:
 
         await fetchQuestionBatch(5);
 
-        loading.style.display = 'none';
-        studyScreen.style.display = 'flex';
-
-        // IMPORTANTE: NO ABRIMOS EL DRAWER AUTOMÁTICAMENTE (RESPONDE A LA DUDA DEL USUARIO)
+        // Pasamos directamente a la pantalla de estudio (sin abrir la guía automáticamente)
+        showActiveView('view-study-screen');
         renderQuestion();
-        showToast("Kit Creado", `Iniciando sesión sobre "${state.topic}"`, "✨");
+        showToast("Kit Creado", `Iniciando sesión sobre "${state.topic}"`);
 
       } catch (err) {
         console.error("Error al procesar imagen:", err);
-        loading.style.display = 'none';
-        dashboard.style.display = 'block';
-        showToast("Error", "No se pudo generar el kit: " + err.message, "❌");
+        showActiveView('view-dashboard');
+        showToast("Error", "No se pudo generar el kit: " + err.message);
       }
     }
 
     /* ─── PROCESAR NUEVO KIT POR TEXTO ─── */
     async function processNewTextKit(text) {
-      const dashboard = document.getElementById('view-dashboard');
-      const loading = document.getElementById('view-loading');
-      const studyScreen = document.getElementById('view-study-screen');
-
-      dashboard.style.display = 'none';
-      studyScreen.style.display = 'none';
-      loading.style.display = 'flex';
+      showActiveView('view-loading');
 
       const prompt = `Analiza este texto o temario de estudio escolar:
 "${text}"
@@ -2071,7 +2137,7 @@ Responde ÚNICAMENTE en JSON plano válido con esta estructura:
           title: state.topic,
           progress: 5,
           colorTheme: "theme-purple",
-          watermark: "⚡",
+          watermarkSvg: '<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>',
           level: state.level
         };
         state.kits.unshift(newKit);
@@ -2086,21 +2152,18 @@ Responde ÚNICAMENTE en JSON plano válido con esta estructura:
 
         await fetchQuestionBatch(5);
 
-        loading.style.display = 'none';
-        studyScreen.style.display = 'flex';
-
+        showActiveView('view-study-screen');
         renderQuestion();
-        showToast("Kit Creado", `Iniciando sesión sobre "${state.topic}"`, "✨");
+        showToast("Kit Creado", `Iniciando sesión sobre "${state.topic}"`);
 
       } catch (err) {
         console.error("Error al procesar texto:", err);
-        loading.style.display = 'none';
-        dashboard.style.display = 'block';
-        showToast("Error", "No se pudo generar el kit: " + err.message, "❌");
+        showActiveView('view-dashboard');
+        showToast("Error", "No se pudo generar el kit: " + err.message);
       }
     }
 
-    /* ─── ABRIR KIT EXISTENTE DESDE EL HISTORIAL (FRAME 001) ─── */
+    /* ─── ABRIR KIT EXISTENTE ─── */
     async function openKitStudy(kitId) {
       const kit = state.kits.find(k => k.id === kitId);
       if (!kit) return;
@@ -2109,14 +2172,8 @@ Responde ÚNICAMENTE en JSON plano válido con esta estructura:
       state.topic = kit.title;
       state.level = kit.level || 'Bachillerato / Preparatoria (15 - 17 años)';
 
-      const dashboard = document.getElementById('view-dashboard');
-      const loading = document.getElementById('view-loading');
-      const studyScreen = document.getElementById('view-study-screen');
+      showActiveView('view-loading');
 
-      dashboard.style.display = 'none';
-      loading.style.display = 'flex';
-
-      // Inicializar preguntas si no hay
       state.queue = [];
       state.history = [];
       state.currentIndex = 0;
@@ -2126,30 +2183,24 @@ Responde ÚNICAMENTE en JSON plano válido con esta estructura:
 
       await fetchQuestionBatch(5);
 
-      loading.style.display = 'none';
-      studyScreen.style.display = 'flex';
-
+      showActiveView('view-study-screen');
       renderQuestion();
-      showToast("Estudio Inteligente", `Cargando preguntas de "${state.topic}"`, "📂");
+      showToast("Estudio Inteligente", `Cargando preguntas de "${state.topic}"`);
     }
 
     function returnToDashboard() {
-      document.getElementById('view-study-screen').style.display = 'none';
-      document.getElementById('view-dashboard').style.display = 'block';
+      showActiveView('view-dashboard');
       renderDashboard();
     }
 
-    /* ─── OBTENER PREGUNTAS CONTINUAS SIN REPETICIÓN Y CON ALEATORIZACIÓN ─── */
+    /* ─── OBTENER PREGUNTAS CONTINUAS CON DEDUPLICACIÓN Y ALEATORIZACIÓN ─── */
     async function fetchQuestionBatch(count = 5) {
       if (state.isFetchingBatch) return;
       state.isFetchingBatch = true;
 
-      // Lista de preguntas que ya existen en la sesión
       const existingQuestions = state.queue.map(q => q.pregunta);
       const avoidList = existingQuestions.length > 0
-        ? `
-PREGUNTAS YA FORMULADAS (ESTRICTAMENTE PROHIBIDO REPETIR O PREGUNTAR LO MISMO):
-` +
+        ? `\nPREGUNTAS YA FORMULADAS (ESTRICTAMENTE PROHIBIDO REPETIR O PREGUNTAR LO MISMO):\n` +
           existingQuestions.map((p, i) => `${i + 1}. ${p}`).join('\n')
         : '';
 
@@ -2164,9 +2215,7 @@ PREGUNTAS YA FORMULADAS (ESTRICTAMENTE PROHIBIDO REPETIR O PREGUNTAR LO MISMO):
 MATERIAL BASE DE ESTUDIO (PREGUNTAS ESTRICTAMENTE BASADAS EN ESTO):
 Tema: ${state.studyGuide.tema}
 Resumen: ${state.studyGuide.resumen}
-${secSummary ? `Estructura y Bloques:
-${secSummary}
-` : ''}
+${secSummary ? `Estructura y Bloques:\n${secSummary}\n` : ''}
 Conceptos: ${JSON.stringify(state.studyGuide.conceptosClave || [])}
 Datos Relevantes: ${JSON.stringify(state.studyGuide.datosRelevantes || [])}
 Puntos Examen: ${JSON.stringify(state.studyGuide.puntosExamen || [])}
@@ -2181,9 +2230,9 @@ ${guideContext}
 ${avoidList}
 
 REGLAS DE ORO:
-1. DIVERSIFICACIÓN ABSOLUTA: Si hay múltiples secciones (ej: Socios, Canales, Costos, Ingresos Ad-Tech, Hardware), pregunta sobre áreas distintas cada vez.
+1. DIVERSIFICACIÓN ABSOLUTA: Pregunta sobre diferentes secciones o bloques de forma equitativa.
 2. NO REPITAS NINGUNA PREGUNTA DE LA LISTA ANTERIOR.
-3. 4 opciones de respuesta (1, 2, 3, 4) con exactamente 1 respuesta correcta.
+3. 4 opciones de respuesta cortas y claras (1, 2, 3, 4) con exactamente 1 respuesta correcta.
 4. IMPORTANTE: LA RESPUESTA CORRECTA NO DEBE ESTAR SIEMPRE EN EL ÍNDICE 0. DISTRIBÚYELA ALEATORIAMENTE ENTRE LAS 4 POSICIONES (0, 1, 2 o 3).
 5. "bullets": Array con 2 o 3 viñetas breves explicando con claridad por qué la respuesta es esa.
 
@@ -2210,7 +2259,7 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
           batch.forEach(b => {
             const t = (b.pregunta || '').toLowerCase().trim();
             if (!currentTexts.includes(t)) {
-              // APLICAR ALEATORIZACIÓN MATEMÁTICA EN EL CLIENTE
+              // Barajar opciones matemáticamente
               const randomizedQ = randomizeQuestionOptions(b);
               state.queue.push(randomizedQ);
               currentTexts.push(t);
@@ -2224,7 +2273,7 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       }
     }
 
-    /* ─── ACTUALIZAR BARRA SUPERIOR CON DIAMANTES ─── */
+    /* ─── ACTUALIZAR BARRA SUPERIOR ─── */
     function updateProgress() {
       const pct = Math.min(100, Math.round((state.stageAnswered / state.questionsPerStage) * 100));
       
@@ -2267,7 +2316,6 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
 
       document.getElementById('q-text').textContent = q.pregunta;
 
-      // Restablecer estados de botones antes de contestar
       document.getElementById('btn-show-answer').style.display = 'block';
       document.getElementById('btn-view-history').style.display = 'none';
       document.getElementById('btn-skip-question').style.display = 'block';
@@ -2291,7 +2339,6 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
         container.appendChild(btn);
       });
 
-      // Prefetch si quedan 3 o menos
       if (state.queue.length - state.currentIndex <= 3) {
         fetchQuestionBatch(5);
       }
@@ -2314,7 +2361,6 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
         isCorrect: isCorrect
       });
 
-      // Bloquear botones
       const allBtns = document.querySelectorAll(".syn-option-btn");
       allBtns.forEach(b => b.disabled = true);
 
@@ -2331,31 +2377,29 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
         addXP(25);
 
         if (selectedBtn) selectedBtn.classList.add("state-correct");
-        if (selectedNum) selectedNum.innerHTML = "✓";
+        if (selectedNum) selectedNum.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>';
 
-        if (state.streak === 3) showToast("¡Racha en Fuego! 🔥", "3 respuestas correctas consecutivas", "🔥");
-        else if (state.streak === 5) showToast("¡Gran Concentración! ⚡", "5 aciertos seguidos en Estudio Inteligente", "⚡");
-        else if (state.streak === 7) showToast("¡Desafío completado! 🏆", "7 aciertos consecutivos en Estudio Inteligente ✓", "🏆");
-        else if (state.streak === 10) showToast("¡Maestría Imparable! 👑", "10 aciertos consecutivos. ¡Récord de sesión!", "👑");
+        if (state.streak === 3) showToast("¡Racha en Fuego!", "3 respuestas correctas consecutivas");
+        else if (state.streak === 5) showToast("¡Gran Concentración!", "5 aciertos seguidos en Estudio Inteligente");
+        else if (state.streak === 7) showToast("¡Desafío completado!", "7 aciertos consecutivos en Estudio Inteligente");
+        else if (state.streak === 10) showToast("¡Maestría Imparable!", "10 aciertos consecutivos. ¡Récord de sesión!");
 
       } else {
         state.streak = 0;
         if (selectedBtn) selectedBtn.classList.add("state-incorrect");
-        if (selectedNum) selectedNum.innerHTML = "✕";
+        if (selectedNum) selectedNum.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>';
 
         if (correctBtn) correctBtn.classList.add("state-correct");
-        if (correctNum) correctNum.innerHTML = "✓";
+        if (correctNum) correctNum.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>';
       }
 
       updateProgress();
 
-      // Cambiar botones: mostrar "Historial" y "Siguiente pregunta"
       document.getElementById('btn-show-answer').style.display = 'none';
       document.getElementById('btn-view-history').style.display = 'block';
       document.getElementById('btn-skip-question').style.display = 'none';
       document.getElementById('btn-next-question').style.display = 'block';
 
-      // Shimmer bone de 1 segundo
       const skeletonBox = document.getElementById("q-skeleton-box");
       if (skeletonBox) skeletonBox.style.display = "block";
 
@@ -2382,19 +2426,16 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       }, 1000);
     }
 
-    /* ─── BOTÓN: MOSTRAR RESPUESTA ANTES DE CONTESTAR ─── */
     function handleShowAnswer() {
       if (state.answeredCurrent) return;
       const q = state.queue[state.currentIndex];
       handleAnswer(q.correcta);
     }
 
-    /* ─── BOTÓN: SALTAR PREGUNTA ─── */
     function handleSkipQuestion() {
       nextQuestion();
     }
 
-    /* ─── SIGUIENTE PREGUNTA Y MANEJO CONTINUO ─── */
     async function nextQuestion() {
       if (state.stageAnswered >= state.questionsPerStage) {
         showMilestoneModal();
@@ -2427,14 +2468,14 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       addXP(50);
       xpBonus.textContent = `+${(state.stageCorrect * 25) + 50} XP`;
 
-      showToast("¡Hito de Nivel!", `Nivel ${state.stageLevel} superado con ${accPct}% de precisión • +50 XP 🎯`, "🎯");
+      showToast("¡Hito de Nivel!", `Nivel ${state.stageLevel} superado con ${accPct}% de precisión • +50 XP`);
 
       title.textContent = `¡Nivel ${state.stageLevel} Superado!`;
       subtitle.textContent = "Has completado la etapa de preguntas. Diagnóstico de tu progreso:";
       diagText.textContent = accPct >= 80 
         ? `Excelente retención en "${state.topic}". Tienes una base sólida.`
         : `Bases iniciales comprendidas. En la siguiente etapa reforzaremos los puntos prácticos.`;
-      continueBtn.textContent = `Avanzar a Nivel ${state.stageLevel + 1} ➔`;
+      continueBtn.textContent = `Avanzar a Nivel ${state.stageLevel + 1} →`;
 
       modal.style.display = 'flex';
     }
@@ -2442,7 +2483,6 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
     async function continueToNextStage() {
       document.getElementById('milestone-modal').style.display = 'none';
 
-      // NUNCA finaliza automáticamente: estudio continuo infinito
       state.stageLevel++;
       state.stageAnswered = 0;
       state.stageCorrect = 0;
@@ -2455,7 +2495,6 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       renderQuestion();
     }
 
-    /* ─── FINALIZAR SESIÓN MANUALMENTE (DESDE ENGRANAJE ⚙) ─── */
     function finishSession() {
       const modal = document.getElementById('summary-modal');
       const accPct = state.totalAnswered > 0 ? Math.round((state.correctCount / state.totalAnswered) * 100) : 0;
@@ -2489,7 +2528,7 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
           item.style.cssText = 'background:#110D27; border:1px solid rgba(184,162,248,0.25); border-radius:10px; padding:12px 14px;';
           const pointsList = (s.puntos || []).map(p => `<li>${p}</li>`).join('');
           item.innerHTML = `
-            <div style="font-weight:800; font-size:0.95rem; color:var(--accent-lilac); margin-bottom:4px;">📌 ${s.titulo}</div>
+            <div style="font-weight:800; font-size:0.95rem; color:var(--accent-lilac); margin-bottom:4px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px; margin-right:4px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>${s.titulo}</div>
             ${s.explicacion ? `<div style="font-size:0.83rem; color:#94A3B8; margin-bottom:6px;">${s.explicacion}</div>` : ''}
             <ul style="padding-left:18px; font-size:0.85rem; color:#E2E8F0; margin:0; line-height:1.45;">${pointsList}</ul>
           `;
@@ -2508,7 +2547,7 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
           card.innerHTML = `
             <div class="concept-term">${c.termino}</div>
             <div class="concept-def">${c.definicion}</div>
-            ${c.importancia ? `<div style="font-size:0.78rem; color:#94A3B8; margin-top:4px;">💡 ${c.importancia}</div>` : ''}
+            ${c.importancia ? `<div style="font-size:0.78rem; color:#94A3B8; margin-top:4px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px; margin-right:3px;"><line x1="9" y1="18" x2="15" y2="18"></line><line x1="10" y1="22" x2="14" y2="22"></line><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"></path></svg>${c.importancia}</div>` : ''}
           `;
           conceptsContainer.appendChild(card);
         });
@@ -2547,7 +2586,7 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
           item.innerHTML = `
             <div style="font-weight:700; color:#fff; font-size:0.9rem; margin-bottom:4px;">${i+1}. ${h.pregunta}</div>
             <div style="font-size:0.82rem; color:${h.isCorrect ? '#4ADE80' : '#F87171'};">
-              ${h.isCorrect ? '✓ Correcta: ' : '✕ Tu respuesta: '} ${h.elegida}
+              ${h.isCorrect ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" style="vertical-align:-1px; margin-right:3px;"><polyline points="20 6 9 17 4 12"/></svg> Correcta: ' : '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" style="vertical-align:-1px; margin-right:3px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg> Tu respuesta: '} ${h.elegida}
               ${!h.isCorrect ? ` • <span style="color:#4ADE80;">(Correcta: ${h.correcta})</span>` : ''}
             </div>
           `;
@@ -2566,6 +2605,7 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
     updateNavbar();
     loadKitsFromStorage();
     renderDashboard();
+    showActiveView('view-dashboard');
 
   </script>
 </body>
