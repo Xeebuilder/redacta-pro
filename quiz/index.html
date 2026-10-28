@@ -248,6 +248,68 @@
       margin: 0 auto 1.8rem;
     }
 
+
+    /* Banner de Sesión Guardada para Reanudar */
+    .resume-session-card {
+      background: linear-gradient(135deg, rgba(30, 27, 75, 0.95), rgba(46, 16, 101, 0.92));
+      border: 1.5px solid #8B5CF6;
+      border-radius: var(--radius-md);
+      padding: 1.3rem 1.6rem;
+      margin-bottom: 1.8rem;
+      text-align: left;
+      box-shadow: 0 10px 30px rgba(139, 92, 246, 0.25);
+      animation: fadeInSlide 0.3s ease-out;
+    }
+    .btn-resume-action {
+      border: none;
+      border-radius: 20px;
+      padding: 8px 18px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-resume-primary {
+      background: var(--accent-lilac);
+      color: #0F172A;
+      box-shadow: 0 2px 10px rgba(184, 162, 248, 0.4);
+    }
+    .btn-resume-primary:hover {
+      background: #C4B5FD;
+      transform: translateY(-1px);
+    }
+    .btn-resume-discard {
+      background: rgba(255, 255, 255, 0.08);
+      color: #CBD5E1;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .btn-resume-discard:hover {
+      background: rgba(239, 68, 68, 0.2);
+      color: #F87171;
+      border-color: #EF4444;
+    }
+
+    /* Inline Question Loader */
+    .inline-q-loader {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem 1rem;
+      gap: 12px;
+      color: var(--accent-lilac);
+      font-size: 1rem;
+      font-weight: 700;
+    }
+    .inline-spinner {
+      width: 38px;
+      height: 38px;
+      border: 3px solid rgba(184, 162, 248, 0.2);
+      border-top-color: var(--accent-lilac);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
     /* Tabs para elegir entre Tema Escrito o Subir Foto */
     .lobby-tabs {
       display: inline-flex;
@@ -1006,42 +1068,46 @@
         Preguntas continuas paso a paso. Puedes escribir un tema o subir una foto de tus apuntes/guía escolar para que la IA extraiga el temario y cree tu guía de estudio.
       </p>
 
-      <!-- Selector de Modo: Tema Escrito vs Foto de Apuntes -->
+      <!-- Banner de Reanudación de Sesión Guardada -->
+      <div id="resume-session-banner" class="resume-session-card" style="display:none;">
+        <div style="display:flex; align-items:center; gap:14px;">
+          <div style="font-size:2rem; background:rgba(184,162,248,0.2); width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center;">📂</div>
+          <div style="flex:1;">
+            <div style="font-weight:800; font-size:1.05rem; color:#FFFFFF; margin-bottom:3px;">Tienes una sesión de estudio en curso guardada</div>
+            <div style="font-size:0.85rem; color:#CBD5E1;" id="resume-session-info">Tema: ... • Pregunta 1 • Precisión 100%</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;">
+          <button class="btn-resume-action btn-resume-primary" onclick="resumeSavedSession()">
+            ▶ Retomar Sesión Donde Quedaste
+          </button>
+          <button class="btn-resume-action btn-resume-discard" onclick="discardSavedSession()">
+            Descartar y Empezar Nueva ✕
+          </button>
+        </div>
+      </div>
+
+      <!-- Selector de Modo: Foto de Apuntes (Por Defecto) vs Tema Escrito -->
       <div class="lobby-tabs">
-        <button class="lobby-tab-btn active" id="tab-btn-text" onclick="switchLobbyMode('text')">
-          <span>✏️</span> Escribir Tema
-        </button>
-        <button class="lobby-tab-btn" id="tab-btn-image" onclick="switchLobbyMode('image')">
+        <button class="lobby-tab-btn active" id="tab-btn-image" onclick="switchLobbyMode('image')">
           <span>📷</span> Subir Foto de Apuntes / Guía
+        </button>
+        <button class="lobby-tab-btn" id="tab-btn-text" onclick="switchLobbyMode('text')">
+          <span>✏️</span> Escribir Tema
         </button>
       </div>
 
       <div class="setup-box">
         
-        <!-- MODO 1: TEMA ESCRITO -->
-        <div id="mode-text-box" style="margin-bottom: 1.25rem;">
-          <label class="form-label" for="study-topic">Tema a estudiar o notas de clase:</label>
-          <input type="text" id="study-topic" class="input-text" placeholder="Ej: Rotación y traslación, Python básico, Leyes de Newton...">
-          <div id="topic-error-msg" style="display:none; color:#EF4444; font-size:0.85rem; font-weight:700; margin-top:8px;">⚠️ Por favor ingresa un tema o selecciona uno de los temas sugeridos arriba.</div>
-
-          <div class="topic-presets">
-            <span class="preset-pill" onclick="setTopic('Rotación y traslación de la Tierra')">🌍 Rotación y Traslación</span>
-            <span class="preset-pill" onclick="setTopic('Python básico para principiantes')">🐍 Python Básico</span>
-            <span class="preset-pill" onclick="setTopic('Biología Celular y División Mitótica')">🧬 Biología Celular</span>
-            <span class="preset-pill" onclick="setTopic('Leyes del Movimiento de Newton')">🍎 Física Mecánica</span>
-            <span class="preset-pill" onclick="setTopic('Segunda Guerra Mundial: Causas')">📜 Segunda Guerra Mundial</span>
-          </div>
-        </div>
-
-        <!-- MODO 2: SUBIR IMAGEN / APUNTES -->
-        <div id="mode-image-box" style="display:none; margin-bottom: 1.25rem;">
-          <label class="form-label">Sube una foto de tus apuntes, temario o página de libro:</label>
+        <!-- MODO 1: SUBIR IMAGEN / APUNTES (ACTIVO POR DEFECTO) -->
+        <div id="mode-image-box" style="margin-bottom: 1.25rem;">
+          <label class="form-label">Sube una foto de tus apuntes, Business Model Canvas o temario:</label>
           
           <div class="image-drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
             <input type="file" id="file-input" accept="image/*" style="display:none;" onchange="handleFileSelect(event)">
             <div style="font-size:2.4rem; margin-bottom:6px;">📸</div>
-            <div style="font-weight:700; font-size:1rem; color:#fff; margin-bottom:4px;">Haz clic o arrastra una imagen aquí</div>
-            <div style="font-size:0.82rem; color:var(--text-dim);">Soporta fotos de cuadernos, guías, diapositivas (PNG, JPG, WEBP)</div>
+            <div style="font-weight:700; font-size:1rem; color:#fff; margin-bottom:4px;">Haz clic o arrastra tu imagen aquí</div>
+            <div style="font-size:0.82rem; color:var(--text-dim);">Soporta Business Model Canvas, esquemas, apuntes, cuadernos y guías (PNG, JPG, WEBP)</div>
           </div>
 
           <div id="image-preview-container" style="display:none;">
@@ -1057,7 +1123,22 @@
 
           <div style="margin-top: 1rem;">
             <label class="form-label" for="study-instructions">Enfoque adicional (opcional):</label>
-            <input type="text" id="study-instructions" class="input-text" placeholder="Ej: 'Prioriza las definiciones y fórmulas que salen en la imagen'">
+            <input type="text" id="study-instructions" class="input-text" placeholder="Ej: 'Prioriza todos los 9 bloques del lienzo y el modelo publicitario Ad-Tech'">
+          </div>
+        </div>
+
+        <!-- MODO 2: TEMA ESCRITO (SECUNDARIO) -->
+        <div id="mode-text-box" style="display:none; margin-bottom: 1.25rem;">
+          <label class="form-label" for="study-topic">Tema a estudiar o notas de clase:</label>
+          <input type="text" id="study-topic" class="input-text" placeholder="Ej: Rotación y traslación, Python básico, Leyes de Newton...">
+          <div id="topic-error-msg" style="display:none; color:#EF4444; font-size:0.85rem; font-weight:700; margin-top:8px;">⚠️ Por favor ingresa un tema o selecciona uno de los temas sugeridos arriba.</div>
+
+          <div class="topic-presets">
+            <span class="preset-pill" onclick="setTopic('Rotación y traslación de la Tierra')">🌍 Rotación y Traslación</span>
+            <span class="preset-pill" onclick="setTopic('Python básico para principiantes')">🐍 Python Básico</span>
+            <span class="preset-pill" onclick="setTopic('Biología Celular y División Mitótica')">🧬 Biología Celular</span>
+            <span class="preset-pill" onclick="setTopic('Leyes del Movimiento de Newton')">🍎 Física Mecánica</span>
+            <span class="preset-pill" onclick="setTopic('Segunda Guerra Mundial: Causas')">📜 Segunda Guerra Mundial</span>
           </div>
         </div>
 
@@ -1073,7 +1154,7 @@
       </div>
 
       <button class="btn-start" id="btn-start-session" onclick="startStudySession()">
-        <span>🚀</span> Iniciar Modo Estudio Continuo
+        <span>✨</span> Analizar Foto y Comenzar Estudio
       </button>
     </section>
 
@@ -1114,16 +1195,28 @@
 
       <!-- Tarjeta de Pregunta en Foco (Thea 2x2 Layout) -->
       <div class="question-card">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-          <span style="background:rgba(184,162,248,0.15); color:var(--accent-lilac); font-size:0.78rem; font-weight:700; padding:3px 10px; border-radius:6px; text-transform:uppercase;" id="q-category-tag">Concepto Básico</span>
-          <span style="color:var(--text-dim); font-size:0.85rem;" id="q-topic-label">Tema</span>
+        <!-- Cabecera limpia Thea: Sin pastillas invasivas, tema visible y contador de pregunta -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.3rem; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:0.75rem;">
+          <div style="display:flex; align-items:center; gap:8px; overflow:hidden;">
+            <span style="color:var(--accent-lilac); font-size:0.95rem;">📌</span>
+            <span style="color:var(--text-dim); font-size:0.9rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:550px;" id="q-topic-label">Tema de Estudio</span>
+          </div>
+          <span style="background:rgba(255,255,255,0.06); border:1px solid var(--border-purple); color:var(--accent-lilac); font-size:0.8rem; font-weight:800; padding:3px 12px; border-radius:12px; white-space:nowrap;" id="q-counter-label">Pregunta 1</span>
         </div>
 
-        <!-- Pregunta Centrada -->
-        <div class="q-text-thea" id="q-text">Cargando pregunta...</div>
+        <!-- Inline Loader para cargar nuevas preguntas sin cerrar la pantalla -->
+        <div id="q-inline-loader" class="inline-q-loader" style="display:none;">
+          <div class="inline-spinner"></div>
+          <span>Generando nuevas preguntas inéditas con IA...</span>
+        </div>
 
-        <!-- Cuadrícula 2x2 de Opciones (Thea Video Exacto) -->
-        <div class="options-grid-2x2" id="q-options-container"></div>
+        <div id="q-main-content">
+          <!-- Pregunta Centrada -->
+          <div class="q-text-thea" id="q-text">Cargando pregunta...</div>
+
+          <!-- Cuadrícula 2x2 de Opciones (Thea Video Exacto) -->
+          <div class="options-grid-2x2" id="q-options-container"></div>
+        </div>
 
         <!-- Barra de Acciones Thea: Historial + Siguiente + Feedback -->
         <div class="thea-question-actions">
@@ -1182,6 +1275,12 @@
       <div class="guide-section-card">
         <div class="guide-section-title">📌 Resumen Ejecutivo del Tema</div>
         <p style="font-size:0.9rem; color:#CBD5E1; line-height:1.5;" id="guide-doc-summary">Cargando resumen...</p>
+      </div>
+
+      <!-- Secciones y Bloques Detallados del Esquema / Canvas -->
+      <div class="guide-section-card" id="guide-doc-sections-box" style="display:none;">
+        <div class="guide-section-title">📊 Estructura y Secciones Clave del Esquema</div>
+        <div id="guide-doc-sections" style="display:flex; flex-direction:column; gap:12px;"></div>
       </div>
 
       <div class="guide-section-card">
@@ -1440,7 +1539,7 @@
       apiKey: atob('QVEuQWI4Uk42SnBsdlYxX0F3RzdJYWVfWWlLZFpDTFlidFBvRUV0WEVjX2pWczdFRFFPaXc='),
       topic: '',
       level: '',
-      mode: 'text', // 'text' o 'image'
+      mode: 'image', // 'image' por defecto según petición del usuario
       selectedImage: null, // { base64, mimeType, name, size }
       studyGuide: null, // Guía de estudio estructurada
       queue: [],
@@ -1453,7 +1552,7 @@
       isFetchingBatch: false,
       answeredCurrent: false,
 
-      // Etapas de sesión (1 a 3)
+      // Etapas de sesión (1, 2, 3... continuo sin expulsión)
       stageLevel: 1,
       questionsPerStage: 5,
       stageAnswered: 0,
@@ -1461,6 +1560,105 @@
     };
 
     const GEMINI_MODEL = 'gemini-3.8-flash';
+
+    /* ─── PERSISTENCIA LOCAL: GUARDAR Y REANUDAR SESIÓN ─── */
+    function saveSessionToStorage() {
+      try {
+        if (!state.topic || state.queue.length === 0) return;
+        const payload = {
+          topic: state.topic,
+          level: state.level,
+          mode: state.mode,
+          studyGuide: state.studyGuide,
+          queue: state.queue,
+          history: state.history,
+          currentIndex: state.currentIndex,
+          streak: state.streak,
+          maxStreak: state.maxStreak,
+          correctCount: state.correctCount,
+          totalAnswered: state.totalAnswered,
+          stageLevel: state.stageLevel,
+          stageAnswered: state.stageAnswered,
+          stageCorrect: state.stageCorrect,
+          timestamp: Date.now()
+        };
+        localStorage.setItem('synapse_continuous_quiz_session', JSON.stringify(payload));
+      } catch (e) {
+        console.warn('Error guardando sesión:', e);
+      }
+    }
+
+    function checkSavedSession() {
+      try {
+        const raw = localStorage.getItem('synapse_continuous_quiz_session');
+        if (!raw) return;
+        const saved = JSON.parse(raw);
+        if (!saved || !saved.topic || !Array.isArray(saved.queue) || saved.queue.length === 0) return;
+        
+        // Expirar solo tras 14 días
+        const age = Date.now() - (saved.timestamp || 0);
+        if (age > 14 * 24 * 60 * 60 * 1000) {
+          localStorage.removeItem('synapse_continuous_quiz_session');
+          return;
+        }
+
+        const banner = document.getElementById('resume-session-banner');
+        const info = document.getElementById('resume-session-info');
+        if (banner && info) {
+          const acc = saved.totalAnswered > 0 ? Math.round((saved.correctCount / saved.totalAnswered) * 100) : 100;
+          info.textContent = `Tema: "${saved.topic}" • Pregunta ${saved.currentIndex + 1} • Nivel ${saved.stageLevel || 1} • ${acc}% precisión (${saved.correctCount}/${saved.totalAnswered})`;
+          banner.style.display = 'block';
+        }
+      } catch (e) {
+        console.warn('Error verificando sesión guardada:', e);
+      }
+    }
+
+    function resumeSavedSession() {
+      try {
+        const raw = localStorage.getItem('synapse_continuous_quiz_session');
+        if (!raw) return;
+        const saved = JSON.parse(raw);
+
+        state.topic = saved.topic;
+        state.level = saved.level || 'Bachillerato / Preparatoria (15 - 17 años)';
+        state.mode = saved.mode || 'image';
+        state.studyGuide = saved.studyGuide || null;
+        state.queue = saved.queue || [];
+        state.history = saved.history || [];
+        state.currentIndex = saved.currentIndex || 0;
+        state.streak = saved.streak || 0;
+        state.maxStreak = saved.maxStreak || 0;
+        state.correctCount = saved.correctCount || 0;
+        state.totalAnswered = saved.totalAnswered || 0;
+        state.stageLevel = saved.stageLevel || 1;
+        state.stageAnswered = saved.stageAnswered || 0;
+        state.stageCorrect = saved.stageCorrect || 0;
+
+        if (state.studyGuide) {
+          renderStudyGuideDrawer(state.studyGuide);
+          document.getElementById('btn-open-guide').style.display = 'flex';
+        } else {
+          document.getElementById('btn-open-guide').style.display = 'none';
+        }
+
+        document.getElementById('view-lobby').style.display = 'none';
+        document.getElementById('view-quiz').style.display = 'block';
+
+        renderQuestion();
+        showTheaToast("Sesión Reanudada", `Retomando "${state.topic}" desde la pregunta ${state.currentIndex + 1} 🎯`, "📂");
+      } catch (e) {
+        console.error("Error al reanudar sesión:", e);
+        showTheaToast("Error", "No se pudo reanudar la sesión", "❌");
+      }
+    }
+
+    function discardSavedSession() {
+      localStorage.removeItem('synapse_continuous_quiz_session');
+      const banner = document.getElementById('resume-session-banner');
+      if (banner) banner.style.display = 'none';
+      showTheaToast("Sesión Descartada", "Listo para iniciar una nueva sesión de estudio", "ℹ️");
+    }
 
     /* ─── CAMBIO DE MODO: TEMA ESCRITO VS FOTO ─── */
     function switchLobbyMode(mode) {
@@ -1482,7 +1680,7 @@
         tabImage.classList.add('active');
         boxText.style.display = 'none';
         boxImage.style.display = 'block';
-        btnStart.innerHTML = '<span>📸</span> Analizar Foto y Crear Guía de Estudio';
+        btnStart.innerHTML = '<span>✨</span> Analizar Foto y Comenzar Estudio';
       }
     }
 
@@ -1560,10 +1758,10 @@
     async function askGemini(prompt, systemInstruction = null, imageBase64 = null, mimeType = null) {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${state.apiKey}`;
       const parts = [];
-      if (imageBase64 && mimeType) {
+      if (imageBase64) {
         parts.push({
           inline_data: {
-            mime_type: mimeType,
+            mime_type: mimeType || 'image/png',
             data: imageBase64
           }
         });
@@ -1599,7 +1797,7 @@
       // Si es modo imagen y hay imagen cargada
       if (state.mode === 'image') {
         if (!state.selectedImage) {
-          showTheaToast("Falta Imagen", "Por favor selecciona una foto de tus apuntes o guía", "⚠️");
+          showTheaToast("Falta Imagen", "Por favor selecciona o arrastra una foto de tus apuntes o Business Model Canvas", "⚠️");
           return;
         }
         await processImageAndCreateGuide();
@@ -1621,7 +1819,7 @@
       }
     }
 
-    /* ─── ANALIZAR IMAGEN Y GENERAR GUÍA DE ESTUDIO ─── */
+    /* ─── ANALIZAR IMAGEN Y GENERAR GUÍA EXHAUSTIVA DE ESTUDIO ─── */
     async function processImageAndCreateGuide() {
       const loadingEl = document.getElementById('view-loading');
       const lobbyEl = document.getElementById('view-lobby');
@@ -1631,40 +1829,55 @@
       lobbyEl.style.display = 'none';
       loadingEl.style.display = 'block';
       titleEl.textContent = 'Analizando tu imagen con Visión de IA...';
-      subEl.textContent = 'Leyendo apuntes, extrayendo temario y redactando tu Guía de Estudio pedagógica.';
+      subEl.textContent = 'Extrayendo todos los bloques, notas y redactando tu Guía de Estudio exhaustiva.';
 
       const extraInst = document.getElementById('study-instructions').value.trim();
 
-      const prompt = `Analiza detalladamente esta imagen de apuntes escolares, libro de texto o temario.
+      const prompt = `Analiza detalladamente esta imagen de apuntes escolares, Business Model Canvas, esquema, mapa conceptual o página de libro.
 Nivel académico del estudiante: "${state.level}".
 ${extraInst ? 'Instrucción específica del alumno: ' + extraInst : ''}
 
-Tu objetivo es estructurar una GUÍA DE ESTUDIO limpia, pedagógica y completa para que el estudiante aprenda y repase antes del quiz.
-Extrae los conceptos nucleares, definiciones cotidianas y puntos clave de examen.
+Tu objetivo es estructurar una GUÍA DE ESTUDIO COMPLETA, DETALLADA Y PEDAGÓGICA para que el estudiante aprenda y repase todo el material antes del quiz.
+INSTRUCCIONES CLAVE DE EXTRACCIÓN:
+1. Si la imagen es un BUSINESS MODEL CANVAS o esquema con bloques:
+   - Extrae CADA UNO de los bloques o secciones visibles (ej: Socios Clave, Actividades Clave, Recursos Clave, Propuestas de Valor, Relaciones con Clientes, Canales, Segmentos de Clientes, Estructura de Costos, Fuentes de Ingresos/Ad-Tech B2B, etc.).
+   - No resumas de forma superficial: incluye los elementos específicos mencionados en cada bloque (ej: "Hardware Robótico Modular", "Turismo sostenible", "Monetización de tiempos de espera", "Cupones QR", "Aeropuertos, museos, hoteles").
+2. Si son apuntes o guía escrita: extrae todos los temas, fórmulas, listas y ejemplos.
+3. Extrae al menos 8 a 15 conceptos y puntos clave para permitir una evaluación continua rica y sin repeticiones.
 
 Responde ÚNICAMENTE en JSON plano válido con esta estructura:
 {
-  "tema": "Título exacto del tema escolar identificado",
-  "resumen": "Resumen ejecutivo claro de 2-3 párrafos explicando de qué trata la materia y lo más importante a comprender.",
+  "tema": "Título exacto y descriptivo del tema o proyecto identificado",
+  "resumen": "Resumen ejecutivo pedagógico de 2 a 3 párrafos explicando claramente el propósito general y cómo se interconectan los elementos.",
+  "secciones": [
+    {
+      "titulo": "Nombre del bloque o sección (ej: Propuesta de Valor, Actividades Clave, Fuentes de Ingresos)",
+      "puntos": [
+        "Punto o elemento específico 1",
+        "Punto o elemento específico 2"
+      ],
+      "explicacion": "Breve explicación pedagógica de este bloque"
+    }
+  ],
   "conceptosClave": [
     {
-      "termino": "Nombre del Concepto 1",
-      "definicion": "Definición directa, clara y amigable para un estudiante.",
-      "importancia": "Por qué es relevante para el tema"
+      "termino": "Concepto o término 1",
+      "definicion": "Definición clara y amigable",
+      "importancia": "Por qué es relevante en este proyecto o tema"
     }
   ],
   "datosRelevantes": [
-    "Dato relevante, regla mnemotécnica o curiosidad 1",
+    "Dato relevante, cifra, métrica o detalle práctico 1",
     "Dato relevante 2"
   ],
   "puntosExamen": [
-    "Pregunta clave o punto típico de evaluación 1",
-    "Pregunta clave o punto típico de evaluación 2"
+    "Punto crítico típico de examen o pregunta clave 1",
+    "Punto crítico 2"
   ]
 }`;
 
       try {
-        const raw = await askGemini(prompt, "Eres un profesor cercano y pedagógico. Extrae información fielmente en JSON.", state.selectedImage.base64, state.selectedImage.mimeType);
+        const raw = await askGemini(prompt, "Eres un profesor pedagógico. Extrae exhaustivamente toda la información en JSON.", state.selectedImage.base64, state.selectedImage.mimeType);
         const clean = raw.replace(/```json/gi, "").replace(/```/gi, "").trim();
         const guide = JSON.parse(clean);
 
@@ -1678,13 +1891,14 @@ Responde ÚNICAMENTE en JSON plano válido con esta estructura:
         showTheaToast("¡Guía Generada con Éxito!", `Tema detectado: "${state.topic}"`, "📖");
 
         // Continuar a buscar preguntas
-        titleEl.textContent = 'Generando preguntas continuas estilo Thea...';
+        titleEl.textContent = 'Generando preguntas continuas inéditas...';
         subEl.textContent = 'Preguntas basadas exactamente en los apuntes de tu imagen.';
-        await fetchQuestionBatch(4);
+        await fetchQuestionBatch(5);
 
         loadingEl.style.display = 'none';
         document.getElementById('view-quiz').style.display = 'block';
         renderQuestion();
+        saveSessionToStorage();
 
         // Abrir la guía al inicio para que el alumno la vea
         openGuideDrawer();
@@ -1699,6 +1913,27 @@ Responde ÚNICAMENTE en JSON plano válido con esta estructura:
     function renderStudyGuideDrawer(guide) {
       document.getElementById('guide-doc-title').textContent = guide.tema;
       document.getElementById('guide-doc-summary').textContent = guide.resumen;
+
+      // Renderizar secciones / bloques si existen (Canvas, esquemas, etc.)
+      const secBox = document.getElementById('guide-doc-sections-box');
+      const secContainer = document.getElementById('guide-doc-sections');
+      if (Array.isArray(guide.secciones) && guide.secciones.length > 0) {
+        secBox.style.display = 'block';
+        secContainer.innerHTML = '';
+        guide.secciones.forEach(s => {
+          const item = document.createElement('div');
+          item.style.cssText = 'background:#110D27; border:1px solid rgba(184,162,248,0.25); border-radius:10px; padding:12px 14px;';
+          const pointsList = (s.puntos || []).map(p => `<li>${p}</li>`).join('');
+          item.innerHTML = `
+            <div style="font-weight:800; font-size:0.95rem; color:var(--accent-lilac); margin-bottom:4px;">📌 ${s.titulo}</div>
+            ${s.explicacion ? `<div style="font-size:0.83rem; color:#94A3B8; margin-bottom:6px;">${s.explicacion}</div>` : ''}
+            <ul style="padding-left:18px; font-size:0.85rem; color:#E2E8F0; margin:0; line-height:1.45;">${pointsList}</ul>
+          `;
+          secContainer.appendChild(item);
+        });
+      } else {
+        secBox.style.display = 'none';
+      }
 
       const conceptsContainer = document.getElementById('guide-doc-concepts');
       conceptsContainer.innerHTML = '';
@@ -1741,10 +1976,11 @@ Responde ÚNICAMENTE en JSON plano válido con esta estructura:
       loadingEl.style.display = 'block';
 
       try {
-        await fetchQuestionBatch(4);
+        await fetchQuestionBatch(5);
         loadingEl.style.display = 'none';
         document.getElementById('view-quiz').style.display = 'block';
         renderQuestion();
+        saveSessionToStorage();
       } catch (err) {
         loadingEl.style.display = 'none';
         lobbyEl.style.display = 'block';
@@ -1752,57 +1988,58 @@ Responde ÚNICAMENTE en JSON plano válido con esta estructura:
       }
     }
 
-    /* ─── OBTENER PREGUNTAS CONTINUAS (ESTILO THEA) ─── */
-    async function fetchQuestionBatch(count = 4) {
+    /* ─── OBTENER PREGUNTAS CONTINUAS SIN REPETICIÓN (DEDUPLICACIÓN TOTAL) ─── */
+    async function fetchQuestionBatch(count = 5) {
       if (state.isFetchingBatch) return;
       state.isFetchingBatch = true;
 
-      const stageLabels = {
-        1: "Conceptos Fundamentales y Definiciones Básicas",
-        2: "Aplicación Práctica y Casos Escolares",
-        3: "Dominio Completo y Razonamiento Clave"
-      };
+      // Lista completa de preguntas ya creadas para que Gemini NUNCA las repita
+      const existingQuestions = state.queue.map(q => q.pregunta);
+      const avoidList = existingQuestions.length > 0
+        ? `\nPREGUNTAS YA FORMULADAS (ESTRICTAMENTE PROHIBIDO REPETIR O PREGUNTAR LO MISMO O REFORMULARLAS):\n` +
+          existingQuestions.map((p, i) => `${i + 1}. ${p}`).join('\n')
+        : '';
 
       let guideContext = "";
       if (state.studyGuide) {
+        let secSummary = "";
+        if (Array.isArray(state.studyGuide.secciones)) {
+          secSummary = state.studyGuide.secciones.map(s => `• ${s.titulo}: ${(s.puntos || []).join(', ')} (${s.explicacion || ''})`).join('\n');
+        }
+
         guideContext = `
-IMPORTANTE: BÁSATE ESTRICTAMENTE EN ESTA GUÍA DE ESTUDIO EXTRAÍDA DE LOS APUNTES DEL ESTUDIANTE:
-` +
-          `Tema: ${state.studyGuide.tema}
-` +
-          `Resumen: ${state.studyGuide.resumen}
-` +
-          `Conceptos: ${JSON.stringify(state.studyGuide.conceptosClave)}
-` +
-          `Puntos de Examen: ${JSON.stringify(state.studyGuide.puntosExamen)}
+INFORMACIÓN Y MATERIAL DE ESTUDIO (BASE EXCLUSIVA PARA LAS PREGUNTAS):
+Tema: ${state.studyGuide.tema}
+Resumen: ${state.studyGuide.resumen}
+${secSummary ? `Estructura y Bloques:\n${secSummary}\n` : ''}
+Conceptos Clave: ${JSON.stringify(state.studyGuide.conceptosClave)}
+Datos Relevantes: ${JSON.stringify(state.studyGuide.datosRelevantes)}
+Puntos de Examen: ${JSON.stringify(state.studyGuide.puntosExamen)}
 `;
       }
 
-      const prompt = `Eres el tutor pedagógico de Synapse Smart Study (idéntico a Thea).
-Tu misión es generar ${count} preguntas de estudio y active recall sobre el tema: "${state.topic}".
+      const prompt = `Eres el tutor pedagógico de Synapse Smart Study (estilo Thea).
+Tu misión es generar ${count} preguntas NUEVAS, DIFERENTES Y VARIADAS sobre el tema: "${state.topic}".
 Nivel del estudiante: "${state.level}".
-Etapa actual: Nivel ${state.stageLevel} de 3 (${stageLabels[state.stageLevel] || 'Conceptos Clave'}).
+Etapa actual de estudio: Nivel ${state.stageLevel}.
 ${guideContext}
+${avoidList}
 
-REGLAS DE ORO DE SIMPLICIDAD Y ENFOQUE FUNDAMENTAL:
-1. Enseña y evalúa LO BÁSICO, LO FUNDAMENTAL Y LO MÁS IMPORTANTE del tema. Aquello que un profesor escolar de bachillerato o colegio realmente evalúa.
-2. CERO preguntas rebuscadas, CERO casos de física de la NASA o jerga astronómica compleja, CERO trampas de compilador:
-   - Si el tema es "Rotación y traslación": pregunta sobre el día y la noche (24h), las estaciones del año (365 días), la inclinación del eje, etc. NADA de proyectiles balísticos ni efecto Coriolis en misiles.
-   - Si el tema es "Python básico": pregunta sobre print(), variables, tipos de datos simples (int, str, bool), condicionales if/else. NADA de slicing [2:8:2] ni trucos oscuros.
-3. Preguntas directas, cotidianas y comprensibles para un estudiante de 14 a 16 años.
-4. 4 opciones de respuesta cortas y claras (1, 2, 3, 4) con 1 respuesta correcta indiscutible.
-5. Explicación estructurada en 2 o 3 viñetas breves (bullets) explicando el razonamiento de forma clara y un tip para el examen.
+REGLAS CRÍTICAS DE DIVERSIFICACIÓN Y DEDUPLICACIÓN:
+1. DIVERSIFICA LOS TEMAS: Evalúa diferentes bloques, secciones o conceptos que no se hayan preguntado aún. Por ejemplo, si es un Canvas: pregunta sobre Canales, sobre Socios Clave, sobre Propuesta de Valor, sobre Recursos de IA y Hardware, sobre Estructura de Costos, sobre el modelo Ad-Tech de ingresos, etc.
+2. NUNCA repitas preguntas ni opciones de las listadas arriba.
+3. Preguntas de active recall directas, cotidianas y comprensibles para un estudiante.
+4. 4 opciones de respuesta cortas y claras (1, 2, 3, 4) con exactamente 1 respuesta correcta indiscutible.
+5. "bullets": Array con 2 o 3 viñetas breves explicando con claridad por qué esa es la respuesta correcta y un tip para el examen.
 
 Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
 [
   {
     "pregunta": "¿Pregunta clara, directa y fundamental?",
-    "categoria": "Concepto Básico",
     "opciones": ["Opción 1", "Opción 2", "Opción 3", "Opción 4"],
     "correcta": 0,
     "bullets": [
-      "La razón principal de este fenómeno es...",
-      "Durante este proceso ocurre que...",
+      "La razón principal de este concepto es...",
       "Clave para el examen: Recuerda que..."
     ]
   }
@@ -1813,10 +2050,19 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
         const clean = raw.replace(/```json/gi, "").replace(/```/gi, "").trim();
         const batch = JSON.parse(clean);
         if (Array.isArray(batch) && batch.length > 0) {
-          state.queue.push(...batch);
+          // Filtrado estricto en el cliente contra duplicados
+          const currentTexts = state.queue.map(q => (q.pregunta || '').toLowerCase().trim());
+          const uniqueBatch = batch.filter(b => {
+            const t = (b.pregunta || '').toLowerCase().trim();
+            return !currentTexts.includes(t);
+          });
+          if (uniqueBatch.length > 0) {
+            state.queue.push(...uniqueBatch);
+            saveSessionToStorage();
+          }
         }
       } catch (e) {
-        console.error("Error obteniendo lote:", e);
+        console.error("Error obteniendo lote de preguntas:", e);
       } finally {
         state.isFetchingBatch = false;
       }
@@ -1846,9 +2092,9 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       if (state.stageLevel > 2 || (state.stageLevel === 2 && pct === 100)) {
         if (d2) d2.classList.add('active-cyan');
       }
-      if (state.stageLevel === 3 && pct === 100) {
+      if (state.stageLevel >= 3 && pct === 100) {
         if (d3) d3.classList.add('active-gold');
-      } else if (state.stageLevel === 3 && pct > 0) {
+      } else if (state.stageLevel >= 3 && pct > 0) {
         if (d3) d3.classList.add('active-cyan');
       }
     }
@@ -1857,15 +2103,22 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
     function renderQuestion() {
       const q = state.queue[state.currentIndex];
       if (!q) {
-        finishSession();
+        // En lugar de finalizar, cargamos más preguntas
+        showInlineLoadingQuestion();
+        fetchQuestionBatch(5).then(() => {
+          hideInlineLoadingQuestion();
+          if (state.queue[state.currentIndex]) renderQuestion();
+        });
         return;
       }
 
       state.answeredCurrent = false;
 
       updateTheaProgress();
-      document.getElementById('q-category-tag').textContent = q.categoria || `Nivel ${state.stageLevel}`;
+      
+      // Cabecera limpia sin pastillas feas: muestra tema y número de pregunta
       document.getElementById('q-topic-label').textContent = state.topic;
+      document.getElementById('q-counter-label').textContent = `Pregunta ${state.currentIndex + 1}`;
       document.getElementById('q-text').textContent = q.pregunta;
 
       document.getElementById('q-skeleton-box').style.display = 'none';
@@ -1887,10 +2140,24 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
         container.appendChild(btn);
       });
 
-      // Prefetching inteligente de preguntas
-      if (state.queue.length - state.currentIndex <= 2) {
-        fetchQuestionBatch(4);
+      // Prefetching inteligente de preguntas: si quedan 3 o menos, pedir lote en segundo plano
+      if (state.queue.length - state.currentIndex <= 3) {
+        fetchQuestionBatch(5);
       }
+    }
+
+    function showInlineLoadingQuestion() {
+      const loader = document.getElementById('q-inline-loader');
+      const content = document.getElementById('q-main-content');
+      if (loader) loader.style.display = 'flex';
+      if (content) content.style.display = 'none';
+    }
+
+    function hideInlineLoadingQuestion() {
+      const loader = document.getElementById('q-inline-loader');
+      const content = document.getElementById('q-main-content');
+      if (loader) loader.style.display = 'none';
+      if (content) content.style.display = 'block';
     }
 
     /* ─── EVALUAR RESPUESTA: COLOR INSTANTÁNEO + 1 SEGUNDO DE SKELETON ─── */
@@ -1922,26 +2189,25 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
 
       // COLOR INSTANTÁNEO
       if (isCorrect) {
-        state.correctCount++;
-        state.stageCorrect++;
         state.streak++;
         if (state.streak > state.maxStreak) state.maxStreak = state.streak;
+        state.correctCount++;
+        state.stageCorrect++;
+
+        addXP(25);
 
         if (selectedBtn) selectedBtn.classList.add("state-correct");
         if (selectedNum) selectedNum.innerHTML = "✓";
 
-        // Sumar XP
-        addXP(25);
-
-        // Notificaciones Thea de Racha (reemplazando cualquier alert)
+        // TOASTS FLOTANTES THEA SEGÚN FRAME 012 DEL VIDEO
         if (state.streak === 3) {
-          showTheaToast("¡Buena Racha!", "3 preguntas consecutivas correctas 🔥", "🔥");
+          showTheaToast("¡Racha en Fuego! 🔥", "Has respondido 3 preguntas correctas consecutivas", "🔥");
         } else if (state.streak === 5) {
-          showTheaToast("¡Desafío completado!", "Obtén preguntas consecutivas correctas en Estudio Inteligente (5/5) ✓", "✨");
+          showTheaToast("¡Gran Concentración! ⚡", "5 aciertos seguidos en Estudio Inteligente", "⚡");
         } else if (state.streak === 7) {
-          showTheaToast("¡Racha Imparable!", "7 preguntas consecutivas correctas sin fallar (7/7) ⚡", "⚡");
+          showTheaToast("¡Desafío completado! 🏆", "Obtén preguntas consecutivas correctas en Estudio Inteligente (7/7) ✓", "🏆");
         } else if (state.streak === 10) {
-          showTheaToast("¡Maestría Absoluta!", "10 respuestas correctas seguidas 👑", "👑");
+          showTheaToast("¡Maestría Imparable! 👑", "10 aciertos consecutivos. ¡Récord de sesión!", "👑");
         }
       } else {
         state.streak = 0;
@@ -1953,6 +2219,7 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       }
 
       updateTheaProgress();
+      saveSessionToStorage();
 
       // MOSTRAR SKELETON SHIMMER BONE
       const skeletonBox = document.getElementById("q-skeleton-box");
@@ -1983,19 +2250,22 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       }, 1000);
     }
 
-    function nextQuestion() {
-      // Verificar si completó la etapa de nivel (5 preguntas)
+    async function nextQuestion() {
+      // Verificar si completó la etapa de nivel (ej. 5 preguntas)
       if (state.stageAnswered >= state.questionsPerStage) {
         showMilestoneModal();
         return;
       }
 
       state.currentIndex++;
-      if (state.currentIndex < state.queue.length) {
-        renderQuestion();
-      } else {
-        finishSession();
+      if (state.currentIndex >= state.queue.length) {
+        showInlineLoadingQuestion();
+        await fetchQuestionBatch(5);
+        hideInlineLoadingQuestion();
       }
+
+      renderQuestion();
+      saveSessionToStorage();
     }
 
     /* ─── MODAL DE DIAGNÓSTICO INTERMEDIO (HITO TEMPORAL) ─── */
@@ -2036,30 +2306,36 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
         continueBtn.textContent = "Avanzar a Nivel 3: Dominio Total ➔";
       } else {
         badgeIcon.textContent = "🏆";
-        title.textContent = "¡Tema Completado con Maestría!";
-        subtitle.textContent = "Has superado los 3 niveles de este tema. ¡Estás 100% listo para tu evaluación!";
-        diagText.textContent = `Completaste todos los niveles con ${state.correctCount} aciertos de ${state.totalAnswered} preguntas. Racha máxima: ${state.maxStreak}.`;
-        continueBtn.textContent = "Finalizar y Ver Resumen Completo ➔";
+        title.textContent = `¡Nivel ${state.stageLevel} de Maestría Superado!`;
+        subtitle.textContent = "¡Estás demostrando un dominio sobresaliente! Puedes seguir practicando sin límite.";
+        diagText.textContent = `Excelente consistencia. Has acumulado ${state.correctCount} aciertos en ${state.totalAnswered} preguntas. Racha máxima: ${state.maxStreak}.`;
+        continueBtn.textContent = `Continuar Estudiando (Nivel ${state.stageLevel + 1}) ➔`;
       }
 
       modal.style.display = 'flex';
+      saveSessionToStorage();
     }
 
-    function continueToNextStage() {
+    async function continueToNextStage() {
       document.getElementById('milestone-modal').style.display = 'none';
 
-      if (state.stageLevel < 3) {
-        state.stageLevel++;
-        state.stageAnswered = 0;
-        state.stageCorrect = 0;
-        state.currentIndex++;
-        renderQuestion();
-      } else {
-        finishSession();
+      // En modo continuo, NUNCA finalizamos automáticamente: avanzamos de nivel indefinidamente
+      state.stageLevel++;
+      state.stageAnswered = 0;
+      state.stageCorrect = 0;
+      state.currentIndex++;
+
+      if (state.currentIndex >= state.queue.length) {
+        showInlineLoadingQuestion();
+        await fetchQuestionBatch(5);
+        hideInlineLoadingQuestion();
       }
+
+      renderQuestion();
+      saveSessionToStorage();
     }
 
-    /* ─── FINALIZAR SESIÓN (RESUMEN THEA SIN ALERTS NATIVOS) ─── */
+    /* ─── FINALIZAR SESIÓN (SOLO SI EL USUARIO DA CLIC EN TERMINAR) ─── */
     function finishSession() {
       const modal = document.getElementById('summary-modal');
       const accPct = state.totalAnswered > 0 ? Math.round((state.correctCount / state.totalAnswered) * 100) : 0;
@@ -2079,6 +2355,11 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       document.getElementById('view-lobby').style.display = 'block';
       document.getElementById('study-topic').value = '';
       removeSelectedImage();
+      
+      // Limpiar sesión guardada al finalizar voluntariamente
+      localStorage.removeItem('synapse_continuous_quiz_session');
+      const banner = document.getElementById('resume-session-banner');
+      if (banner) banner.style.display = 'none';
     }
 
     /* ─── MODAL DE HISTORIAL DE PREGUNTAS ─── */
@@ -2122,6 +2403,7 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
 
     // Iniciar navbar y sincronizar nivel con el perfil
     updateUserNavbar();
+    checkSavedSession();
 
     const savedStudyLevel = localStorage.getItem('synapse_level');
     if (savedStudyLevel && document.getElementById('study-level')) {
