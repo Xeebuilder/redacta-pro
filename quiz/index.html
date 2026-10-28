@@ -1621,7 +1621,7 @@
 
       // Etapas continuas
       stageLevel: 1,
-      questionsPerStage: 5,
+      stageProgress: 0,
       stageAnswered: 0,
       stageCorrect: 0
     };
@@ -1853,6 +1853,8 @@
       const kit = state.kits.find(k => k.id === kitId);
       if (kit) {
         kit.progress = 0;
+        kit.stageLevel = 1;
+        kit.stageProgress = 0;
         saveKitsToStorage();
         renderDashboard();
         showToast("Progreso Reiniciado", `Se reinició el progreso de "${kit.title}"`);
@@ -2083,6 +2085,7 @@ Responde ÚNICAMENTE en JSON plano válido con esta estructura:
         state.history = [];
         state.currentIndex = 0;
         state.stageLevel = 1;
+        state.stageProgress = 0;
         state.stageAnswered = 0;
         state.stageCorrect = 0;
 
@@ -2147,6 +2150,7 @@ Responde ÚNICAMENTE en JSON plano válido con esta estructura:
         state.history = [];
         state.currentIndex = 0;
         state.stageLevel = 1;
+        state.stageProgress = 0;
         state.stageAnswered = 0;
         state.stageCorrect = 0;
 
@@ -2177,7 +2181,8 @@ Responde ÚNICAMENTE en JSON plano válido con esta estructura:
       state.queue = [];
       state.history = [];
       state.currentIndex = 0;
-      state.stageLevel = 1;
+      state.stageLevel = kit.stageLevel || 1;
+      state.stageProgress = kit.stageProgress || 0;
       state.stageAnswered = 0;
       state.stageCorrect = 0;
 
@@ -2273,9 +2278,9 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       }
     }
 
-    /* ─── ACTUALIZAR BARRA SUPERIOR ─── */
+    /* ─── ACTUALIZAR BARRA SUPERIOR CON COMPLEJIDAD PROGRESIVA ─── */
     function updateProgress() {
-      const pct = Math.min(100, Math.round((state.stageAnswered / state.questionsPerStage) * 100));
+      const pct = Math.min(100, Math.round(state.stageProgress));
       
       const fillEl = document.getElementById('study-progress-fill');
       const labelEl = document.getElementById('study-progress-label');
@@ -2288,13 +2293,13 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
 
       [d1, d2, d3].forEach(d => { if (d) d.className = 'diamond-milestone'; });
 
-      if (state.stageLevel > 1 || (state.stageLevel === 1 && pct === 100)) {
+      if (state.stageLevel > 1 || (state.stageLevel === 1 && pct >= 100)) {
         if (d1) d1.classList.add('active-cyan');
       }
-      if (state.stageLevel > 2 || (state.stageLevel === 2 && pct === 100)) {
+      if (state.stageLevel > 2 || (state.stageLevel === 2 && pct >= 100)) {
         if (d2) d2.classList.add('active-cyan');
       }
-      if (state.stageLevel >= 3 && pct === 100) {
+      if (state.stageLevel >= 3 && pct >= 100) {
         if (d3) d3.classList.add('active-gold');
       } else if (state.stageLevel >= 3 && pct > 0) {
         if (d3) d3.classList.add('active-cyan');
@@ -2356,7 +2361,7 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
 
       state.history.push({
         pregunta: q.pregunta,
-        elegida: q.opciones[selectedIdx],
+        elegida: selectedIdx >= 0 ? q.opciones[selectedIdx] : 'Respuesta mostrada',
         correcta: q.opciones[q.correcta],
         isCorrect: isCorrect
       });
@@ -2364,8 +2369,8 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       const allBtns = document.querySelectorAll(".syn-option-btn");
       allBtns.forEach(b => b.disabled = true);
 
-      const selectedBtn = document.getElementById(`opt-${selectedIdx}`);
-      const selectedNum = document.getElementById(`opt-num-${selectedIdx}`);
+      const selectedBtn = selectedIdx >= 0 ? document.getElementById(`opt-${selectedIdx}`) : null;
+      const selectedNum = selectedIdx >= 0 ? document.getElementById(`opt-num-${selectedIdx}`) : null;
       const correctBtn = document.getElementById(`opt-${q.correcta}`);
       const correctNum = document.getElementById(`opt-num-${q.correcta}`);
 
@@ -2375,6 +2380,24 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
         state.correctCount++;
         state.stageCorrect++;
         addXP(25);
+
+        // Escalado pedagógico de dificultad:
+        // Nivel 1: Cada pregunta correcta sube entre 5% y 8% (~15 aciertos para completar)
+        // Nivel 2: Más complejo, cada pregunta correcta sube entre 3% y 5% (~25 aciertos)
+        // Nivel 3: Aún más complejo, cada pregunta sube entre 2% y 3% (~40 aciertos)
+        // Nivel 4+: 1% a 2%
+        let increment = 0;
+        if (state.stageLevel === 1) {
+          increment = Math.floor(Math.random() * 4) + 5; // 5, 6, 7 u 8%
+        } else if (state.stageLevel === 2) {
+          increment = Math.floor(Math.random() * 3) + 3; // 3, 4 o 5%
+        } else if (state.stageLevel === 3) {
+          increment = Math.floor(Math.random() * 2) + 2; // 2 o 3%
+        } else {
+          increment = Math.random() < 0.6 ? 1 : 2;       // 1 o 2%
+        }
+
+        state.stageProgress = Math.min(100, state.stageProgress + increment);
 
         if (selectedBtn) selectedBtn.classList.add("state-correct");
         if (selectedNum) selectedNum.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>';
@@ -2386,11 +2409,25 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
 
       } else {
         state.streak = 0;
+        // RESPUESTA INCORRECTA: NO sube el progreso (0%).
+        // Se mantiene exactamente el mismo porcentaje previo sin penalizar arbitrariamente.
+
         if (selectedBtn) selectedBtn.classList.add("state-incorrect");
         if (selectedNum) selectedNum.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>';
 
         if (correctBtn) correctBtn.classList.add("state-correct");
         if (correctNum) correctNum.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>';
+      }
+
+      // Persistir progreso en kit activo
+      if (state.currentKitId) {
+        const kit = state.kits.find(k => k.id === state.currentKitId);
+        if (kit) {
+          kit.stageLevel = state.stageLevel;
+          kit.stageProgress = state.stageProgress;
+          kit.progress = Math.min(100, Math.round(((state.stageLevel - 1) * 33.33) + (state.stageProgress * 0.3333)));
+          saveKitsToStorage();
+        }
       }
 
       updateProgress();
@@ -2428,8 +2465,7 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
 
     function handleShowAnswer() {
       if (state.answeredCurrent) return;
-      const q = state.queue[state.currentIndex];
-      handleAnswer(q.correcta);
+      handleAnswer(-1); // Muestra la respuesta correcta sin sumar progreso ni XP al usuario
     }
 
     function handleSkipQuestion() {
@@ -2437,7 +2473,7 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
     }
 
     async function nextQuestion() {
-      if (state.stageAnswered >= state.questionsPerStage) {
+      if (state.stageProgress >= 100) {
         showMilestoneModal();
         return;
       }
@@ -2484,9 +2520,22 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       document.getElementById('milestone-modal').style.display = 'none';
 
       state.stageLevel++;
+      state.stageProgress = 0;
       state.stageAnswered = 0;
       state.stageCorrect = 0;
       state.currentIndex++;
+
+      if (state.currentKitId) {
+        const kit = state.kits.find(k => k.id === state.currentKitId);
+        if (kit) {
+          kit.stageLevel = state.stageLevel;
+          kit.stageProgress = 0;
+          kit.progress = Math.min(100, Math.round(((state.stageLevel - 1) * 33.33)));
+          saveKitsToStorage();
+        }
+      }
+
+      updateProgress();
 
       if (state.currentIndex >= state.queue.length) {
         await fetchQuestionBatch(5);
