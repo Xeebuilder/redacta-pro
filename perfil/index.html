@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Thea • Perfil de Usuario</title>
+  <title>Synapse • Perfil de Usuario</title>
   
   <!-- Firebase Scripts -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -489,7 +489,7 @@
       font-weight: 700;
       margin-bottom: 6px;
     }
-    .form-group-modal input {
+    .form-group-modal input, .form-group-modal select {
       width: 100%;
       background: #1B1538;
       border: 1px solid var(--border-purple);
@@ -499,7 +499,7 @@
       font-size: 1rem;
       outline: none;
     }
-    .form-group-modal input:focus {
+    .form-group-modal input:focus, .form-group-modal select:focus {
       border-color: var(--accent-lilac);
     }
 
@@ -600,7 +600,7 @@
           <div class="detail-group">
             <span class="detail-label">Nivel</span>
             <div class="detail-val-row">
-              <span id="display-level">Secundaria/Preparatoria</span>
+              <span id="display-level">Bachillerato / Preparatoria (15 - 17 años)</span>
               <button class="btn-edit-pencil" onclick="openEditModal('level')">✏️</button>
             </div>
           </div>
@@ -619,14 +619,14 @@
         <div class="sub-plan-info">
           <span style="font-size:0.85rem; color:var(--text-dimmer); text-transform:uppercase; font-weight:700;">Plan</span>
           <div class="sub-plan-badge">
-            <span id="display-plan-name">Thea gratis</span>
+            <span id="display-plan-name">Synapse gratis</span>
             <span class="reward-pill" id="display-reward-pill" style="display:none;">🎁 Recompensa Activa</span>
           </div>
           <span style="font-size:0.85rem; color:var(--text-dim);" id="display-plan-desc">Acceso a preguntas continuas de estudio y flashcards básicas.</span>
         </div>
 
         <button class="btn-upgrade-thea" onclick="window.location.href='../#precios'">
-          <span>✨</span> Obtén Thea+ <span>✨</span>
+          <span>✨</span> Obtén Synapse+ <span>✨</span>
         </button>
       </div>
     </div>
@@ -642,7 +642,7 @@
 
         <div>
           <div class="account-field-label">Correo electrónico</div>
-          <div class="account-field-value" id="account-email-val">roboticacademy.z@gmail.com</div>
+          <div class="account-field-value" id="account-email-val">maxrsilvagni@gmail.com</div>
         </div>
 
         <div>
@@ -653,7 +653,7 @@
         <div>
           <div class="account-field-label">ID de soporte ⓘ</div>
           <div class="account-field-value">
-            <span id="account-support-id">thea_24b75c6060</span>
+            <span id="account-support-id">syn_24b75c6060</span>
             <span class="copy-chip" onclick="copySupportId()">📋 Copiar</span>
           </div>
         </div>
@@ -700,6 +700,11 @@
       </div>
 
       <div class="form-group-modal">
+        <label>Correo Electrónico:</label>
+        <input type="email" id="edit-input-email" value="maxrsilvagni@gmail.com">
+      </div>
+
+      <div class="form-group-modal">
         <label>Rol / Ocupación:</label>
         <input type="text" id="edit-input-role" value="Estudiante">
       </div>
@@ -710,8 +715,12 @@
       </div>
 
       <div class="form-group-modal">
-        <label>Nivel Académico:</label>
-        <input type="text" id="edit-input-level" value="Secundaria/Preparatoria">
+        <label>Nivel Académico (3 opciones):</label>
+        <select id="edit-input-level">
+          <option value="Secundaria Básica (12 - 14 años)">Secundaria Básica (12 - 14 años)</option>
+          <option value="Bachillerato / Preparatoria (15 - 17 años)" selected>Bachillerato / Preparatoria (15 - 17 años)</option>
+          <option value="Universitario / Superior">Universitario / Superior</option>
+        </select>
       </div>
 
       <div class="modal-actions">
@@ -730,7 +739,7 @@
       <a href="#">✉️ Contacto</a>
       <a href="#">📷 Seguir</a>
     </div>
-    <div>Derechos de autor © 2023-2026 Corporación Thea / Synapse</div>
+    <div>Derechos de autor © 2023-2026 Synapse Suite Académica</div>
   </footer>
 
   <script>
@@ -739,13 +748,13 @@
     // Estado del Perfil
     const profile = {
       name: localStorage.getItem('synapse_name') || 'Max',
-      email: localStorage.getItem('synapse_email') || 'roboticacademy.z@gmail.com',
+      email: localStorage.getItem('synapse_email') || 'maxrsilvagni@gmail.com',
       role: localStorage.getItem('synapse_role') || 'Estudiante',
       school: localStorage.getItem('synapse_school') || 'Italo Venezolano',
-      level: localStorage.getItem('synapse_level') || 'Secundaria/Preparatoria',
+      level: localStorage.getItem('synapse_level') || 'Bachillerato / Preparatoria (15 - 17 años)',
       avatarId: localStorage.getItem('synapse_avatar') || 'fish',
       xp: parseInt(localStorage.getItem('synapse_xp') || '0', 10),
-      supportId: localStorage.getItem('synapse_support_id') || 'thea_24b75c6060'
+      supportId: localStorage.getItem('synapse_support_id') || 'syn_24b75c6060'
     };
 
     let tempSelectedAvatar = profile.avatarId;
@@ -793,17 +802,17 @@
       const planDesc = document.getElementById('display-plan-desc');
 
       if (lvl >= 10) {
-        planName.textContent = "Thea Pro (Semanal)";
+        planName.textContent = "Synapse+ (Semanal)";
         rewardPill.style.display = "inline-flex";
         rewardPill.textContent = "👑 Recompensa Nivel 10 Activa";
         planDesc.textContent = "¡1 semana completa de estudio ilimitado desbloqueada por tu maestría!";
       } else if (lvl >= 5) {
-        planName.textContent = "Thea Pro (Trial)";
+        planName.textContent = "Synapse+ (Trial)";
         rewardPill.style.display = "inline-flex";
         rewardPill.textContent = "🎁 Recompensa Nivel 5 Activa";
         planDesc.textContent = "¡3 días gratis de estudio ilimitado desbloqueados por tu progreso!";
       } else {
-        planName.textContent = "Thea gratis";
+        planName.textContent = "Synapse gratis";
         rewardPill.style.display = "none";
         planDesc.textContent = "Acceso a preguntas continuas de estudio y flashcards básicas.";
       }
@@ -837,17 +846,42 @@
     function saveSelectedAvatar() {
       profile.avatarId = tempSelectedAvatar;
       localStorage.setItem('synapse_avatar', profile.avatarId);
-      renderProfile();
+          if (typeof firebase !== 'undefined' && firebase.auth) {
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user && user.email) {
+          profile.email = user.email;
+          localStorage.setItem('synapse_email', user.email);
+          renderProfile();
+        }
+      });
+    }
+
+    renderProfile();
       closeAvatarModal();
     }
 
     // Modal de Edición
     function openEditModal(field) {
       document.getElementById('edit-input-name').value = profile.name;
+      document.getElementById('edit-input-email').value = profile.email;
       document.getElementById('edit-input-role').value = profile.role;
       document.getElementById('edit-input-school').value = profile.school;
-      document.getElementById('edit-input-level').value = profile.level;
+      
+      const selLevel = document.getElementById('edit-input-level');
+      for (let i = 0; i < selLevel.options.length; i++) {
+        if (selLevel.options[i].value === profile.level || profile.level.startsWith(selLevel.options[i].value.substring(0, 10))) {
+          selLevel.selectedIndex = i;
+          break;
+        }
+      }
+
       document.getElementById('edit-modal').style.display = 'flex';
+
+      if (field === 'level') document.getElementById('edit-input-level').focus();
+      else if (field === 'school') document.getElementById('edit-input-school').focus();
+      else if (field === 'role') document.getElementById('edit-input-role').focus();
+      else if (field === 'email') document.getElementById('edit-input-email').focus();
+      else document.getElementById('edit-input-name').focus();
     }
 
     function closeEditModal() {
@@ -856,11 +890,13 @@
 
     function saveProfileChanges() {
       profile.name = document.getElementById('edit-input-name').value.trim() || 'Max';
+      profile.email = document.getElementById('edit-input-email').value.trim() || 'maxrsilvagni@gmail.com';
       profile.role = document.getElementById('edit-input-role').value.trim() || 'Estudiante';
       profile.school = document.getElementById('edit-input-school').value.trim() || 'Italo Venezolano';
-      profile.level = document.getElementById('edit-input-level').value.trim() || 'Secundaria/Preparatoria';
+      profile.level = document.getElementById('edit-input-level').value;
 
       localStorage.setItem('synapse_name', profile.name);
+      localStorage.setItem('synapse_email', profile.email);
       localStorage.setItem('synapse_role', profile.role);
       localStorage.setItem('synapse_school', profile.school);
       localStorage.setItem('synapse_level', profile.level);
