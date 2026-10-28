@@ -1143,98 +1143,93 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos), sin bloques de
       const q = state.queue[state.currentIndex];
       const isCorrect = (selectedIdx === q.correcta);
 
-      // Deshabilitar todas las opciones inmediatamente para evitar doble selección
-      const allBtns = document.querySelectorAll('.option-btn');
+      // 1. Deshabilitar todas las opciones inmediatamente
+      const allBtns = document.querySelectorAll(".option-btn");
       allBtns.forEach(b => b.disabled = true);
 
       // Elementos seleccionados y correctos
       const selectedBtn = document.getElementById(`opt-${selectedIdx}`);
       const correctBtn = document.getElementById(`opt-${q.correcta}`);
+      const streakBox = document.getElementById("streak-badge-box");
 
-      // 1. Mostrar estado de evaluación en el botón seleccionado
-      if (selectedBtn) {
-        selectedBtn.classList.add('evaluating');
-        const spinner = document.createElement('div');
-        spinner.className = 'option-eval-spinner';
-        spinner.id = 'active-eval-spinner';
-        selectedBtn.appendChild(spinner);
+      // 2. FEEDBACK DE COLOR Y MÉTRICAS INSTANTÁNEO
+      if (isCorrect) {
+        state.correctCount++;
+        state.streak++;
+        if (state.streak > state.maxStreak) state.maxStreak = state.streak;
+        if (selectedBtn) selectedBtn.classList.add("state-correct");
+        
+        // Animación de fuego en la racha
+        streakBox.classList.remove("streak-pulse");
+        void streakBox.offsetWidth; // trigger reflow
+        streakBox.classList.add("streak-pulse");
+
+        if (q.categoria && !state.masteredConcepts.includes(q.categoria)) {
+          state.masteredConcepts.push(q.categoria);
+        }
+      } else {
+        state.streak = 0;
+        if (selectedBtn) selectedBtn.classList.add("state-incorrect");
+        if (correctBtn) correctBtn.classList.add("state-correct");
+
+        if (q.categoria && !state.weakConcepts.includes(q.categoria)) {
+          state.weakConcepts.push(q.categoria);
+        }
       }
 
-      // 2. Mostrar el Skeleton loader ("estilo bone") con animación de izquierda a derecha
-      const skeletonBox = document.getElementById('q-skeleton-box');
-      if (skeletonBox) skeletonBox.style.display = 'block';
+      // Actualizar contador y precisión al instante
+      document.getElementById("metric-streak").textContent = `${state.streak} seguidas`;
+      const acc = Math.round((state.correctCount / state.totalAnswered) * 100);
+      document.getElementById("metric-accuracy").textContent = `${acc}%`;
 
-      // 3. Temporizador de 3 segundos exactos (3000ms)
-      setTimeout(() => {
-        // Ocultar Skeleton y quitar spinner del botón seleccionado
-        if (skeletonBox) skeletonBox.style.display = 'none';
-        const activeSpinner = document.getElementById('active-eval-spinner');
-        if (activeSpinner) activeSpinner.remove();
-        if (selectedBtn) selectedBtn.classList.remove('evaluating');
-
-        const streakBox = document.getElementById('streak-badge-box');
-
-        if (isCorrect) {
-          state.correctCount++;
-          state.streak++;
-          if (state.streak > state.maxStreak) state.maxStreak = state.streak;
-          if (selectedBtn) selectedBtn.classList.add('state-correct');
-          
-          // Animación de racha
-          streakBox.classList.remove('streak-pulse');
-          void streakBox.offsetWidth; // trigger reflow
-          streakBox.classList.add('streak-pulse');
-
-          if (q.categoria && !state.masteredConcepts.includes(q.categoria)) {
-            state.masteredConcepts.push(q.categoria);
-          }
-        } else {
-          state.streak = 0;
-          if (selectedBtn) selectedBtn.classList.add('state-incorrect');
-          if (correctBtn) correctBtn.classList.add('state-correct');
-
-          if (q.categoria && !state.weakConcepts.includes(q.categoria)) {
-            state.weakConcepts.push(q.categoria);
-          }
+      // 3. MOSTRAR SKELETON LOADER ("ESTILO BONE")
+      const skeletonBox = document.getElementById("q-skeleton-box");
+      if (skeletonBox) {
+        skeletonBox.style.display = "block";
+        const titleSpan = skeletonBox.querySelector("span");
+        if (titleSpan) {
+          titleSpan.textContent = isCorrect 
+            ? "¡Correcto! Preparando explicación y tip clave..." 
+            : "Preparando explicación conceptual del error...";
         }
+      }
 
-        // Actualizar contador de racha en tiempo real
-        document.getElementById('metric-streak').textContent = `${state.streak} seguidas`;
-        const acc = Math.round((state.correctCount / state.totalAnswered) * 100);
-        document.getElementById('metric-accuracy').textContent = `${acc}%`;
+      // 4. LA EXPLICACIÓN TARDA EXACTAMENTE 2 SEGUNDOS
+      setTimeout(() => {
+        if (skeletonBox) skeletonBox.style.display = "none";
 
-        // Mostrar Caja de Explicación Inmediata
-        const expBox = document.getElementById('q-explanation-box');
-        const expHeader = document.getElementById('exp-header-tag');
-        const expIcon = document.getElementById('exp-status-icon');
-        const expTitle = document.getElementById('exp-status-text');
-        const expBody = document.getElementById('exp-body-text');
-        const expTipBox = document.getElementById('exp-tip-box');
-        const expTipText = document.getElementById('exp-tip-text');
+        // Mostrar Caja de Explicación
+        const expBox = document.getElementById("q-explanation-box");
+        const expHeader = document.getElementById("exp-header-tag");
+        const expIcon = document.getElementById("exp-status-icon");
+        const expTitle = document.getElementById("exp-status-text");
+        const expBody = document.getElementById("exp-body-text");
+        const expTipBox = document.getElementById("exp-tip-box");
+        const expTipText = document.getElementById("exp-tip-text");
 
         if (isCorrect) {
-          expHeader.className = 'exp-header correct';
-          expIcon.textContent = '✓';
-          expTitle.textContent = '¡Correcto! Excelente razonamiento.';
+          expHeader.className = "exp-header correct";
+          expIcon.textContent = "✓";
+          expTitle.textContent = "¡Correcto! Excelente razonamiento.";
         } else {
-          expHeader.className = 'exp-header incorrect';
-          expIcon.textContent = '✕';
-          expTitle.textContent = 'Incorrecto. Mira el concepto clave:';
+          expHeader.className = "exp-header incorrect";
+          expIcon.textContent = "✕";
+          expTitle.textContent = "Incorrecto. Mira el concepto clave:";
         }
 
         expBody.textContent = q.explicacion;
 
         if (q.tip) {
-          expTipBox.style.display = 'block';
+          expTipBox.style.display = "block";
           expTipText.textContent = q.tip;
         } else {
-          expTipBox.style.display = 'none';
+          expTipBox.style.display = "none";
         }
 
-        expBox.style.display = 'block';
-        document.getElementById('action-next-bar').style.display = 'flex';
-        document.getElementById('btn-next-question').focus();
-      }, 3000);
+        expBox.style.display = "block";
+        document.getElementById("action-next-bar").style.display = "flex";
+        document.getElementById("btn-next-question").focus();
+      }, 2000);
     }
 
     // ─── AVANZAR A SIGUIENTE PREGUNTA ───
