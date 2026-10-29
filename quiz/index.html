@@ -737,6 +737,21 @@
     .btn-gear-settings:hover { color: #fff; transform: rotate(45deg); }
     .btn-gear-settings svg { width: 22px; height: 22px; stroke: currentColor; }
 
+    .thea-pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: var(--cyan-spark);
+      box-shadow: 0 0 8px var(--cyan-spark);
+      animation: pulseDot 1.4s ease-in-out infinite;
+      display: inline-block;
+    }
+    @keyframes pulseDot {
+      0% { transform: scale(0.85); opacity: 0.5; }
+      50% { transform: scale(1.25); opacity: 1; }
+      100% { transform: scale(0.85); opacity: 0.5; }
+    }
+
     /* Tarjeta de Pregunta en Foco */
     .question-card-syn {
       max-width: 820px;
@@ -1562,6 +1577,11 @@
           <span class="diamond-milestone" id="diamond-star-3" title="Meta Nivel 3"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
         </div>
 
+        <div id="prefetch-indicator" style="display:none; align-items:center; gap:6px; font-size:0.75rem; color:#94A3B8; background:rgba(255,255,255,0.04); padding:3px 10px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
+          <span class="thea-pulse-dot"></span>
+          <span id="prefetch-label">Generando lote en segundo plano...</span>
+        </div>
+
         <button class="btn-gear-settings" onclick="finishSession()" title="Opciones / Terminar">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
         </button>
@@ -1852,7 +1872,80 @@
         progress: 40,
         colorTheme: "theme-green",
         watermarkSvg: '<svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>',
-        level: "Bachillerato / Preparatoria (15 - 17 años)"
+        level: "Bachillerato / Preparatoria (15 - 17 años)",
+        cachedQueue: [
+          {
+            pregunta: "¿Qué elemento esencial se define en el bloque de 'Propuesta de Valor' del Business Model Canvas para una solución de robótica e IA turística?",
+            opciones: [
+              "El valor único, solución de problemas y beneficios tangibles que el servicio entrega al turista u hotel",
+              "El cálculo matemático de los costos de hardware y mantenimiento de servidores",
+              "La lista exhaustiva de canales publicitarios digitales en redes sociales",
+              "El salario mensual asignado a los ingenieros y desarrolladores de software"
+            ],
+            correcta: 0,
+            bullets: [
+              "La propuesta de valor sintetiza cómo el producto resuelve dolores reales del cliente.",
+              "En robótica turística, se traduce en eficiencia operativa 24/7 y experiencias interactivas para el viajero."
+            ]
+          },
+          {
+            pregunta: "¿Cuál de los siguientes actores constituye un 'Socio Clave' (Key Partner) primordial en este modelo de negocio?",
+            opciones: [
+              "Cadenas hoteleras y proveedores de sensores de hardware robótico",
+              "Los competidores directos de software que no colaboran",
+              "Cualquier usuario anónimo que visite el sitio web una sola vez",
+              "El departamento de recursos humanos de una empresa ajena"
+            ],
+            correcta: 0,
+            bullets: [
+              "Los socios clave reducen riesgos y aportan capacidades que la empresa no produce internamente.",
+              "Para robots turísticos, los fabricantes de piezas y cadenas hoteleras piloto son indispensables."
+            ]
+          },
+          {
+            pregunta: "¿Qué aspecto abarca el bloque de 'Estructura de Costes' en este proyecto?",
+            opciones: [
+              "Desarrollo de IA, fabricación de hardware robótico y mantenimiento en la nube",
+              "El precio que el cliente final pagará por noche de hotel",
+              "Las opiniones positivas publicadas en redes sociales",
+              "Los tipos de moneda e impuestos que cobra un banco extranjero"
+            ],
+            correcta: 0,
+            bullets: [
+              "La estructura de costes reúne los principales egresos fijos y variables necesarios para operar.",
+              "Incluye costos de I+D, cómputo en la nube e infraestructura de hardware."
+            ]
+          },
+          {
+            pregunta: "¿A través de qué 'Canales' (Channels) se entrega y comunica la propuesta de valor a los hoteles y turistas?",
+            opciones: [
+              "Venta B2B directa a gerencias de hospitalidad y plataformas integradas en la app del huésped",
+              "Únicamente mediante folletos de papel en buzones residenciales",
+              "Llamadas telefónicas al azar a números residenciales no turísticos",
+              "Canales de radio AM de difusión agrícola"
+            ],
+            correcta: 0,
+            bullets: [
+              "Los canales definen los puntos de contacto con el cliente para dar a conocer, vender y entregar la solución.",
+              "El modelo B2B requiere contacto directo con hoteles y APIs para sincronizar con sistemas de conserjería."
+            ]
+          },
+          {
+            pregunta: "¿Qué representa el flujo de ingresos recurrente más sostenible para este modelo de negocio?",
+            opciones: [
+              "Suscripción mensual RaaS (Robot as a Service) por soporte, actualizaciones y telemetría",
+              "Cobrar una sola vez por un prototipo sin ofrecer garantías ni repuestos",
+              "Donaciones voluntarias esporádicas en plataformas de crowdfunding",
+              "Intercambio no monetario de productos por servicios no relacionados"
+            ],
+            correcta: 0,
+            bullets: [
+              "El modelo RaaS (Robot as a Service) convierte el gasto de capital en un servicio predecible y escalable.",
+              "Asegura ingresos constantes por mantenimiento continuo y evolución de modelos de IA."
+            ]
+          }
+        ],
+        askedQuestions: []
       },
       {
         id: "kit_astro",
@@ -1862,6 +1955,79 @@
         colorTheme: "theme-green",
         watermarkSvg: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>',
         level: "Bachillerato / Preparatoria (15 - 17 años)",
+        cachedQueue: [
+          {
+            pregunta: "¿Cuál es la causa principal del movimiento de nutación del eje terrestre?",
+            opciones: [
+              "La atracción gravitatoria de la Luna y el Sol sobre el abultamiento ecuatorial de la Tierra",
+              "La fricción de las mareas oceánicas con los fondos abisales marinos",
+              "El viento solar interactuando con el campo magnético del núcleo terrestre",
+              "La velocidad variable de la Tierra en los puntos de afelio y perihelio"
+            ],
+            correcta: 0,
+            bullets: [
+              "La nutación es una oscilación periódica superpuesta al cono de precesión.",
+              "Tiene un ciclo de 18.6 años generado principalmente por la inclinación orbital de la Luna."
+            ]
+          },
+          {
+            pregunta: "¿Qué movimiento terrestre determina de manera directa la alternancia entre el día y la noche?",
+            opciones: [
+              "La rotación sobre su propio eje imaginario de Oeste a Este",
+              "La traslación elíptica alrededor del centro de masa del Sol",
+              "La precesión de los puntos equinocciales en el año platónico",
+              "La nutación axial causada por la inclinación de la eclíptica"
+            ],
+            correcta: 0,
+            bullets: [
+              "La rotación dura 23 horas, 56 minutos y 4 segundos (día sideral).",
+              "Al girar de Oeste a Este, expone sucesivamente cada meridiano a la radiación solar directa."
+            ]
+          },
+          {
+            pregunta: "¿Por qué se producen las cuatro estaciones del año en el planeta Tierra?",
+            opciones: [
+              "Por la inclinación constante de 23.5° del eje terrestre combinada con la traslación orbital",
+              "Por el cambio de distancia física al Sol entre el perihelio y el afelio orbital",
+              "Por las variaciones en la emisión de manchas solares en ciclos de 11 años",
+              "Por la fuerza de atracción gravitatoria que la Luna ejerce en los solsticios"
+            ],
+            correcta: 0,
+            bullets: [
+              "La inclinación axial de 23.5° modifica el ángulo de incidencia de los rayos solares a lo largo del año.",
+              "La distancia al Sol no causa las estaciones; de hecho, en el perihelio (enero) es invierno en el hemisferio norte."
+            ]
+          },
+          {
+            pregunta: "¿Cómo se describe con precisión el movimiento de precesión de los equinoccios?",
+            opciones: [
+              "Un giro cónico lento y continuo del eje terrestre similar al balanceo de un trompo",
+              "Un cambio abrupto de polaridad electromagnética en los polos geográficos",
+              "Una oscilación de vaivén de alta frecuencia producida por los terremotos tectónicos",
+              "La aceleración angular de la Tierra cuando se aproxima a la órbita de Júpiter"
+            ],
+            correcta: 0,
+            bullets: [
+              "La precesión completa una revolución cada 25,776 años (año platónico).",
+              "Se produce por el torque diferencial ejercido por el Sol y la Luna sobre el achatamiento polar."
+            ]
+          },
+          {
+            pregunta: "¿Cuál es la diferencia astronómica fundamental entre el Perihelio y el Afelio?",
+            opciones: [
+              "El Perihelio es el punto orbital más cercano al Sol (~147 millones km) y el Afelio el más lejano (~152 millones km)",
+              "El Afelio ocurre en enero y produce el solsticio de invierno austral",
+              "El Perihelio marca la máxima velocidad angular lunar respecto a la Tierra",
+              "En el Afelio la radiación solar es el doble de intensa que en el Perihelio"
+            ],
+            correcta: 0,
+            bullets: [
+              "Al tener una órbita elíptica según la primera ley de Kepler, la distancia al Sol varía unos 5 millones de km.",
+              "El Perihelio ocurre a inicios de enero y el Afelio a inicios de julio."
+            ]
+          }
+        ],
+        askedQuestions: [],
         flashcards: [
           {
             termino: "Nutación",
@@ -1931,7 +2097,80 @@
         progress: 25,
         colorTheme: "theme-purple",
         watermarkSvg: '<svg viewBox="0 0 24 24"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"></path></svg>',
-        level: "Bachillerato / Preparatoria (15 - 17 años)"
+        level: "Bachillerato / Preparatoria (15 - 17 años)",
+        cachedQueue: [
+          {
+            pregunta: "¿Qué consagra el principio de supremacía constitucional en un Estado de Derecho?",
+            opciones: [
+              "La Constitución es la norma suprema y prevalece sobre cualquier otra ley o reglamento",
+              "El poder ejecutivo puede modificar los estatutos constitucionales sin referéndum",
+              "Las sentencias de tribunales extranjeros anulan automáticamente la carta magna",
+              "Los tratados mercantiles privados tienen rango superior a las garantías individuales"
+            ],
+            correcta: 0,
+            bullets: [
+              "La supremacía constitucional exige que toda ley o acto del poder público se subordine a la Constitución.",
+              "Cualquier disposición jurídica contraria a la carta fundamental carece de validez legal."
+            ]
+          },
+          {
+            pregunta: "¿Cuál es la función primordial del Poder Legislativo en la estructura de poderes públicos?",
+            opciones: [
+              "Deliberar, redactar, debatir y aprobar las leyes que rigen a la nación",
+              "Juzgar y ejecutar las condenas impuestas a infractores penales",
+              "Dirigir la política exterior y comandar a las fuerzas de seguridad pública",
+              "Administrar de forma directa el presupuesto monetario de los ministerios"
+            ],
+            correcta: 0,
+            bullets: [
+              "El órgano legislativo (asamblea o congreso) representa la soberanía popular mediante sus parlamentarios.",
+              "Tiene potestades exclusivas para crear, modificar o derogar leyes y controlar políticamente al gobierno."
+            ]
+          },
+          {
+            pregunta: "¿Qué característica define a los Derechos Humanos como inherentes e inalienables?",
+            opciones: [
+              "Pertenecen a toda persona por el simple hecho de ser humana y no pueden ser transferidos ni renunciados",
+              "Solo pueden ejercerse si el ciudadano paga puntualmente sus tributos fiscales",
+              "Son otorgados exclusivamente por decreto del presidente en funciones",
+              "Pueden venderse o negociarse en contratos comerciales privados"
+            ],
+            correcta: 0,
+            bullets: [
+              "La inalienabilidad impide que un ser humano renuncie a sus derechos o que el Estado se los arrebate.",
+              "Son universales, indivisibles e interdependientes en todo tiempo y lugar."
+            ]
+          },
+          {
+            pregunta: "¿Cuál es el rol institucional del Ministerio Público en el sistema de justicia?",
+            opciones: [
+              "Garantizar el debido proceso, dirigir la investigación penal y ejercer la acción penal en nombre del Estado",
+              "Dictar sentencias definitivas de culpabilidad o inocencia como juez supremo",
+              "Defender a los acusados que no posean abogados particulares remunerados",
+              "Redactar las reformas a los códigos penales sin consultar a los legisladores"
+            ],
+            correcta: 0,
+            bullets: [
+              "Los fiscales del Ministerio Público ejercen la titularidad de la acción penal pública.",
+              "Velan por el respeto a las garantías constitucionales durante los procesos penales."
+            ]
+          },
+          {
+            pregunta: "¿Qué mecanismo de democracia participativa permite al pueblo aprobar o revocar una ley de manera directa en las urnas?",
+            opciones: [
+              "El Referéndum",
+              "El Juicio político",
+              "El Decreto presidencial extraordinario",
+              "El Amparo judicial tributario"
+            ],
+            correcta: 0,
+            bullets: [
+              "El referéndum es un procedimiento jurídico por el que se somete al voto popular un proyecto normativo.",
+              "Constituye uno de los máximos instrumentos de soberanía y participación ciudadana directa."
+            ]
+          }
+        ],
+        askedQuestions: []
       },
       {
         id: "kit_bio_hongos",
@@ -1940,7 +2179,80 @@
         progress: 15,
         colorTheme: "theme-blue",
         watermarkSvg: '<svg viewBox="0 0 24 24"><path d="M2 15c6.667-6 13.333 0 20-6"></path><path d="M9 22c1.798-1.998 2.518-3.995 2.807-5.993"></path><path d="M15 2c-1.798 1.998-2.518 3.995-2.807 5.993"></path><path d="m17 6-2.5-2.5"></path><path d="m14 8-1-1"></path><path d="m7 18 2.5 2.5"></path><path d="m3.5 14.5.5.5"></path><path d="m20 9 .5.5"></path><path d="m6.5 12.5 1 1"></path><path d="m16.5 10.5 1 1"></path><path d="m10 16 1.5 1.5"></path></svg>',
-        level: "Bachillerato / Preparatoria (15 - 17 años)"
+        level: "Bachillerato / Preparatoria (15 - 17 años)",
+        cachedQueue: [
+          {
+            pregunta: "¿Qué biomolécula estructural fundamental forma la pared celular de los hongos del reino Fungi?",
+            opciones: [
+              "Quitina",
+              "Celulosa",
+              "Peptidoglicano",
+              "Queratina"
+            ],
+            correcta: 0,
+            bullets: [
+              "La pared celular fúngica está compuesta de quitina, un polisacárido nitrogenado resistente.",
+              "A diferencia de las plantas (celulosa) y bacterias (peptidoglicano), la quitina es distintiva de hongos y artrópodos."
+            ]
+          },
+          {
+            pregunta: "¿Por qué los hongos se clasifican como organismos heterótrofos por absorción?",
+            opciones: [
+              "Carecen de clorofila y secretan exoenzimas para digerir la materia orgánica antes de absorberla",
+              "Fijan activamente dióxido de carbono mediante fotosíntesis oxigénica nocturna",
+              "Ingieren alimentos completos mediante una cavidad bucal fagocítica primitiva",
+              "Sintetizan glucosa directamente a partir de sales minerales inorgánicas y luz"
+            ],
+            correcta: 0,
+            bullets: [
+              "Los hongos no poseen cloroplastos ni pueden fotosintetizar.",
+              "Liberan enzimas al medio exterior y luego absorben los nutrientes solubles digeridos (osmotrofia)."
+            ]
+          },
+          {
+            pregunta: "¿Cómo se denominan los filamentos microscópicos tubulares cuyo conjunto forma el micelio de un hongo?",
+            opciones: [
+              "Hifas",
+              "Rizomas",
+              "Estolones",
+              "Esporangios"
+            ],
+            correcta: 0,
+            bullets: [
+              "Las hifas son células o filamentos tubulares que crecen apicalmente.",
+              "El entrelazado de millones de hifas forma el cuerpo vegetativo del hongo, llamado micelio."
+            ]
+          },
+          {
+            pregunta: "¿Cómo se llama la asociación simbiótica mutualista entre un hongo y las raíces de una planta?",
+            opciones: [
+              "Micorriza",
+              "Líquenes",
+              "Bacteriófago",
+              "Epifitismo"
+            ],
+            correcta: 0,
+            bullets: [
+              "En las micorrizas, el hongo suministra agua y minerales (como fósforo) a la planta.",
+              "A cambio, la planta provee carbohidratos fotosintéticos al hongo, beneficiando a ambas especies."
+            ]
+          },
+          {
+            pregunta: "¿Qué grupo de hongos produce esporas sexuales en estructuras microscópicas con forma de saco llamadas ascas?",
+            opciones: [
+              "Ascomicetos (Ascomycota)",
+              "Basidiomicetos (Basidiomycota)",
+              "Zigomicetos (Zygomycota)",
+              "Quitridiomicetos (Chytridiomycota)"
+            ],
+            correcta: 0,
+            bullets: [
+              "Los ascomicetos incluyen organismos como la levadura del pan (Saccharomyces cerevisiae) y Penicillium.",
+              "Sus esporas sexuales características (ascosporas) maduran en el interior de ascas."
+            ]
+          }
+        ],
+        askedQuestions: []
       },
       {
         id: "kit_bio_nomen",
@@ -1949,7 +2261,80 @@
         progress: 75,
         colorTheme: "theme-blue",
         watermarkSvg: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"></path></svg>',
-        level: "Bachillerato / Preparatoria (15 - 17 años)"
+        level: "Bachillerato / Preparatoria (15 - 17 años)",
+        cachedQueue: [
+          {
+            pregunta: "En el sistema de nomenclatura binomial creado por Linneo, ¿qué denotan los dos términos de un nombre científico?",
+            opciones: [
+              "El primer término es el Género (con mayúscula inicial) y el segundo es el epíteto específico (en minúscula)",
+              "El primero indica la Familia y el segundo la Clase taxonómica",
+              "El primero designa el Reino y el segundo el país de origen de la especie",
+              "El primer término es la Orden y el segundo el nombre del descubridor"
+            ],
+            correcta: 0,
+            bullets: [
+              "En Homo sapiens, Homo es el género y sapiens es el epíteto específico que define la especie.",
+              "Ambos términos se escriben en cursiva (o subrayados) y universalmente en latín."
+            ]
+          },
+          {
+            pregunta: "¿Cuál es la secuencia taxonómica jerárquica correcta en orden descendente desde la categoría más amplia?",
+            opciones: [
+              "Dominio -> Reino -> Filo (o División) -> Clase -> Orden -> Familia -> Género -> Especie",
+              "Especie -> Género -> Familia -> Orden -> Clase -> Filo -> Reino -> Dominio",
+              "Reino -> Dominio -> Orden -> Clase -> Familia -> Género -> Filo -> Especie",
+              "Filo -> Reino -> Dominio -> Clase -> Género -> Familia -> Especie -> Orden"
+            ],
+            correcta: 0,
+            bullets: [
+              "La taxonomía biológica organiza la vida en niveles jerárquicos inclusivos.",
+              "El Dominio es el rango taxonómico superior más abarcador, y la Especie la unidad básica fundamental."
+            ]
+          },
+          {
+            pregunta: "¿Por qué la ciencia adoptó el latín como idioma universal para la nomenclatura biológica?",
+            opciones: [
+              "Por ser una lengua muerta que no sufre cambios lingüísticos con el tiempo, evitando confusiones de nombres comunes",
+              "Porque era el único idioma con alfabeto escrito en la época del Imperio Romano",
+              "Para que únicamente los médicos e investigadores universitarios pudieran interpretar los nombres",
+              "Por una ordenanza obligatoria del senado europeo del siglo XVIII"
+            ],
+            correcta: 0,
+            bullets: [
+              "El latín es inmutable y neutro a nivel internacional, eliminando las ambigüedades de los nombres vernáculos.",
+              "Un mismo ser vivo puede tener decenas de nombres populares según la región, pero solo un nombre científico único."
+            ]
+          },
+          {
+            pregunta: "Si dos organismos comparten el mismo género (ejemplo: Panthera leo y Panthera onca), ¿qué se deduce con certeza?",
+            opciones: [
+              "Pertenecen obligatoriamente a la misma familia, orden, clase, filo, reino y dominio",
+              "Son la misma especie biológica fértil",
+              "Poseen el mismo nicho ecológico y distribución geográfica exacta",
+              "No tienen ningún parentesco evolutivo filogenético"
+            ],
+            correcta: 0,
+            bullets: [
+              "Al compartir el género (Panthera), comparten todas las categorías taxonómicas superiores (Familia Felidae, etc.).",
+              "Sin embargo, constituyen especies distintas (leo = león, onca = jaguar)."
+            ]
+          },
+          {
+            pregunta: "¿Qué dominio de la vida agrupa a los seres vivos cuyas células poseen núcleo verdadero delimitado por membrana?",
+            opciones: [
+              "Eukarya (Eucariotas)",
+              "Bacteria",
+              "Archaea",
+              "Virus"
+            ],
+            correcta: 0,
+            bullets: [
+              "El sistema de tres dominios propuesto por Carl Woese divide la vida en Bacteria, Archaea y Eukarya.",
+              "Eukarya incluye animales, plantas, hongos y protistas, caracterizados por organelos membranosos y núcleo."
+            ]
+          }
+        ],
+        askedQuestions: []
       }
     ];
 
@@ -2096,16 +2481,22 @@
           state.kits = JSON.parse(saved);
           state.kits.forEach(k => {
             const def = DEFAULT_KITS.find(d => d.id === k.id);
-            if (def && (!k.flashcards || k.flashcards.length === 0)) {
-              k.flashcards = def.flashcards;
-              k.studyGuide = def.studyGuide;
+            if (def) {
+              if (!k.flashcards || k.flashcards.length === 0) k.flashcards = def.flashcards;
+              if (!k.studyGuide) k.studyGuide = def.studyGuide;
+              if (!k.cachedQueue || k.cachedQueue.length === 0) {
+                k.cachedQueue = def.cachedQueue ? JSON.parse(JSON.stringify(def.cachedQueue)) : [];
+              }
+              if (!k.askedQuestions) {
+                k.askedQuestions = def.askedQuestions ? [...def.askedQuestions] : [];
+              }
             }
           });
         } catch (e) {
-          state.kits = [...DEFAULT_KITS];
+          state.kits = JSON.parse(JSON.stringify(DEFAULT_KITS));
         }
       } else {
-        state.kits = [...DEFAULT_KITS];
+        state.kits = JSON.parse(JSON.stringify(DEFAULT_KITS));
         localStorage.setItem('synapse_study_kits', JSON.stringify(state.kits));
       }
     }
@@ -2413,43 +2804,39 @@
 Nivel académico del estudiante: "${state.level}".
 
 Estructura una GUÍA DE ESTUDIO COMPLETA, DETALLADA Y PEDAGÓGICA:
-1. Si es un Business Model Canvas o esquema con bloques:
-   - Extrae CADA UNO de los 9 bloques detalladamente (Socios Clave, Actividades Clave, Recursos Clave, Propuestas de Valor, Relaciones, Canales, Segmentos, Costos, Modelo de Ingresos Ad-Tech B2B con cupones QR).
-2. Extrae al menos 10 a 15 conceptos y puntos clave.
-
 Responde ÚNICAMENTE en JSON plano válido con esta estructura:
 {
-  "tema": "Título exacto y descriptivo del tema o proyecto",
-  "materia": "Nombre de la materia (ej: Negocios e Innovación, Biología, Astronomía, etc.)",
-  "resumen": "Resumen ejecutivo pedagógico de 2 párrafos.",
+  "tema": "Título exacto del tema identificado",
+  "materia": "Materia académica identificada (ej: Astronomía, Negocios, Biología, etc.)",
+  "resumen": "Resumen pedagógico claro de 2 o 3 párrafos explicando los conceptos clave de la imagen.",
   "secciones": [
     {
-      "titulo": "Nombre del bloque (ej: Propuestas de Valor, Costos, etc.)",
-      "puntos": ["Punto 1", "Punto 2"],
-      "explicacion": "Breve explicación del bloque"
+      "titulo": "Nombre del Bloque o Sección",
+      "puntos": ["Punto clave 1", "Punto clave 2", "Punto clave 3"],
+      "explicacion": "Explicación clara de por qué este bloque es fundamental para el tema."
     }
   ],
   "conceptosClave": [
-    { "termino": "Concepto 1", "definicion": "Definición clara", "importancia": "Por qué es relevante" }
+    { "termino": "Concepto 1", "definicion": "Definición clara y precisa", "importancia": "Por qué es relevante" }
   ],
-  "datosRelevantes": ["Dato o curiosidad 1", "Dato 2"],
-  "puntosExamen": ["Punto clave de examen 1", "Punto 2"],
+  "datosRelevantes": ["Dato clave 1", "Dato 2"],
+  "puntosExamen": ["Punto de examen 1", "Punto 2"],
   "flashcards": [
     {
-      "termino": "Concepto o término (ej: Nutación)",
-      "pregunta": "¿Qué es o en qué consiste?",
-      "definicion": "Definición pedagógica completa y clara que se muestra en el reverso",
-      "detalle": "Punto clave o tip de examen"
+      "termino": "Concepto o término clave",
+      "pregunta": "¿Qué define este concepto?",
+      "definicion": "Definición pedagógica completa que se muestra al voltear",
+      "detalle": "Punto relevante de examen"
     }
   ]
 }`;
 
       try {
-        const raw = await askGemini(prompt, "Eres un profesor pedagógico. Extrae fielmente en JSON.", fileData.base64, fileData.mimeType);
+        const raw = await askGeminiWithImage(prompt, fileData.base64, fileData.mimeType, "Eres un profesor pedagógico. Devuelve estrictamente JSON válido.");
         const clean = raw.replace(/```json/gi, "").replace(/```/gi, "").trim();
         const guide = JSON.parse(clean);
 
-        state.topic = guide.tema || "Tema de Apuntes";
+        state.topic = guide.tema || "Tema de Estudio";
         state.studyGuide = guide;
 
         renderGuideDrawerContent(guide);
@@ -2467,8 +2854,11 @@ Responde ÚNICAMENTE en JSON plano válido con esta estructura:
           watermarkSvg: '<svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>',
           level: state.level,
           studyGuide: guide,
-          flashcards: cards
+          flashcards: cards,
+          cachedQueue: [],
+          askedQuestions: []
         };
+        state.currentKitId = newKit.id;
         state.flashcardsDeck = cards;
         state.kits.unshift(newKit);
         saveKitsToStorage();
@@ -2483,7 +2873,10 @@ Responde ÚNICAMENTE en JSON plano válido con esta estructura:
 
         await fetchQuestionBatch(5);
 
-        // Pasamos directamente a la pantalla de estudio (sin abrir la guía automáticamente)
+        newKit.cachedQueue = [...state.queue];
+        saveKitsToStorage();
+
+        // Pasamos directamente a la pantalla de estudio sin demoras
         showActiveView('view-study-screen');
         renderQuestion();
         showToast("Kit Creado", `Iniciando sesión sobre "${state.topic}"`);
@@ -2547,8 +2940,11 @@ Responde ÚNICAMENTE en JSON plano válido con esta estructura:
           watermarkSvg: '<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>',
           level: state.level,
           studyGuide: guide,
-          flashcards: cards
+          flashcards: cards,
+          cachedQueue: [],
+          askedQuestions: []
         };
+        state.currentKitId = newKit.id;
         state.flashcardsDeck = cards;
         state.kits.unshift(newKit);
         saveKitsToStorage();
@@ -2563,6 +2959,9 @@ Responde ÚNICAMENTE en JSON plano válido con esta estructura:
 
         await fetchQuestionBatch(5);
 
+        newKit.cachedQueue = [...state.queue];
+        saveKitsToStorage();
+
         showActiveView('view-study-screen');
         renderQuestion();
         showToast("Kit Creado", `Iniciando sesión sobre "${state.topic}"`);
@@ -2574,7 +2973,7 @@ Responde ÚNICAMENTE en JSON plano válido con esta estructura:
       }
     }
 
-    /* ─── ABRIR KIT EXISTENTE ─── */
+    /* ─── ABRIR KIT EXISTENTE (CON COLA PERSISTENTE Y CARGA INSTANTÁNEA 0-MS) ─── */
     async function openKitStudy(kitId) {
       const kit = state.kits.find(k => k.id === kitId);
       if (!kit) return;
@@ -2586,47 +2985,97 @@ Responde ÚNICAMENTE en JSON plano válido con esta estructura:
       if (state.studyGuide) renderGuideDrawerContent(state.studyGuide);
       initKitFlashcards(kit);
 
-      showActiveView('view-loading');
-
-      state.queue = [];
-      state.history = [];
-      state.currentIndex = 0;
       state.stageLevel = kit.stageLevel || 1;
       state.stageProgress = kit.stageProgress || 0;
       state.stageAnswered = 0;
       state.stageCorrect = 0;
+      state.history = [];
 
-      await fetchQuestionBatch(5);
+      if (!kit.askedQuestions) kit.askedQuestions = [];
 
-      showActiveView('view-study-screen');
-      renderQuestion();
-      showToast("Estudio Inteligente", `Cargando preguntas de "${state.topic}"`);
+      // Si el kit ya tiene preguntas en cola guardadas:
+      if (kit.cachedQueue && kit.cachedQueue.length > 0) {
+        state.queue = kit.cachedQueue.map(q => randomizeQuestionOptions(q));
+        state.currentIndex = 0;
+
+        // Entrar DE INMEDIATO sin pantalla de carga (0 ms)
+        showActiveView('view-study-screen');
+        renderQuestion();
+        showToast("Sesión lista", `Estudio de "${state.topic}" cargado al instante`);
+
+        // Si quedan 6 o menos preguntas, generamos más en segundo plano sin interrumpir al usuario
+        if (state.queue.length <= 6) {
+          fetchQuestionBatch(5).catch(console.error);
+        }
+      } else {
+        // Solo si la cola está vacía mostramos pantalla de carga
+        showActiveView('view-loading');
+        state.queue = [];
+        state.currentIndex = 0;
+        await fetchQuestionBatch(5);
+
+        kit.cachedQueue = [...state.queue];
+        saveKitsToStorage();
+
+        showActiveView('view-study-screen');
+        renderQuestion();
+        showToast("Estudio Inteligente", `Generando preguntas de "${state.topic}"`);
+      }
     }
 
     function returnToDashboard() {
+      if (state.currentKitId) {
+        const kit = state.kits.find(k => k.id === state.currentKitId);
+        if (kit) {
+          kit.cachedQueue = state.queue.slice(state.currentIndex);
+          kit.stageLevel = state.stageLevel;
+          kit.stageProgress = state.stageProgress;
+          saveKitsToStorage();
+        }
+      }
       showActiveView('view-dashboard');
       renderDashboard();
     }
 
-    /* ─── OBTENER PREGUNTAS CONTINUAS CON DEDUPLICACIÓN Y ALEATORIZACIÓN ─── */
+    /* ─── OBTENER PREGUNTAS CONTINUAS CON DEDUPLICACIÓN Y PREFETCH EN SEGUNDO PLANO ─── */
+    let currentBatchPromise = null;
+
     async function fetchQuestionBatch(count = 5) {
-      if (state.isFetchingBatch) return;
+      if (state.isFetchingBatch && currentBatchPromise) {
+        return currentBatchPromise;
+      }
       state.isFetchingBatch = true;
 
-      const existingQuestions = state.queue.map(q => q.pregunta);
-      const avoidList = existingQuestions.length > 0
-        ? `\nPREGUNTAS YA FORMULADAS (ESTRICTAMENTE PROHIBIDO REPETIR O PREGUNTAR LO MISMO):\n` +
-          existingQuestions.map((p, i) => `${i + 1}. ${p}`).join('\n')
-        : '';
+      const prefetchInd = document.getElementById('prefetch-indicator');
+      const prefetchLbl = document.getElementById('prefetch-label');
+      if (prefetchInd) prefetchInd.style.display = 'inline-flex';
+      if (prefetchLbl) prefetchLbl.textContent = 'Generando lote en segundo plano...';
 
-      let guideContext = "";
-      if (state.studyGuide) {
-        let secSummary = "";
-        if (Array.isArray(state.studyGuide.secciones)) {
-          secSummary = state.studyGuide.secciones.map(s => `• ${s.titulo}: ${(s.puntos || []).join(', ')} (${s.explicacion || ''})`).join('\n');
+      currentBatchPromise = (async () => {
+        const kit = state.currentKitId ? state.kits.find(k => k.id === state.currentKitId) : null;
+        if (!kit && !state.topic) {
+          state.isFetchingBatch = false;
+          if (prefetchInd) prefetchInd.style.display = 'none';
+          return;
         }
 
-        guideContext = `
+        const askedHistory = (kit && Array.isArray(kit.askedQuestions)) ? kit.askedQuestions : [];
+        const currentInQueue = state.queue.map(q => q.pregunta);
+        const combinedAsked = Array.from(new Set([...askedHistory, ...currentInQueue]));
+
+        const avoidList = combinedAsked.length > 0
+          ? `\nPREGUNTAS YA FORMULADAS (ESTRICTAMENTE PROHIBIDO REPETIR O PREGUNTAR LO MISMO):\n` +
+            combinedAsked.slice(-20).map((p, i) => `${i + 1}. ${p}`).join('\n')
+          : '';
+
+        let guideContext = "";
+        if (state.studyGuide) {
+          let secSummary = "";
+          if (Array.isArray(state.studyGuide.secciones)) {
+            secSummary = state.studyGuide.secciones.map(s => `• ${s.titulo}: ${(s.puntos || []).join(', ')} (${s.explicacion || ''})`).join('\n');
+          }
+
+          guideContext = `
 MATERIAL BASE DE ESTUDIO (PREGUNTAS ESTRICTAMENTE BASADAS EN ESTO):
 Tema: ${state.studyGuide.tema}
 Resumen: ${state.studyGuide.resumen}
@@ -2635,9 +3084,9 @@ Conceptos: ${JSON.stringify(state.studyGuide.conceptosClave || [])}
 Datos Relevantes: ${JSON.stringify(state.studyGuide.datosRelevantes || [])}
 Puntos Examen: ${JSON.stringify(state.studyGuide.puntosExamen || [])}
 `;
-      }
+        }
 
-      const prompt = `Eres el tutor pedagógico de Synapse Smart Study.
+        const prompt = `Eres el tutor pedagógico de Synapse Smart Study.
 Tu misión es generar ${count} preguntas de estudio y active recall variadas e inéditas sobre: "${state.topic}".
 Nivel del estudiante: "${state.level}".
 Etapa actual: Nivel ${state.stageLevel}.
@@ -2664,28 +3113,45 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
   }
 ]`;
 
-      try {
-        const raw = await askGemini(prompt, "Eres un profesor pedagógico. Devuelve estrictamente JSON válido.");
-        const clean = raw.replace(/```json/gi, "").replace(/```/gi, "").trim();
-        const batch = JSON.parse(clean);
+        try {
+          const raw = await askGemini(prompt, "Eres un profesor pedagógico. Devuelve estrictamente JSON válido.");
+          const clean = raw.replace(/```json/gi, "").replace(/```/gi, "").trim();
+          const batch = JSON.parse(clean);
 
-        if (Array.isArray(batch) && batch.length > 0) {
-          const currentTexts = state.queue.map(q => (q.pregunta || '').toLowerCase().trim());
-          batch.forEach(b => {
-            const t = (b.pregunta || '').toLowerCase().trim();
-            if (!currentTexts.includes(t)) {
-              // Barajar opciones matemáticamente
-              const randomizedQ = randomizeQuestionOptions(b);
-              state.queue.push(randomizedQ);
-              currentTexts.push(t);
+          if (Array.isArray(batch) && batch.length > 0) {
+            const currentTexts = state.queue.map(q => (q.pregunta || '').toLowerCase().trim());
+            batch.forEach(b => {
+              const t = (b.pregunta || '').toLowerCase().trim();
+              if (t && !currentTexts.includes(t)) {
+                const randomizedQ = randomizeQuestionOptions(b);
+                state.queue.push(randomizedQ);
+                currentTexts.push(t);
+                if (kit) {
+                  if (!kit.askedQuestions) kit.askedQuestions = [];
+                  kit.askedQuestions.push(b.pregunta);
+                }
+              }
+            });
+
+            if (kit) {
+              kit.cachedQueue = state.queue.slice(state.currentIndex);
+              saveKitsToStorage();
             }
-          });
+
+            if (prefetchLbl) prefetchLbl.textContent = 'Preguntas sincronizadas';
+          }
+        } catch (e) {
+          console.error("Error obteniendo lote de preguntas:", e);
+        } finally {
+          state.isFetchingBatch = false;
+          currentBatchPromise = null;
+          setTimeout(() => {
+            if (prefetchInd && !state.isFetchingBatch) prefetchInd.style.display = 'none';
+          }, 1800);
         }
-      } catch (e) {
-        console.error("Error obteniendo lote de preguntas:", e);
-      } finally {
-        state.isFetchingBatch = false;
-      }
+      })();
+
+      return currentBatchPromise;
     }
 
     /* ─── ACTUALIZAR BARRA SUPERIOR CON COMPLEJIDAD PROGRESIVA ─── */
@@ -2754,8 +3220,9 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
         container.appendChild(btn);
       });
 
-      if (state.queue.length - state.currentIndex <= 3) {
-        fetchQuestionBatch(5);
+      // Si quedan 4 o menos preguntas por responder en cola, iniciamos prefetch en background
+      if (state.queue.length - state.currentIndex <= 4) {
+        fetchQuestionBatch(5).catch(console.error);
       }
     }
 
@@ -2819,9 +3286,6 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
 
       } else {
         state.streak = 0;
-        // RESPUESTA INCORRECTA: NO sube el progreso (0%).
-        // Se mantiene exactamente el mismo porcentaje previo sin penalizar arbitrariamente.
-
         if (selectedBtn) selectedBtn.classList.add("state-incorrect");
         if (selectedNum) selectedNum.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>';
 
@@ -2829,13 +3293,14 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
         if (correctNum) correctNum.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>';
       }
 
-      // Persistir progreso en kit activo
+      // Persistir progreso y cola en kit activo
       if (state.currentKitId) {
         const kit = state.kits.find(k => k.id === state.currentKitId);
         if (kit) {
           kit.stageLevel = state.stageLevel;
           kit.stageProgress = state.stageProgress;
           kit.progress = Math.min(100, Math.round(((state.stageLevel - 1) * 33.33) + (state.stageProgress * 0.3333)));
+          kit.cachedQueue = state.queue.slice(state.currentIndex);
           saveKitsToStorage();
         }
       }
@@ -2875,7 +3340,7 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
 
     function handleShowAnswer() {
       if (state.answeredCurrent) return;
-      handleAnswer(-1); // Muestra la respuesta correcta sin sumar progreso ni XP al usuario
+      handleAnswer(-1);
     }
 
     function handleSkipQuestion() {
@@ -2889,6 +3354,19 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       }
 
       state.currentIndex++;
+
+      if (state.currentKitId) {
+        const kit = state.kits.find(k => k.id === state.currentKitId);
+        if (kit) {
+          kit.cachedQueue = state.queue.slice(state.currentIndex);
+          saveKitsToStorage();
+        }
+      }
+
+      if (state.queue.length - state.currentIndex <= 4) {
+        fetchQuestionBatch(5).catch(console.error);
+      }
+
       if (state.currentIndex >= state.queue.length) {
         await fetchQuestionBatch(5);
       }
@@ -2941,11 +3419,16 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
           kit.stageLevel = state.stageLevel;
           kit.stageProgress = 0;
           kit.progress = Math.min(100, Math.round(((state.stageLevel - 1) * 33.33)));
+          kit.cachedQueue = state.queue.slice(state.currentIndex);
           saveKitsToStorage();
         }
       }
 
       updateProgress();
+
+      if (state.queue.length - state.currentIndex <= 4) {
+        fetchQuestionBatch(5).catch(console.error);
+      }
 
       if (state.currentIndex >= state.queue.length) {
         await fetchQuestionBatch(5);
@@ -3059,6 +3542,19 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
     function closeHistoryModal() {
       document.getElementById('history-modal').style.display = 'none';
     }
+
+    
+    window.addEventListener('beforeunload', () => {
+      if (state.currentKitId) {
+        const kit = state.kits.find(k => k.id === state.currentKitId);
+        if (kit) {
+          kit.cachedQueue = state.queue.slice(state.currentIndex);
+          kit.stageLevel = state.stageLevel;
+          kit.stageProgress = state.stageProgress;
+          saveKitsToStorage();
+        }
+      }
+    });
 
     /* ─── INICIALIZACIÓN ─── */
     updateNavbar();
