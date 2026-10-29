@@ -1599,7 +1599,7 @@
               </div>
               <ul class="pricing-features">
                 <li><span class="check">✓</span> 3 monografías o informes de prueba en RedactaPro</li>
-                <li><span class="check">✓</span> 5 simulacros de examen rápidos (5 preguntas c/u)</li>
+                <li><span class="check">✓</span> Simulacros de examen y Quiz Continuo</li>
                 <li><span class="check">✓</span> Búsquedas estándar de literatura en Deep Research</li>
                 <li><span class="check">✓</span> Mazo básico de flashcards nemotécnicas</li>
                 <li><span class="check">✓</span> Acceso desde navegador web móvil o desktop</li>
@@ -1696,27 +1696,27 @@
             <a href="redactapro/" class="btn-service primary">Acceder a RedactaPro ➜</a>
           </div>
 
-          <!-- Servicio 2: Simulador de Exámenes -->
+          <!-- Servicio 2: Quiz Continuo y Flashcards (Smart Study) -->
           <div class="service-card">
             <div>
               <div class="service-top">
                 <div class="service-icon-box">🎯</div>
                 <div>
                   <div class="service-meta-tag">Estudio Activo • Metodología Synapse</div>
-                  <h3>Quiz Continuo (Smart Study)</h3>
+                  <h3>Quiz Continuo & Flashcards</h3>
                 </div>
               </div>
               <p class="service-desc">
-                Entrena tu cerebro bajo presión controlada. Pega tus apuntes o temario y genera evaluaciones personalizadas de opción múltiple con niveles de dificultad desde bachillerato hasta postgrado. Incluye corrección paso a paso y explicación detallada de por qué cada opción es correcta o errónea.
+                Entrena con kits de estudio inteligentes a partir de tus notas o fotos. Incluye evaluaciones progresivas con retroalimentación instantánea, guías didácticas completas y tarjetas de estudio nemotécnicas (flashcards) 3D integradas estilo Thea para memorización activa.
               </p>
               <ul class="service-features-list">
-                <li>Niveles configurables: Bachillerato, Universidad y Postgrado</li>
-                <li>Feedback inmediato pedagógico en cada respuesta</li>
-                <li>Cálculo de porcentaje de dominio y áreas a reforzar</li>
+                <li>Evaluación continua adaptativa con Active Recall</li>
+                <li>Tarjetas de estudio 3D basadas en los temas de tu guía</li>
+                <li>Guías pedagógicas estructuradas para tus evaluaciones</li>
               </ul>
             </div>
             <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:1rem;">
-              <a href="quiz/" class="btn-service primary" style="flex:1; text-align:center; text-decoration:none;">Abrir Quiz Continuo ➜</a>
+              <a href="quiz/" class="btn-service primary" style="flex:1; text-align:center; text-decoration:none;">Abrir Quiz y Flashcards ➜</a>
               <button class="btn-service secondary" style="width:auto;" onclick="activateWorkspaceTool('exam')">Probar en Consola ↓</button>
             </div>
           </div>
@@ -1746,29 +1746,6 @@
             </div>
           </div>
 
-          <!-- Servicio 4: Flashcards 3D -->
-          <div class="service-card">
-            <div>
-              <div class="service-top">
-                <div class="service-icon-box">⚡</div>
-                <div>
-                  <div class="service-meta-tag">Memorización Nemotécnica</div>
-                  <h3>Flashcards 3D</h3>
-                </div>
-              </div>
-              <p class="service-desc">
-                Transforma grandes densidades de texto en mazos de tarjetas nemotécnicas tridimensionales interactivas. Aplica principios cognitivos de repetición espaciada y memorización activa para consolidar conceptos clave antes de tus exámenes parciales.
-              </p>
-              <ul class="service-features-list">
-                <li>Giro tridimensional fluido e interactivo</li>
-                <li>Definiciones sintéticas y claves nemotécnicas de memoria</li>
-                <li>Generación instantánea a partir de cualquier texto o resumen</li>
-              </ul>
-            </div>
-            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:1rem;">
-              <a href="flashcards/" class="btn-service primary" style="flex:1; text-align:center; text-decoration:none;">Abrir Flashcards ➜</a>
-              <button class="btn-service secondary" style="width:auto;" onclick="activateWorkspaceTool('flashcards')">Probar en Consola ↓</button>
-            </div>
           </div>
         </div>
       </div>
@@ -1786,7 +1763,6 @@
         <div class="workspace-tabs">
           <button class="tab-btn active" id="btn-work-exam" onclick="activateWorkspaceTool('exam')">🎯 Quiz de Estudio Continuo</button>
           <button class="tab-btn" id="btn-work-research" onclick="activateWorkspaceTool('research')">🔬 Deep Research</button>
-          <button class="tab-btn" id="btn-work-flashcards" onclick="activateWorkspaceTool('flashcards')">⚡ Flashcards 3D</button>
         </div>
 
         <!-- CONSOLA 1: EXAMEN -->
@@ -1812,8 +1788,8 @@
             <div class="form-group">
               <label>Cantidad de Preguntas:</label>
               <select id="exam-count">
-                <option value="5">5 Preguntas (Rápido)</option>
                 <option value="10" selected>10 Preguntas (Completo)</option>
+                <option value="15">15 Preguntas (Exhaustivo)</option>
               </select>
             </div>
           </div>
@@ -1866,44 +1842,6 @@
           </div>
         </div>
 
-        <!-- CONSOLA 3: FLASHCARDS -->
-        <div class="workspace-tool-panel" id="panel-flashcards">
-          <div class="form-group">
-            <label>Pega tus apuntes o lista de conceptos clave a memorizar:</label>
-            <textarea id="flashcards-input" rows="3" placeholder="Ej: Mitocondria (producción de ATP), Ribosoma (síntesis de proteínas), Lisosoma (digestión celular y reciclaje enzimático)..."></textarea>
-          </div>
-
-          <button class="btn-action" onclick="generateFlashcards()">⚡ Generar Mazo de Flashcards</button>
-
-          <div class="loading-spinner" id="flashcards-loading">
-            <div class="spinner"></div>
-            <p style="color:var(--color-secondary); font-size:0.95rem; font-weight:600;">Sintetizando conceptos en tarjetas de memoria...</p>
-          </div>
-
-          <div class="output-area" id="flashcards-output">
-            <div style="text-align:center; margin-bottom:10px; color:var(--color-secondary); font-size:0.92rem; font-weight:700;" id="card-counter">Tarjeta 1 de 5</div>
-            
-            <div class="flashcard-wrapper" onclick="flipCurrentCard()">
-              <div class="flashcard-inner" id="flashcard-inner">
-                <div class="flashcard-face flashcard-front">
-                  <span class="flashcard-badge">Pregunta / Concepto</span>
-                  <div class="flashcard-text" id="card-front-text">Cargando...</div>
-                  <div class="flashcard-hint">💡 Haz clic para girar</div>
-                </div>
-                <div class="flashcard-face flashcard-back">
-                  <span class="flashcard-badge" style="color:var(--color-accent);">Definición & Nemotecnia</span>
-                  <div class="flashcard-text" id="card-back-text">Respuesta...</div>
-                  <div class="flashcard-hint">🔄 Haz clic para regresar al frente</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="flashcard-controls">
-              <button class="btn-service secondary" style="width:auto; padding:8px 18px;" onclick="prevCard()">⬅ Anterior</button>
-              <button class="btn-service primary" style="width:auto; padding:8px 24px;" onclick="flipCurrentCard()">Girar 🔄</button>
-              <button class="btn-service secondary" style="width:auto; padding:8px 18px;" onclick="nextCard()">Siguiente ➜</button>
-            </div>
-          </div>
         </div>
 
       </div>
@@ -2037,7 +1975,7 @@
             <li><a href="dashboard.html">RedactaPro</a></li>
             <li><a href="#workspace" onclick="activateWorkspaceTool('exam')">Simulador de Exámenes</a></li>
             <li><a href="#workspace" onclick="activateWorkspaceTool('research')">Deep Research</a></li>
-            <li><a href="#workspace" onclick="activateWorkspaceTool('flashcards')">Flashcards 3D</a></li>
+            <li><a href="quiz/">Quiz & Flashcards</a></li>
             <li><a href="#precios">Planes de Suscripción</a></li>
           </ul>
         </div>

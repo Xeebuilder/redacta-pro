@@ -1118,6 +1118,227 @@
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
+  
+    /* ─── THEA STYLE 3D FLASHCARDS ─── */
+    .fc-meta-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 1.2rem;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .fc-badge-topic {
+      background: rgba(167, 139, 250, 0.15);
+      border: 1px solid rgba(167, 139, 250, 0.35);
+      color: var(--accent-lilac);
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .fc-flip-hint {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .thea-card-3d-wrapper {
+      perspective: 1200px;
+      width: 100%;
+      min-height: 380px;
+      cursor: pointer;
+      user-select: none;
+      position: relative;
+    }
+    .thea-card-3d-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 380px;
+      transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+    .thea-card-3d-inner.flipped {
+      transform: rotateY(180deg);
+    }
+    .thea-card-face {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      min-height: 380px;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: 24px;
+      border: 1.5px solid var(--border-purple);
+      padding: 2.5rem 2rem 3.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 16px 40px rgba(7, 5, 20, 0.6);
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+    .thea-card-face:hover {
+      border-color: rgba(167, 139, 250, 0.6);
+      box-shadow: 0 20px 48px rgba(124, 58, 237, 0.2);
+    }
+    .thea-card-front {
+      background: linear-gradient(145deg, #161233 0%, #0F0C24 100%);
+    }
+    .thea-card-back {
+      transform: rotateY(180deg);
+      background: linear-gradient(145deg, #1C1542 0%, #120D2C 100%);
+      border-color: rgba(167, 139, 250, 0.45);
+    }
+    .fc-side-label {
+      font-size: 0.76rem;
+      font-weight: 800;
+      color: var(--accent-lilac);
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      margin-bottom: 0.8rem;
+    }
+    .fc-term-display {
+      font-size: 2.3rem;
+      font-weight: 900;
+      color: #FFFFFF;
+      margin-bottom: 0.9rem;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+    }
+    .fc-prompt-clue {
+      font-size: 1.15rem;
+      color: #E2E8F0;
+      font-weight: 500;
+      max-width: 90%;
+      line-height: 1.5;
+    }
+    .fc-back-term-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin-bottom: 0.75rem;
+    }
+    .fc-definition-display {
+      font-size: 1.18rem;
+      font-weight: 600;
+      color: #F8FAFC;
+      line-height: 1.6;
+      max-width: 95%;
+      margin-bottom: 0.9rem;
+    }
+    .fc-detail-note {
+      font-size: 0.92rem;
+      color: #C4B5FD;
+      background: rgba(139, 92, 246, 0.15);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      padding: 8px 18px;
+      border-radius: 12px;
+      line-height: 1.45;
+      max-width: 90%;
+    }
+    .fc-tap-action-pill {
+      position: absolute;
+      bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: rgba(226, 232, 240, 0.65);
+      background: rgba(255, 255, 255, 0.06);
+      padding: 6px 14px;
+      border-radius: 20px;
+    }
+    .thea-fc-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin-top: 1.5rem;
+      gap: 16px;
+    }
+    .fc-nav-btn {
+      background: #161233;
+      border: 1.5px solid var(--border-purple);
+      color: #FFFFFF;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 10px 22px;
+      border-radius: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .fc-nav-btn:hover:not(:disabled) {
+      background: rgba(167, 139, 250, 0.2);
+      border-color: var(--accent-lilac);
+      transform: translateY(-2px);
+    }
+    .fc-nav-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+    .fc-progress-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+    }
+    .fc-counter-label {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #FFFFFF;
+    }
+    .fc-progress-track {
+      width: 140px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .fc-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #A78BFA, #38BDF8);
+      border-radius: 10px;
+      transition: width 0.3s;
+    }
+    .thea-fc-tools {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 1.2rem;
+    }
+    .fc-tool-pill {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-dim);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .fc-tool-pill:hover {
+      color: #FFFFFF;
+      border-color: rgba(255, 255, 255, 0.35);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
   </style>
 </head>
 <body>
@@ -1303,29 +1524,25 @@
 
     <!-- Sidebar Izquierda con Iconos SVG Limpios -->
     <aside class="study-sidebar">
-      <button class="sidebar-nav-btn" onclick="returnToDashboard()">
+      <button class="sidebar-nav-btn" onclick="returnToDashboard()" title="Volver al panel principal">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
         <span>Inicio</span>
       </button>
-      <button class="sidebar-nav-btn" onclick="openGuideDrawer()">
+      <button class="sidebar-nav-btn" onclick="openGuideDrawer()" title="Ver materiales extraídos">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
         <span>Materiales</span>
       </button>
-      <button class="sidebar-nav-btn active">
+      <button class="sidebar-nav-btn active" id="sidebar-btn-smart-study" onclick="switchStudyMode('quiz')" title="Preguntas y Active Recall">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
         <span>Estudio inteligente</span>
       </button>
-      <button class="sidebar-nav-btn" onclick="openGuideDrawer()">
+      <button class="sidebar-nav-btn" onclick="openGuideDrawer()" title="Abrir guía de estudio estructurada">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
         <span>Guía de Estudio</span>
       </button>
-      <button class="sidebar-nav-btn" onclick="showToast('Tarjetas de Estudio', 'Modo flashcards disponible en tu kit')">
+      <button class="sidebar-nav-btn" id="sidebar-btn-flashcards" onclick="switchStudyMode('flashcards')" title="Tarjetas nemotécnicas activas">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="16" height="13" rx="2" ry="2"></rect><path d="M6 3h12a2 2 0 0 1 2 2v12"></path></svg>
         <span>Tarjetas de estudio</span>
-      </button>
-      <button class="sidebar-nav-btn" onclick="showToast('Modo Prueba', 'Completa tu sesión para generar un examen formal')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
-        <span>Prueba</span>
       </button>
     </aside>
 
@@ -1350,8 +1567,9 @@
         </button>
       </div>
 
-      <!-- Tarjeta de Pregunta en Foco -->
-      <div class="question-card-syn">
+      <!-- CONTENEDOR MODO 1: QUIZ CONTINUO (ACTIVE RECALL) -->
+      <div id="panel-quiz-mode" style="width:100%;">
+        <div class="question-card-syn">
         
         <!-- Pregunta Centrada -->
         <div class="q-text-centered" id="q-text">Cargando pregunta...</div>
@@ -1411,7 +1629,84 @@
           </div>
         </div>
 
-      </div>
+        </div> <!-- Fin question-card-syn -->
+      </div> <!-- Fin panel-quiz-mode -->
+
+      <!-- CONTENEDOR MODO 2: TARJETAS DE ESTUDIO 3D (THEA STYLE) -->
+      <div id="panel-flashcards-mode" style="display:none; width:100%; max-width:760px; margin:0 auto;">
+        
+        <div class="fc-meta-bar">
+          <div class="fc-badge-topic" id="fc-badge-topic">Conceptos Clave</div>
+          <div class="fc-flip-hint">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            <span>Haz clic en la tarjeta o presiona [Espacio] para voltear</span>
+          </div>
+        </div>
+
+        <div class="thea-card-3d-wrapper" onclick="flipStudyFlashcard()">
+          <div class="thea-card-3d-inner" id="thea-card-3d-inner">
+            
+            <!-- Cara Frontal -->
+            <div class="thea-card-face thea-card-front">
+              <span class="fc-side-label" id="fc-card-label-front">CONCEPTO / TEMA</span>
+              <div class="fc-term-display" id="fc-card-term">Cargando...</div>
+              <div class="fc-prompt-clue" id="fc-card-prompt">Toca la tarjeta para ver la respuesta y puntos clave</div>
+              
+              <div class="fc-tap-action-pill">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                <span>Toca o presiona [Espacio] para voltear</span>
+              </div>
+            </div>
+
+            <!-- Cara Trasera -->
+            <div class="thea-card-face thea-card-back">
+              <span class="fc-side-label" style="color:#67E8F9;">DEFINICIÓN & PUNTOS CLAVE</span>
+              <div class="fc-back-term-title" id="fc-card-back-term">Término</div>
+              <div class="fc-definition-display" id="fc-card-definition">Definición detallada...</div>
+              <div class="fc-detail-note" id="fc-card-detail" style="display:none;"></div>
+
+              <div class="fc-tap-action-pill">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                <span>Toca para regresar al frente</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Controles Inferiores (Thea Style) -->
+        <div class="thea-fc-controls">
+          <button class="fc-nav-btn" id="fc-btn-prev" onclick="navigateFlashcard(-1)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            <span>Anterior</span>
+          </button>
+
+          <div class="fc-progress-wrap">
+            <span class="fc-counter-label" id="fc-counter-label">Tarjeta 1 de 1</span>
+            <div class="fc-progress-track">
+              <div class="fc-progress-bar" id="fc-progress-bar" style="width: 100%;"></div>
+            </div>
+          </div>
+
+          <button class="fc-nav-btn" id="fc-btn-next" onclick="navigateFlashcard(1)">
+            <span>Siguiente</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </div>
+
+        <!-- Acciones extra -->
+        <div class="thea-fc-tools">
+          <button class="fc-tool-pill" onclick="shuffleFlashcards()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
+            <span>Mezclar mazo</span>
+          </button>
+          <button class="fc-tool-pill" onclick="flipStudyFlashcard()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            <span>Voltear [Espacio]</span>
+          </button>
+        </div>
+
+      </div> <!-- Fin panel-flashcards-mode -->
 
     </main>
   </section>
@@ -1566,7 +1861,68 @@
         progress: 85,
         colorTheme: "theme-green",
         watermarkSvg: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>',
-        level: "Bachillerato / Preparatoria (15 - 17 años)"
+        level: "Bachillerato / Preparatoria (15 - 17 años)",
+        flashcards: [
+          {
+            termino: "Nutación",
+            pregunta: "¿Qué es la nutación y qué fenómeno produce en el eje terrestre?",
+            definicion: "Movimiento oscilatorio periódico del eje de rotación de la Tierra alrededor de su posición media, causado por la influencia gravitatoria combinada de la Luna y el Sol sobre el abultamiento ecuatorial de la Tierra.",
+            detalle: "Clave de examen: Origina un bamboleo elíptico con un ciclo de aproximadamente 18.6 años superpuesto a la precesión."
+          },
+          {
+            termino: "Precesión de los Equinoccios",
+            pregunta: "¿Qué describe el movimiento de precesión del eje terrestre?",
+            definicion: "Giro cónico lento y continuo del eje de rotación de la Tierra, similar al bamboleo de un trompo al perder velocidad. Se debe al torque gravitacional del Sol y la Luna sobre el elipsoide terrestre.",
+            detalle: "Un ciclo completo dura 25,776 años (año platónico)."
+          },
+          {
+            termino: "Rotación Terrestre",
+            pregunta: "¿En qué sentido gira la Tierra y qué fenómeno fundamental determina?",
+            definicion: "Movimiento sobre su propio eje imaginario de Oeste a Este en 23h 56m 4s (día sideral), originando la alternancia entre el día y la noche.",
+            detalle: "Genera la fuerza de Coriolis y el achatamiento de los polos."
+          },
+          {
+            termino: "Traslación Terrestre",
+            pregunta: "¿Qué trayectoria describe la Tierra alrededor del Sol y qué produce?",
+            definicion: "Movimiento orbital elíptico en torno al Sol que dura 365 días, 5 horas y 48 minutos a 29.8 km/s. Junto con la inclinación axial de 23.5°, origina las 4 estaciones.",
+            detalle: "La velocidad de traslación varía según la segunda ley de Kepler."
+          },
+          {
+            termino: "Afelio y Perihelio",
+            pregunta: "¿Cuál es la diferencia entre afelio y perihelio?",
+            definicion: "Extremos de la órbita elíptica: el Perihelio es el punto más cercano al Sol (~147 millones de km, en enero) y el Afelio es el punto más lejano (~152 millones de km, en julio).",
+            detalle: "Demuestra que las estaciones dependen de la inclinación del eje, no de la distancia al Sol."
+          },
+          {
+            termino: "Solsticios",
+            pregunta: "¿Qué ocurre durante los solsticios de verano e invierno?",
+            definicion: "Momentos en que el Sol alcanza su máxima declinación norte (Trópico de Cáncer, junio) o sur (Trópico de Capricornio, diciembre), con la máxima diferencia entre duración del día y la noche.",
+            detalle: "Marcan el inicio del verano e invierno astronómicos."
+          },
+          {
+            termino: "Equinoccios",
+            pregunta: "¿Por qué el día y la noche duran exactamente igual en los equinoccios?",
+            definicion: "Fechas (marzo y septiembre) en que el Sol incide perpendicularmente sobre el ecuador terrestre, provocando que el día y la noche duren exactamente 12 horas en todo el planeta.",
+            detalle: "Marcan la primavera boreal/otoño austral y viceversa."
+          },
+          {
+            termino: "Fuerza de Coriolis",
+            pregunta: "¿Cómo desvía la rotación terrestre a los vientos y corrientes?",
+            definicion: "Fuerza inercial que desvía la trayectoria de los fluidos hacia la derecha en el hemisferio norte y hacia la izquierda en el hemisferio sur.",
+            detalle: "Determina los vientos alisios y el sentido de giro de los huracanes."
+          }
+        ],
+        studyGuide: {
+          tema: "Astronomía y Movimientos de la Tierra",
+          materia: "Ciencias de la Tierra y Astronomía",
+          resumen: "Estudio exhaustivo de los movimientos principales y secundarios de la Tierra (rotación, traslación, precesión y nutación), sus efectos en las estaciones del año, el ciclo día/noche y la gravitación orbital.",
+          secciones: [
+            { titulo: "Movimientos Principales", puntos: ["Rotación de 24 horas determinando el día y la noche", "Traslación elíptica de 365.25 días que origina las estaciones del año"] },
+            { titulo: "Movimientos de Bamboleo Axial", puntos: ["Precesión cónica de 25,776 años", "Nutación oscilatoria de 18.6 años provocada por la atracción lunar"] }
+          ],
+          datosRelevantes: ["Inclinación del eje terrestre de 23.5 grados", "Velocidad orbital promedio de 29.8 km/s", "Perihelio en enero y Afelio en julio"],
+          puntosExamen: ["La nutación es el bamboleo periódico superpuesto a la precesión", "Las estaciones se deben a la inclinación axial y no a la distancia al Sol"]
+        }
       },
       {
         id: "kit_derecho",
@@ -1623,7 +1979,13 @@
       stageLevel: 1,
       stageProgress: 0,
       stageAnswered: 0,
-      stageCorrect: 0
+      stageCorrect: 0,
+
+      // Flashcards Thea Style
+      currentStudyMode: 'quiz',
+      flashcardsDeck: [],
+      currentCardIndex: 0,
+      isCardFlipped: false
     };
 
     const GEMINI_MODEL = 'gemini-3.8-flash';
@@ -1732,6 +2094,13 @@
       if (saved) {
         try {
           state.kits = JSON.parse(saved);
+          state.kits.forEach(k => {
+            const def = DEFAULT_KITS.find(d => d.id === k.id);
+            if (def && (!k.flashcards || k.flashcards.length === 0)) {
+              k.flashcards = def.flashcards;
+              k.studyGuide = def.studyGuide;
+            }
+          });
         } catch (e) {
           state.kits = [...DEFAULT_KITS];
         }
@@ -1805,6 +2174,14 @@
             
             <!-- Menú flotante in-app (reemplaza confirm del navegador) -->
             <div class="kit-menu-dropdown" id="menu-${kit.id}">
+              <button class="kit-menu-item" onclick="openKitStudyMode(event, '${kit.id}', 'quiz')">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                <span>Estudio Inteligente (Quiz)</span>
+              </button>
+              <button class="kit-menu-item" onclick="openKitStudyMode(event, '${kit.id}', 'flashcards')">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="7" width="16" height="13" rx="2" ry="2"></rect><path d="M6 3h12a2 2 0 0 1 2 2v12"></path></svg>
+                <span>Tarjetas de Estudio</span>
+              </button>
               <button class="kit-menu-item" onclick="resetKitProgress(event, '${kit.id}')">
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
                 <span>Reiniciar progreso</span>
@@ -2056,7 +2433,15 @@ Responde ÚNICAMENTE en JSON plano válido con esta estructura:
     { "termino": "Concepto 1", "definicion": "Definición clara", "importancia": "Por qué es relevante" }
   ],
   "datosRelevantes": ["Dato o curiosidad 1", "Dato 2"],
-  "puntosExamen": ["Punto clave de examen 1", "Punto 2"]
+  "puntosExamen": ["Punto clave de examen 1", "Punto 2"],
+  "flashcards": [
+    {
+      "termino": "Concepto o término (ej: Nutación)",
+      "pregunta": "¿Qué es o en qué consiste?",
+      "definicion": "Definición pedagógica completa y clara que se muestra en el reverso",
+      "detalle": "Punto clave o tip de examen"
+    }
+  ]
 }`;
 
       try {
@@ -2069,6 +2454,10 @@ Responde ÚNICAMENTE en JSON plano válido con esta estructura:
 
         renderGuideDrawerContent(guide);
 
+        const cards = guide.flashcards && guide.flashcards.length > 0 
+          ? guide.flashcards 
+          : extractFlashcardsFromGuide(guide);
+
         const newKit = {
           id: "kit_" + Date.now(),
           subject: guide.materia || "General",
@@ -2076,8 +2465,11 @@ Responde ÚNICAMENTE en JSON plano válido con esta estructura:
           progress: 5,
           colorTheme: "theme-green",
           watermarkSvg: '<svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>',
-          level: state.level
+          level: state.level,
+          studyGuide: guide,
+          flashcards: cards
         };
+        state.flashcardsDeck = cards;
         state.kits.unshift(newKit);
         saveKitsToStorage();
 
@@ -2121,7 +2513,15 @@ Responde ÚNICAMENTE en JSON plano válido con esta estructura:
     { "termino": "Concepto 1", "definicion": "Definición clara", "importancia": "Por qué es relevante" }
   ],
   "datosRelevantes": ["Dato clave 1", "Dato 2"],
-  "puntosExamen": ["Punto de examen 1", "Punto 2"]
+  "puntosExamen": ["Punto de examen 1", "Punto 2"],
+  "flashcards": [
+    {
+      "termino": "Concepto o término clave",
+      "pregunta": "¿Qué define este concepto?",
+      "definicion": "Definición pedagógica completa que se muestra al voltear",
+      "detalle": "Punto relevante de examen"
+    }
+  ]
 }`;
 
       try {
@@ -2134,6 +2534,10 @@ Responde ÚNICAMENTE en JSON plano válido con esta estructura:
 
         renderGuideDrawerContent(guide);
 
+        const cards = guide.flashcards && guide.flashcards.length > 0 
+          ? guide.flashcards 
+          : extractFlashcardsFromGuide(guide);
+
         const newKit = {
           id: "kit_" + Date.now(),
           subject: guide.materia || "General",
@@ -2141,8 +2545,11 @@ Responde ÚNICAMENTE en JSON plano válido con esta estructura:
           progress: 5,
           colorTheme: "theme-purple",
           watermarkSvg: '<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>',
-          level: state.level
+          level: state.level,
+          studyGuide: guide,
+          flashcards: cards
         };
+        state.flashcardsDeck = cards;
         state.kits.unshift(newKit);
         saveKitsToStorage();
 
@@ -2175,6 +2582,9 @@ Responde ÚNICAMENTE en JSON plano válido con esta estructura:
       state.currentKitId = kit.id;
       state.topic = kit.title;
       state.level = kit.level || 'Bachillerato / Preparatoria (15 - 17 años)';
+      state.studyGuide = kit.studyGuide || null;
+      if (state.studyGuide) renderGuideDrawerContent(state.studyGuide);
+      initKitFlashcards(kit);
 
       showActiveView('view-loading');
 
@@ -2381,20 +2791,20 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
         state.stageCorrect++;
         addXP(25);
 
-        // Escalado pedagógico de dificultad (calibrado al 70% de la dificultad previa):
-        // Nivel 1: Cada pregunta correcta sube entre 7% y 11% (~10-11 aciertos para completar)
-        // Nivel 2: Más complejo, cada pregunta correcta sube entre 4% y 7% (~17-18 aciertos)
-        // Nivel 3: Aún más complejo, cada pregunta sube entre 3% y 4% (~28 aciertos)
-        // Nivel 4+: 2% a 3% (~40-45 aciertos)
+        // Escalado pedagógico de dificultad (calibrado al 60% de dificultad):
+        // Nivel 1: Cada pregunta correcta sube entre 8% y 13% (~9-10 aciertos para completar)
+        // Nivel 2: Más complejo, cada pregunta correcta sube entre 5% y 8% (~15 aciertos)
+        // Nivel 3: Aún más complejo, cada pregunta sube entre 4% y 5% (~22 aciertos)
+        // Nivel 4+: 3% a 4% (~28-30 aciertos)
         let increment = 0;
         if (state.stageLevel === 1) {
-          increment = Math.floor(Math.random() * 5) + 7; // 7, 8, 9, 10 u 11%
+          increment = Math.floor(Math.random() * 6) + 8; // 8, 9, 10, 11, 12 o 13%
         } else if (state.stageLevel === 2) {
-          increment = Math.floor(Math.random() * 4) + 4; // 4, 5, 6 o 7%
+          increment = Math.floor(Math.random() * 4) + 5; // 5, 6, 7 u 8%
         } else if (state.stageLevel === 3) {
-          increment = Math.floor(Math.random() * 2) + 3; // 3 o 4%
+          increment = Math.floor(Math.random() * 2) + 4; // 4 o 5%
         } else {
-          increment = Math.random() < 0.6 ? 2 : 3;       // 2 o 3%
+          increment = Math.random() < 0.6 ? 3 : 4;       // 3 o 4%
         }
 
         state.stageProgress = Math.min(100, state.stageProgress + increment);
@@ -2667,6 +3077,263 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       }
     }
 
-  </script>
+  
+    /* ══════════════════════════════════════════════════════════════ */
+    /* MOTOR DE TARJETAS DE ESTUDIO (THEA STYLE FLASHCARDS)         */
+    /* ══════════════════════════════════════════════════════════════ */
+
+    function openKitStudyMode(e, kitId, mode) {
+      if (e) e.stopPropagation();
+      openKitStudy(kitId).then(() => {
+        if (mode === 'flashcards') switchStudyMode('flashcards');
+      });
+    }
+
+    function switchStudyMode(mode) {
+      state.currentStudyMode = mode;
+      
+      const btnQuiz = document.getElementById('sidebar-btn-smart-study');
+      const btnFc = document.getElementById('sidebar-btn-flashcards');
+      const panelQuiz = document.getElementById('panel-quiz-mode');
+      const panelFc = document.getElementById('panel-flashcards-mode');
+      const topMilestones = document.querySelector('.thea-milestones');
+      const topLabel = document.getElementById('study-progress-label');
+      const topFill = document.getElementById('study-progress-fill');
+
+      if (mode === 'flashcards') {
+        if (btnQuiz) btnQuiz.classList.remove('active');
+        if (btnFc) btnFc.classList.add('active');
+        if (panelQuiz) panelQuiz.style.display = 'none';
+        if (panelFc) panelFc.style.display = 'block';
+        if (topMilestones) topMilestones.style.display = 'none';
+
+        // Inicializar deck si no está cargado
+        const kit = state.kits.find(k => k.id === state.currentKitId);
+        if (kit) initKitFlashcards(kit);
+        renderFlashcard();
+      } else {
+        if (btnFc) btnFc.classList.remove('active');
+        if (btnQuiz) btnQuiz.classList.add('active');
+        if (panelFc) panelFc.style.display = 'none';
+        if (panelQuiz) panelQuiz.style.display = 'block';
+        if (topMilestones) topMilestones.style.display = 'flex';
+        updateProgress();
+      }
+    }
+
+    function initKitFlashcards(kit) {
+      if (kit && Array.isArray(kit.flashcards) && kit.flashcards.length > 0) {
+        state.flashcardsDeck = [...kit.flashcards];
+      } else if (kit && kit.studyGuide) {
+        state.flashcardsDeck = extractFlashcardsFromGuide(kit.studyGuide);
+        kit.flashcards = state.flashcardsDeck;
+        saveKitsToStorage();
+      } else if (state.studyGuide) {
+        state.flashcardsDeck = extractFlashcardsFromGuide(state.studyGuide);
+        if (kit) {
+          kit.flashcards = state.flashcardsDeck;
+          saveKitsToStorage();
+        }
+      } else {
+        state.flashcardsDeck = generateDefaultFlashcardsForTopic(state.topic);
+        if (kit) {
+          kit.flashcards = state.flashcardsDeck;
+          saveKitsToStorage();
+        }
+      }
+      state.currentCardIndex = 0;
+      state.isCardFlipped = false;
+    }
+
+    function extractFlashcardsFromGuide(guide) {
+      const cards = [];
+      if (!guide) return generateDefaultFlashcardsForTopic(state.topic);
+
+      // 1. De Conceptos Clave
+      if (guide.conceptosClave && Array.isArray(guide.conceptosClave)) {
+        guide.conceptosClave.forEach(c => {
+          cards.push({
+            termino: c.termino || c.concepto || "Concepto Clave",
+            pregunta: c.pregunta || `¿Qué define o en qué consiste "${c.termino || c.concepto}"?`,
+            definicion: c.definicion || c.significado || "",
+            detalle: c.importancia || c.detalle || "Concepto fundamental para exámenes"
+          });
+        });
+      }
+
+      // 2. De Secciones
+      if (guide.secciones && Array.isArray(guide.secciones)) {
+        guide.secciones.forEach(s => {
+          const title = s.titulo || s.nombre || "Sección Temática";
+          const points = s.puntos || s.conceptos || [];
+          if (points.length > 0) {
+            cards.push({
+              termino: title,
+              pregunta: `¿Cuáles son los principios y características fundamentales de ${title}?`,
+              definicion: points.join(". "),
+              detalle: `Sección relevante de ${guide.materia || guide.tema || "la materia"}`
+            });
+          }
+        });
+      }
+
+      // 3. De Puntos de Examen
+      if (guide.puntosExamen && Array.isArray(guide.puntosExamen)) {
+        guide.puntosExamen.forEach((pt, i) => {
+          cards.push({
+            termino: `Punto Clave #${i + 1}`,
+            pregunta: `¿Qué aspecto evaluativo fundamental debes dominar sobre este tema?`,
+            definicion: pt,
+            detalle: "Pregunta frecuente en evaluaciones escolares"
+          });
+        });
+      }
+
+      // 4. De Datos Relevantes
+      if (guide.datosRelevantes && Array.isArray(guide.datosRelevantes)) {
+        guide.datosRelevantes.forEach(d => {
+          cards.push({
+            termino: "Dato Relevante",
+            pregunta: "¿Qué dato o principio esencial debes recordar?",
+            definicion: d,
+            detalle: "Clave de retención activa"
+          });
+        });
+      }
+
+      return cards.length > 0 ? cards : generateDefaultFlashcardsForTopic(guide.tema || state.topic);
+    }
+
+    function generateDefaultFlashcardsForTopic(topicTitle) {
+      return [
+        {
+          termino: topicTitle || "Concepto Principal",
+          pregunta: "¿Cuál es el marco conceptual y resumen fundamental de este tema?",
+          definicion: state.studyGuide && state.studyGuide.resumen ? state.studyGuide.resumen : "Definición y principios fundamentales estructurados para tu evaluación académica.",
+          detalle: "Fundamento general de estudio"
+        },
+        {
+          termino: "Aplicación Práctica",
+          pregunta: "¿Cómo se analiza y aplica este principio en problemas reales?",
+          definicion: "Identifica las variables principales, analiza la relación causa-efecto y sintetiza las conclusiones con base en la evidencia.",
+          detalle: "Clave de razonamiento activo"
+        }
+      ];
+    }
+
+    function renderFlashcard() {
+      if (!state.flashcardsDeck || state.flashcardsDeck.length === 0) {
+        initKitFlashcards(state.kits.find(k => k.id === state.currentKitId));
+      }
+
+      const total = state.flashcardsDeck.length;
+      if (state.currentCardIndex >= total) state.currentCardIndex = total - 1;
+      if (state.currentCardIndex < 0) state.currentCardIndex = 0;
+
+      const card = state.flashcardsDeck[state.currentCardIndex] || {
+        termino: "Sin tarjetas",
+        pregunta: "Cargando tarjetas de estudio...",
+        definicion: "Por favor espera...",
+        detalle: ""
+      };
+
+      const inner = document.getElementById('thea-card-3d-inner');
+      if (inner) inner.classList.remove('flipped');
+      state.isCardFlipped = false;
+
+      // Actualizar Frente
+      const badge = document.getElementById('fc-badge-topic');
+      if (badge) badge.textContent = `${state.topic || 'Kit de Estudio'}`;
+
+      const termEl = document.getElementById('fc-card-term');
+      if (termEl) termEl.textContent = card.termino || "Concepto";
+
+      const promptEl = document.getElementById('fc-card-prompt');
+      if (promptEl) promptEl.textContent = card.pregunta || `¿Qué define o en qué consiste ${card.termino}?`;
+
+      // Actualizar Dorso
+      const backTerm = document.getElementById('fc-card-back-term');
+      if (backTerm) backTerm.textContent = card.termino || "Concepto";
+
+      const defEl = document.getElementById('fc-card-definition');
+      if (defEl) defEl.textContent = card.definicion || "Definición no disponible.";
+
+      const detailEl = document.getElementById('fc-card-detail');
+      if (detailEl) {
+        if (card.detalle) {
+          detailEl.textContent = card.detalle;
+          detailEl.style.display = 'block';
+        } else {
+          detailEl.style.display = 'none';
+        }
+      }
+
+      // Actualizar Controles
+      const counterEl = document.getElementById('fc-counter-label');
+      if (counterEl) counterEl.textContent = `Tarjeta ${state.currentCardIndex + 1} de ${total}`;
+
+      const pct = Math.round(((state.currentCardIndex + 1) / total) * 100);
+      const barEl = document.getElementById('fc-progress-bar');
+      if (barEl) barEl.style.width = `${pct}%`;
+
+      const prevBtn = document.getElementById('fc-btn-prev');
+      if (prevBtn) prevBtn.disabled = (state.currentCardIndex === 0);
+
+      const nextBtn = document.getElementById('fc-btn-next');
+      if (nextBtn) nextBtn.disabled = (state.currentCardIndex === total - 1);
+
+      // Actualizar barra de progreso superior también
+      const topLabel = document.getElementById('study-progress-label');
+      const topFill = document.getElementById('study-progress-fill');
+      if (topLabel) topLabel.textContent = `Tarjetas: ${state.currentCardIndex + 1}/${total} (${pct}%)`;
+      if (topFill) topFill.style.width = `${pct}%`;
+    }
+
+    function flipStudyFlashcard() {
+      const inner = document.getElementById('thea-card-3d-inner');
+      if (!inner) return;
+      state.isCardFlipped = !state.isCardFlipped;
+      inner.classList.toggle('flipped', state.isCardFlipped);
+    }
+
+    function navigateFlashcard(dir) {
+      const total = state.flashcardsDeck.length;
+      const target = state.currentCardIndex + dir;
+      if (target >= 0 && target < total) {
+        state.currentCardIndex = target;
+        renderFlashcard();
+      }
+    }
+
+    function shuffleFlashcards() {
+      if (!state.flashcardsDeck || state.flashcardsDeck.length <= 1) return;
+      for (let i = state.flashcardsDeck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [state.flashcardsDeck[i], state.flashcardsDeck[j]] = [state.flashcardsDeck[j], state.flashcardsDeck[i]];
+      }
+      state.currentCardIndex = 0;
+      renderFlashcard();
+      showToast("Mazo Mezclado", "Tarjetas reordenadas aleatoriamente para repasar");
+    }
+
+    // Atajos de teclado para Flashcards (Espacio para voltear, Flechas para navegar)
+    window.addEventListener('keydown', (e) => {
+      if (state.currentStudyMode !== 'flashcards') return;
+      // Evitar interferir si hay un input o textarea enfocado
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+
+      if (e.code === 'Space') {
+        e.preventDefault();
+        flipStudyFlashcard();
+      } else if (e.code === 'ArrowRight' || e.code === 'ArrowDown') {
+        e.preventDefault();
+        navigateFlashcard(1);
+      } else if (e.code === 'ArrowLeft' || e.code === 'ArrowUp') {
+        e.preventDefault();
+        navigateFlashcard(-1);
+      }
+    });
+
+</script>
 </body>
 </html>
