@@ -2381,20 +2381,20 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
         state.stageCorrect++;
         addXP(25);
 
-        // Escalado pedagógico de dificultad:
-        // Nivel 1: Cada pregunta correcta sube entre 5% y 8% (~15 aciertos para completar)
-        // Nivel 2: Más complejo, cada pregunta correcta sube entre 3% y 5% (~25 aciertos)
-        // Nivel 3: Aún más complejo, cada pregunta sube entre 2% y 3% (~40 aciertos)
-        // Nivel 4+: 1% a 2%
+        // Escalado pedagógico de dificultad (calibrado al 70% de la dificultad previa):
+        // Nivel 1: Cada pregunta correcta sube entre 7% y 11% (~10-11 aciertos para completar)
+        // Nivel 2: Más complejo, cada pregunta correcta sube entre 4% y 7% (~17-18 aciertos)
+        // Nivel 3: Aún más complejo, cada pregunta sube entre 3% y 4% (~28 aciertos)
+        // Nivel 4+: 2% a 3% (~40-45 aciertos)
         let increment = 0;
         if (state.stageLevel === 1) {
-          increment = Math.floor(Math.random() * 4) + 5; // 5, 6, 7 u 8%
+          increment = Math.floor(Math.random() * 5) + 7; // 7, 8, 9, 10 u 11%
         } else if (state.stageLevel === 2) {
-          increment = Math.floor(Math.random() * 3) + 3; // 3, 4 o 5%
+          increment = Math.floor(Math.random() * 4) + 4; // 4, 5, 6 o 7%
         } else if (state.stageLevel === 3) {
-          increment = Math.floor(Math.random() * 2) + 2; // 2 o 3%
+          increment = Math.floor(Math.random() * 2) + 3; // 3 o 4%
         } else {
-          increment = Math.random() < 0.6 ? 1 : 2;       // 1 o 2%
+          increment = Math.random() < 0.6 ? 2 : 3;       // 2 o 3%
         }
 
         state.stageProgress = Math.min(100, state.stageProgress + increment);
