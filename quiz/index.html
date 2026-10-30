@@ -3373,7 +3373,8 @@ REGLAS DE ORO:
 2. NO REPITAS NINGUNA PREGUNTA DE LA LISTA ANTERIOR.
 3. 4 opciones de respuesta cortas y claras (1, 2, 3, 4) con exactamente 1 respuesta correcta.
 4. IMPORTANTE: LA RESPUESTA CORRECTA NO DEBE ESTAR SIEMPRE EN EL ÍNDICE 0. DISTRIBÚYELA ALEATORIAMENTE ENTRE LAS 4 POSICIONES (0, 1, 2 o 3).
-5. "bullets": Array con 2 o 3 viñetas breves explicando con claridad por qué la respuesta es esa.
+5. "bullets": Array con 2 o 3 viñetas breves explicando con claridad por qué la respuesta es esa y tips clave para el examen.
+6. TONO: Usa un lenguaje directo, formal pero cercano y accesible para estudiantes adolescentes (refiérete siempre a "el examen" en lugar de "la evaluación").
 
 Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
 [
@@ -3598,8 +3599,8 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
         bulletsList.innerHTML = '';
 
         const bullets = q.bullets || [
-          isCorrect ? "¡Excelente razonamiento! Concepto retenido con precisión." : "Revisa el concepto fundamental de esta pregunta.",
-          "Este principio es clave para resolver problemas similares en la evaluación."
+          isCorrect ? "Bien pensado, diste con la respuesta correcta." : "Ojo con este concepto fundamental para no confundirte.",
+          "Este principio es clave para resolver preguntas parecidas en el examen."
         ];
 
         bullets.forEach(b => {
@@ -3672,8 +3673,8 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       title.textContent = `¡Nivel ${state.stageLevel} Superado!`;
       subtitle.textContent = "Has completado la etapa de preguntas. Diagnóstico de tu progreso:";
       diagText.textContent = accPct >= 80 
-        ? `Excelente retención en "${state.topic}". Tienes una base sólida.`
-        : `Bases iniciales comprendidas. En la siguiente etapa reforzaremos los puntos prácticos.`;
+        ? `Excelente retención en "${state.topic}". Vas con todo para el examen.`
+        : `Bases iniciales comprendidas. En la siguiente etapa reforzaremos lo necesario para asegurar el examen.`;
       continueBtn.textContent = `Avanzar a Nivel ${state.stageLevel + 1} →`;
 
       modal.style.display = 'flex';
@@ -3993,8 +3994,8 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
         {
           termino: t,
           pregunta: `¿Cuál es el principio y definición central de ${t}?`,
-          definicion: `Concepto pedagógico fundamental estructurado para el dominio y evaluación de ${t}, integrando los principios teóricos y prácticos clave.`,
-          detalle: "Fundamento general para evaluación"
+          definicion: `Concepto clave estructurado para que domines este tema y vayas seguro al examen de ${t}.`,
+          detalle: "Punto clave para el examen"
         },
         {
           termino: "Fundamento Teórico",
@@ -4010,9 +4011,9 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
         },
         {
           termino: "Aspecto Crítico de Examen",
-          pregunta: "¿Qué error común o detalle fino suele evaluarse en las pruebas?",
+          pregunta: "¿Qué error común o detalle fino suele salir en el examen?",
           definicion: "La correcta diferenciación entre las causas directas y las consecuencias secundarias, asegurando el uso preciso del vocabulario técnico.",
-          detalle: "Consejo de precisión para calificación máxima"
+          detalle: "Tip clave para no equivocarte en el examen"
         }
       ];
     }
@@ -4162,9 +4163,9 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
         guide.puntosExamen.forEach((pt, i) => {
           cards.push({
             termino: `Punto de Examen #${i + 1}`,
-            pregunta: `¿Qué aspecto evaluativo debes dominar sobre este tema?`,
+            pregunta: `¿Qué punto clave debes dominar para el examen?`,
             definicion: pt,
-            detalle: "Pregunta frecuente en evaluaciones"
+            detalle: "Pregunta fija para el examen"
           });
         });
       }
