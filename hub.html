@@ -2316,7 +2316,15 @@
         if (state.authMode === 'login') {
           await firebase.auth().signInWithEmailAndPassword(email, password);
         } else {
-          await firebase.auth().createUserWithEmailAndPassword(email, password);
+          const userCred = await firebase.auth().createUserWithEmailAndPassword(email, password);
+          if (userCred && userCred.user) {
+            const isOwner = email.toLowerCase() === 'maxrsilvagni@gmail.com';
+            await firebase.firestore().collection('users').doc(userCred.user.uid).set({
+              email: email,
+              plan: isOwner ? 'admin' : 'free',
+              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+          }
         }
         closeAuthModal();
         showToast("¡Bienvenido a Synapse!");
@@ -2895,46 +2903,208 @@ Responde ÚNICAMENTE en formato JSON plano (un array de objetos), sin bloques de
 
     async function loadAdminUsuarios() {
       const c = document.getElementById('admin-table-container');
-      c.innerHTML = '<p style="color:var(--color-secondary); text-align:center; padding:1.5rem;">Cargando usuarios...</p>';
+      c.innerHTML = '<p style="color:var(--color-secondary); text-align:center; padding:1.5rem;">Cargando registros de usuarios y campaña...</p>';
       try {
-        const snap = await firebase.firestore().collection('users').limit(100).get();
-        if (snap.empty) {
-          c.innerHTML = '<p style="text-align:center; padding:1.5rem; color:var(--color-secondary);">No hay usuarios registrados.</p>';
-          return;
-        }
-        let rows = '';
-        snap.forEach(doc => {
+        // Consultar colección principal 'users' y registros de campaña 'vota7_registros'
+        const [usersSnap, vota7Snap] = await Promise.all([
+          firebase.firestore().collection('users').limit(100).get().catch(() => ({ empty: true, forEach: () => {} })),
+          firebase.firestore().collection('vota7_registros').limit(100).get().catch(() => ({ empty: true, forEach: () => {} }))
+        ]);
+
+        const userMap = new Map();
+
+        // 1. Procesar usuarios de la colección principal 'users'
+        usersSnap.forEach(doc => {
+          const d = doc.data();
+          const email = (d.email || doc.id).toLowerCase().trim();
+          userMap.set(email, {
+            id: doc.id,
+            email: email,
+            nombre: d.nombre || '',
+            plan: d.plan || 'free',
+            origen: d.origen || 'web',
+            premium_until: d.premium_until || null,
+            fechaRegistro: d.createdAt || d.fechaRegistro || null
+          });
+        });
+
+        // 2. Fusionar registros de la campaña 'vota7_registros'
+        vota7Snap.forEach(doc => {
           const d = doc.data();
           const email = (d.email || '').toLowerCase().trim();
+          if (!email) return;
+
+          if (userMap.has(email)) {
+            const existing = userMap.get(email);
+            if (!existing.nombre && d.nombre) existing.nombre = d.nombre;
+            if (existing.origen === 'web' && d.campana) existing.origen = 'vota7';
+          } else {
+            userMap.set(email, {
+              id: doc.id,
+              email: email,
+              nombre: d.nombre || 'Estudiante Vota 7',
+              plan: 'Synapse+ (Vota 7)',
+              origen: 'vota7',
+              premium_until: d.trialEndTimestamp ? (d.trialEndTimestamp.toDate ? d.trialEndTimestamp.toDate().getTime() : new Date(d.trialEndTimestamp).getTime()) : null,
+              fechaRegistro: d.fechaRegistro || null
+            });
+          }
+        });
+
+        if (userMap.size === 0) {
+          c.innerHTML = `
+            <div style="background:var(--bg-subtle); padding:14px 18px; border-radius:12px; margin-bottom:1.5rem; border:1px solid var(--border-color);">
+              <h4 style="margin-bottom:6px; color:var(--color-primary); font-size:0.95rem; font-weight:800;">Activar Usuario por Correo</h4>
+              <p style="font-size:0.83rem; color:var(--color-secondary); margin-bottom:10px;">Si un estudiante ya se registró y no lo ves, ingresa su correo para activarle Synapse+ de inmediato en el sistema.</p>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <input type="email" id="admin-manual-email" placeholder="correo_estudiante@gmail.com" class="form-control" style="flex:1; min-width:220px; padding:7px 12px; font-size:0.88rem;" />
+                <button class="btn-service primary" style="width:auto; padding:7px 14px; font-size:0.85rem;" onclick="adminManualActivar('vota7')">+ Activar Synapse+ (3 Días Vota 7)</button>
+                <button class="btn-service secondary" style="width:auto; padding:7px 14px; font-size:0.85rem;" onclick="adminManualActivar('premium7')">+ Premium (1 Sem)</button>
+              </div>
+            </div>
+            <p style="text-align:center; padding:1.5rem; color:var(--color-secondary);">No hay usuarios registrados aún.</p>
+          `;
+          return;
+        }
+
+        let rows = '';
+        userMap.forEach(u => {
+          const email = u.email;
           const isOwner = email === 'maxrsilvagni@gmail.com';
-          const plan = isOwner ? '👑 Propietario' : (d.plan || 'free');
+          const isVota7 = u.origen === 'vota7' || (u.plan && u.plan.includes('Vota 7'));
           
+          let planLabel = isOwner ? '👑 Propietario' : (u.plan || 'free');
+          let planBadgeStyle = isOwner 
+            ? 'background:#2B1B17; color:#fff;' 
+            : (isVota7 ? 'background:#1d4ed8; color:#fff;' : ((u.plan === 'premium' || u.plan === 'admin') ? 'background:#16a34a; color:#fff;' : ''));
+
+          let origenBadge = isOwner 
+            ? '<span style="font-size:0.75rem; background:#eee; padding:2px 6px; border-radius:4px; font-weight:700;">Admin</span>' 
+            : (isVota7 ? '<span style="font-size:0.75rem; background:#dbeafe; color:#1e40af; padding:2px 6px; border-radius:4px; font-weight:700;">🗳️ Vota 7</span>' : '<span style="font-size:0.75rem; background:#f3f4f6; color:#4b5563; padding:2px 6px; border-radius:4px; font-weight:700;">🌐 Web</span>');
+
+          let nombreDisplay = u.nombre ? `<div style="font-size:0.82rem; color:var(--color-accent); font-weight:700; margin-top:2px;">👤 ${u.nombre}</div>` : '';
+
+          let actions = isOwner 
+            ? '<span style="color:var(--color-accent); font-weight:bold; font-size:0.85rem;">Cuenta Principal</span>' 
+            : `<div style="display:flex; gap:6px; flex-wrap:wrap;">
+                <button class="btn-service primary" style="width:auto; padding:4px 8px; font-size:0.75rem;" onclick="adminModificarUser('${u.id}', '${email}', 'Synapse+ (Vota 7)', 3)">Activar Vota 7 (3d)</button>
+                <button class="btn-service secondary" style="width:auto; padding:4px 8px; font-size:0.75rem;" onclick="adminModificarUser('${u.id}', '${email}', 'premium', 7)">+1 Sem Premium</button>
+                <button class="btn-service secondary" style="width:auto; padding:4px 8px; font-size:0.75rem; color:#c0392b; border-color:#fca5a5;" onclick="anularUser('${u.id}', '${email}')">A Free</button>
+               </div>`;
+
           rows += `<tr>
-            <td>${d.email || doc.id}</td>
-            <td><span class="badge-plan">${plan}</span></td>
-            <td>
-              ${isOwner ? '<span style="color:var(--color-accent); font-weight:bold; font-size:0.85rem;">Cuenta Principal</span>' : `<button class="btn-service secondary" style="width:auto; padding:4px 10px; font-size:0.8rem;" onclick="anularUser('${doc.id}')">Anular a Free</button>`}
+            <td style="padding:10px 12px;">
+              <strong style="color:var(--color-primary);">${email}</strong>
+              ${nombreDisplay}
             </td>
+            <td style="padding:10px 12px; text-align:center;">${origenBadge}</td>
+            <td style="padding:10px 12px;"><span class="badge-plan" style="${planBadgeStyle}">${planLabel}</span></td>
+            <td style="padding:10px 12px;">${actions}</td>
           </tr>`;
         });
+
         c.innerHTML = `
-          <h3 style="margin-bottom:1rem; color:var(--color-primary); font-weight:800;">Control de Usuarios Registrados</h3>
+          <div style="background:var(--bg-subtle); padding:12px 16px; border-radius:12px; margin-bottom:1.2rem; border:1px solid var(--border-color);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-wrap:wrap; gap:6px;">
+              <h4 style="margin:0; color:var(--color-primary); font-size:0.92rem; font-weight:800;">Activar / Registrar Usuario por Correo</h4>
+              <span style="font-size:0.78rem; color:var(--color-secondary);">Total Registrados: <strong>${userMap.size}</strong></span>
+            </div>
+            <p style="font-size:0.82rem; color:var(--color-secondary); margin-bottom:8px;">Si un compañero te indica que ya creó su cuenta o te dio su correo, actívalo con un solo clic:</p>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <input type="email" id="admin-manual-email" placeholder="correo_estudiante@gmail.com" class="form-control" style="flex:1; min-width:220px; padding:7px 12px; font-size:0.88rem;" />
+              <button class="btn-service primary" style="width:auto; padding:7px 14px; font-size:0.82rem;" onclick="adminManualActivar('vota7')">+ Activar Synapse+ (3 Días Vota 7)</button>
+              <button class="btn-service secondary" style="width:auto; padding:7px 14px; font-size:0.82rem;" onclick="adminManualActivar('premium7')">+ Premium (1 Sem)</button>
+            </div>
+          </div>
+
+          <h3 style="margin-bottom:0.8rem; color:var(--color-primary); font-weight:800; font-size:1.15rem;">Control Unificado de Usuarios (Web y Campaña Vota 7)</h3>
           <table class="admin-table">
             <thead>
-              <tr><th>Usuario</th><th>Plan</th><th>Acción</th></tr>
+              <tr><th>Usuario</th><th>Origen</th><th>Plan</th><th>Acciones</th></tr>
             </thead>
             <tbody>${rows}</tbody>
           </table>
         `;
       } catch(e) {
-        c.innerHTML = `<p style="color:#c0392b;">Error: ${e.message}</p>`;
+        c.innerHTML = `<p style="color:#c0392b; padding:1.5rem; text-align:center;">Error cargando registros: ${e.message}</p>`;
       }
     }
 
-    async function anularUser(uid) {
-      if (!confirm("¿Regresar este usuario al plan Free?")) return;
-      await firebase.firestore().collection('users').doc(uid).update({ plan: 'free', premium_until: null });
-      loadAdminUsuarios();
+    async function adminManualActivar(tipo) {
+      const emailInput = document.getElementById('admin-manual-email');
+      const email = (emailInput ? emailInput.value : '').trim().toLowerCase();
+      if (!email || !email.includes('@')) {
+        alert("Por favor ingresa un correo electrónico válido.");
+        return;
+      }
+
+      const isVota7 = tipo === 'vota7';
+      const days = isVota7 ? 3 : 7;
+      const planName = isVota7 ? 'Synapse+ (Vota 7)' : 'premium';
+      const expireTime = Date.now() + (days * 24 * 60 * 60 * 1000);
+      const safeId = 'admin_user_' + encodeURIComponent(email).replace(/%/g, '_').replace(/[^a-zA-Z0-9_]/g, '_');
+
+      try {
+        await firebase.firestore().collection('users').doc(safeId).set({
+          email: email,
+          nombre: email.split('@')[0],
+          plan: planName,
+          premium_until: expireTime,
+          origen: isVota7 ? 'vota7' : 'manual_admin',
+          trial_days: days,
+          fechaRegistro: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+
+        // Si es Vota 7, registrar también en vota7_registros
+        if (isVota7) {
+          await firebase.firestore().collection('vota7_registros').add({
+            email: email,
+            nombre: email.split('@')[0],
+            campana: 'Vota 7',
+            trialDays: 3,
+            trialEndTimestamp: new Date(expireTime),
+            fechaRegistro: firebase.firestore.FieldValue.serverTimestamp(),
+            activadoPorAdmin: true
+          });
+        }
+
+        showToast(`Usuario ${email} activado con éxito (${planName})`);
+        if (emailInput) emailInput.value = '';
+        loadAdminUsuarios();
+      } catch(err) {
+        alert("Error al activar usuario: " + err.message);
+      }
+    }
+
+    async function adminModificarUser(docId, email, plan, days) {
+      if (!confirm(`¿Confirmas asignar el plan '${plan}' (${days} días) al usuario ${email}?`)) return;
+      const expireTime = Date.now() + (days * 24 * 60 * 60 * 1000);
+      try {
+        const safeId = docId.startsWith('vota7_') || docId.length < 25 ? docId : docId;
+        await firebase.firestore().collection('users').doc(safeId).set({
+          email: email,
+          plan: plan,
+          premium_until: expireTime
+        }, { merge: true });
+        showToast(`Plan de ${email} actualizado con éxito.`);
+        loadAdminUsuarios();
+      } catch(e) {
+        alert("Error: " + e.message);
+      }
+    }
+
+    async function anularUser(docId, email) {
+      if (!confirm(`¿Regresar el usuario ${email || docId} al plan Free?`)) return;
+      try {
+        await firebase.firestore().collection('users').doc(docId).set({
+          plan: 'free',
+          premium_until: null
+        }, { merge: true });
+        showToast("Usuario restablecido a Free.");
+        loadAdminUsuarios();
+      } catch(e) {
+        alert("Error: " + e.message);
+      }
     }
     updateTheaNavbar();
   </script>

@@ -238,6 +238,14 @@
               <button class="btn" style="width:auto; margin:0; padding:0.4rem 0.8rem; font-size:0.85rem; background:#4A322B;" onclick="loadAdminUsuarios()">🔄 Actualizar Usuarios</button>
             </div>
           </div>
+
+          <div style="background:#FAF8F5; padding:10px 14px; border-radius:8px; margin-bottom:1rem; border:1px solid #EAE6DF; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <span style="font-size:0.85rem; font-weight:bold; color:#4A322B;">Activar Usuario por Correo:</span>
+            <input type="email" id="admin-manual-email-dash" placeholder="correo_estudiante@gmail.com" style="flex:1; min-width:200px; padding:6px 10px; border:1px solid #ccc; border-radius:6px; font-size:0.85rem;" />
+            <button class="btn" style="width:auto; margin:0; padding:0.4rem 0.8rem; font-size:0.8rem; background:#1d4ed8; color:#fff;" onclick="adminManualActivarDash('vota7')">+ Vota 7 (3d)</button>
+            <button class="btn" style="width:auto; margin:0; padding:0.4rem 0.8rem; font-size:0.8rem; background:#f39c12; color:#fff;" onclick="adminManualActivarDash('premium7')">+ Premium (1 sem)</button>
+          </div>
+
           <table style="width:100%; border-collapse: collapse; font-size: 0.95rem;">
             <thead>
               <tr style="background:#FAF8F5; border-bottom: 2px solid #ddd;">
@@ -1153,31 +1161,76 @@ async function loadAdminPagos() {
 
 async function loadAdminUsuarios() {
   const tbody = document.getElementById('admin-usuarios-body');
-  tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:1.5rem; opacity:0.7;">Cargando usuarios...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:1.5rem; opacity:0.7;">Cargando usuarios y registros de campaña...</td></tr>';
   try {
-    const snap = await firebase.firestore().collection('users').limit(100).get();
-    if (snap.empty) {
+    const [usersSnap, vota7Snap] = await Promise.all([
+      firebase.firestore().collection('users').limit(100).get().catch(() => ({ empty: true, forEach: () => {} })),
+      firebase.firestore().collection('vota7_registros').limit(100).get().catch(() => ({ empty: true, forEach: () => {} }))
+    ]);
+
+    const userMap = new Map();
+
+    usersSnap.forEach(doc => {
+      const d = doc.data();
+      const email = (d.email || doc.id).toLowerCase().trim();
+      userMap.set(email, {
+        id: doc.id,
+        email: email,
+        nombre: d.nombre || '',
+        plan: d.plan || 'free',
+        origen: d.origen || 'web',
+        premium_until: d.premium_until || null
+      });
+    });
+
+    vota7Snap.forEach(doc => {
+      const d = doc.data();
+      const email = (d.email || '').toLowerCase().trim();
+      if (!email) return;
+
+      if (userMap.has(email)) {
+        const existing = userMap.get(email);
+        if (!existing.nombre && d.nombre) existing.nombre = d.nombre;
+        if (existing.origen === 'web' && d.campana) existing.origen = 'vota7';
+      } else {
+        userMap.set(email, {
+          id: doc.id,
+          email: email,
+          nombre: d.nombre || 'Estudiante Vota 7',
+          plan: 'Synapse+ (Vota 7)',
+          origen: 'vota7',
+          premium_until: d.trialEndTimestamp ? (d.trialEndTimestamp.toDate ? d.trialEndTimestamp.toDate().getTime() : new Date(d.trialEndTimestamp).getTime()) : null
+        });
+      }
+    });
+
+    if (userMap.size === 0) {
       tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:1.5rem; opacity:0.7;">No hay usuarios registrados.</td></tr>';
       return;
     }
+
     let html = '';
-    snap.forEach(doc => {
-      const d = doc.data();
-      const email = (d.email || '').toLowerCase().trim();
+    userMap.forEach(u => {
+      const email = u.email;
       const isThisOwner = email === 'maxrsilvagni@gmail.com';
-      let isTempPremium = d.premium_until && d.premium_until > Date.now();
-      let planDisplay = isThisOwner ? 'admin (propietario)' : (isTempPremium ? 'premium (temporal)' : (d.plan || 'free'));
-      let badgeColor = isThisOwner ? '#2B1B17' : ((planDisplay === 'premium' || isTempPremium) ? '#27ae60' : '#888');
+      const isVota7 = u.origen === 'vota7' || (u.plan && u.plan.includes('Vota 7'));
+      let isTempPremium = u.premium_until && u.premium_until > Date.now();
       
+      let planDisplay = isThisOwner ? 'admin (propietario)' : (isVota7 ? 'vota 7 (3 días)' : (isTempPremium ? 'premium (temporal)' : (u.plan || 'free')));
+      let badgeColor = isThisOwner ? '#2B1B17' : (isVota7 ? '#1d4ed8' : ((planDisplay === 'premium' || isTempPremium) ? '#27ae60' : '#888'));
+
+      let nombreExtra = u.nombre ? `<div style="font-size:0.78rem; color:#8C6A53; font-weight:bold;">👤 ${u.nombre}</div>` : '';
+
       let actionsHtml = isThisOwner 
         ? `<span style="font-size:0.85rem; color:#888; font-weight:bold;">👑 Propietario</span>`
-        : `<button onclick="adminAction('${doc.id}', 'ban')" style="background:#c0392b; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; margin-right:6px; font-weight:bold;">Anular / Gratis</button>
-           <button onclick="adminAction('${doc.id}', 'premium7')" style="background:#f39c12; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:bold;">Regalar Premium (1 sem)</button>`;
+        : `<button onclick="adminAction('${u.id}', 'ban', '${email}')" style="background:#c0392b; color:white; border:none; padding:5px 10px; border-radius:6px; cursor:pointer; margin-right:4px; font-weight:bold; font-size:0.78rem;">Free</button>
+           <button onclick="adminAction('${u.id}', 'vota7', '${email}')" style="background:#1d4ed8; color:white; border:none; padding:5px 10px; border-radius:6px; cursor:pointer; margin-right:4px; font-weight:bold; font-size:0.78rem;">Vota 7 (3d)</button>
+           <button onclick="adminAction('${u.id}', 'premium7', '${email}')" style="background:#f39c12; color:white; border:none; padding:5px 10px; border-radius:6px; cursor:pointer; font-weight:bold; font-size:0.78rem;">Premium (1 sem)</button>`;
 
       html += `<tr style="border-bottom: 1px solid #eee;">
-        <td style="padding:12px 10px;">${d.email || doc.id}</td>
-        <td style="padding:12px 10px;"><span class="quota-badge" style="background:${badgeColor}; margin:0;">${planDisplay}</span></td>
-        <td style="padding:12px 10px; text-align:center;">${actionsHtml}</td>
+        <td style="padding:10px;"><strong>${email}</strong>${nombreExtra}</td>
+        <td style="padding:10px;"><span class="quota-badge" style="background:${badgeColor}; margin:0;">${planDisplay}</span></td>
+        <td style="padding:10px; text-align:center;">${actionsHtml}</td>
       </tr>`;
     });
     tbody.innerHTML = html;
@@ -1186,15 +1239,65 @@ async function loadAdminUsuarios() {
   }
 }
 
-async function adminAction(uid, action) {
-  if(!confirm('¿Confirmas realizar esta acción sobre este usuario?')) return;
+async function adminManualActivarDash(tipo) {
+  const input = document.getElementById('admin-manual-email-dash');
+  const email = (input ? input.value : '').trim().toLowerCase();
+  if (!email || !email.includes('@')) {
+    showAlert("Por favor ingresa un correo electrónico válido.", "Aviso");
+    return;
+  }
+
+  const isVota7 = tipo === 'vota7';
+  const days = isVota7 ? 3 : 7;
+  const planName = isVota7 ? 'Synapse+ (Vota 7)' : 'premium';
+  const expireTime = Date.now() + (days * 24 * 60 * 60 * 1000);
+  const safeId = 'admin_user_' + encodeURIComponent(email).replace(/%/g, '_').replace(/[^a-zA-Z0-9_]/g, '_');
+
   try {
+    await firebase.firestore().collection('users').doc(safeId).set({
+      email: email,
+      nombre: email.split('@')[0],
+      plan: planName,
+      premium_until: expireTime,
+      origen: isVota7 ? 'vota7' : 'manual_admin',
+      trial_days: days,
+      fechaRegistro: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+
+    if (isVota7) {
+      await firebase.firestore().collection('vota7_registros').add({
+        email: email,
+        nombre: email.split('@')[0],
+        campana: 'Vota 7',
+        trialDays: 3,
+        trialEndTimestamp: new Date(expireTime),
+        fechaRegistro: firebase.firestore.FieldValue.serverTimestamp(),
+        activadoPorAdmin: true
+      });
+    }
+
+    showAlert(`Usuario ${email} activado con éxito (${planName}).`, "Éxito");
+    if (input) input.value = '';
+    loadAdminUsuarios();
+  } catch(e) {
+    showAlert("Error: " + e.message, "Error");
+  }
+}
+
+async function adminAction(uid, action, email = '') {
+  if(!confirm(`¿Confirmas realizar esta acción sobre ${email || uid}?`)) return;
+  try {
+    const docRef = firebase.firestore().collection('users').doc(uid);
     if (action === 'ban') {
-      await firebase.firestore().collection('users').doc(uid).update({ plan: 'free', premium_until: null });
+      await docRef.set({ plan: 'free', premium_until: null }, { merge: true });
       showAlert("Usuario devuelto al plan gratuito.", "Éxito");
+    } else if (action === 'vota7') {
+      const threeDays = Date.now() + (3 * 24 * 60 * 60 * 1000);
+      await docRef.set({ plan: 'Synapse+ (Vota 7)', premium_until: threeDays, origen: 'vota7' }, { merge: true });
+      showAlert("Usuario actualizado con acceso de Vota 7 por 3 días.", "Éxito");
     } else if (action === 'premium7') {
       const oneWeek = Date.now() + (7 * 24 * 60 * 60 * 1000);
-      await firebase.firestore().collection('users').doc(uid).update({ plan: 'premium', premium_until: oneWeek });
+      await docRef.set({ plan: 'premium', premium_until: oneWeek }, { merge: true });
       showAlert("Usuario actualizado a Premium Ilimitado por 1 semana.", "Éxito");
     }
     loadAdminUsuarios();

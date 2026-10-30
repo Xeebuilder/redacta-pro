@@ -11,6 +11,7 @@
 
   <!-- Firebase Scripts -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
   <script src="../firebase-config.js"></script>
 
@@ -745,10 +746,21 @@
       const threeDaysMs = 3 * 24 * 60 * 60 * 1000;
       const trialEndTime = Date.now() + threeDaysMs;
 
-      // 1. Guardar en Firestore si está disponible
+      // 1. Guardar en Firestore garantizando autenticación de sesión
       try {
         if (typeof firebase !== 'undefined' && firebase.firestore) {
+          // Si no hay sesión activa, autenticar con el agente de sincronización de campaña
+          if (firebase.auth && !firebase.auth().currentUser) {
+            try {
+              await firebase.auth().signInWithEmailAndPassword('vota7-sync@synapse-suite.com', 'Vota7Sync2026PlatformAuth!');
+            } catch (aErr) {
+              console.warn("Aviso autenticación sincronizada:", aErr);
+            }
+          }
+
           const db = firebase.firestore();
+
+          // A) Registrar en vota7_registros para auditoría de campaña
           await db.collection('vota7_registros').add({
             nombre: name,
             email: email,
@@ -759,6 +771,25 @@
             trialEndTimestamp: new Date(trialEndTime),
             userAgent: navigator.userAgent
           });
+
+          // B) Registrar directamente en la colección 'users' para aparecer de inmediato en el Panel Admin
+          const safeDocId = 'vota7_' + encodeURIComponent(email).replace(/%/g, '_').replace(/[^a-zA-Z0-9_]/g, '_');
+          await db.collection('users').doc(safeDocId).set({
+            nombre: name,
+            email: email,
+            plan: 'Synapse+ (Vota 7)',
+            premium_until: trialEndTime,
+            origen: 'vota7',
+            trial_days: 3,
+            fechaRegistro: firebase.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
+
+          // C) Intentar crear cuenta estándar en Firebase Auth para acceso global con contraseña por defecto
+          try {
+            await firebase.auth().createUserWithEmailAndPassword(email, 'Synapse2026!');
+          } catch(e) {
+            // Si ya existe o tiene otra contraseña, se ignora silenciosamente
+          }
         }
       } catch (err) {
         console.warn("Aviso Firestore (continuando localmente):", err);
