@@ -888,6 +888,7 @@ async function generarDocumento(modo) {
       systemInstruction = (
         `Actúa como un estudiante aplicado de 15 años en 4to año de bachillerato / secundaria que realiza una asignación formal y bien investigada para obtener 20/20.\n` +
         `VOZ Y TONO (OPCIÓN 2: ESTUDIANTE DE 4TO AÑO): Escribe con seriedad, excelente redacción y ortografía, pero con la voz natural y creíble de un estudiante de 15 años que entendió el tema y lo explica con sus propias palabras. Usa oraciones claras, fluidas y directas.\n` +
+        `VOCABULARIO ESTUDIANTIL REAL: Un estudiante de bachillerato NUNCA dice "la evaluación", dice "el examen" o "la prueba". Si mencionas pruebas o evaluaciones escolares, usa siempre "el examen" o "los exámenes" en lugar de palabras acartonadas o burocráticas como "la evaluación" o "las evaluaciones". Mantén un lenguaje formal pero fresco, creíble y propio de un estudiante de 15 años.\n` +
         `PROHIBIDO EL VOCABULARIO PEDANTE O ROBÓTICO: Escribe con sentido común. Por ejemplo, di 'el centro del planeta' (NUNCA digas 'el centro planetario'); di 'es menos denso que el agua' (NUNCA digas 'densidad media inferior'); di 'tiene vientos fuertísimos y tormentas constantes' (NUNCA digas 'intensas corrientes zonales').\n` +
         `PROHIBIDAS ESTRUCTURAS TÍPICAS DE IA: Prohibido usar 'es importante destacar', 'cabe mencionar', 'en conclusión', 'en resumen', 'un rol fundamental', 'un tapiz', 'en el vasto universo'. Suena 100% como una persona real escribiendo su informe.\n` +
         `RIGOR CONCEPTUAL: Desarrolla el tema con datos correctos, causas, efectos y explicaciones comprensibles y certeras a nivel de 4to año de bachillerato.\n` +
@@ -901,6 +902,7 @@ async function generarDocumento(modo) {
       systemInstruction = (
         `Actúa como un estudiante aplicado de 15 años en 4to año de bachillerato / secundaria desarrollando un informe escolar formal y completo para obtener 20/20 sobre: '${tema}'.\n` +
         `VOZ Y TONO (OPCIÓN 2: ESTUDIANTE DE 4TO AÑO): Escribe de manera formal, ordenada y bien redactada, pero utilizando el vocabulario natural, coherente y creíble de un estudiante de 15 años. Explica los conceptos con tus propias palabras demostrando dominio del tema sin recurrir a tecnicismos forzados de enciclopedia o paper universitario traducido.\n` +
+        `VOCABULARIO ESTUDIANTIL REAL: Un estudiante de bachillerato NUNCA dice "la evaluación", dice "el examen" o "la prueba". Si se menciona alguna prueba o control escolar, usa siempre "el examen" o "los exámenes" en lugar de "la evaluación". Mantén un lenguaje formal pero fresco, natural y propio de un estudiante de 15 años.\n` +
         `REGLA DE NATURALIDAD ESTRICTA: Di 'hacia el centro del planeta' en vez de 'hacia el centro planetario'; di 'su densidad es menor a la del agua' en vez de 'densidad media inferior'; di 'vientos muy rápidos y fuertes' en vez de 'corrientes zonales'. Evita a toda costa la prosa artificial.\n` +
         `PROHIBIDAS FRASES CLICHÉ DE IA: Prohibido usar conectores predecibles como 'es importante destacar', 'en resumen', 'un rol crucial', 'a lo largo de la historia', 'un testimonio de'.\n` +
         `REGLA DE VARIABILIDAD: Redacta con autenticidad para garantizar cero coincidencias con detectores de IA.\n` +
@@ -919,6 +921,15 @@ async function generarDocumento(modo) {
         systemInstruction
       );
       textoGenerado = textoGenerado.replace(/\*/g, '').replace(/;/g, '.');
+      textoGenerado = textoGenerado
+        .replace(/\b([Ee])n la evaluaci[oó]n\b/gi, (m, p1) => (p1 === p1.toUpperCase() ? 'En el examen' : 'en el examen'))
+        .replace(/\b([Dd])e la evaluaci[oó]n\b/gi, (m, p1) => (p1 === p1.toUpperCase() ? 'Del examen' : 'del examen'))
+        .replace(/\b([Aa]) la evaluaci[oó]n\b/gi, (m, p1) => (p1 === p1.toUpperCase() ? 'Al examen' : 'al examen'))
+        .replace(/\b([Pp])ara la evaluaci[oó]n\b/gi, (m, p1) => (p1 === p1.toUpperCase() ? 'Para el examen' : 'para el examen'))
+        .replace(/\b([Pp])or la evaluaci[oó]n\b/gi, (m, p1) => (p1 === p1.toUpperCase() ? 'Por el examen' : 'por el examen'))
+        .replace(/\b([Uu])na evaluaci[oó]n\b/gi, (m, p1) => (p1 === p1.toUpperCase() ? 'Un examen' : 'un examen'))
+        .replace(/\b([Ll])a evaluaci[oó]n\b/gi, (m, p1) => (p1 === p1.toUpperCase() ? 'El examen' : 'el examen'))
+        .replace(/\b([Ll])as evaluaciones\b/gi, (m, p1) => (p1 === p1.toUpperCase() ? 'Los exámenes' : 'los exámenes'));
       textoGenerado = corregirCapitales(textoGenerado);
 
       bloques.push({ type: 'title', text: tituloFinal });
