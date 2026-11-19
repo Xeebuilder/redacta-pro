@@ -2044,7 +2044,11 @@
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
         <span>Comentarios</span>
       </button>
-      <a href="/perfil/" class="syn-avatar-circle" id="nav-avatar-circle" title="Mi Perfil">
+      <div id="nav-auth-logged-out" style="display:none; align-items:center; gap:8px;">
+        <button class="btn-pill-action" onclick="openAuthModal('login')">Iniciar Sesión</button>
+        <button class="btn-pill-action" onclick="openAuthModal('register')" style="background:var(--accent-lilac); color:#000; font-weight:700;">Crear Cuenta</button>
+      </div>
+      <a href="/perfil/" class="syn-avatar-circle" id="nav-avatar-circle" title="Mi Perfil" style="display:none;">
         <div class="syn-crown-badge">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px; margin-right:3px;"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg><span id="nav-crown-num">1</span>
         </div>
@@ -2600,6 +2604,113 @@
       </div>
 
       <button class="btn-mat-submit" style="width:100%; margin:0;" onclick="closeShareKitModal()">Entendido</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- MODAL: AUTENTICACIÓN GENERAL (LOGIN / REGISTRO)              -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="milestone-overlay" id="auth-modal" style="display:none; z-index:10000;">
+    <div class="milestone-card" style="max-width:440px; text-align:left; position:relative;">
+      <button style="position:absolute; top:16px; right:16px; background:transparent; border:none; color:#94A3B8; cursor:pointer;" onclick="closeAuthModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+
+      <div style="text-align:center; margin-bottom:1.2rem;">
+        <img src="../synapse-logo.svg" alt="Synapse" style="width:48px; height:48px; border-radius:12px; margin-bottom:8px;">
+        <h3 style="font-size:1.35rem; font-weight:800; color:#fff; margin-bottom:4px;" id="auth-modal-main-title">Bienvenido a Synapse</h3>
+        <p style="font-size:0.84rem; color:var(--text-dim); margin:0;" id="auth-modal-main-subtitle">Tu plataforma de estudio y práctica personalizada</p>
+      </div>
+
+      <!-- Tabs -->
+      <div style="display:flex; gap:8px; margin-bottom:1.2rem; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:8px;">
+        <button id="auth-tab-register-btn" style="flex:1; padding:8px 12px; font-size:0.88rem; font-weight:700; border-radius:8px; border:none; cursor:pointer; background:var(--accent-lilac); color:#000;" onclick="switchAuthTab('register')">Crear Cuenta</button>
+        <button id="auth-tab-login-btn" style="flex:1; padding:8px 12px; font-size:0.88rem; font-weight:700; border-radius:8px; border:none; cursor:pointer; background:transparent; color:#CBD5E1;" onclick="switchAuthTab('login')">Iniciar Sesión</button>
+      </div>
+
+      <div id="auth-error-box" style="display:none; background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3); border-radius:8px; padding:8px 12px; font-size:0.82rem; color:#FCA5A5; margin-bottom:12px;"></div>
+
+      <form id="quiz-auth-form" onsubmit="handleAuthSubmitQuiz(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <div id="auth-name-group">
+          <label style="display:block; font-size:0.78rem; font-weight:700; color:#CBD5E1; margin-bottom:4px;">Tu Nombre de Estudiante:</label>
+          <input type="text" id="auth-input-name" class="modal-text-input" placeholder="Ej. Carlos Mendoza" style="width:100%; box-sizing:border-box;">
+        </div>
+
+        <div>
+          <label style="display:block; font-size:0.78rem; font-weight:700; color:#CBD5E1; margin-bottom:4px;">Correo Electrónico:</label>
+          <input type="email" id="auth-input-email" class="modal-text-input" placeholder="tu@correo.com" required style="width:100%; box-sizing:border-box;">
+        </div>
+
+        <div>
+          <label style="display:block; font-size:0.78rem; font-weight:700; color:#CBD5E1; margin-bottom:4px;">Contraseña:</label>
+          <input type="password" id="auth-input-password" class="modal-text-input" placeholder="Mínimo 6 caracteres" required minlength="6" style="width:100%; box-sizing:border-box;">
+        </div>
+
+        <button type="submit" id="auth-submit-btn-text" class="btn-mat-submit" style="width:100%; margin:8px 0 0; padding:12px;">
+          Crear Cuenta Gratuita
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- MODAL: REGISTRO PARA DESBLOQUEAR KIT COMPARTIDO             -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="milestone-overlay" id="shared-kit-auth-modal" style="display:none; z-index:10001;">
+    <div class="milestone-card" style="max-width:500px; text-align:left; position:relative;">
+      
+      <div style="text-align:center; margin-bottom:1rem;">
+        <div class="milestone-badge" style="border-color:var(--accent-lilac); color:var(--accent-lilac); width:56px; height:56px; margin:0 auto 0.8rem;">
+          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        </div>
+        <h3 style="font-size:1.4rem; font-weight:900; color:#fff; margin-bottom:4px;">¡Te compartieron un Kit de Estudio!</h3>
+        <p style="font-size:0.85rem; color:var(--text-dim); margin:0;">Crea tu cuenta gratuita para acceder a las preguntas y guardar tu progreso personal.</p>
+      </div>
+
+      <!-- Tarjeta preview del kit compartido -->
+      <div class="modal-summary-box" style="margin-bottom:1.1rem; border-color:rgba(118,185,155,0.3);">
+        <span style="font-size:0.72rem; text-transform:uppercase; font-weight:800; color:var(--accent-lilac); letter-spacing:0.5px;" id="sk-auth-subject">Materia</span>
+        <h4 style="font-size:1.1rem; font-weight:800; color:#fff; margin:3px 0 6px;" id="sk-auth-title">Título del Kit</h4>
+        <div style="display:flex; gap:10px; font-size:0.78rem; color:#CBD5E1;">
+          <span style="display:inline-flex; align-items:center; gap:4px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="16" height="13" rx="2" ry="2"></rect><path d="M6 3h12a2 2 0 0 1 2 2v12"></path></svg>
+            <span id="sk-auth-cards-count">0</span> Tarjetas
+          </span>
+          <span style="display:inline-flex; align-items:center; gap:4px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            Quiz Personalizado
+          </span>
+        </div>
+      </div>
+
+      <!-- Tabs de registro / login -->
+      <div style="display:flex; gap:8px; margin-bottom:1rem; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:8px;">
+        <button id="sk-auth-tab-register-btn" style="flex:1; padding:8px 12px; font-size:0.86rem; font-weight:700; border-radius:8px; border:none; cursor:pointer; background:var(--accent-lilac); color:#000;" onclick="switchSharedKitAuthTab('register')">Crear Cuenta</button>
+        <button id="sk-auth-tab-login-btn" style="flex:1; padding:8px 12px; font-size:0.86rem; font-weight:700; border-radius:8px; border:none; cursor:pointer; background:transparent; color:#CBD5E1;" onclick="switchSharedKitAuthTab('login')">Ya tengo cuenta</button>
+      </div>
+
+      <div id="sk-auth-error-box" style="display:none; background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3); border-radius:8px; padding:8px 12px; font-size:0.82rem; color:#FCA5A5; margin-bottom:12px;"></div>
+
+      <form id="sk-auth-form" onsubmit="handleSharedKitAuthSubmit(event)" style="display:flex; flex-direction:column; gap:11px;">
+        <div id="sk-auth-name-group">
+          <label style="display:block; font-size:0.78rem; font-weight:700; color:#CBD5E1; margin-bottom:4px;">Tu Nombre:</label>
+          <input type="text" id="sk-auth-input-name" class="modal-text-input" placeholder="Ej. Carlos" style="width:100%; box-sizing:border-box;">
+        </div>
+
+        <div>
+          <label style="display:block; font-size:0.78rem; font-weight:700; color:#CBD5E1; margin-bottom:4px;">Correo Electrónico:</label>
+          <input type="email" id="sk-auth-input-email" class="modal-text-input" placeholder="tu@correo.com" required style="width:100%; box-sizing:border-box;">
+        </div>
+
+        <div>
+          <label style="display:block; font-size:0.78rem; font-weight:700; color:#CBD5E1; margin-bottom:4px;">Contraseña:</label>
+          <input type="password" id="sk-auth-input-password" class="modal-text-input" placeholder="Mínimo 6 caracteres" required minlength="6" style="width:100%; box-sizing:border-box;">
+        </div>
+
+        <button type="submit" id="sk-auth-submit-btn" class="btn-mat-submit" style="width:100%; margin:8px 0 0; padding:12px;">
+          Crear Cuenta y Abrir Kit de Estudio
+        </button>
+      </form>
     </div>
   </div>
 
@@ -3456,8 +3567,8 @@
 
     /* ─── GESTIÓN DE USUARIO Y PERFIL ─── */
     const user = {
-      xp: parseInt(localStorage.getItem('synapse_xp') || '450', 10),
-      avatarId: localStorage.getItem('synapse_avatar_id') || 'snake'
+      xp: parseInt(localStorage.getItem('synapse_xp') || '0', 10),
+      avatarId: localStorage.getItem('synapse_avatar_id') || 'fish'
     };
 
     function calculateLevel(xp) {
@@ -3473,10 +3584,22 @@
       return 1;
     }
 
-    function updateNavbar() {
-      const lvl = calculateLevel(user.xp);
-      const crownEl = document.getElementById('nav-crown-num');
-      if (crownEl) crownEl.textContent = lvl;
+    function updateNavbar(authUser = null) {
+      const authLoggedOut = document.getElementById('nav-auth-logged-out');
+      const avatarCircle = document.getElementById('nav-avatar-circle');
+
+      const isRealUser = authUser || (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser && firebase.auth().currentUser.email !== 'vota7-sync@synapse-suite.com');
+
+      if (isRealUser) {
+        if (authLoggedOut) authLoggedOut.style.display = 'none';
+        if (avatarCircle) avatarCircle.style.display = 'flex';
+        const lvl = calculateLevel(user.xp);
+        const crownEl = document.getElementById('nav-crown-num');
+        if (crownEl) crownEl.textContent = lvl;
+      } else {
+        if (authLoggedOut) authLoggedOut.style.display = 'flex';
+        if (avatarCircle) avatarCircle.style.display = 'none';
+      }
     }
 
     function addXP(amount) {
@@ -3575,11 +3698,17 @@
           });
           saveKitsToStorage();
         } catch (e) {
-          state.kits = JSON.parse(JSON.stringify(DEFAULT_KITS));
+          state.kits = [];
         }
       } else {
-        state.kits = JSON.parse(JSON.stringify(DEFAULT_KITS));
-        localStorage.setItem('synapse_study_kits', JSON.stringify(state.kits));
+        const urlParams = new URLSearchParams(window.location.search);
+        const isOpeningSharedKit = urlParams.has('kit') || urlParams.has('share') || urlParams.has('sk_data');
+        if (!isOpeningSharedKit) {
+          state.kits = JSON.parse(JSON.stringify(DEFAULT_KITS));
+          localStorage.setItem('synapse_study_kits', JSON.stringify(state.kits));
+        } else {
+          state.kits = [];
+        }
       }
     }
 
@@ -3728,6 +3857,13 @@
 
     /* ─── MODAL PROPORCIONA TUS MATERIALES ─── */
     function openMaterialsModal() {
+      if (typeof firebase !== 'undefined' && firebase.auth) {
+        const u = firebase.auth().currentUser;
+        if (!u || u.email === 'vota7-sync@synapse-suite.com') {
+          openAuthModal('register', 'Crea una cuenta gratuita para generar kits de estudio con inteligencia artificial.');
+          return;
+        }
+      }
       document.getElementById('modal-materials').style.display = 'flex';
     }
 
@@ -5009,6 +5145,19 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
     showActiveView('view-dashboard');
     checkForSharedKitParam();
 
+    if (typeof firebase !== 'undefined' && firebase.auth) {
+      firebase.auth().onAuthStateChanged((u) => {
+        if (u && u.email && u.email !== 'vota7-sync@synapse-suite.com') {
+          updateNavbar(u);
+          if (!localStorage.getItem('synapse_email')) {
+            localStorage.setItem('synapse_email', u.email);
+          }
+        } else {
+          updateNavbar(null);
+        }
+      });
+    }
+
     // Notificación de bienvenida si activó el trial Vota 7
     if (localStorage.getItem('synapse_vota7') === 'true') {
       const trialNotified = sessionStorage.getItem('synapse_vota7_notified');
@@ -5471,31 +5620,36 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
     });
 
     /* ─── SISTEMA DE COMPARTIR E IMPORTAR KITS DE ESTUDIO (PROGRESO INDEPENDIENTE) ─── */
-    let _firebaseAuthPromise = null;
+    function getCurrentAuthUser() {
+      return new Promise((resolve) => {
+        if (typeof firebase === 'undefined' || !firebase.auth) {
+          resolve(null);
+          return;
+        }
+        const user = firebase.auth().currentUser;
+        if (user && user.email !== "vota7-sync@synapse-suite.com") {
+          resolve(user);
+          return;
+        }
+        const unsubscribe = firebase.auth().onAuthStateChanged((u) => {
+          unsubscribe();
+          if (u && u.email !== "vota7-sync@synapse-suite.com") {
+            resolve(u);
+          } else {
+            resolve(null);
+          }
+        });
+        setTimeout(() => resolve(null), 1200);
+      });
+    }
+
     async function ensureFirebaseAuth() {
       if (typeof firebase === 'undefined' || !firebase.auth) return null;
-      if (firebase.auth().currentUser) return firebase.auth().currentUser;
-      if (_firebaseAuthPromise) return _firebaseAuthPromise;
-
-      _firebaseAuthPromise = (async () => {
-        try {
-          const cred = await firebase.auth().signInWithEmailAndPassword(
-            "vota7-sync@synapse-suite.com",
-            "Vota7Sync2026PlatformAuth!"
-          );
-          return cred.user;
-        } catch (e) {
-          console.warn("Auth fallback, attempting anonymous:", e);
-          try {
-            const anon = await firebase.auth().signInAnonymously();
-            return anon.user;
-          } catch (e2) {
-            console.error("Firebase auth failed:", e2);
-            return null;
-          }
-        }
-      })();
-      return _firebaseAuthPromise;
+      const user = firebase.auth().currentUser;
+      if (user && user.email !== "vota7-sync@synapse-suite.com") {
+        return user;
+      }
+      return null;
     }
 
     // Decodificador de campos Firestore REST API para respuesta JSON estándar
@@ -5847,13 +6001,288 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
 
         if (sharedKitData && sharedKitData.title) {
           window._pendingImportKit = sharedKitData;
-          openImportSharedKitModal(sharedKitData);
+
+          // COMPROBAR SI EL USUARIO ESTÁ AUTENTICADO:
+          const authUser = await getCurrentAuthUser();
+          closeImportKitModal(); // cierra loader
+
+          if (!authUser) {
+            // USUARIO SIN CUENTA O SIN SESIÓN -> PEDIR CREAR CUENTA
+            openSharedKitAuthModal(sharedKitData);
+          } else {
+            // USUARIO CON CUENTA -> IMPORTACIÓN NORMAL
+            openImportSharedKitModal(sharedKitData);
+          }
         } else {
           showImportKitError("No se encontró el kit de estudio o el enlace no está disponible. Comprueba tu conexión a internet o solicita el enlace nuevamente.");
         }
       } catch (generalErr) {
         console.error("Error en checkForSharedKitParam:", generalErr);
         showImportKitError("Ocurrió un error inesperado al procesar el enlace de estudio.");
+      }
+    }
+
+    /* ─── MODAL DE AUTENTICACIÓN PARA KITS COMPARTIDOS ─── */
+    let _skAuthMode = 'register';
+    function openSharedKitAuthModal(kitData) {
+      const modal = document.getElementById('shared-kit-auth-modal');
+      if (!modal) return;
+
+      const subjectEl = document.getElementById('sk-auth-subject');
+      const titleEl = document.getElementById('sk-auth-title');
+      const countEl = document.getElementById('sk-auth-cards-count');
+
+      if (subjectEl) subjectEl.textContent = kitData.subject || "Materia";
+      if (titleEl) titleEl.textContent = kitData.title || "Kit Compartido";
+      if (countEl) countEl.textContent = Array.isArray(kitData.flashcards) ? kitData.flashcards.length : 0;
+
+      switchSharedKitAuthTab('register');
+
+      modal.style.display = 'flex';
+      modal.classList.add('active');
+    }
+
+    function closeSharedKitAuthModal() {
+      const modal = document.getElementById('shared-kit-auth-modal');
+      if (modal) {
+        modal.classList.remove('active');
+        modal.style.display = 'none';
+      }
+    }
+
+    function switchSharedKitAuthTab(mode) {
+      _skAuthMode = mode;
+      const regBtn = document.getElementById('sk-auth-tab-register-btn');
+      const logBtn = document.getElementById('sk-auth-tab-login-btn');
+      const nameGroup = document.getElementById('sk-auth-name-group');
+      const submitBtn = document.getElementById('sk-auth-submit-btn');
+      const errBox = document.getElementById('sk-auth-error-box');
+
+      if (errBox) errBox.style.display = 'none';
+
+      if (mode === 'register') {
+        if (regBtn) {
+          regBtn.style.background = 'var(--accent-lilac)';
+          regBtn.style.color = '#000';
+        }
+        if (logBtn) {
+          logBtn.style.background = 'transparent';
+          logBtn.style.color = '#CBD5E1';
+        }
+        if (nameGroup) nameGroup.style.display = 'block';
+        if (submitBtn) submitBtn.textContent = 'Crear Cuenta y Abrir Kit de Estudio';
+      } else {
+        if (logBtn) {
+          logBtn.style.background = 'var(--accent-lilac)';
+          logBtn.style.color = '#000';
+        }
+        if (regBtn) {
+          regBtn.style.background = 'transparent';
+          regBtn.style.color = '#CBD5E1';
+        }
+        if (nameGroup) nameGroup.style.display = 'none';
+        if (submitBtn) submitBtn.textContent = 'Iniciar Sesión y Abrir Kit de Estudio';
+      }
+    }
+
+    async function handleSharedKitAuthSubmit(e) {
+      e.preventDefault();
+      const errBox = document.getElementById('sk-auth-error-box');
+      if (errBox) errBox.style.display = 'none';
+
+      const email = document.getElementById('sk-auth-input-email').value.trim();
+      const password = document.getElementById('sk-auth-input-password').value;
+      const name = (document.getElementById('sk-auth-input-name').value || '').trim() || email.split('@')[0];
+      const submitBtn = document.getElementById('sk-auth-submit-btn');
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Conectando...';
+      }
+
+      try {
+        if (_skAuthMode === 'register') {
+          const cred = await firebase.auth().createUserWithEmailAndPassword(email, password);
+          if (cred && cred.user) {
+            localStorage.setItem('synapse_name', name);
+            localStorage.setItem('synapse_email', email);
+            localStorage.setItem('synapse_xp', '0');
+            user.xp = 0;
+            updateNavbar(cred.user);
+            try {
+              await firebase.firestore().collection('users').doc(cred.user.uid).set({
+                name: name,
+                email: email,
+                plan: 'free',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+              }, { merge: true });
+            } catch (dbErr) {}
+          }
+        } else {
+          const cred = await firebase.auth().signInWithEmailAndPassword(email, password);
+          if (cred && cred.user) {
+            updateNavbar(cred.user);
+            localStorage.setItem('synapse_email', email);
+          }
+        }
+
+        closeSharedKitAuthModal();
+        showToast("¡Cuenta Lista!", "Importando kit de estudio compartido...");
+
+        // Proceder a importar el kit en la nueva cuenta
+        if (window._pendingImportKit) {
+          confirmImportSharedKit('quiz');
+        }
+      } catch (err) {
+        console.error("Auth error:", err);
+        let msg = "No se pudo autenticar. Verifica los datos ingresados.";
+        if (err.code === 'auth/email-already-in-use') {
+          msg = "Este correo ya está registrado. Haz clic en 'Ya tengo cuenta' para iniciar sesión.";
+        } else if (err.code === 'auth/wrong-password') {
+          msg = "Contraseña incorrecta.";
+        } else if (err.code === 'auth/user-not-found') {
+          msg = "No se encontró ninguna cuenta con este correo.";
+        } else if (err.code === 'auth/weak-password') {
+          msg = "La contraseña debe tener mínimo 6 caracteres.";
+        }
+        if (errBox) {
+          errBox.textContent = msg;
+          errBox.style.display = 'block';
+        }
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = _skAuthMode === 'register' ? 'Crear Cuenta y Abrir Kit de Estudio' : 'Iniciar Sesión y Abrir Kit de Estudio';
+        }
+      }
+    }
+
+    /* ─── MODAL DE AUTENTICACIÓN GENERAL (NAVBAR Y CREACIÓN) ─── */
+    let _authModalMode = 'login';
+    function openAuthModal(mode = 'login', customSubtitle = null) {
+      _authModalMode = mode;
+      const modal = document.getElementById('auth-modal');
+      if (!modal) return;
+
+      const sub = document.getElementById('auth-modal-main-subtitle');
+      if (sub && customSubtitle) {
+        sub.textContent = customSubtitle;
+      } else if (sub) {
+        sub.textContent = 'Tu plataforma de estudio y práctica personalizada';
+      }
+
+      switchAuthTab(mode);
+      modal.style.display = 'flex';
+      modal.classList.add('active');
+    }
+
+    function closeAuthModal() {
+      const modal = document.getElementById('auth-modal');
+      if (modal) {
+        modal.classList.remove('active');
+        modal.style.display = 'none';
+      }
+    }
+
+    function switchAuthTab(mode) {
+      _authModalMode = mode;
+      const regBtn = document.getElementById('auth-tab-register-btn');
+      const logBtn = document.getElementById('auth-tab-login-btn');
+      const nameGroup = document.getElementById('auth-name-group');
+      const submitBtn = document.getElementById('auth-submit-btn-text');
+      const errBox = document.getElementById('auth-error-box');
+
+      if (errBox) errBox.style.display = 'none';
+
+      if (mode === 'register') {
+        if (regBtn) {
+          regBtn.style.background = 'var(--accent-lilac)';
+          regBtn.style.color = '#000';
+        }
+        if (logBtn) {
+          logBtn.style.background = 'transparent';
+          logBtn.style.color = '#CBD5E1';
+        }
+        if (nameGroup) nameGroup.style.display = 'block';
+        if (submitBtn) submitBtn.textContent = 'Crear Cuenta Gratuita';
+      } else {
+        if (logBtn) {
+          logBtn.style.background = 'var(--accent-lilac)';
+          logBtn.style.color = '#000';
+        }
+        if (regBtn) {
+          regBtn.style.background = 'transparent';
+          regBtn.style.color = '#CBD5E1';
+        }
+        if (nameGroup) nameGroup.style.display = 'none';
+        if (submitBtn) submitBtn.textContent = 'Iniciar Sesión';
+      }
+    }
+
+    async function handleAuthSubmitQuiz(e) {
+      e.preventDefault();
+      const errBox = document.getElementById('auth-error-box');
+      if (errBox) errBox.style.display = 'none';
+
+      const email = document.getElementById('auth-input-email').value.trim();
+      const password = document.getElementById('auth-input-password').value;
+      const name = (document.getElementById('auth-input-name').value || '').trim() || email.split('@')[0];
+      const submitBtn = document.getElementById('auth-submit-btn-text');
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Conectando...';
+      }
+
+      try {
+        if (_authModalMode === 'register') {
+          const cred = await firebase.auth().createUserWithEmailAndPassword(email, password);
+          if (cred && cred.user) {
+            localStorage.setItem('synapse_name', name);
+            localStorage.setItem('synapse_email', email);
+            localStorage.setItem('synapse_xp', '0');
+            user.xp = 0;
+            updateNavbar(cred.user);
+            try {
+              await firebase.firestore().collection('users').doc(cred.user.uid).set({
+                name: name,
+                email: email,
+                plan: 'free',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+              }, { merge: true });
+            } catch (dbErr) {}
+          }
+        } else {
+          const cred = await firebase.auth().signInWithEmailAndPassword(email, password);
+          if (cred && cred.user) {
+            updateNavbar(cred.user);
+            localStorage.setItem('synapse_email', email);
+          }
+        }
+
+        closeAuthModal();
+        showToast("¡Bienvenido a Synapse!", "Sesión iniciada correctamente.");
+      } catch (err) {
+        console.error("Auth error:", err);
+        let msg = "No se pudo autenticar. Verifica tus credenciales.";
+        if (err.code === 'auth/email-already-in-use') {
+          msg = "Este correo ya está registrado. Cambia a Iniciar Sesión.";
+        } else if (err.code === 'auth/wrong-password') {
+          msg = "Contraseña incorrecta.";
+        } else if (err.code === 'auth/user-not-found') {
+          msg = "No se encontró ninguna cuenta con este correo.";
+        } else if (err.code === 'auth/weak-password') {
+          msg = "La contraseña debe tener al menos 6 caracteres.";
+        }
+        if (errBox) {
+          errBox.textContent = msg;
+          errBox.style.display = 'block';
+        }
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = _authModalMode === 'register' ? 'Crear Cuenta Gratuita' : 'Iniciar Sesión';
+        }
       }
     }
 

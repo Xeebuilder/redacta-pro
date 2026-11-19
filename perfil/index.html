@@ -1033,7 +1033,7 @@
           <!-- Nombre y rol -->
           <div class="user-info-col">
             <div class="user-name-row">
-              <span class="user-name" id="display-name">Max</span>
+              <span class="user-name" id="display-name">Estudiante</span>
               <button class="btn-edit-pencil" onclick="openEditModal('name')">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
               </button>
@@ -1054,7 +1054,7 @@
             <div class="detail-group">
               <span class="detail-label">Escuela</span>
               <div class="detail-val-row">
-                <span id="display-school">Italo Venezolano</span>
+                <span id="display-school">Sin institución registrada</span>
                 <button class="btn-edit-pencil" onclick="openEditModal('school')">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                 </button>
@@ -1113,12 +1113,12 @@
         <div class="account-config-grid">
           <div>
             <div class="account-field-label">Nombre</div>
-            <div class="account-field-value" id="account-name-val">Max</div>
+            <div class="account-field-value" id="account-name-val">Estudiante</div>
           </div>
 
           <div>
             <div class="account-field-label">Correo electrónico</div>
-            <div class="account-field-value" id="account-email-val">maxrsilvagni@gmail.com</div>
+            <div class="account-field-value" id="account-email-val">Sin cuenta activa</div>
           </div>
 
           <div>
@@ -1216,12 +1216,12 @@
 
       <div class="form-group-modal">
         <label>Nombre:</label>
-        <input type="text" id="edit-input-name" value="Max">
+        <input type="text" id="edit-input-name" value="Estudiante">
       </div>
 
       <div class="form-group-modal">
         <label>Correo Electrónico:</label>
-        <input type="email" id="edit-input-email" value="maxrsilvagni@gmail.com">
+        <input type="email" id="edit-input-email" value="">
       </div>
 
       <div class="form-group-modal">
@@ -1231,7 +1231,7 @@
 
       <div class="form-group-modal">
         <label>Escuela / Colegio / Universidad:</label>
-        <input type="text" id="edit-input-school" value="Italo Venezolano">
+        <input type="text" id="edit-input-school" value="Sin institución registrada">
       </div>
 
       <div class="form-group-modal">
@@ -1282,10 +1282,10 @@
 
     // Estado del Perfil
     const profile = {
-      name: localStorage.getItem('synapse_name') || 'Max',
-      email: localStorage.getItem('synapse_email') || 'maxrsilvagni@gmail.com',
+      name: localStorage.getItem('synapse_name') || 'Estudiante',
+      email: localStorage.getItem('synapse_email') || 'Sin cuenta activa',
       role: localStorage.getItem('synapse_role') || 'Estudiante',
-      school: localStorage.getItem('synapse_school') || 'Italo Venezolano',
+      school: localStorage.getItem('synapse_school') || 'Sin institución registrada',
       level: localStorage.getItem('synapse_level') || 'Bachillerato / Preparatoria (15 - 17 años)',
       avatarId: localStorage.getItem('synapse_avatar') || 'fish',
       xp: parseInt(localStorage.getItem('synapse_xp') || '0', 10),
@@ -1648,10 +1648,10 @@
     }
 
     function saveProfileChanges() {
-      profile.name = document.getElementById('edit-input-name').value.trim() || 'Max';
-      profile.email = document.getElementById('edit-input-email').value.trim() || 'maxrsilvagni@gmail.com';
+      profile.name = document.getElementById('edit-input-name').value.trim() || 'Estudiante';
+      profile.email = document.getElementById('edit-input-email').value.trim() || 'Sin cuenta activa';
       profile.role = document.getElementById('edit-input-role').value.trim() || 'Estudiante';
-      profile.school = document.getElementById('edit-input-school').value.trim() || 'Italo Venezolano';
+      profile.school = document.getElementById('edit-input-school').value.trim() || 'Sin institución registrada';
       profile.level = document.getElementById('edit-input-level').value;
 
       localStorage.setItem('synapse_name', profile.name);
@@ -1712,6 +1712,21 @@
     // Inicializar
     initTheme();
     renderProfile();
+
+    if (typeof firebase !== 'undefined' && firebase.auth) {
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user && user.email && user.email !== 'vota7-sync@synapse-suite.com') {
+          profile.email = user.email;
+          localStorage.setItem('synapse_email', user.email);
+          const savedName = localStorage.getItem('synapse_name');
+          if (!savedName || savedName === 'Estudiante') {
+            profile.name = user.displayName || user.email.split('@')[0];
+            localStorage.setItem('synapse_name', profile.name);
+          }
+          renderProfile();
+        }
+      });
+    }
   </script>
 </body>
 </html>
