@@ -2131,25 +2131,31 @@
 
       <!-- Panel Subir Archivo / Foto -->
       <div id="panel-method-upload">
+        <input type="file" id="file-upload-input" accept="image/*" multiple style="display:none;" onchange="handleModalFileSelect(event)">
+
         <div class="mat-dropzone-box" id="modal-drop-zone" onclick="document.getElementById('file-upload-input').click()">
-          <input type="file" id="file-upload-input" accept="image/*" style="display:none;" onchange="handleModalFileSelect(event)">
-          <div style="color:var(--accent-lilac); margin-bottom:8px;">
+          <div style="color:var(--color-accent); margin-bottom:8px;">
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline>
             </svg>
           </div>
-          <div style="font-weight:700; font-size:1.05rem; color:#fff; margin-bottom:4px;">Haz clic o arrastra tu imagen aquí</div>
-          <div style="font-size:0.84rem; color:var(--text-dim);">Soporta Business Model Canvas, esquemas, notas de clase (PNG, JPG, WEBP)</div>
+          <div style="font-weight:700; font-size:1.05rem; color:var(--text-white); margin-bottom:4px;">Haz clic o arrastra hasta 10 imágenes aquí</div>
+          <div style="font-size:0.84rem; color:var(--text-dim);">Soporta esquemas, apuntes y fotos de notas (PNG, JPG, WEBP). Máximo 10 imágenes.</div>
         </div>
 
         <div id="modal-file-preview-wrap" style="display:none; margin-bottom:1.2rem;">
-          <div class="modal-summary-box" style="display:flex; align-items:center; gap:14px; padding:12px 16px; margin-bottom:0;">
-            <img id="modal-file-thumb" src="" style="width:50px; height:50px; border-radius:8px; object-fit:cover;">
-            <div style="flex:1;">
-              <div id="modal-file-name" style="font-weight:700; font-size:0.9rem; color:#fff;">archivo.png</div>
-              <div id="modal-file-size" style="font-size:0.78rem; color:var(--text-dim);">1.2 MB</div>
-            </div>
-            <button onclick="removeModalFile()" style="background:rgba(239,68,68,0.2); border:1px solid #EF4444; color:#F87171; border-radius:8px; padding:5px 10px; font-size:0.8rem; cursor:pointer;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+            <span style="font-size:0.82rem; font-weight:700; color:var(--color-accent); text-transform:uppercase; letter-spacing:0.04em;">
+              Imágenes seleccionadas (<span id="modal-files-count">0</span>/10)
+            </span>
+            <button type="button" id="btn-add-more-files" onclick="document.getElementById('file-upload-input').click()" style="background:rgba(118,185,155,0.12); border:1px solid rgba(118,185,155,0.3); color:var(--color-accent); font-size:0.8rem; font-weight:700; border-radius:7px; padding:5px 12px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span>Añadir más fotos</span>
+            </button>
+          </div>
+          <div id="modal-files-list" style="max-height:220px; overflow-y:auto; display:flex; flex-direction:column; gap:8px; padding-right:4px;"></div>
+          <div id="modal-max-reached-note" style="display:none; font-size:0.78rem; color:var(--text-dim); text-align:center; margin-top:8px; font-weight:600;">
+            Has alcanzado el límite máximo de 10 imágenes.
           </div>
         </div>
       </div>
@@ -3380,6 +3386,7 @@
 
       // Modal
       modalMethod: 'upload',
+      modalSelectedFiles: [],
       modalSelectedFile: null,
 
       // Etapas continuas
@@ -3708,64 +3715,225 @@
       }
     }
 
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    const MAX_MODAL_FILES = 10;
+
     function handleModalFileSelect(e) {
-      const file = e.target.files && e.target.files[0];
-      if (!file) return;
-      processModalFile(file);
+      const files = e.target.files;
+      if (!files || files.length === 0) return;
+      processModalFiles(Array.from(files));
+      e.target.value = '';
     }
 
     const modalDropZone = document.getElementById('modal-drop-zone');
-    if (modalDropZone) {
+    const modalUploadPanel = document.getElementById('panel-method-upload');
+
+    [modalDropZone, modalUploadPanel].forEach(zone => {
+      if (!zone) return;
       ['dragenter', 'dragover'].forEach(name => {
-        modalDropZone.addEventListener(name, (e) => {
+        zone.addEventListener(name, (e) => {
           e.preventDefault(); e.stopPropagation();
-          modalDropZone.classList.add('dragover');
+          if (modalDropZone) modalDropZone.classList.add('dragover');
         });
       });
-      ['dragleave', 'drop'].forEach(name => {
-        modalDropZone.addEventListener(name, (e) => {
+      ['dragleave'].forEach(name => {
+        zone.addEventListener(name, (e) => {
           e.preventDefault(); e.stopPropagation();
-          modalDropZone.classList.remove('dragover');
+          if (modalDropZone) modalDropZone.classList.remove('dragover');
         });
       });
-      modalDropZone.addEventListener('drop', (e) => {
+      zone.addEventListener('drop', (e) => {
+        e.preventDefault(); e.stopPropagation();
+        if (modalDropZone) modalDropZone.classList.remove('dragover');
         const dt = e.dataTransfer;
-        const file = dt.files && dt.files[0];
-        if (file) processModalFile(file);
+        if (dt && dt.files && dt.files.length > 0) {
+          processModalFiles(Array.from(dt.files));
+        }
       });
+    });
+
+    async function processModalFiles(filesList) {
+      if (!Array.isArray(state.modalSelectedFiles)) {
+        state.modalSelectedFiles = [];
+      }
+
+      const imageFiles = filesList.filter(file => file.type && file.type.startsWith('image/'));
+      const nonImageCount = filesList.length - imageFiles.length;
+
+      if (nonImageCount > 0) {
+        showToast("Formato no válido", "Se omitieron archivos que no son imágenes (PNG, JPG, WEBP)");
+      }
+
+      if (imageFiles.length === 0) return;
+
+      const currentCount = state.modalSelectedFiles.length;
+      if (currentCount >= MAX_MODAL_FILES) {
+        showToast("Límite alcanzado", "Ya has añadido el máximo de 10 imágenes permitidas");
+        return;
+      }
+
+      const availableSlots = MAX_MODAL_FILES - currentCount;
+      const filesToAdd = imageFiles.slice(0, availableSlots);
+
+      if (imageFiles.length > availableSlots) {
+        showToast("Límite de 10 fotos", `Se agregaron ${availableSlots} fotos para no superar el límite de 10`);
+      }
+
+      for (const file of filesToAdd) {
+        try {
+          const opt = await optimizeImageFile(file, 1600, 0.85);
+          if (opt && opt.base64) {
+            state.modalSelectedFiles.push({
+              id: 'img_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
+              name: file.name,
+              size: (file.size / 1024 / 1024).toFixed(2) + ' MB',
+              mimeType: opt.mimeType || file.type || 'image/jpeg',
+              base64: opt.base64,
+              dataUrl: opt.dataUrl
+            });
+          }
+        } catch (err) {
+          console.error("Error optimizando imagen:", err);
+        }
+      }
+
+      state.modalSelectedFile = state.modalSelectedFiles[0] || null;
+      renderModalFilesList();
+      showToast("Fotos listas", `${state.modalSelectedFiles.length} de 10 imágenes preparadas`);
     }
 
     function processModalFile(file) {
-      if (!file.type.startsWith('image/')) {
-        showToast("Formato no válido", "Por favor sube una imagen (PNG, JPG, WEBP)");
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        const fullBase64 = evt.target.result;
-        const pureBase64 = fullBase64.split(',')[1];
-        state.modalSelectedFile = {
-          base64: pureBase64,
-          mimeType: file.type,
-          name: file.name,
-          size: (file.size / 1024 / 1024).toFixed(2) + ' MB'
-        };
-
-        document.getElementById('modal-drop-zone').style.display = 'none';
-        document.getElementById('modal-file-thumb').src = fullBase64;
-        document.getElementById('modal-file-name').textContent = file.name;
-        document.getElementById('modal-file-size').textContent = state.modalSelectedFile.size;
-        document.getElementById('modal-file-preview-wrap').style.display = 'block';
-        showToast("Foto Lista", "Imagen preparada para análisis: " + file.name);
-      };
-      reader.readAsDataURL(file);
+      if (file) processModalFiles([file]);
     }
 
-    function removeModalFile() {
-      state.modalSelectedFile = null;
-      document.getElementById('file-upload-input').value = '';
-      document.getElementById('modal-file-preview-wrap').style.display = 'none';
-      document.getElementById('modal-drop-zone').style.display = 'block';
+    function optimizeImageFile(file, maxDimension = 1600, quality = 0.85) {
+      return new Promise((resolve) => {
+        if (!file.type || !file.type.startsWith('image/') || file.size < 400 * 1024) {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const fullBase64 = reader.result;
+            resolve({
+              dataUrl: fullBase64,
+              base64: fullBase64.split(',')[1],
+              mimeType: file.type || 'image/jpeg'
+            });
+          };
+          reader.onerror = () => resolve(null);
+          reader.readAsDataURL(file);
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            let width = img.width;
+            let height = img.height;
+
+            if (width > maxDimension || height > maxDimension) {
+              if (width > height) {
+                height = Math.round((height * maxDimension) / width);
+                width = maxDimension;
+              } else {
+                width = Math.round((width * maxDimension) / height);
+                height = maxDimension;
+              }
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            const mime = file.type === 'image/png' ? 'image/jpeg' : file.type;
+            const dataUrl = canvas.toDataURL(mime, quality);
+            resolve({
+              dataUrl: dataUrl,
+              base64: dataUrl.split(',')[1],
+              mimeType: mime
+            });
+          };
+          img.onerror = () => {
+            const fullBase64 = e.target.result;
+            resolve({
+              dataUrl: fullBase64,
+              base64: fullBase64.split(',')[1],
+              mimeType: file.type || 'image/jpeg'
+            });
+          };
+          img.src = e.target.result;
+        };
+        reader.onerror = () => resolve(null);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function renderModalFilesList() {
+      const dropZone = document.getElementById('modal-drop-zone');
+      const previewWrap = document.getElementById('modal-file-preview-wrap');
+      const filesList = document.getElementById('modal-files-list');
+      const countEl = document.getElementById('modal-files-count');
+      const addMoreBtn = document.getElementById('btn-add-more-files');
+      const maxReachedNote = document.getElementById('modal-max-reached-note');
+
+      if (!state.modalSelectedFiles || state.modalSelectedFiles.length === 0) {
+        state.modalSelectedFiles = [];
+        state.modalSelectedFile = null;
+        if (dropZone) dropZone.style.display = 'block';
+        if (previewWrap) previewWrap.style.display = 'none';
+        const input = document.getElementById('file-upload-input');
+        if (input) input.value = '';
+        return;
+      }
+
+      if (dropZone) dropZone.style.display = 'none';
+      if (previewWrap) previewWrap.style.display = 'block';
+      if (countEl) countEl.textContent = state.modalSelectedFiles.length;
+
+      if (addMoreBtn) {
+        addMoreBtn.style.display = state.modalSelectedFiles.length >= MAX_MODAL_FILES ? 'none' : 'inline-flex';
+      }
+      if (maxReachedNote) {
+        maxReachedNote.style.display = state.modalSelectedFiles.length >= MAX_MODAL_FILES ? 'block' : 'none';
+      }
+
+      if (filesList) {
+        filesList.innerHTML = state.modalSelectedFiles.map((img, idx) => `
+          <div class="modal-summary-box" style="display:flex; align-items:center; gap:12px; padding:10px 14px; margin-bottom:0;">
+            <img src="${img.dataUrl}" style="width:46px; height:46px; border-radius:8px; object-fit:cover; flex-shrink:0; border:1px solid rgba(255,255,255,0.1);">
+            <div style="flex:1; min-width:0;">
+              <div style="font-weight:700; font-size:0.88rem; color:var(--text-white); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(img.name)}</div>
+              <div style="font-size:0.75rem; color:var(--text-dim); margin-top:2px;">${img.size} &bull; Foto ${idx + 1} de ${state.modalSelectedFiles.length}</div>
+            </div>
+            <button type="button" onclick="removeModalFile(${idx})" title="Eliminar imagen" style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.35); color:#F87171; border-radius:8px; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; transition:all 0.2s;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+          </div>
+        `).join('');
+      }
+    }
+
+    function removeModalFile(index = null) {
+      if (index === null || index === undefined) {
+        state.modalSelectedFiles = [];
+        state.modalSelectedFile = null;
+      } else {
+        state.modalSelectedFiles.splice(index, 1);
+        state.modalSelectedFile = state.modalSelectedFiles[0] || null;
+      }
+      const input = document.getElementById('file-upload-input');
+      if (input) input.value = '';
+      renderModalFilesList();
     }
 
     /* ─── CREAR Y ENVIAR MATERIALES (SOLUCIONA EL ERROR BASE64) ─── */
@@ -3773,14 +3941,13 @@
       state.level = document.getElementById('modal-academic-level').value;
 
       if (state.modalMethod === 'upload') {
-        if (!state.modalSelectedFile) {
-          showToast("Falta Archivo", "Por favor selecciona o arrastra una imagen o foto de tus apuntes");
+        if (!state.modalSelectedFiles || state.modalSelectedFiles.length === 0) {
+          showToast("Falta Archivo", "Por favor selecciona o arrastra al menos una imagen de tus apuntes (máximo 10)");
           return;
         }
-        // Guardamos referencia segura ANTES de cerrar modal para evitar error base64
-        const fileData = { ...state.modalSelectedFile };
+        const filesData = [...state.modalSelectedFiles];
         document.getElementById('modal-materials').style.display = 'none';
-        await processNewImageKit(fileData);
+        await processNewImageKit(filesData);
       } else {
         const text = document.getElementById('modal-paste-textarea').value.trim();
         if (!text) {
@@ -3793,17 +3960,37 @@
     }
 
     /* ─── LLAMADAS A GEMINI CON SOPORTE MULTIMODAL ─── */
-    async function askGemini(prompt, systemInstruction = null, imageBase64 = null, mimeType = null) {
+    async function askGemini(prompt, systemInstruction = null, images = null, mimeType = null) {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${state.apiKey}`;
       const parts = [];
-      if (imageBase64) {
+
+      if (Array.isArray(images)) {
+        images.forEach(img => {
+          if (img && img.base64) {
+            parts.push({
+              inline_data: {
+                mime_type: img.mimeType || 'image/jpeg',
+                data: img.base64
+              }
+            });
+          }
+        });
+      } else if (images && typeof images === 'string') {
         parts.push({
           inline_data: {
             mime_type: mimeType || 'image/png',
-            data: imageBase64
+            data: images
+          }
+        });
+      } else if (images && images.base64) {
+        parts.push({
+          inline_data: {
+            mime_type: images.mimeType || 'image/jpeg',
+            data: images.base64
           }
         });
       }
+
       parts.push({ text: prompt });
       const body = { contents: [{ role: 'user', parts }] };
       if (systemInstruction) body.system_instruction = { parts: [{ text: systemInstruction }] };
@@ -3836,15 +4023,65 @@
       return q;
     }
 
-    /* ─── PROCESAR NUEVO KIT POR IMAGEN ─── */
-        async function askGeminiWithImage(prompt, imageBase64, mimeType, systemInstruction = null) {
+    /* ─── PROCESAR NUEVO KIT POR IMAGEN (SOPORTE HASTA 10 IMÁGENES) ─── */
+    async function askGeminiWithImage(prompt, imageBase64, mimeType, systemInstruction = null) {
       return askGemini(prompt, systemInstruction, imageBase64, mimeType);
     }
 
-    async function processNewImageKit(fileData) {
+    async function askGeminiWithImages(prompt, imagesArray, systemInstruction = null) {
+      return askGemini(prompt, systemInstruction, imagesArray);
+    }
+
+    async function processNewImageKit(fileDataOrArray) {
+      const files = Array.isArray(fileDataOrArray) ? fileDataOrArray : [fileDataOrArray];
+      const count = files.length;
+
+      const loadingLabel = document.querySelector('.loading-label-thea');
+      if (loadingLabel) {
+        loadingLabel.textContent = count > 1 
+          ? `Analizando ${count} imágenes y estructurando kit...` 
+          : 'Analizando imagen y estructurando kit...';
+      }
+
       showActiveView('view-loading');
 
-      const prompt = `Analiza detalladamente esta imagen de apuntes escolares, Business Model Canvas, esquema conceptual o temario.
+      const prompt = count > 1
+        ? `Analiza detalladamente este conjunto secuencial de ${count} imágenes de apuntes escolares, diagramas, esquemas conceptuales o temario de estudio. Integra la información de TODAS las imágenes en un único kit de estudio didáctico y exhaustivo.
+Nivel académico del estudiante: "${state.level}".
+
+Estructura una GUÍA DE ESTUDIO COMPLETA Y UN MAZO DE FLASHCARDS EXHAUSTIVO que abarque de forma integral todo el contenido presentado en las ${count} imágenes:
+Responde ÚNICAMENTE en JSON plano válido con esta estructura:
+{
+  "tema": "Título representativo y preciso del tema global identificado en las imágenes",
+  "materia": "Materia académica identificada (ej: Física, Biología, Historia, Negocios, Geografía, etc.)",
+  "resumen": "Resumen pedagógico claro de 2 o 3 párrafos integrando los conceptos fundamentales de todas las notas.",
+  "secciones": [
+    {
+      "titulo": "Nombre del Bloque o Sección temática",
+      "puntos": ["Punto clave 1", "Punto clave 2", "Punto clave 3"],
+      "explicacion": "Explicación clara de por qué este bloque es fundamental para el tema."
+    }
+  ],
+  "conceptosClave": [
+    { "termino": "Concepto 1", "definicion": "Definición clara y precisa de qué es", "importancia": "Por qué es relevante" }
+  ],
+  "datosRelevantes": ["Dato clave 1", "Dato 2"],
+  "puntosExamen": ["Punto de examen 1", "Punto 2"],
+  "flashcards": [
+    {
+      "termino": "Concepto o subtema específico",
+      "pregunta": "¿Qué es o qué fenómeno produce este concepto?",
+      "definicion": "Definición pedagógica completa, profunda y precisa de QUÉ ES. Prohibido usar textos genéricos de relleno.",
+      "detalle": "Clave para el examen, regla práctica o dato exacto"
+    }
+  ]
+}
+
+REGLAS OBLIGATORIAS PARA "flashcards":
+1. Genera un mazo completo de entre 14 y 20 tarjetas (flashcards) integrando el contenido de todas las imágenes. NO generes solo 1 o 2.
+2. Desglosa exhaustivamente CADA subtema, concepto, movimiento, fórmula, ley, definición y regla del material visual provisto.
+3. En "definicion": explica con máxima claridad científica y pedagógica qué es el concepto para que el estudiante aprenda de verdad al voltear la tarjeta.`
+        : `Analiza detalladamente esta imagen de apuntes escolares, Business Model Canvas, esquema conceptual o temario.
 Nivel académico del estudiante: "${state.level}".
 
 Estructura una GUÍA DE ESTUDIO COMPLETA Y UN MAZO DE FLASHCARDS EXHAUSTIVO:
@@ -3881,7 +4118,7 @@ REGLAS OBLIGATORIAS PARA "flashcards":
 3. En "definicion": explica con máxima claridad científica y pedagógica qué es el concepto para que el estudiante aprenda de verdad al voltear la tarjeta.`;
 
       try {
-        const raw = await askGeminiWithImage(prompt, fileData.base64, fileData.mimeType, "Eres un profesor pedagógico. Devuelve estrictamente JSON válido.");
+        const raw = await askGemini(prompt, "Eres un profesor pedagógico. Analiza la totalidad del material y devuelve estrictamente JSON válido.", files);
         const clean = raw.replace(/```json/gi, "").replace(/```/gi, "").trim();
         const guide = JSON.parse(clean);
 
@@ -3933,12 +4170,15 @@ REGLAS OBLIGATORIAS PARA "flashcards":
 
         showActiveView('view-study-screen');
         renderQuestion();
-        showToast("Kit Creado", `Iniciando sesión sobre "${state.topic}"`);
+        showToast("Kit Creado", `Iniciando sesión sobre "${state.topic}" (${count} ${count > 1 ? 'imágenes analizadas' : 'imagen analizada'})`);
 
       } catch (err) {
-        console.error("Error al procesar imagen:", err);
+        console.error("Error al procesar imagen(es):", err);
         showActiveView('view-dashboard');
         showToast("Error", "No se pudo generar el kit: " + err.message);
+      } finally {
+        const loadingLabel = document.querySelector('.loading-label-thea');
+        if (loadingLabel) loadingLabel.textContent = 'Generando preguntas';
       }
     }
 
