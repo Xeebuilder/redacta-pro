@@ -2,19 +2,77 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <script>
+    (function() {
+      try {
+        var savedTheme = localStorage.getItem('synapse_theme');
+        if (savedTheme === 'dark') {
+          document.documentElement.classList.add('theme-dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Synapse • Estudio Inteligente</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23B8A2F8'><polygon points='13 2 3 14 12 14 11 22 21 10 12 10 13 2'/></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   
   <style>
+    /* ══════════════════════════════════════════════════════════════ */
+    /* SISTEMA DE TEMAS: REDACTAPRO (MODO CLARO) & MODO OSCURO       */
+    /* ══════════════════════════════════════════════════════════════ */
     :root {
+      /* PALETA REDACTAPRO POR DEFECTO (Cálido, Editorial, Beige) */
+      --bg-dark: #E5D8C8;
+      --bg-page: #E5D8C8;
+      --bg-sidebar: #FAF8F5;
+      --bg-card: #FAF8F5;
+      --bg-card-hover: #FFFFFF;
+      --bg-surface: #FFFFFF;
+      --bg-option: #FFFFFF;
+      --bg-option-hover: #FAF8F5;
+      --color-primary: #2B1B17;
+      --color-secondary: #4A322B;
+      --color-accent: #8C6A53;
+      --accent-lilac: #8C6A53;
+      --accent-lilac-hover: #705349;
+      --accent-purple: #2B1B17;
+      --border-purple: rgba(43, 27, 23, 0.12);
+      --border-purple-hover: rgba(43, 27, 23, 0.28);
+      --text-white: #2B1B17;
+      --text-dim: #705349;
+      --gold-crown: #D97706;
+      --cyan-spark: #0284C7;
+      --correct-bg: rgba(22, 163, 74, 0.12);
+      --correct-border: #16A34A;
+      --correct-text: #15803D;
+      --incorrect-bg: rgba(220, 38, 38, 0.12);
+      --incorrect-border: #DC2626;
+      --incorrect-text: #B91C1C;
+      --navbar-bg: rgba(250, 248, 245, 0.95);
+      --navbar-border: rgba(43, 27, 23, 0.12);
+      --modal-bg: #FAF8F5;
+      --modal-card-inner: #FFFFFF;
+      --fc-front-bg: linear-gradient(145deg, #FFFFFF 0%, #FAF8F5 100%);
+      --fc-back-bg: linear-gradient(145deg, #FAF8F5 0%, #F5EFEB 100%);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 18px;
+    }
+
+    /* MODO OSCURO (COLOR ACTUAL COMPLETO DEL QUIZ) */
+    body.theme-dark, html.theme-dark {
       --bg-dark: #0B081D;
+      --bg-page: #0B081D;
       --bg-sidebar: #0E0A24;
       --bg-card: #151032;
       --bg-card-hover: #1C1542;
+      --bg-surface: #140F2E;
       --bg-option: #181338;
       --bg-option-hover: #221B4D;
+      --color-primary: #FFFFFF;
+      --color-secondary: #CBD5E1;
+      --color-accent: #B8A2F8;
       --accent-lilac: #B8A2F8;
       --accent-lilac-hover: #C4B5FD;
       --accent-purple: #8B5CF6;
@@ -30,9 +88,12 @@
       --incorrect-bg: rgba(239, 68, 68, 0.16);
       --incorrect-border: #EF4444;
       --incorrect-text: #F87171;
-      --radius-sm: 8px;
-      --radius-md: 14px;
-      --radius-lg: 18px;
+      --navbar-bg: rgba(11, 8, 29, 0.95);
+      --navbar-border: rgba(184, 162, 248, 0.16);
+      --modal-bg: #140F2E;
+      --modal-card-inner: #181335;
+      --fc-front-bg: linear-gradient(145deg, #161233 0%, #0F0C24 100%);
+      --fc-back-bg: linear-gradient(145deg, #1C1542 0%, #120D2C 100%);
     }
 
     * {
@@ -50,6 +111,534 @@
       display: flex;
       flex-direction: column;
       overflow-x: hidden;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    /* ─── CLASES UNIVERSALES DE TEMA ─── */
+    .modal-summary-box {
+      background: var(--modal-card-inner);
+      border: 1px solid var(--border-purple);
+      border-radius: 14px;
+      padding: 1.1rem;
+      margin-bottom: 1.2rem;
+      color: var(--text-white);
+      transition: all 0.2s ease;
+    }
+    .modal-text-input, .modal-select-input {
+      background: var(--bg-surface);
+      border: 1.5px solid var(--border-purple);
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: var(--text-white);
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    .modal-text-input:focus, .modal-select-input:focus {
+      border-color: var(--accent-lilac);
+    }
+    .history-item-row {
+      background: var(--modal-card-inner);
+      border: 1px solid var(--border-purple);
+      border-radius: 10px;
+      padding: 10px 14px;
+      transition: all 0.2s ease;
+    }
+    .guide-section-row {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-purple);
+      border-radius: 10px;
+      padding: 12px 14px;
+      transition: all 0.2s ease;
+    }
+
+    /* ─── ESTILOS ESPECÍFICOS MODO CLARO REDACTAPRO ─── */
+    body:not(.theme-dark) .syn-navbar {
+      background: var(--navbar-bg);
+      border-bottom: 1px solid var(--navbar-border);
+      box-shadow: 0 2px 10px rgba(43, 27, 23, 0.04);
+    }
+    body:not(.theme-dark) .brand-logo-syn {
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .brand-icon-svg {
+      color: #8C6A53;
+      filter: none;
+    }
+    body:not(.theme-dark) .btn-pill-action {
+      background: #FAF8F5;
+      border: 1px solid rgba(43, 27, 23, 0.15);
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .btn-pill-action:hover {
+      background: #EAE2D5;
+      border-color: #2B1B17;
+      color: #2B1B17;
+    }
+
+    /* Dashboard */
+    body:not(.theme-dark) .search-input-box {
+      background: #FAF8F5;
+      border: 1.5px solid rgba(43, 27, 23, 0.15);
+    }
+    body:not(.theme-dark) .search-input-box input {
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .search-input-box input::placeholder {
+      color: #8C6A53;
+    }
+    body:not(.theme-dark) .search-input-box svg {
+      color: #705349;
+    }
+    body:not(.theme-dark) .search-input-box:focus-within {
+      border-color: #2B1B17;
+      box-shadow: 0 0 0 3px rgba(43, 27, 23, 0.08);
+    }
+    body:not(.theme-dark) .btn-create-kit-syn {
+      background: linear-gradient(135deg, #2B1B17, #3D2620);
+      border: 1.5px solid #2B1B17;
+      color: #FFFFFF;
+      box-shadow: 0 10px 25px rgba(43, 27, 23, 0.18);
+    }
+    body:not(.theme-dark) .btn-create-kit-syn:hover {
+      background: linear-gradient(135deg, #3D2620, #4A322B);
+      border-color: #4A322B;
+    }
+    body:not(.theme-dark) .create-kit-icon-badge {
+      background: rgba(255, 255, 255, 0.15);
+      color: #FAF8F5;
+    }
+    body:not(.theme-dark) .subject-title {
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .subject-btn-icon {
+      color: #705349;
+    }
+    body:not(.theme-dark) .subject-btn-icon:hover {
+      color: #2B1B17;
+      background: rgba(43, 27, 23, 0.06);
+    }
+
+    /* Tarjetas de Kits */
+    body:not(.theme-dark) .kit-card-syn {
+      background: #FAF8F5 !important;
+      border: 1.5px solid rgba(43, 27, 23, 0.12) !important;
+      box-shadow: 0 8px 24px rgba(43, 27, 23, 0.04) !important;
+    }
+    body:not(.theme-dark) .kit-card-syn:hover {
+      transform: translateY(-4px) scale(1.02);
+      border-color: rgba(43, 27, 23, 0.28) !important;
+      box-shadow: 0 16px 36px rgba(43, 27, 23, 0.09) !important;
+    }
+    body:not(.theme-dark) .kit-card-syn.theme-green { border-top: 5px solid #16A34A !important; }
+    body:not(.theme-dark) .kit-card-syn.theme-purple { border-top: 5px solid #8B5CF6 !important; }
+    body:not(.theme-dark) .kit-card-syn.theme-blue { border-top: 5px solid #2563EB !important; }
+    body:not(.theme-dark) .kit-card-syn.theme-indigo { border-top: 5px solid #4F46E5 !important; }
+    body:not(.theme-dark) .kit-card-title {
+      color: #2B1B17 !important;
+    }
+    body:not(.theme-dark) .kit-card-dots {
+      background: rgba(43, 27, 23, 0.07) !important;
+      color: #2B1B17 !important;
+    }
+    body:not(.theme-dark) .kit-card-dots:hover {
+      background: rgba(43, 27, 23, 0.18) !important;
+    }
+    body:not(.theme-dark) .kit-card-watermark {
+      color: #2B1B17 !important;
+      opacity: 0.06 !important;
+    }
+    body:not(.theme-dark) .kit-card-progress-track {
+      background: rgba(43, 27, 23, 0.08) !important;
+    }
+    body:not(.theme-dark) .kit-card-progress-fill {
+      background: linear-gradient(90deg, #D97706, #F59E0B) !important;
+      box-shadow: 0 0 8px rgba(217, 119, 6, 0.3) !important;
+    }
+    body:not(.theme-dark) .kit-menu-dropdown {
+      background: #FAF8F5;
+      border: 1.5px solid rgba(43, 27, 23, 0.15);
+      box-shadow: 0 12px 30px rgba(43, 27, 23, 0.15);
+    }
+    body:not(.theme-dark) .kit-menu-item {
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .kit-menu-item:hover {
+      background: rgba(43, 27, 23, 0.06);
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .kit-menu-item.text-danger:hover {
+      background: rgba(220, 38, 38, 0.08);
+      color: #DC2626;
+    }
+
+    /* Zona de Estudio / Quiz Activo */
+    body:not(.theme-dark) .study-sidebar {
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border-purple);
+    }
+    body:not(.theme-dark) .sidebar-nav-btn {
+      color: var(--color-secondary);
+    }
+    body:not(.theme-dark) .sidebar-nav-btn:hover {
+      background: rgba(43, 27, 23, 0.05);
+      color: var(--color-primary);
+    }
+    body:not(.theme-dark) .sidebar-nav-btn.active {
+      background: var(--color-primary);
+      color: #FFFFFF;
+      box-shadow: 0 2px 10px rgba(43, 27, 23, 0.15);
+    }
+    body:not(.theme-dark) .study-main-area {
+      background: var(--bg-page);
+    }
+    body:not(.theme-dark) .thea-progress-track {
+      background: rgba(43, 27, 23, 0.08);
+      border: 1.5px solid rgba(43, 27, 23, 0.16);
+    }
+    body:not(.theme-dark) .thea-progress-fill {
+      background: linear-gradient(90deg, #D97706, #F59E0B);
+      box-shadow: 0 0 10px rgba(217, 119, 6, 0.4);
+    }
+    body:not(.theme-dark) .thea-progress-label {
+      color: #2B1B17;
+      text-shadow: none;
+    }
+    body:not(.theme-dark) .diamond-milestone {
+      color: rgba(43, 27, 23, 0.2);
+    }
+    body:not(.theme-dark) .diamond-milestone.active-gold {
+      color: #D97706 !important;
+      text-shadow: none !important;
+    }
+    body:not(.theme-dark) .diamond-milestone.active-cyan {
+      color: #0284C7 !important;
+      text-shadow: none !important;
+    }
+    body:not(.theme-dark) .btn-gear-settings {
+      color: #705349;
+    }
+    body:not(.theme-dark) .btn-gear-settings:hover {
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) #prefetch-indicator {
+      background: rgba(43, 27, 23, 0.06) !important;
+      border: 1px solid rgba(43, 27, 23, 0.12) !important;
+      color: #705349 !important;
+    }
+    body:not(.theme-dark) .question-card-syn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-purple);
+      box-shadow: 0 12px 36px rgba(43, 27, 23, 0.07);
+    }
+    body:not(.theme-dark) .q-text-centered {
+      color: var(--color-primary);
+    }
+    body:not(.theme-dark) .syn-option-btn {
+      background: #FFFFFF;
+      border: 1.5px solid rgba(43, 27, 23, 0.14);
+      color: var(--color-primary);
+      box-shadow: 0 2px 8px rgba(43, 27, 23, 0.03);
+    }
+    body:not(.theme-dark) .syn-option-btn:hover:not(:disabled) {
+      background: #FAF8F5;
+      border-color: #2B1B17;
+      box-shadow: 0 6px 16px rgba(43, 27, 23, 0.07);
+    }
+    body:not(.theme-dark) .syn-option-num {
+      background: #EAE2D5;
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .action-pill-btn {
+      background: #FFFFFF;
+      border: 1.5px solid rgba(43, 27, 23, 0.14);
+      color: #4A322B;
+    }
+    body:not(.theme-dark) .action-pill-btn:hover {
+      background: #EAE2D5;
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .btn-next-action-lilac {
+      background: #2B1B17;
+      color: #FFFFFF;
+      box-shadow: 0 4px 14px rgba(43, 27, 23, 0.2);
+    }
+    body:not(.theme-dark) .btn-next-action-lilac:hover {
+      background: #4A322B;
+    }
+    body:not(.theme-dark) .explanation-bullets-box {
+      background: #FFFFFF;
+      border: 1px solid rgba(43, 27, 23, 0.12);
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .exp-bullets-list {
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .exp-bullets-list li::before {
+      color: #8C6A53;
+    }
+    body:not(.theme-dark) .btn-more-info-pill {
+      background: #EAE2D5;
+      border: 1px solid rgba(43, 27, 23, 0.15);
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .btn-more-info-pill:hover {
+      background: #2B1B17;
+      color: #FFFFFF;
+    }
+    body:not(.theme-dark) .skeleton-box {
+      background: #FAF8F5;
+      border: 1px solid rgba(43, 27, 23, 0.12);
+    }
+    body:not(.theme-dark) .bone {
+      background: linear-gradient(90deg, rgba(43, 27, 23, 0.04) 0%, rgba(43, 27, 23, 0.1) 50%, rgba(43, 27, 23, 0.04) 100%);
+    }
+
+    /* Flashcards 3D */
+    body:not(.theme-dark) .fc-badge-topic {
+      background: rgba(140, 106, 83, 0.1);
+      border: 1px solid rgba(140, 106, 83, 0.25);
+      color: #8C6A53;
+    }
+    body:not(.theme-dark) .fc-flip-hint {
+      color: #705349;
+    }
+    body:not(.theme-dark) .thea-card-front {
+      background: var(--fc-front-bg);
+      border: 1.5px solid rgba(43, 27, 23, 0.14);
+      box-shadow: 0 16px 40px rgba(43, 27, 23, 0.08);
+    }
+    body:not(.theme-dark) .thea-card-back {
+      background: var(--fc-back-bg);
+      border: 1.5px solid rgba(140, 106, 83, 0.35);
+      box-shadow: 0 16px 40px rgba(43, 27, 23, 0.08);
+    }
+    body:not(.theme-dark) .fc-side-label {
+      color: #8C6A53;
+    }
+    body:not(.theme-dark) .fc-term-display {
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .fc-prompt-clue {
+      color: #4A322B;
+    }
+    body:not(.theme-dark) .fc-back-term-title {
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .fc-definition-display {
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .fc-detail-note {
+      background: rgba(140, 106, 83, 0.1);
+      border: 1px solid rgba(140, 106, 83, 0.25);
+      color: #4A322B;
+    }
+    body:not(.theme-dark) .fc-tap-action-pill {
+      background: rgba(43, 27, 23, 0.06);
+      color: #705349;
+    }
+    body:not(.theme-dark) .fc-nav-btn {
+      background: #FFFFFF;
+      border: 1.5px solid rgba(43, 27, 23, 0.15);
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .fc-nav-btn:hover:not(:disabled) {
+      background: #FAF8F5;
+      border-color: #2B1B17;
+    }
+    body:not(.theme-dark) .fc-counter-label {
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .fc-progress-track {
+      background: rgba(43, 27, 23, 0.1);
+    }
+    body:not(.theme-dark) .fc-progress-bar {
+      background: linear-gradient(90deg, #8C6A53, #2B1B17);
+    }
+    body:not(.theme-dark) .fc-tool-pill {
+      background: #FFFFFF;
+      border: 1px solid rgba(43, 27, 23, 0.15);
+      color: #4A322B;
+    }
+    body:not(.theme-dark) .fc-tool-pill:hover {
+      background: #EAE2D5;
+      color: #2B1B17;
+    }
+
+    /* Cajón de Guía de Estudio */
+    body:not(.theme-dark) .guide-drawer {
+      background: #FAF8F5;
+      border-left: 1px solid rgba(43, 27, 23, 0.14);
+      color: #2B1B17;
+      box-shadow: -10px 0 40px rgba(43, 27, 23, 0.15);
+    }
+    body:not(.theme-dark) #guide-doc-title {
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .guide-drawer button svg {
+      stroke: #2B1B17;
+    }
+    body:not(.theme-dark) .guide-section-card {
+      background: #FFFFFF;
+      border: 1px solid rgba(43, 27, 23, 0.1);
+    }
+    body:not(.theme-dark) .guide-section-title {
+      color: #8C6A53;
+    }
+    body:not(.theme-dark) #guide-doc-summary {
+      color: #4A322B !important;
+    }
+    body:not(.theme-dark) .concept-item {
+      background: #FAF8F5;
+      border: 1px solid rgba(43, 27, 23, 0.08);
+    }
+    body:not(.theme-dark) .concept-term {
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .concept-def {
+      color: #4A322B;
+    }
+
+    /* Modales Generales */
+    body:not(.theme-dark) .milestone-overlay,
+    body:not(.theme-dark) .modal-materials-overlay,
+    body:not(.theme-dark) .guide-drawer-overlay {
+      background: rgba(43, 27, 23, 0.55);
+    }
+    body:not(.theme-dark) .milestone-card,
+    body:not(.theme-dark) .modal-materials-card {
+      background: #FAF8F5;
+      border: 1.5px solid rgba(43, 27, 23, 0.14);
+      color: #2B1B17;
+      box-shadow: 0 24px 60px rgba(43, 27, 23, 0.2);
+    }
+    body:not(.theme-dark) .milestone-card h2,
+    body:not(.theme-dark) .milestone-card h3,
+    body:not(.theme-dark) .milestone-card h4,
+    body:not(.theme-dark) .modal-materials-card h2,
+    body:not(.theme-dark) .modal-materials-card h3,
+    body:not(.theme-dark) .modal-materials-card h4,
+    body:not(.theme-dark) .modal-mat-title {
+      color: #2B1B17 !important;
+    }
+    body:not(.theme-dark) .modal-mat-close-btn,
+    body:not(.theme-dark) .milestone-card button svg {
+      stroke: #2B1B17;
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .mat-option-btn {
+      background: #FFFFFF;
+      border: 1.5px solid rgba(43, 27, 23, 0.12);
+    }
+    body:not(.theme-dark) .mat-option-btn:hover {
+      background: #FAF8F5;
+      border-color: #2B1B17;
+    }
+    body:not(.theme-dark) .mat-option-btn.active {
+      background: #FAF8F5;
+      border-color: #2B1B17;
+      box-shadow: 0 0 16px rgba(43, 27, 23, 0.12);
+    }
+    body:not(.theme-dark) .mat-rec-pill {
+      background: #2B1B17;
+      color: #FFFFFF;
+    }
+    body:not(.theme-dark) .mat-opt-label {
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .mat-opt-sub {
+      color: #705349;
+    }
+    body:not(.theme-dark) .mat-dropzone-box {
+      background: #FFFFFF;
+      border-color: rgba(43, 27, 23, 0.25);
+    }
+    body:not(.theme-dark) .mat-dropzone-box:hover {
+      background: #FAF8F5;
+      border-color: #2B1B17;
+    }
+    body:not(.theme-dark) .mat-textarea-box {
+      background: #FFFFFF;
+      border: 1.5px solid rgba(43, 27, 23, 0.18);
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .btn-mat-submit {
+      background: #2B1B17;
+      color: #FFFFFF;
+      box-shadow: 0 4px 16px rgba(43, 27, 23, 0.22);
+    }
+    body:not(.theme-dark) .btn-mat-submit:hover {
+      background: #4A322B;
+      box-shadow: 0 6px 20px rgba(43, 27, 23, 0.32);
+    }
+    body:not(.theme-dark) .m-stat-box {
+      background: #FFFFFF;
+      border: 1px solid rgba(43, 27, 23, 0.1);
+    }
+    body:not(.theme-dark) .m-stat-val {
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .m-stat-lbl {
+      color: #705349;
+    }
+    body:not(.theme-dark) .modal-summary-box {
+      background: #FFFFFF !important;
+      border: 1px solid rgba(43, 27, 23, 0.12) !important;
+      color: #2B1B17 !important;
+    }
+    body:not(.theme-dark) .modal-summary-box h4 {
+      color: #2B1B17 !important;
+    }
+    body:not(.theme-dark) .modal-summary-box p,
+    body:not(.theme-dark) .modal-summary-box span {
+      color: #4A322B !important;
+    }
+    body:not(.theme-dark) .modal-text-input,
+    body:not(.theme-dark) .modal-select-input {
+      background: #FFFFFF !important;
+      border: 1.5px solid rgba(43, 27, 23, 0.18) !important;
+      color: #2B1B17 !important;
+    }
+    body:not(.theme-dark) .history-item-row {
+      background: #FFFFFF !important;
+      border: 1px solid rgba(43, 27, 23, 0.12) !important;
+      color: #2B1B17 !important;
+    }
+    body:not(.theme-dark) .history-item-row > div:first-child {
+      color: #2B1B17 !important;
+    }
+
+    /* Toasts */
+    body:not(.theme-dark) .syn-toast-card {
+      background: rgba(250, 248, 245, 0.98);
+      border: 1.5px solid rgba(43, 27, 23, 0.18);
+      box-shadow: 0 10px 30px rgba(43, 27, 23, 0.12);
+    }
+    body:not(.theme-dark) .syn-toast-icon {
+      background: rgba(140, 106, 83, 0.15);
+      color: #8C6A53;
+    }
+    body:not(.theme-dark) .syn-toast-title {
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .syn-toast-subtitle {
+      color: #4A322B;
+    }
+    body:not(.theme-dark) .syn-toast-close {
+      color: #705349;
+    }
+    body:not(.theme-dark) .syn-toast-close:hover {
+      color: #2B1B17;
+    }
+
+    /* Loader */
+    body:not(.theme-dark) .loading-label-thea {
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .thea-arc-loader path {
+      stroke: #8C6A53 !important;
+    }
+    body:not(.theme-dark) .thea-arc-loader circle {
+      stroke: #2B1B17 !important;
     }
 
     /* ─── NAVBAR SUPERIOR SYNAPSE ─── */
@@ -1374,6 +1963,11 @@
     </a>
 
     <div class="nav-actions-right">
+      <button class="btn-pill-action" id="theme-toggle-btn" onclick="toggleTheme()" title="Cambiar a Modo Oscuro / Claro">
+        <svg id="theme-icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg id="theme-icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <span id="theme-toggle-label">Modo Oscuro</span>
+      </button>
       <button class="btn-pill-action" onclick="handleInviteClick()" title="Invitar compañeros">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
         <span>Invitar</span>
@@ -1489,7 +2083,7 @@
         </div>
 
         <div id="modal-file-preview-wrap" style="display:none; margin-bottom:1.2rem;">
-          <div style="display:flex; align-items:center; gap:14px; background:#110D27; border:1px solid var(--border-purple); border-radius:12px; padding:12px 16px;">
+          <div class="modal-summary-box" style="display:flex; align-items:center; gap:14px; padding:12px 16px; margin-bottom:0;">
             <img id="modal-file-thumb" src="" style="width:50px; height:50px; border-radius:8px; object-fit:cover;">
             <div style="flex:1;">
               <div id="modal-file-name" style="font-weight:700; font-size:0.9rem; color:#fff;">archivo.png</div>
@@ -1509,7 +2103,7 @@
       <!-- Nivel Académico -->
       <div style="margin-bottom:1.5rem;">
         <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px; color:#E2E8F0;">Nivel Académico:</label>
-        <select id="modal-academic-level" style="width:100%; background:#110D27; border:1.5px solid var(--border-purple); border-radius:10px; padding:0.75rem 1rem; color:#fff; font-size:0.92rem; outline:none;">
+        <select id="modal-academic-level" class="modal-select-input" style="width:100%; font-size:0.92rem;">
           <option value="Secundaria Básica (12 - 14 años)">Secundaria Básica (12 - 14 años)</option>
           <option value="Bachillerato / Preparatoria (15 - 17 años)" selected>Bachillerato / Preparatoria (15 - 17 años)</option>
           <option value="Universitario / Superior">Universitario / Superior</option>
@@ -1830,7 +2424,7 @@
         </div>
       </div>
 
-      <div style="background:#181335; border:1px solid var(--border-purple); border-radius:12px; padding:1.1rem; text-align:left; margin-bottom:1.8rem;">
+      <div class="modal-summary-box" style="text-align:left; margin-bottom:1.8rem;">
         <span style="font-size:0.85rem; font-weight:700; color:var(--accent-lilac);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px; margin-right:4px;"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg> Diagnóstico de Progreso:</span>
         <p id="m-diagnostic-text" style="font-size:0.9rem; color:var(--text-white); margin-top:4px;">
           Dominas perfectamente las bases esenciales de este tema.
@@ -1898,7 +2492,7 @@
       </div>
 
       <!-- Tarjeta resumen del kit a compartir -->
-      <div style="background:#181335; border:1px solid var(--border-purple); border-radius:14px; padding:1.1rem; margin-bottom:1.2rem;">
+      <div class="modal-summary-box">
         <span style="font-size:0.75rem; text-transform:uppercase; font-weight:800; color:var(--accent-lilac); letter-spacing:0.5px;" id="share-modal-subject">Materia</span>
         <h4 style="font-size:1.1rem; font-weight:800; color:#fff; margin:4px 0 8px;" id="share-modal-title">Título del Kit</h4>
         <div style="display:flex; gap:12px; font-size:0.8rem; color:#CBD5E1; flex-wrap:wrap;">
@@ -1920,7 +2514,7 @@
       <!-- Enlace para copiar -->
       <label style="display:block; font-size:0.78rem; font-weight:700; color:#CBD5E1; margin-bottom:6px;">Enlace directo de acceso:</label>
       <div style="display:flex; gap:8px; margin-bottom:1.1rem;">
-        <input type="text" id="share-link-input" readonly style="flex:1; background:#0B081D; border:1px solid var(--border-purple); border-radius:10px; color:#fff; padding:10px 12px; font-size:0.84rem; outline:none; font-family:monospace;" onclick="this.select()" />
+        <input type="text" id="share-link-input" class="modal-text-input" readonly style="flex:1; font-size:0.84rem; font-family:monospace;" onclick="this.select()" />
         <button class="btn-mat-submit" style="width:auto; padding:10px 18px; margin:0; font-size:0.85rem;" id="btn-copy-share-link" onclick="copyShareModalLink()">
           <span>Copiar</span>
         </button>
@@ -1949,7 +2543,7 @@
       </div>
 
       <!-- Tarjeta del kit recibido -->
-      <div style="background:#181335; border:1px solid var(--border-purple); border-radius:14px; padding:1.2rem; margin-bottom:1.2rem;">
+      <div class="modal-summary-box">
         <span style="font-size:0.75rem; text-transform:uppercase; font-weight:800; color:var(--accent-lilac); letter-spacing:0.5px;" id="import-modal-subject">Materia</span>
         <h4 style="font-size:1.2rem; font-weight:800; color:#fff; margin:4px 0 8px;" id="import-modal-title">Título del Kit</h4>
         <p style="font-size:0.85rem; color:#CBD5E1; line-height:1.5; margin-bottom:12px;" id="import-modal-summary">Resumen didáctico del kit...</p>
@@ -3885,7 +4479,7 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
         secContainer.innerHTML = '';
         guide.secciones.forEach(s => {
           const item = document.createElement('div');
-          item.style.cssText = 'background:#110D27; border:1px solid rgba(184,162,248,0.25); border-radius:10px; padding:12px 14px;';
+          item.className = 'guide-section-row';
           const pointsList = (s.puntos || []).map(p => `<li>${p}</li>`).join('');
           item.innerHTML = `
             <div style="font-weight:800; font-size:0.95rem; color:var(--accent-lilac); margin-bottom:4px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px; margin-right:4px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>${s.titulo}</div>
@@ -3942,7 +4536,7 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       } else {
         state.history.forEach((h, i) => {
           const item = document.createElement('div');
-          item.style.cssText = 'background:#181335; border:1px solid var(--border-purple); border-radius:10px; padding:10px 14px;';
+          item.className = 'history-item-row';
           item.innerHTML = `
             <div style="font-weight:700; color:#fff; font-size:0.9rem; margin-bottom:4px;">${i+1}. ${h.pregunta}</div>
             <div style="font-size:0.82rem; color:${h.isCorrect ? '#4ADE80' : '#F87171'};">
@@ -3974,7 +4568,50 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       }
     });
 
+    /* ─── CONTROLADOR DE TEMA REDACTAPRO / OSCURO ─── */
+    function toggleTheme() {
+      const isDark = document.body.classList.toggle('theme-dark');
+      if (isDark) {
+        document.documentElement.classList.add('theme-dark');
+      } else {
+        document.documentElement.classList.remove('theme-dark');
+      }
+      const theme = isDark ? 'dark' : 'light';
+      localStorage.setItem('synapse_theme', theme);
+      updateThemeUI(theme);
+      showToast(
+        isDark ? "Modo Oscuro Activado" : "Modo RedactaPro Activado",
+        isDark ? "Toda la interfaz ha cambiado al tema oscuro de quiz." : "Tema editorial cálido de RedactaPro activo."
+      );
+    }
+
+    function updateThemeUI(theme) {
+      const isDark = (theme === 'dark');
+      const moon = document.getElementById('theme-icon-moon');
+      const sun = document.getElementById('theme-icon-sun');
+      const label = document.getElementById('theme-toggle-label');
+      if (moon && sun && label) {
+        moon.style.display = isDark ? 'none' : 'inline-block';
+        sun.style.display = isDark ? 'inline-block' : 'none';
+        label.textContent = isDark ? 'Modo Claro' : 'Modo Oscuro';
+      }
+    }
+
+    function initTheme() {
+      const saved = localStorage.getItem('synapse_theme');
+      if (saved === 'dark') {
+        document.body.classList.add('theme-dark');
+        document.documentElement.classList.add('theme-dark');
+        updateThemeUI('dark');
+      } else {
+        document.body.classList.remove('theme-dark');
+        document.documentElement.classList.remove('theme-dark');
+        updateThemeUI('light');
+      }
+    }
+
     /* ─── INICIALIZACIÓN ─── */
+    initTheme();
     updateNavbar();
     loadKitsFromStorage();
     renderDashboard();
