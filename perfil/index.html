@@ -31,37 +31,37 @@
     /* SISTEMA DE TEMAS: REDACTAPRO (MODO CLARO) & MODO OSCURO       */
     /* ══════════════════════════════════════════════════════════════ */
     :root {
-      /* PALETA REDACTAPRO POR DEFECTO (Cálido, Editorial, Beige) */
-      --bg-dark: #E5D8C8;
-      --bg-page: #E5D8C8;
-      --bg-card: #FAF8F5;
-      --bg-subtle: #FAF8F5;
-      --border-purple: rgba(43, 27, 23, 0.12);
-      --border-purple-hover: rgba(43, 27, 23, 0.28);
-      --accent-lilac: #8C6A53;
-      --accent-purple: #2B1B17;
-      --gold-crown: #D97706;
-      --text-white: #2B1B17;
-      --text-dim: #4A322B;
-      --text-dimmer: #705349;
+      /* PALETA TOQUE SALVIA - MODO CLARO */
+      --bg-dark: #F6F3EC;
+      --bg-page: #F6F3EC;
+      --bg-card: #FCFBF8;
+      --bg-subtle: #EAE6DC;
+      --border-purple: rgba(31, 36, 33, 0.11);
+      --border-purple-hover: rgba(47, 93, 75, 0.35);
+      --accent-lilac: #2F5D4B;
+      --accent-purple: #2F5D4B;
+      --gold-crown: #D99B43;
+      --text-white: #1F2421;
+      --text-dim: #595E5A;
+      --text-dimmer: #7C837E;
       --radius-lg: 16px;
       --radius-sm: 8px;
     }
 
     body.theme-dark, html.theme-dark {
-      /* MODO OSCURO ORIGINAL DE QUIZ / PERFIL */
-      --bg-dark: #0A0718;
-      --bg-page: #0A0718;
-      --bg-card: #130F2A;
-      --bg-subtle: #1B1538;
-      --border-purple: rgba(167, 139, 250, 0.22);
-      --border-purple-hover: rgba(167, 139, 250, 0.5);
-      --accent-lilac: #B8A2F8;
-      --accent-purple: #7C3AED;
-      --gold-crown: #FACC15;
-      --text-white: #FFFFFF;
-      --text-dim: #94A3B8;
-      --text-dimmer: #64748B;
+      /* PALETA TOQUE SALVIA - MODO NOCTURNO */
+      --bg-dark: #151615;
+      --bg-page: #151615;
+      --bg-card: #1E201F;
+      --bg-subtle: #262927;
+      --border-purple: rgba(241, 239, 232, 0.12);
+      --border-purple-hover: rgba(118, 185, 155, 0.45);
+      --accent-lilac: #76B99B;
+      --accent-purple: #76B99B;
+      --gold-crown: #E0A858;
+      --text-white: #F1EFE8;
+      --text-dim: #AEB5B1;
+      --text-dimmer: #7C837E;
     }
 
     body {
@@ -78,73 +78,73 @@
 
     /* ─── AJUSTES ESPECÍFICOS MODO CLARO REDACTAPRO ─── */
     body:not(.theme-dark) .btn-back {
-      background: #FAF8F5;
-      border: 1px solid rgba(43, 27, 23, 0.15);
-      color: #2B1B17;
+      background: var(--bg-card);
+      border: 1px solid var(--border-purple);
+      color: var(--color-primary);
     }
     body:not(.theme-dark) .btn-back:hover {
-      background: #EAE2D5;
-      color: #2B1B17;
+      background: var(--bg-subtle);
+      color: var(--color-primary);
     }
     body:not(.theme-dark) .nav-tabs-center {
-      background: #FAF8F5;
-      border: 1px solid rgba(43, 27, 23, 0.15);
+      background: var(--bg-card);
+      border: 1px solid var(--border-purple);
     }
     body:not(.theme-dark) .nav-tab-btn {
-      color: #705349;
+      color: var(--color-secondary);
     }
     body:not(.theme-dark) .nav-tab-btn:hover {
-      color: #2B1B17;
+      color: var(--color-primary);
     }
     body:not(.theme-dark) .nav-tab-btn.active {
-      background: #2B1B17;
+      background: var(--color-primary);
       color: #FFFFFF;
     }
     body:not(.theme-dark) .thea-card {
-      background: #FAF8F5;
-      border: 1px solid rgba(43, 27, 23, 0.12);
-      box-shadow: 0 8px 24px rgba(43, 27, 23, 0.04);
+      background: var(--bg-card);
+      border: 1px solid var(--border-purple);
+      box-shadow: 0 8px 24px rgba(31, 36, 33, 0.04);
     }
     body:not(.theme-dark) .section-title {
-      color: #2B1B17;
+      color: var(--color-primary);
     }
     body:not(.theme-dark) .user-name {
-      color: #2B1B17;
+      color: var(--color-primary);
     }
     body:not(.theme-dark) .user-role-row {
-      color: #4A322B;
+      color: var(--color-secondary);
     }
     body:not(.theme-dark) .detail-label {
-      color: #705349;
+      color: var(--color-secondary);
     }
     body:not(.theme-dark) .detail-val-row {
-      color: #2B1B17;
+      color: var(--color-primary);
     }
     body:not(.theme-dark) .btn-edit-pencil {
-      color: #705349;
+      color: var(--color-secondary);
     }
     body:not(.theme-dark) .btn-edit-pencil:hover {
-      color: #2B1B17;
-      background: rgba(43, 27, 23, 0.06);
+      color: var(--color-primary);
+      background: rgba(31, 36, 33, 0.06);
     }
     body:not(.theme-dark) .crown-pill {
-      background: #FAF8F5;
+      background: var(--bg-card);
       border-color: #D97706;
       color: #D97706;
     }
     body:not(.theme-dark) .avatar-ring {
-      background: conic-gradient(#8C6A53 var(--progress, 70%), rgba(43, 27, 23, 0.1) 0);
+      background: conic-gradient(var(--color-accent) var(--progress, 70%), rgba(31, 36, 33, 0.1) 0);
     }
     body:not(.theme-dark) .avatar-inner {
-      background: #EAE2D5;
+      background: var(--bg-subtle);
     }
     body:not(.theme-dark) .avatar-edit-icon {
       background: rgba(140, 106, 83, 0.15);
-      border-color: #8C6A53;
-      color: #8C6A53;
+      border-color: var(--color-accent);
+      color: var(--color-accent);
     }
     body:not(.theme-dark) .sub-plan-badge {
-      color: #2B1B17;
+      color: var(--color-primary);
     }
     body:not(.theme-dark) .reward-pill {
       background: rgba(217, 119, 6, 0.12);
@@ -152,45 +152,45 @@
       color: #D97706;
     }
     body:not(.theme-dark) .btn-upgrade-thea {
-      background: #2B1B17;
+      background: var(--color-primary);
       color: #FFFFFF;
       box-shadow: 0 4px 14px rgba(43, 27, 23, 0.2);
     }
     body:not(.theme-dark) .btn-upgrade-thea:hover {
-      background: #4A322B;
+      background: var(--color-secondary);
     }
     body:not(.theme-dark) .account-field-label {
-      color: #705349;
+      color: var(--color-secondary);
     }
     body:not(.theme-dark) .account-field-value {
-      color: #2B1B17;
+      color: var(--color-primary);
     }
     body:not(.theme-dark) .copy-chip {
-      background: rgba(43, 27, 23, 0.06);
-      border: 1px solid rgba(43, 27, 23, 0.15);
-      color: #8C6A53;
+      background: rgba(31, 36, 33, 0.06);
+      border: 1px solid var(--border-purple);
+      color: var(--color-accent);
     }
     body:not(.theme-dark) .copy-chip:hover {
-      background: rgba(43, 27, 23, 0.12);
+      background: var(--border-purple);
     }
     body:not(.theme-dark) .btn-edit-account {
       background: #FFFFFF;
-      border: 1px solid rgba(43, 27, 23, 0.15);
-      color: #2B1B17;
+      border: 1px solid var(--border-purple);
+      color: var(--color-primary);
     }
     body:not(.theme-dark) .btn-edit-account:hover {
-      background: #EAE2D5;
-      border-color: #2B1B17;
+      background: var(--bg-subtle);
+      border-color: var(--color-primary);
     }
     body:not(.theme-dark) .logros-summary-chip {
       background: rgba(140, 106, 83, 0.12);
       border-color: rgba(140, 106, 83, 0.25);
-      color: #2B1B17;
+      color: var(--color-primary);
     }
     body:not(.theme-dark) .logro-card {
-      background: #FAF8F5;
-      border: 1px solid rgba(43, 27, 23, 0.12);
-      box-shadow: 0 4px 14px rgba(43, 27, 23, 0.04);
+      background: var(--bg-card);
+      border: 1px solid var(--border-purple);
+      box-shadow: 0 4px 14px rgba(31, 36, 33, 0.04);
     }
     body:not(.theme-dark) .logro-card:hover {
       border-color: rgba(43, 27, 23, 0.25);
@@ -202,77 +202,77 @@
     body:not(.theme-dark) .logro-icon-box {
       background: rgba(140, 106, 83, 0.12);
       border-color: rgba(140, 106, 83, 0.25);
-      color: #8C6A53;
+      color: var(--color-accent);
     }
     body:not(.theme-dark) .logro-title {
-      color: #2B1B17 !important;
+      color: var(--color-primary) !important;
     }
     body:not(.theme-dark) .logro-desc {
-      color: #4A322B !important;
+      color: var(--color-secondary) !important;
     }
     body:not(.theme-dark) .modal-overlay {
       background: rgba(43, 27, 23, 0.55);
     }
     body:not(.theme-dark) .modal-box {
-      background: #FAF8F5;
+      background: var(--bg-card);
       border: 1.5px solid rgba(43, 27, 23, 0.14);
-      color: #2B1B17;
+      color: var(--color-primary);
       box-shadow: 0 20px 50px rgba(43, 27, 23, 0.2);
     }
     body:not(.theme-dark) .modal-title {
-      color: #2B1B17;
+      color: var(--color-primary);
     }
     body:not(.theme-dark) .modal-close {
-      color: #705349;
+      color: var(--color-secondary);
     }
     body:not(.theme-dark) .modal-close:hover {
-      color: #2B1B17;
+      color: var(--color-primary);
     }
     body:not(.theme-dark) .form-group-modal label {
-      color: #705349;
+      color: var(--color-secondary);
     }
     body:not(.theme-dark) .form-group-modal input,
     body:not(.theme-dark) .form-group-modal select {
       background: #FFFFFF;
       border: 1.5px solid rgba(43, 27, 23, 0.18);
-      color: #2B1B17;
+      color: var(--color-primary);
     }
     body:not(.theme-dark) .btn-modal-cancel {
       background: #FFFFFF;
-      border: 1px solid rgba(43, 27, 23, 0.15);
-      color: #2B1B17;
+      border: 1px solid var(--border-purple);
+      color: var(--color-primary);
     }
     body:not(.theme-dark) .btn-modal-submit {
-      background: #2B1B17;
+      background: var(--color-primary);
       color: #FFFFFF;
       box-shadow: 0 4px 12px rgba(43, 27, 23, 0.25);
     }
     body:not(.theme-dark) .btn-modal-submit:hover {
-      background: #4A322B;
+      background: var(--color-secondary);
     }
     body:not(.theme-dark) .syn-toast {
       background: rgba(250, 248, 245, 0.98);
       border: 1.5px solid rgba(43, 27, 23, 0.18);
-      box-shadow: 0 10px 30px rgba(43, 27, 23, 0.12);
+      box-shadow: 0 10px 30px var(--border-purple);
     }
     body:not(.theme-dark) .syn-toast-title {
-      color: #2B1B17;
+      color: var(--color-primary);
     }
     body:not(.theme-dark) .syn-toast-desc {
-      color: #4A322B;
+      color: var(--color-secondary);
     }
     body:not(.theme-dark) .syn-toast-close {
-      color: #705349;
+      color: var(--color-secondary);
     }
     body:not(.theme-dark) .profile-footer {
-      border-top-color: rgba(43, 27, 23, 0.12);
-      color: #705349;
+      border-top-color: var(--border-purple);
+      color: var(--color-secondary);
     }
     body:not(.theme-dark) .footer-links a {
-      color: #705349;
+      color: var(--color-secondary);
     }
     body:not(.theme-dark) .footer-links a:hover {
-      color: #2B1B17;
+      color: var(--color-primary);
     }
 
     /* ─── TOP NAV (ESTILO THEA) ─── */
