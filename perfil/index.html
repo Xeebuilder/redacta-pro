@@ -2,6 +2,16 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
+  <script>
+    (function() {
+      try {
+        var savedTheme = localStorage.getItem('synapse_theme');
+        if (savedTheme === 'dark') {
+          document.documentElement.classList.add('theme-dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Synapse • Perfil de Usuario</title>
   
@@ -17,8 +27,31 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     
+    /* ══════════════════════════════════════════════════════════════ */
+    /* SISTEMA DE TEMAS: REDACTAPRO (MODO CLARO) & MODO OSCURO       */
+    /* ══════════════════════════════════════════════════════════════ */
     :root {
+      /* PALETA REDACTAPRO POR DEFECTO (Cálido, Editorial, Beige) */
+      --bg-dark: #E5D8C8;
+      --bg-page: #E5D8C8;
+      --bg-card: #FAF8F5;
+      --bg-subtle: #FAF8F5;
+      --border-purple: rgba(43, 27, 23, 0.12);
+      --border-purple-hover: rgba(43, 27, 23, 0.28);
+      --accent-lilac: #8C6A53;
+      --accent-purple: #2B1B17;
+      --gold-crown: #D97706;
+      --text-white: #2B1B17;
+      --text-dim: #4A322B;
+      --text-dimmer: #705349;
+      --radius-lg: 16px;
+      --radius-sm: 8px;
+    }
+
+    body.theme-dark, html.theme-dark {
+      /* MODO OSCURO ORIGINAL DE QUIZ / PERFIL */
       --bg-dark: #0A0718;
+      --bg-page: #0A0718;
       --bg-card: #130F2A;
       --bg-subtle: #1B1538;
       --border-purple: rgba(167, 139, 250, 0.22);
@@ -29,8 +62,6 @@
       --text-white: #FFFFFF;
       --text-dim: #94A3B8;
       --text-dimmer: #64748B;
-      --radius-lg: 16px;
-      --radius-sm: 8px;
     }
 
     body {
@@ -42,6 +73,206 @@
       flex-direction: column;
       align-items: center;
       line-height: 1.5;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    /* ─── AJUSTES ESPECÍFICOS MODO CLARO REDACTAPRO ─── */
+    body:not(.theme-dark) .btn-back {
+      background: #FAF8F5;
+      border: 1px solid rgba(43, 27, 23, 0.15);
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .btn-back:hover {
+      background: #EAE2D5;
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .nav-tabs-center {
+      background: #FAF8F5;
+      border: 1px solid rgba(43, 27, 23, 0.15);
+    }
+    body:not(.theme-dark) .nav-tab-btn {
+      color: #705349;
+    }
+    body:not(.theme-dark) .nav-tab-btn:hover {
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .nav-tab-btn.active {
+      background: #2B1B17;
+      color: #FFFFFF;
+    }
+    body:not(.theme-dark) .thea-card {
+      background: #FAF8F5;
+      border: 1px solid rgba(43, 27, 23, 0.12);
+      box-shadow: 0 8px 24px rgba(43, 27, 23, 0.04);
+    }
+    body:not(.theme-dark) .section-title {
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .user-name {
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .user-role-row {
+      color: #4A322B;
+    }
+    body:not(.theme-dark) .detail-label {
+      color: #705349;
+    }
+    body:not(.theme-dark) .detail-val-row {
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .btn-edit-pencil {
+      color: #705349;
+    }
+    body:not(.theme-dark) .btn-edit-pencil:hover {
+      color: #2B1B17;
+      background: rgba(43, 27, 23, 0.06);
+    }
+    body:not(.theme-dark) .crown-pill {
+      background: #FAF8F5;
+      border-color: #D97706;
+      color: #D97706;
+    }
+    body:not(.theme-dark) .avatar-ring {
+      background: conic-gradient(#8C6A53 var(--progress, 70%), rgba(43, 27, 23, 0.1) 0);
+    }
+    body:not(.theme-dark) .avatar-inner {
+      background: #EAE2D5;
+    }
+    body:not(.theme-dark) .avatar-edit-icon {
+      background: rgba(140, 106, 83, 0.15);
+      border-color: #8C6A53;
+      color: #8C6A53;
+    }
+    body:not(.theme-dark) .sub-plan-badge {
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .reward-pill {
+      background: rgba(217, 119, 6, 0.12);
+      border-color: #D97706;
+      color: #D97706;
+    }
+    body:not(.theme-dark) .btn-upgrade-thea {
+      background: #2B1B17;
+      color: #FFFFFF;
+      box-shadow: 0 4px 14px rgba(43, 27, 23, 0.2);
+    }
+    body:not(.theme-dark) .btn-upgrade-thea:hover {
+      background: #4A322B;
+    }
+    body:not(.theme-dark) .account-field-label {
+      color: #705349;
+    }
+    body:not(.theme-dark) .account-field-value {
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .copy-chip {
+      background: rgba(43, 27, 23, 0.06);
+      border: 1px solid rgba(43, 27, 23, 0.15);
+      color: #8C6A53;
+    }
+    body:not(.theme-dark) .copy-chip:hover {
+      background: rgba(43, 27, 23, 0.12);
+    }
+    body:not(.theme-dark) .btn-edit-account {
+      background: #FFFFFF;
+      border: 1px solid rgba(43, 27, 23, 0.15);
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .btn-edit-account:hover {
+      background: #EAE2D5;
+      border-color: #2B1B17;
+    }
+    body:not(.theme-dark) .logros-summary-chip {
+      background: rgba(140, 106, 83, 0.12);
+      border-color: rgba(140, 106, 83, 0.25);
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .logro-card {
+      background: #FAF8F5;
+      border: 1px solid rgba(43, 27, 23, 0.12);
+      box-shadow: 0 4px 14px rgba(43, 27, 23, 0.04);
+    }
+    body:not(.theme-dark) .logro-card:hover {
+      border-color: rgba(43, 27, 23, 0.25);
+    }
+    body:not(.theme-dark) .logro-card.locked {
+      background: rgba(250, 248, 245, 0.6);
+      opacity: 0.7;
+    }
+    body:not(.theme-dark) .logro-icon-box {
+      background: rgba(140, 106, 83, 0.12);
+      border-color: rgba(140, 106, 83, 0.25);
+      color: #8C6A53;
+    }
+    body:not(.theme-dark) .logro-title {
+      color: #2B1B17 !important;
+    }
+    body:not(.theme-dark) .logro-desc {
+      color: #4A322B !important;
+    }
+    body:not(.theme-dark) .modal-overlay {
+      background: rgba(43, 27, 23, 0.55);
+    }
+    body:not(.theme-dark) .modal-box {
+      background: #FAF8F5;
+      border: 1.5px solid rgba(43, 27, 23, 0.14);
+      color: #2B1B17;
+      box-shadow: 0 20px 50px rgba(43, 27, 23, 0.2);
+    }
+    body:not(.theme-dark) .modal-title {
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .modal-close {
+      color: #705349;
+    }
+    body:not(.theme-dark) .modal-close:hover {
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .form-group-modal label {
+      color: #705349;
+    }
+    body:not(.theme-dark) .form-group-modal input,
+    body:not(.theme-dark) .form-group-modal select {
+      background: #FFFFFF;
+      border: 1.5px solid rgba(43, 27, 23, 0.18);
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .btn-modal-cancel {
+      background: #FFFFFF;
+      border: 1px solid rgba(43, 27, 23, 0.15);
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .btn-modal-submit {
+      background: #2B1B17;
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(43, 27, 23, 0.25);
+    }
+    body:not(.theme-dark) .btn-modal-submit:hover {
+      background: #4A322B;
+    }
+    body:not(.theme-dark) .syn-toast {
+      background: rgba(250, 248, 245, 0.98);
+      border: 1.5px solid rgba(43, 27, 23, 0.18);
+      box-shadow: 0 10px 30px rgba(43, 27, 23, 0.12);
+    }
+    body:not(.theme-dark) .syn-toast-title {
+      color: #2B1B17;
+    }
+    body:not(.theme-dark) .syn-toast-desc {
+      color: #4A322B;
+    }
+    body:not(.theme-dark) .syn-toast-close {
+      color: #705349;
+    }
+    body:not(.theme-dark) .profile-footer {
+      border-top-color: rgba(43, 27, 23, 0.12);
+      color: #705349;
+    }
+    body:not(.theme-dark) .footer-links a {
+      color: #705349;
+    }
+    body:not(.theme-dark) .footer-links a:hover {
+      color: #2B1B17;
     }
 
     /* ─── TOP NAV (ESTILO THEA) ─── */
@@ -734,7 +965,11 @@
       <button class="nav-tab-btn" id="tab-btn-logros" onclick="switchProfileTab('logros')">Logros</button>
     </div>
 
-    <div style="width: 70px;"></div>
+        <button class="btn-back" id="theme-toggle-btn" onclick="toggleTheme()" title="Cambiar a Modo Oscuro / Claro" style="cursor:pointer;">
+      <svg id="theme-icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      <svg id="theme-icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+      <span id="theme-toggle-label">Modo Oscuro</span>
+    </button>
   </header>
 
   <main class="profile-wrap">
@@ -1401,7 +1636,50 @@
       showToast("Perfil Guardado", "Tus datos académicos se actualizaron con éxito.");
     }
 
+    // Controlador de tema RedactaPro / Oscuro
+    function toggleTheme() {
+      const isDark = document.body.classList.toggle('theme-dark');
+      if (isDark) {
+        document.documentElement.classList.add('theme-dark');
+      } else {
+        document.documentElement.classList.remove('theme-dark');
+      }
+      const theme = isDark ? 'dark' : 'light';
+      localStorage.setItem('synapse_theme', theme);
+      updateThemeUI(theme);
+      showToast(
+        isDark ? "Modo Oscuro Activado" : "Modo RedactaPro Activado",
+        isDark ? "Toda la interfaz ha cambiado al tema oscuro de quiz." : "Tema editorial cálido de RedactaPro activo."
+      );
+    }
+
+    function updateThemeUI(theme) {
+      const isDark = (theme === 'dark');
+      const moon = document.getElementById('theme-icon-moon');
+      const sun = document.getElementById('theme-icon-sun');
+      const label = document.getElementById('theme-toggle-label');
+      if (moon && sun && label) {
+        moon.style.display = isDark ? 'none' : 'inline-block';
+        sun.style.display = isDark ? 'inline-block' : 'none';
+        label.textContent = isDark ? 'Modo Claro' : 'Modo Oscuro';
+      }
+    }
+
+    function initTheme() {
+      const saved = localStorage.getItem('synapse_theme');
+      if (saved === 'dark') {
+        document.body.classList.add('theme-dark');
+        document.documentElement.classList.add('theme-dark');
+        updateThemeUI('dark');
+      } else {
+        document.body.classList.remove('theme-dark');
+        document.documentElement.classList.remove('theme-dark');
+        updateThemeUI('light');
+      }
+    }
+
     // Inicializar
+    initTheme();
     renderProfile();
   </script>
 </body>
