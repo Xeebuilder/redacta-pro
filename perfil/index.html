@@ -97,8 +97,8 @@
       color: var(--color-primary);
     }
     body:not(.theme-dark) .nav-tab-btn.active {
-      background: var(--color-primary);
-      color: #FFFFFF;
+      background: var(--color-accent);
+      color: #FCFBF8;
     }
     body:not(.theme-dark) .thea-card {
       background: var(--bg-card);
@@ -139,7 +139,7 @@
       background: var(--bg-subtle);
     }
     body:not(.theme-dark) .avatar-edit-icon {
-      background: rgba(140, 106, 83, 0.15);
+      background: rgba(47, 93, 75, 0.12);
       border-color: var(--color-accent);
       color: var(--color-accent);
     }
@@ -152,12 +152,12 @@
       color: #D97706;
     }
     body:not(.theme-dark) .btn-upgrade-thea {
-      background: var(--color-primary);
-      color: #FFFFFF;
-      box-shadow: 0 4px 14px rgba(43, 27, 23, 0.2);
+      background: var(--color-accent);
+      color: #FCFBF8;
+      box-shadow: 0 4px 14px rgba(47, 93, 75, 0.25);
     }
     body:not(.theme-dark) .btn-upgrade-thea:hover {
-      background: var(--color-secondary);
+      background: var(--color-accent-hover);
     }
     body:not(.theme-dark) .account-field-label {
       color: var(--color-secondary);
@@ -183,8 +183,8 @@
       border-color: var(--color-primary);
     }
     body:not(.theme-dark) .logros-summary-chip {
-      background: rgba(140, 106, 83, 0.12);
-      border-color: rgba(140, 106, 83, 0.25);
+      background: rgba(47, 93, 75, 0.1);
+      border-color: rgba(47, 93, 75, 0.25);
       color: var(--color-primary);
     }
     body:not(.theme-dark) .logro-card {
@@ -193,15 +193,15 @@
       box-shadow: 0 4px 14px rgba(31, 36, 33, 0.04);
     }
     body:not(.theme-dark) .logro-card:hover {
-      border-color: rgba(43, 27, 23, 0.25);
+      border-color: var(--border-purple-hover);
     }
     body:not(.theme-dark) .logro-card.locked {
       background: rgba(250, 248, 245, 0.6);
       opacity: 0.7;
     }
     body:not(.theme-dark) .logro-icon-box {
-      background: rgba(140, 106, 83, 0.12);
-      border-color: rgba(140, 106, 83, 0.25);
+      background: rgba(47, 93, 75, 0.1);
+      border-color: rgba(47, 93, 75, 0.25);
       color: var(--color-accent);
     }
     body:not(.theme-dark) .logro-title {
@@ -211,13 +211,13 @@
       color: var(--color-secondary) !important;
     }
     body:not(.theme-dark) .modal-overlay {
-      background: rgba(43, 27, 23, 0.55);
+      background: rgba(31, 36, 33, 0.5);
     }
     body:not(.theme-dark) .modal-box {
       background: var(--bg-card);
-      border: 1.5px solid rgba(43, 27, 23, 0.14);
+      border: 1.5px solid var(--border-purple);
       color: var(--color-primary);
-      box-shadow: 0 20px 50px rgba(43, 27, 23, 0.2);
+      box-shadow: 0 20px 50px rgba(31, 36, 33, 0.12);
     }
     body:not(.theme-dark) .modal-title {
       color: var(--color-primary);
@@ -234,7 +234,7 @@
     body:not(.theme-dark) .form-group-modal input,
     body:not(.theme-dark) .form-group-modal select {
       background: #FFFFFF;
-      border: 1.5px solid rgba(43, 27, 23, 0.18);
+      border: 1.5px solid var(--border-purple);
       color: var(--color-primary);
     }
     body:not(.theme-dark) .btn-modal-cancel {
@@ -243,16 +243,16 @@
       color: var(--color-primary);
     }
     body:not(.theme-dark) .btn-modal-submit {
-      background: var(--color-primary);
-      color: #FFFFFF;
-      box-shadow: 0 4px 12px rgba(43, 27, 23, 0.25);
+      background: var(--color-accent);
+      color: #FCFBF8;
+      box-shadow: 0 4px 12px rgba(47, 93, 75, 0.25);
     }
     body:not(.theme-dark) .btn-modal-submit:hover {
-      background: var(--color-secondary);
+      background: var(--color-accent-hover);
     }
     body:not(.theme-dark) .syn-toast {
       background: rgba(250, 248, 245, 0.98);
-      border: 1.5px solid rgba(43, 27, 23, 0.18);
+      border: 1.5px solid var(--border-purple);
       box-shadow: 0 10px 30px var(--border-purple);
     }
     body:not(.theme-dark) .syn-toast-title {
@@ -286,10 +286,10 @@
       position: relative;
     }
     .btn-back {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(241, 239, 232, 0.06);
       color: var(--text-white);
       border: 1px solid var(--border-purple);
-      padding: 6px 14px;
+      padding: 7px 16px;
       border-radius: 20px;
       text-decoration: none;
       font-size: 0.88rem;
@@ -300,13 +300,14 @@
       transition: all 0.2s;
     }
     .btn-back:hover {
-      background: rgba(255, 255, 255, 0.16);
+      background: rgba(241, 239, 232, 0.12);
+      border-color: var(--color-accent);
       transform: translateX(-2px);
     }
     .nav-tabs-center {
       display: flex;
       gap: 6px;
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(241, 239, 232, 0.05);
       border: 1px solid var(--border-purple);
       padding: 4px;
       border-radius: 24px;
@@ -326,11 +327,39 @@
       gap: 6px;
     }
     .nav-tab-btn:hover {
-      color: #fff;
+      color: var(--text-white);
     }
     .nav-tab-btn.active {
-      background: rgba(255, 255, 255, 0.15);
-      color: var(--text-white);
+      background: var(--color-accent);
+      color: #151615;
+    }
+    .theme-toggle-btn {
+      background: rgba(31, 36, 33, 0.06);
+      border: 1px solid rgba(31, 36, 33, 0.14);
+      color: var(--color-primary);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+      padding: 0;
+    }
+    .theme-toggle-btn:hover {
+      background: rgba(31, 36, 33, 0.12);
+      transform: translateY(-1px);
+    }
+    body.theme-dark .theme-toggle-btn {
+      background: rgba(118, 185, 155, 0.14);
+      border-color: rgba(118, 185, 155, 0.28);
+      color: #F1EFE8;
+    }
+    body.theme-dark .theme-toggle-btn:hover {
+      background: rgba(118, 185, 155, 0.24);
+      transform: translateY(-1px);
     }
 
     /* ─── CONTENEDOR PRINCIPAL ─── */
@@ -389,7 +418,7 @@
       height: 100%;
       border-radius: 50%;
       overflow: hidden;
-      background: #1E1B38;
+      background: var(--bg-card);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -404,7 +433,7 @@
       top: -6px;
       left: 50%;
       transform: translateX(-50%);
-      background: #1E1B38;
+      background: var(--bg-card);
       border: 1.5px solid var(--gold-crown);
       border-radius: 12px;
       padding: 2px 8px;
@@ -432,7 +461,7 @@
       bottom: -4px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(184, 162, 248, 0.2);
+      background: rgba(118, 185, 155, 0.16);
       border: 1px solid var(--accent-lilac);
       border-radius: 50%;
       width: 22px;
@@ -445,7 +474,7 @@
     }
     .avatar-wrapper:hover .avatar-edit-icon {
       background: var(--accent-lilac);
-      color: #0A0718;
+      color: #151615;
       transform: translateX(-50%) scale(1.1);
     }
 
@@ -549,8 +578,8 @@
       gap: 5px;
     }
     .btn-upgrade-thea {
-      background: linear-gradient(135deg, #B8A2F8 0%, #8B5CF6 100%);
-      color: #0A0718;
+      background: var(--color-accent);
+      color: #151615;
       border: none;
       padding: 12px 24px;
       border-radius: 24px;
@@ -561,11 +590,12 @@
       align-items: center;
       gap: 8px;
       transition: all 0.2s;
-      box-shadow: 0 4px 14px rgba(184, 162, 248, 0.35);
+      box-shadow: 0 4px 14px rgba(118, 185, 155, 0.35);
     }
     .btn-upgrade-thea:hover {
+      background: var(--color-accent-hover);
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(184, 162, 248, 0.5);
+      box-shadow: 0 6px 20px rgba(118, 185, 155, 0.5);
     }
 
     /* ─── 3. CONFIGURACIÓN DE LA CUENTA ─── */
@@ -604,7 +634,7 @@
       transition: all 0.2s;
     }
     .copy-chip:hover {
-      background: rgba(184, 162, 248, 0.2);
+      background: rgba(118, 185, 155, 0.2);
     }
     .btn-edit-account {
       background: rgba(255, 255, 255, 0.06);
@@ -631,13 +661,13 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: rgba(184, 162, 248, 0.12);
-      border: 1px solid rgba(184, 162, 248, 0.3);
+      background: rgba(118, 185, 155, 0.14);
+      border: 1px solid rgba(118, 185, 155, 0.3);
       padding: 6px 14px;
       border-radius: 20px;
       font-size: 0.88rem;
       font-weight: 700;
-      color: #fff;
+      color: var(--text-white);
     }
     .logros-grid {
       display: grid;
@@ -662,7 +692,7 @@
     }
     .logro-card.locked {
       opacity: 0.65;
-      background: rgba(19, 15, 42, 0.6);
+      background: rgba(30, 32, 31, 0.6);
     }
     .logro-header {
       display: flex;
@@ -677,8 +707,8 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      background: rgba(184, 162, 248, 0.12);
-      border: 1px solid rgba(184, 162, 248, 0.28);
+      background: rgba(118, 185, 155, 0.14);
+      border: 1px solid rgba(118, 185, 155, 0.28);
       color: var(--accent-lilac);
     }
     .logro-card.locked .logro-icon-box {
@@ -689,7 +719,7 @@
     .logro-title {
       font-size: 1rem;
       font-weight: 800;
-      color: #fff;
+      color: var(--text-white);
       line-height: 1.25;
     }
     .logro-desc {
@@ -715,9 +745,9 @@
       border-radius: 12px;
     }
     .logro-status-pill.unlocked {
-      background: rgba(74, 222, 128, 0.15);
-      border: 1px solid rgba(74, 222, 128, 0.35);
-      color: #4ADE80;
+      background: rgba(118, 185, 155, 0.15);
+      border: 1px solid rgba(118, 185, 155, 0.35);
+      color: var(--color-accent);
     }
     .logro-status-pill.locked {
       background: rgba(148, 163, 184, 0.1);
@@ -743,7 +773,7 @@
     }
     .syn-toast {
       pointer-events: auto;
-      background: #181335;
+      background: var(--bg-card);
       border: 1px solid var(--border-purple);
       border-radius: 12px;
       padding: 12px 18px;
@@ -763,7 +793,7 @@
     .syn-toast-title {
       font-weight: 700;
       font-size: 0.9rem;
-      color: #fff;
+      color: var(--text-white);
     }
     .syn-toast-desc {
       font-size: 0.82rem;
@@ -784,7 +814,7 @@
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(10, 7, 24, 0.85);
+      background: rgba(15, 17, 16, 0.85);
       backdrop-filter: blur(8px);
       display: none;
       align-items: center;
@@ -832,7 +862,7 @@
       margin-bottom: 1.5rem;
     }
     .avatar-choice-btn {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(241, 239, 232, 0.05);
       border: 2px solid transparent;
       border-radius: 50%;
       width: 68px;
@@ -846,12 +876,12 @@
     }
     .avatar-choice-btn:hover {
       transform: scale(1.08);
-      border-color: rgba(184, 162, 248, 0.4);
+      border-color: rgba(118, 185, 155, 0.4);
     }
     .avatar-choice-btn.selected {
       border-color: var(--accent-lilac);
-      box-shadow: 0 0 16px rgba(184, 162, 248, 0.5);
-      background: rgba(184, 162, 248, 0.15);
+      box-shadow: 0 0 16px rgba(118, 185, 155, 0.35);
+      background: rgba(118, 185, 155, 0.15);
     }
     .avatar-choice-btn svg {
       width: 100%;
@@ -871,7 +901,7 @@
     }
     .form-group-modal input, .form-group-modal select {
       width: 100%;
-      background: #1B1538;
+      background: var(--bg-subtle);
       border: 1px solid var(--border-purple);
       border-radius: 10px;
       padding: 10px 14px;
@@ -890,7 +920,7 @@
       margin-top: 1.5rem;
     }
     .btn-modal-cancel {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(241, 239, 232, 0.08);
       border: 1px solid var(--border-purple);
       color: var(--text-white);
       padding: 9px 18px;
@@ -900,18 +930,18 @@
       cursor: pointer;
     }
     .btn-modal-submit {
-      background: var(--accent-purple);
+      background: var(--color-accent);
       border: none;
-      color: var(--text-white);
+      color: #151615;
       padding: 9px 22px;
       border-radius: 10px;
       font-size: 0.9rem;
       font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+      box-shadow: 0 4px 12px rgba(118, 185, 155, 0.35);
     }
     .btn-modal-submit:hover {
-      background: #6D28D9;
+      background: var(--color-accent-hover);
     }
 
     /* ─── FOOTER ESTILO THEA ─── */
@@ -965,10 +995,9 @@
       <button class="nav-tab-btn" id="tab-btn-logros" onclick="switchProfileTab('logros')">Logros</button>
     </div>
 
-        <button class="btn-back" id="theme-toggle-btn" onclick="toggleTheme()" title="Cambiar a Modo Oscuro / Claro" style="cursor:pointer;">
-      <svg id="theme-icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-      <svg id="theme-icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-      <span id="theme-toggle-label">Modo Oscuro</span>
+    <button class="theme-toggle-btn" id="theme-toggle-btn" onclick="toggleTheme()" title="Cambiar a Modo Oscuro / Claro">
+      <svg id="theme-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      <svg id="theme-icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
     </button>
   </header>
 
@@ -1141,7 +1170,7 @@
           <span id="logros-pct-label" style="font-size:0.88rem; font-weight:800; color:var(--accent-lilac);">0%</span>
         </div>
         <div style="width:100%; height:8px; background:rgba(255,255,255,0.08); border-radius:10px; overflow:hidden;">
-          <div id="logros-progress-bar" style="width:0%; height:100%; background:linear-gradient(90deg, #8B5CF6, #B8A2F8); border-radius:10px; transition:width 0.4s ease;"></div>
+          <div id="logros-progress-bar" style="width:0%; height:100%; background:linear-gradient(90deg, var(--color-accent), #8DC9AE); border-radius:10px; transition:width 0.4s ease;"></div>
         </div>
       </div>
 
@@ -1658,9 +1687,11 @@
       const moon = document.getElementById('theme-icon-moon');
       const sun = document.getElementById('theme-icon-sun');
       const label = document.getElementById('theme-toggle-label');
-      if (moon && sun && label) {
+      if (moon && sun) {
         moon.style.display = isDark ? 'none' : 'inline-block';
         sun.style.display = isDark ? 'inline-block' : 'none';
+      }
+      if (label) {
         label.textContent = isDark ? 'Modo Claro' : 'Modo Oscuro';
       }
     }

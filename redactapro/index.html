@@ -280,7 +280,7 @@
     <div id="tab-admin" class="tab-panel">
       <div class="tab-body">
         <div class="header-banner" style="background: linear-gradient(135deg, #4A322B, #2B1B17); color: #fff; margin-bottom:1.5rem; padding: 1.5rem; border-radius: 12px;">
-          <h1 style="color:#fff; margin-bottom: 0.5rem;">👑 Panel de Control y Pagos (Admin)</h1>
+          <h1 style="color:#fff; margin-bottom: 0.5rem;">Panel de Control y Pagos (Admin)</h1>
           <p style="font-size:1rem; opacity:0.9; margin:0;">Registro en tiempo real de todos los pagos verificados por la IA y gestión de usuarios.</p>
         </div>
 
@@ -290,19 +290,19 @@
             <h4 style="margin:0; font-size:1.1rem; color:#2B1B17;">Cuenta Administradora: <span id="admin-account-display">maxrsilvagni@gmail.com</span></h4>
             <p style="margin:5px 0 0 0; font-size:0.9rem; opacity:0.8;">Estado: <strong id="admin-status-display" style="color:#27ae60; font-size:1rem;">Modo Admin Infinito (∞)</strong></p>
           </div>
-          <button class="btn" style="width:auto; margin:0; padding:0.6rem 1.4rem; background:#2B1B17; font-weight:bold;" onclick="forzarModoAdmin()">⚡ Forzar Modo Infinito</button>
+          <button class="btn" style="width:auto; margin:0; padding:0.6rem 1.4rem; background:#2B1B17; font-weight:bold;" onclick="forzarModoAdmin()">Forzar Modo Infinito</button>
         </div>
 
         <div style="display:flex; gap:10px; margin-bottom: 1rem;">
-          <button class="btn" id="subtab-btn-pagos" style="flex:1; margin:0; background:#2B1B17; color:#fff;" onclick="switchAdminSubtab('pagos')">💰 Historial de Pagos Verificados</button>
-          <button class="btn" id="subtab-btn-usuarios" style="flex:1; margin:0; background:#EAE2D5; color:#2B1B17; border: 1px solid #2B1B17;" onclick="switchAdminSubtab('usuarios')">👥 Gestión de Usuarios</button>
+          <button class="btn" id="subtab-btn-pagos" style="flex:1; margin:0; background:#2B1B17; color:#fff;" onclick="switchAdminSubtab('pagos')">Historial de Pagos Verificados</button>
+          <button class="btn" id="subtab-btn-usuarios" style="flex:1; margin:0; background:#EAE2D5; color:#2B1B17; border: 1px solid #2B1B17;" onclick="switchAdminSubtab('usuarios')">Gestión de Usuarios</button>
         </div>
 
         <!-- SECCIÓN PAGOS -->
         <div id="admin-section-pagos" style="background:#fff; border-radius:12px; padding:1.2rem; box-shadow:0 4px 12px rgba(0,0,0,0.05); overflow-x:auto;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
             <h3 style="margin:0;">Registro de Pagos Recibidos (IA)</h3>
-            <button class="btn" style="width:auto; margin:0; padding:0.4rem 0.8rem; font-size:0.85rem; background:#4A322B;" onclick="loadAdminPagos()">🔄 Actualizar Pagos</button>
+            <button class="btn" style="width:auto; margin:0; padding:0.4rem 0.8rem; font-size:0.85rem; background:#4A322B;" onclick="loadAdminPagos()">Actualizar Pagos</button>
           </div>
           <table style="width:100%; border-collapse: collapse; font-size: 0.95rem;">
             <thead>
@@ -322,8 +322,8 @@
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:10px;">
             <h3 style="margin:0;">Control de Usuarios Registrados</h3>
             <div style="display:flex; gap:8px;">
-              <button class="btn" style="width:auto; margin:0; padding:0.4rem 0.8rem; font-size:0.85rem; background:#c0392b; color:#fff;" onclick="manualResetAdmins()">🧹 Resetear otros Admins a Free</button>
-              <button class="btn" style="width:auto; margin:0; padding:0.4rem 0.8rem; font-size:0.85rem; background:#4A322B;" onclick="loadAdminUsuarios()">🔄 Actualizar Usuarios</button>
+              <button class="btn" style="width:auto; margin:0; padding:0.4rem 0.8rem; font-size:0.85rem; background:#c0392b; color:#fff;" onclick="manualResetAdmins()">Resetear otros Admins a Free</button>
+              <button class="btn" style="width:auto; margin:0; padding:0.4rem 0.8rem; font-size:0.85rem; background:#4A322B;" onclick="loadAdminUsuarios()">Actualizar Usuarios</button>
             </div>
           </div>
 
@@ -378,7 +378,7 @@
 <!-- DOWNLOAD MODAL -->
 <div class="modal-overlay" id="download-modal-overlay">
   <div class="modal" style="max-width: 450px;">
-    <div style="font-size: 4rem; margin-bottom: 15px;">🎉</div>
+    <div style="font-size: 2.8rem; margin-bottom: 15px; color:var(--color-accent); font-weight:800;">✓</div>
     <h3 style="margin-bottom: 0.5rem; color:#2B1B17; font-weight:800;">¡Documento Listo!</h3>
     <p style="opacity: 0.8; margin-bottom: 1.5rem;">Tu redacción ha sido estructurada y optimizada con éxito.</p>
     
@@ -659,7 +659,7 @@ async function geminiChat(parts, systemInstruction = null) {
 function renderGenerator(modo) {
   const container = document.getElementById('gen-' + modo);
   container.innerHTML = `
-    <div class="section-label fade-in-up" style="animation-delay: 0.1s">🛠️ Método de entrada</div>
+    <div class="section-label fade-in-up" style="animation-delay: 0.1s">Método de entrada</div>
     <div class="radio-group fade-in-up" style="animation-delay: 0.2s">
       <label><input type="radio" name="mode-${modo}" value="scan" checked onchange="setMode('${modo}','scan')"/> Mediante una Imagen Scan</label>
       <label><input type="radio" name="mode-${modo}" value="text" onchange="setMode('${modo}','text')"/> Mediante Texto Manual</label>
@@ -668,26 +668,26 @@ function renderGenerator(modo) {
     <div id="scan-panel-${modo}" class="fade-in-up" style="animation-delay: 0.3s">
       <div class="file-drop" onclick="document.getElementById('file-${modo}').click()">
         <input type="file" id="file-${modo}" accept=".jpg,.jpeg,.png" multiple onchange="handleFileUpload(event,'${modo}')"/>
-        <div class="file-drop-icon">📸</div>
+        <div class="file-drop-icon"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></div>
         <p><strong>Haz clic o arrastra las capturas de tu asignación</strong></p>
         <p style="font-size: 0.85rem; opacity: 0.7; margin-top: 4px;">Puedes subir de 1 hasta 6 páginas (JPG, PNG)</p>
       </div>
       <div id="preview-grid-${modo}" class="preview-grid" style="display:none;"></div>
       <button class="btn fade-in-up" id="btn-scan-${modo}" style="display:none;" onclick="analizarImagen('${modo}')">
-        ✨ Analizar y Estructurar Asignación (<span id="count-${modo}">0</span>/6 fotos)
+        Analizar y Estructurar Asignación (<span id="count-${modo}">0</span>/6 fotos)
       </button>
     </div>
 
     <div id="text-panel-${modo}" style="display:none;" class="smooth-show">
       <label for="txt-${modo}">Pega o escribe la lista de temas (separados por comas):</label>
       <textarea id="txt-${modo}" rows="4" placeholder="Ej: Concepto y características de las células, Leyes de Mendel en la genética moderna"></textarea>
-      <button class="btn" onclick="cargarTemas('${modo}')">⚙️ Cargar Temas</button>
+      <button class="btn" onclick="cargarTemas('${modo}')">Cargar Temas</button>
     </div>
 
     <div id="msg-${modo}"></div>
     <div id="temas-container-${modo}"></div>
     <div id="generate-section-${modo}" style="display:none;">
-      <button class="btn" onclick="generarDocumento('${modo}')">🚀 Generar Documento (${modo})</button>
+      <button class="btn" onclick="generarDocumento('${modo}')">Generar Documento (${modo})</button>
     </div>
     <div id="progress-section-${modo}" style="display:none;">
       <div class="status-text" id="status-${modo}"></div>
@@ -824,14 +824,14 @@ async function analizarImagen(modo) {
     state.temas[modo] = contenido.split(',').map(t => t.trim()).filter(Boolean);
     renderTemas(modo);
     hideCoolLoading('msg-' + modo);
-    showToast('🚀 ¡Temas leídos de todas las páginas! Generando documento...');
+    showToast('Temas leídos de todas las páginas. Generando documento...');
     await generarDocumento(modo);
   } catch(e) {
     hideCoolLoading('msg-' + modo);
-    msgEl.innerHTML = `<div class="alert alert-error"><p>❌ Error analizando las imágenes: ${e.message}</p></div>`;
+    msgEl.innerHTML = `<div class="alert alert-error"><p>Error analizando las imágenes: ${e.message}</p></div>`;
   } finally {
     btn.disabled = false;
-    btn.textContent = `✨ Analizar y Estructurar Asignación (${images.length}/6 fotos)`;
+    btn.textContent = `Analizar y Estructurar Asignación (${images.length}/6 fotos)`;
   }
 }
 
@@ -897,12 +897,12 @@ function renderTemas(modo) {
   const cont     = document.getElementById('temas-container-' + modo);
   const genSec   = document.getElementById('generate-section-' + modo);
   if (!temasFin.length) {
-    cont.innerHTML = '<div class="alert alert-warning fade-in-up">⚠️ No se detectaron temas válidos para redactar.</div>';
+    cont.innerHTML = '<div class="alert alert-warning fade-in-up">No se detectaron temas válidos para redactar.</div>';
     genSec.style.display = 'none';
     return;
   }
   
-  let html = '<div class="card smooth-show"><h3>📋 Puntos identificados para desarrollo:</h3>';
+  let html = '<div class="card smooth-show"><h3>Puntos identificados para desarrollo:</h3>';
   temasFin.forEach((t, i) => {
     html += `<div class="tema-badge fade-in-up" style="animation-delay: ${i * 0.08}s">${t}</div>`;
   });
@@ -1057,12 +1057,12 @@ async function generarDocumento(modo) {
       bloques.push({ type: 'spacer' });
 
     } catch(e) {
-      statusEl.innerHTML = `<span style="color:#c0392b;">❌ Error en "${tema}": ${e.message}</span>`;
+      statusEl.innerHTML = `<span style="color:#c0392b;">Error en "${tema}": ${e.message}</span>`;
     }
   }
 
   barEl.style.width = '100%';
-  statusEl.innerHTML = '<strong>🎉 ¡El informe ha sido completado con éxito total!</strong>';
+  statusEl.innerHTML = '<strong>El informe ha sido completado con éxito.</strong>';
   genBtn.disabled = false;
   
   if (typeof confetti === 'function') {
@@ -1139,7 +1139,7 @@ async function buildAndDownloadDocx(bloques, modo, downloadSec) {
   a.style.textDecoration = 'none';
   a.style.fontSize = '1.2rem';
   a.style.padding = '1.2rem';
-  a.innerHTML = '💾 Descargar Archivo';
+  a.innerHTML = 'Descargar Archivo (.docx)';
   
   a.onclick = () => {
     setTimeout(() => {
@@ -1318,10 +1318,10 @@ async function loadAdminUsuarios() {
       let planDisplay = isThisOwner ? 'admin (propietario)' : (isVota7 ? 'vota 7 (3 días)' : (isTempPremium ? 'premium (temporal)' : (u.plan || 'free')));
       let badgeColor = isThisOwner ? '#2B1B17' : (isVota7 ? '#1d4ed8' : ((planDisplay === 'premium' || isTempPremium) ? '#27ae60' : '#888'));
 
-      let nombreExtra = u.nombre ? `<div style="font-size:0.78rem; color:#8C6A53; font-weight:bold;">👤 ${u.nombre}</div>` : '';
+      let nombreExtra = u.nombre ? `<div style="font-size:0.78rem; color:var(--color-accent); font-weight:bold;">${u.nombre}</div>` : '';
 
       let actionsHtml = isThisOwner 
-        ? `<span style="font-size:0.85rem; color:#888; font-weight:bold;">👑 Propietario</span>`
+        ? `<span style="font-size:0.85rem; color:#888; font-weight:bold;">Propietario</span>`
         : `<button onclick="adminAction('${u.id}', 'ban', '${email}')" style="background:#c0392b; color:white; border:none; padding:5px 10px; border-radius:6px; cursor:pointer; margin-right:4px; font-weight:bold; font-size:0.78rem;">Free</button>
            <button onclick="adminAction('${u.id}', 'vota7', '${email}')" style="background:#1d4ed8; color:white; border:none; padding:5px 10px; border-radius:6px; cursor:pointer; margin-right:4px; font-weight:bold; font-size:0.78rem;">Vota 7 (3d)</button>
            <button onclick="adminAction('${u.id}', 'premium7', '${email}')" style="background:#f39c12; color:white; border:none; padding:5px 10px; border-radius:6px; cursor:pointer; font-weight:bold; font-size:0.78rem;">Premium (1 sem)</button>`;
