@@ -1091,6 +1091,9 @@
       z-index: 2500;
       padding: 1.5rem;
     }
+    .milestone-overlay.active {
+      display: flex !important;
+    }
     .milestone-card {
       background: #140F2E;
       border: 1px solid var(--border-purple);
@@ -1582,9 +1585,14 @@
           <span id="prefetch-label">Generando lote en segundo plano...</span>
         </div>
 
-        <button class="btn-gear-settings" onclick="finishSession()" title="Opciones / Terminar">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-        </button>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <button class="btn-gear-settings" onclick="shareCurrentKit()" title="Compartir este Kit de Estudio" style="transform:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+          </button>
+          <button class="btn-gear-settings" onclick="finishSession()" title="Opciones / Terminar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          </button>
+        </div>
       </div>
 
       <!-- CONTENEDOR MODO 1: QUIZ CONTINUO (ACTIVE RECALL) -->
@@ -1724,6 +1732,10 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
             <span>Voltear [Espacio]</span>
           </button>
+          <button class="fc-tool-pill" onclick="shareCurrentKit()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+            <span>Compartir kit</span>
+          </button>
         </div>
 
       </div> <!-- Fin panel-flashcards-mode -->
@@ -1741,7 +1753,13 @@
           <span style="font-size:0.75rem; text-transform:uppercase; color:var(--accent-lilac); font-weight:800;">Documento Pedagógico</span>
           <h2 style="font-size:1.45rem; font-weight:900; color:#fff;" id="guide-doc-title">Guía de Estudio</h2>
         </div>
-        <button style="background:transparent; border:none; color:#fff; cursor:pointer; display:flex; align-items:center;" onclick="closeGuideDrawer()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <button class="fc-tool-pill" onclick="shareCurrentKit()" style="margin:0; background:rgba(184,162,248,0.12); border-color:var(--border-purple);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+            <span>Compartir Kit</span>
+          </button>
+          <button style="background:transparent; border:none; color:#fff; cursor:pointer; display:flex; align-items:center;" onclick="closeGuideDrawer()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+        </div>
       </div>
 
       <div class="guide-section-card">
@@ -1858,6 +1876,126 @@
       </button>
     </div>
   </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- MODAL: COMPARTIR KIT DE ESTUDIO (LINK DIRECTO)               -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="milestone-overlay" id="share-kit-modal" onclick="closeShareKitModal()">
+    <div class="milestone-card" style="max-width: 520px; text-align:left;" onclick="event.stopPropagation()">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="width:40px; height:40px; border-radius:12px; background:rgba(184,162,248,0.15); border:1px solid rgba(184,162,248,0.3); display:flex; align-items:center; justify-content:center; color:var(--accent-lilac);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+          </div>
+          <div>
+            <h3 style="font-size:1.2rem; font-weight:800; color:#fff; margin:0;">Compartir Kit de Estudio</h3>
+            <span style="font-size:0.78rem; color:var(--text-dim);">Enlace para que otros estudien a su propio ritmo</span>
+          </div>
+        </div>
+        <button style="background:transparent; border:none; color:#94A3B8; cursor:pointer; display:flex; align-items:center;" onclick="closeShareKitModal()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <!-- Tarjeta resumen del kit a compartir -->
+      <div style="background:#181335; border:1px solid var(--border-purple); border-radius:14px; padding:1.1rem; margin-bottom:1.2rem;">
+        <span style="font-size:0.75rem; text-transform:uppercase; font-weight:800; color:var(--accent-lilac); letter-spacing:0.5px;" id="share-modal-subject">Materia</span>
+        <h4 style="font-size:1.1rem; font-weight:800; color:#fff; margin:4px 0 8px;" id="share-modal-title">Título del Kit</h4>
+        <div style="display:flex; gap:12px; font-size:0.8rem; color:#CBD5E1; flex-wrap:wrap;">
+          <span id="share-modal-cards-count" style="display:inline-flex; align-items:center; gap:5px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="16" height="13" rx="2" ry="2"></rect><path d="M6 3h12a2 2 0 0 1 2 2v12"></path></svg>
+            <span id="share-modal-cards-num">0</span> Tarjetas
+          </span>
+          <span style="display:inline-flex; align-items:center; gap:5px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg>
+            Guía Didáctica
+          </span>
+          <span style="display:inline-flex; align-items:center; gap:5px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            Quiz Adaptativo
+          </span>
+        </div>
+      </div>
+
+      <!-- Enlace para copiar -->
+      <label style="display:block; font-size:0.78rem; font-weight:700; color:#CBD5E1; margin-bottom:6px;">Enlace directo de acceso:</label>
+      <div style="display:flex; gap:8px; margin-bottom:1.1rem;">
+        <input type="text" id="share-link-input" readonly style="flex:1; background:#0B081D; border:1px solid var(--border-purple); border-radius:10px; color:#fff; padding:10px 12px; font-size:0.84rem; outline:none; font-family:monospace;" onclick="this.select()" />
+        <button class="btn-mat-submit" style="width:auto; padding:10px 18px; margin:0; font-size:0.85rem;" id="btn-copy-share-link" onclick="copyShareModalLink()">
+          <span>Copiar</span>
+        </button>
+      </div>
+
+      <!-- Explicación pedagógica de independencia -->
+      <div style="background:rgba(56,189,248,0.08); border:1px solid rgba(56,189,248,0.22); border-radius:12px; padding:10px 12px; font-size:0.8rem; color:#BAE6FD; line-height:1.45; margin-bottom:1.3rem;">
+        <strong style="color:#38BDF8;">Estudio 100% individual:</strong> Quien abra este link guardará una <strong>copia propia</strong> de este kit en su computadora. Empezará desde el Nivel 1 (0% de progreso) y sus avances y respuestas serán totalmente personales sin afectar los tuyos.
+      </div>
+
+      <button class="btn-mat-submit" style="width:100%; margin:0;" onclick="closeShareKitModal()">Entendido</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- MODAL: IMPORTAR KIT COMPARTIDO RECIBIDO                      -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="milestone-overlay" id="import-kit-modal" style="display:none;">
+    <div class="milestone-card" style="max-width: 540px; text-align:left;">
+      <div style="text-align:center; margin-bottom:1.2rem;">
+        <div class="milestone-badge" style="border-color:var(--accent-lilac); color:var(--accent-lilac); width:64px; height:64px; margin-bottom:0.8rem;">
+          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        </div>
+        <h3 style="font-size:1.45rem; font-weight:900; color:#fff; margin-bottom:4px;">¡Te compartieron un Kit de Estudio!</h3>
+        <p style="font-size:0.86rem; color:var(--text-dim);">Puedes guardarlo en tu computadora para estudiar a tu propio ritmo.</p>
+      </div>
+
+      <!-- Tarjeta del kit recibido -->
+      <div style="background:#181335; border:1px solid var(--border-purple); border-radius:14px; padding:1.2rem; margin-bottom:1.2rem;">
+        <span style="font-size:0.75rem; text-transform:uppercase; font-weight:800; color:var(--accent-lilac); letter-spacing:0.5px;" id="import-modal-subject">Materia</span>
+        <h4 style="font-size:1.2rem; font-weight:800; color:#fff; margin:4px 0 8px;" id="import-modal-title">Título del Kit</h4>
+        <p style="font-size:0.85rem; color:#CBD5E1; line-height:1.5; margin-bottom:12px;" id="import-modal-summary">Resumen didáctico del kit...</p>
+
+        <div style="display:flex; gap:12px; font-size:0.8rem; color:var(--accent-lilac); flex-wrap:wrap; background:rgba(184,162,248,0.08); padding:8px 12px; border-radius:8px;">
+          <span style="display:inline-flex; align-items:center; gap:5px; font-weight:700;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="16" height="13" rx="2" ry="2"></rect><path d="M6 3h12a2 2 0 0 1 2 2v12"></path></svg>
+            <span id="import-modal-cards-count">0</span> Tarjetas de Estudio 3D
+          </span>
+          <span style="display:inline-flex; align-items:center; gap:5px; font-weight:700;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            Quiz Personal (Nivel 1)
+          </span>
+        </div>
+      </div>
+
+      <!-- Aviso de progreso personal e independiente -->
+      <div style="background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.25); border-radius:12px; padding:10px 12px; font-size:0.8rem; color:#86EFAC; line-height:1.45; margin-bottom:1.3rem;">
+        <strong style="color:#4ADE80;">Progreso 100% individual:</strong> Se guardará en tu navegador con tu propio nivel de dominio (0% de avance inicial) para que practiques a tu forma sin sincronizar respuestas ni alterar las de quien te lo envió.
+      </div>
+
+      <!-- Botones de Acción -->
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <button class="btn-mat-submit" style="width:100%; margin:0; padding:12px;" onclick="confirmImportSharedKit('quiz')">
+          Agregar a mis Kits y Empezar a Estudiar (Quiz)
+        </button>
+        <button class="btn-mat-submit" style="width:100%; margin:0; padding:11px; background:#1E1748; border-color:var(--border-purple); color:#fff;" onclick="confirmImportSharedKit('flashcards')">
+          Abrir Tarjetas de Estudio (Flashcards)
+        </button>
+        <div style="display:flex; gap:8px; margin-top:2px;">
+          <button class="action-pill-btn" style="flex:1; padding:8px; border-radius:10px;" onclick="confirmImportSharedKit('save_only')">
+            Solo Guardar en mis Kits
+          </button>
+          <button class="action-pill-btn" style="flex:1; padding:8px; border-radius:10px; color:#94A3B8;" onclick="dismissImportSharedKit()">
+            Ignorar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase Scripts para Sincronización y Compartir Kits en la Nube -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="../firebase-config.js"></script>
 
   <!-- ══════════════════════════════════════════════════════════════ -->
   <!-- JAVASCRIPT: LÓGICA DE CONTROL TOTAL                          -->
@@ -2816,6 +2954,10 @@
               <button class="kit-menu-item" onclick="openKitStudyMode(event, '${kit.id}', 'flashcards')">
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="7" width="16" height="13" rx="2" ry="2"></rect><path d="M6 3h12a2 2 0 0 1 2 2v12"></path></svg>
                 <span>Tarjetas de Estudio</span>
+              </button>
+              <button class="kit-menu-item" onclick="shareKit(event, '${kit.id}')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                <span>Compartir kit (Copiar link)</span>
               </button>
               <button class="kit-menu-item" onclick="resetKitProgress(event, '${kit.id}')">
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
@@ -3837,6 +3979,7 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
     loadKitsFromStorage();
     renderDashboard();
     showActiveView('view-dashboard');
+    checkForSharedKitParam();
 
     // Notificación de bienvenida si activó el trial Vota 7
     if (localStorage.getItem('synapse_vota7') === 'true') {
@@ -4297,6 +4440,310 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
         navigateFlashcard(-1);
       }
     });
+
+    /* ─── SISTEMA DE COMPARTIR E IMPORTAR KITS DE ESTUDIO (PROGRESO INDEPENDIENTE) ─── */
+    let _firebaseAuthPromise = null;
+    async function ensureFirebaseAuth() {
+      if (typeof firebase === 'undefined' || !firebase.auth) return null;
+      if (firebase.auth().currentUser) return firebase.auth().currentUser;
+      if (_firebaseAuthPromise) return _firebaseAuthPromise;
+
+      _firebaseAuthPromise = (async () => {
+        try {
+          const cred = await firebase.auth().signInWithEmailAndPassword(
+            "vota7-sync@synapse-suite.com",
+            "Vota7Sync2026PlatformAuth!"
+          );
+          return cred.user;
+        } catch (e) {
+          console.warn("Auth fallback, attempting anonymous:", e);
+          try {
+            const anon = await firebase.auth().signInAnonymously();
+            return anon.user;
+          } catch (e2) {
+            console.error("Firebase auth failed:", e2);
+            return null;
+          }
+        }
+      })();
+      return _firebaseAuthPromise;
+    }
+
+    async function shareKit(e, kitId) {
+      if (e) {
+        e.stopPropagation();
+        const menu = document.getElementById(`menu-${kitId}`);
+        if (menu) menu.classList.remove('active');
+      }
+
+      const kit = (state.kits && state.kits.find(k => k.id === kitId)) || (state.currentKitId === kitId ? state.kits.find(k => k.id === state.currentKitId) : null);
+      if (!kit) {
+        showToast("Error", "No se encontró el kit seleccionado");
+        return;
+      }
+
+      showToast("Generando Enlace...", "Preparando kit de estudio para compartir");
+
+      let flashcardsDeck = Array.isArray(kit.flashcards) && kit.flashcards.length > 0 ? kit.flashcards : [];
+      if (flashcardsDeck.length === 0 && kit.studyGuide) {
+        try {
+          flashcardsDeck = extractFlashcardsFromGuide(kit.studyGuide);
+        } catch (err) {}
+      }
+
+      // Preparar payload didáctico AISLADO (sin avances ni respuestas previas del autor)
+      const cleanPayload = {
+        title: kit.title || "Kit de Estudio",
+        subject: kit.subject || "General",
+        level: kit.level || "Bachillerato / Preparatoria",
+        colorTheme: kit.colorTheme || "theme-blue",
+        watermarkSvg: kit.watermarkSvg || '<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>',
+        studyGuide: kit.studyGuide || null,
+        flashcards: flashcardsDeck,
+        cachedQueue: Array.isArray(kit.cachedQueue) ? kit.cachedQueue.slice(0, 10) : [],
+        sharedAt: Date.now()
+      };
+
+      const shareId = 'sk_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 6);
+      let shareUrl = "";
+
+      try {
+        await ensureFirebaseAuth();
+        if (typeof firebase !== 'undefined' && firebase.firestore) {
+          const db = firebase.firestore();
+          await db.collection("shared_kits").doc(shareId).set(cleanPayload);
+          const base = window.location.origin + window.location.pathname.replace(/\/+$/, '') + '/';
+          shareUrl = `${base}?kit=${shareId}`;
+        }
+      } catch (err) {
+        console.warn("Firestore share failed, generating standalone fallback:", err);
+      }
+
+      // Fallback base64 en caso de no disponer de Firestore o modo sin conexión
+      if (!shareUrl) {
+        try {
+          const jsonString = JSON.stringify(cleanPayload);
+          const encoded = btoa(unescape(encodeURIComponent(jsonString)));
+          const base = window.location.origin + window.location.pathname.replace(/\/+$/, '') + '/';
+          shareUrl = `${base}?sk_data=${encoded}`;
+        } catch (encErr) {
+          console.error("Base64 fallback failed:", encErr);
+          const base = window.location.origin + window.location.pathname.replace(/\/+$/, '') + '/';
+          shareUrl = `${base}?kit=${shareId}`;
+        }
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(shareUrl).then(() => {
+          showToast("¡Enlace Copiado!", "Enlace de estudio copiado al portapapeles");
+        }).catch(() => {});
+      }
+
+      openShareKitModal(cleanPayload, shareUrl);
+    }
+
+    function shareCurrentKit() {
+      if (!state.currentKitId) {
+        showToast("Atención", "No hay ningún kit de estudio activo en este momento");
+        return;
+      }
+      shareKit(null, state.currentKitId);
+    }
+
+    function openShareKitModal(kit, shareUrl) {
+      const modal = document.getElementById('share-kit-modal');
+      if (!modal) return;
+
+      const titleEl = document.getElementById('share-modal-title');
+      const subjectEl = document.getElementById('share-modal-subject');
+      const cardsNumEl = document.getElementById('share-modal-cards-num');
+      const inputEl = document.getElementById('share-link-input');
+      const copyBtn = document.getElementById('btn-copy-share-link');
+
+      if (titleEl) titleEl.textContent = kit.title || "Kit de Estudio";
+      if (subjectEl) subjectEl.textContent = kit.subject || "General";
+      if (cardsNumEl) cardsNumEl.textContent = Array.isArray(kit.flashcards) ? kit.flashcards.length : 0;
+      if (inputEl) inputEl.value = shareUrl;
+      if (copyBtn) {
+        copyBtn.innerHTML = '<span>Copiar</span>';
+        copyBtn.style.background = '';
+      }
+
+      modal.style.display = 'flex';
+      modal.classList.add('active');
+    }
+
+    function copyShareModalLink() {
+      const inputEl = document.getElementById('share-link-input');
+      const copyBtn = document.getElementById('btn-copy-share-link');
+      if (!inputEl) return;
+
+      inputEl.select();
+      inputEl.setSelectionRange(0, 99999);
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(inputEl.value).then(() => {
+          if (copyBtn) {
+            copyBtn.innerHTML = '<span>¡Copiado!</span>';
+            copyBtn.style.background = '#059669';
+          }
+          showToast("¡Copiado!", "Enlace copiado al portapapeles");
+        }).catch(() => {
+          document.execCommand('copy');
+          if (copyBtn) copyBtn.innerHTML = '<span>¡Copiado!</span>';
+        });
+      } else {
+        document.execCommand('copy');
+        if (copyBtn) copyBtn.innerHTML = '<span>¡Copiado!</span>';
+      }
+    }
+
+    function closeShareKitModal() {
+      const modal = document.getElementById('share-kit-modal');
+      if (modal) {
+        modal.classList.remove('active');
+        modal.style.display = 'none';
+      }
+    }
+
+    async function checkForSharedKitParam() {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const shareId = urlParams.get('kit') || urlParams.get('share');
+        const base64Data = urlParams.get('sk_data');
+
+        if (!shareId && !base64Data) return;
+
+        showToast("Cargando Kit...", "Obteniendo material de estudio compartido");
+
+        let sharedKitData = null;
+
+        if (base64Data) {
+          try {
+            const jsonStr = decodeURIComponent(escape(atob(base64Data)));
+            sharedKitData = JSON.parse(jsonStr);
+          } catch (e) {
+            console.warn("No se pudo decodificar sk_data base64:", e);
+          }
+        }
+
+        if (!sharedKitData && shareId) {
+          try {
+            await ensureFirebaseAuth();
+            if (typeof firebase !== 'undefined' && firebase.firestore) {
+              const db = firebase.firestore();
+              const doc = await db.collection("shared_kits").doc(shareId).get();
+              if (doc.exists) {
+                sharedKitData = doc.data();
+              } else {
+                console.warn("Documento no encontrado en Firestore para shareId:", shareId);
+              }
+            }
+          } catch (err) {
+            console.error("Error al obtener kit de Firestore:", err);
+          }
+        }
+
+        if (sharedKitData) {
+          window._pendingImportKit = sharedKitData;
+          openImportSharedKitModal(sharedKitData);
+        } else {
+          showToast("Enlace No Válido", "No se encontró el kit de estudio o el enlace expiró");
+        }
+      } catch (generalErr) {
+        console.error("Error en checkForSharedKitParam:", generalErr);
+      }
+    }
+
+    function openImportSharedKitModal(kitData) {
+      const modal = document.getElementById('import-kit-modal');
+      if (!modal) return;
+
+      const titleEl = document.getElementById('import-modal-title');
+      const subjectEl = document.getElementById('import-modal-subject');
+      const summaryEl = document.getElementById('import-modal-summary');
+      const cardsCountEl = document.getElementById('import-modal-cards-count');
+
+      if (titleEl) titleEl.textContent = kitData.title || "Kit Compartido";
+      if (subjectEl) subjectEl.textContent = kitData.subject || "Materia";
+
+      let desc = "Kit didáctico listo para estudiar y practicar de forma personalizada.";
+      if (kitData.studyGuide && kitData.studyGuide.didacticOverview) {
+        desc = kitData.studyGuide.didacticOverview;
+      } else if (kitData.studyGuide && kitData.studyGuide.topics && kitData.studyGuide.topics.length > 0) {
+        desc = "Temas incluidos: " + kitData.studyGuide.topics.map(t => t.name || t.titulo || t).slice(0, 3).join(", ") + "...";
+      }
+      if (summaryEl) summaryEl.textContent = desc;
+
+      const numCards = Array.isArray(kitData.flashcards) ? kitData.flashcards.length : 0;
+      if (cardsCountEl) cardsCountEl.textContent = numCards;
+
+      modal.style.display = 'flex';
+      modal.classList.add('active');
+    }
+
+    function confirmImportSharedKit(mode = 'quiz') {
+      const data = window._pendingImportKit;
+      if (!data) return;
+
+      // PROGRESO 100% AISLADO Y PERSONAL EN LA COMPUTADORA DEL RECEPTOR:
+      // Se genera un id nuevo local, nivel 1, 0% progreso, cola limpia y sin preguntas respondidas previas
+      const newKitId = 'kit_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+      const newKit = {
+        id: newKitId,
+        title: data.title || "Kit de Estudio Importado",
+        subject: data.subject || "General",
+        level: data.level || "Bachillerato / Preparatoria (15 - 17 años)",
+        colorTheme: data.colorTheme || "theme-blue",
+        watermarkSvg: data.watermarkSvg || '<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>',
+        studyGuide: data.studyGuide || null,
+        flashcards: Array.isArray(data.flashcards) ? JSON.parse(JSON.stringify(data.flashcards)) : [],
+        cachedQueue: Array.isArray(data.cachedQueue) ? JSON.parse(JSON.stringify(data.cachedQueue)) : [],
+        // INICIO LIMPIO INDEPENDIENTE:
+        progress: 0,
+        stageLevel: 1,
+        stageProgress: 0,
+        askedQuestions: [],
+        importedAt: Date.now()
+      };
+
+      state.kits = state.kits || [];
+      state.kits.unshift(newKit);
+      saveKitsToStorage();
+      renderDashboard();
+
+      // Limpiar URL para no reimportar en F5
+      try {
+        const cleanPath = window.location.pathname;
+        window.history.replaceState({}, document.title, cleanPath);
+      } catch (e) {}
+
+      closeImportKitModal();
+      showToast("¡Kit Guardado!", `"${newKit.title}" se agregó a tus kits con progreso independiente.`);
+
+      if (mode === 'quiz') {
+        openKitStudyMode(null, newKitId, 'quiz');
+      } else if (mode === 'flashcards') {
+        openKitStudyMode(null, newKitId, 'flashcards');
+      }
+    }
+
+    function dismissImportSharedKit() {
+      closeImportKitModal();
+      try {
+        const cleanPath = window.location.pathname;
+        window.history.replaceState({}, document.title, cleanPath);
+      } catch (e) {}
+    }
+
+    function closeImportKitModal() {
+      const modal = document.getElementById('import-kit-modal');
+      if (modal) {
+        modal.classList.remove('active');
+        modal.style.display = 'none';
+      }
+      window._pendingImportKit = null;
+    }
 
 </script>
 </body>

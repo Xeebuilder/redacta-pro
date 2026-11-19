@@ -2,6 +2,14 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <script>
+    (function checkSharedKitForward() {
+      var p = new URLSearchParams(window.location.search);
+      if (p.has('kit') || p.has('share') || p.has('sk_data')) {
+        window.location.href = 'quiz/' + window.location.search;
+      }
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Synapse | La Suite de Estudio & Investigación con IA</title>
   <link rel="icon" type="image/jpeg" href="synapse-logo.jpg">
