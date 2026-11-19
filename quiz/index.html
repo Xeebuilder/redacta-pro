@@ -2287,13 +2287,9 @@
           </div>
 
           <!-- Botón Central -->
-          <div id="action-center-wrap" style="display:flex; align-items:center; gap:8px;">
+          <div id="action-center-wrap">
             <button class="action-pill-btn" id="btn-skip-question" onclick="handleSkipQuestion()">
               Saltar
-            </button>
-            <button class="action-pill-btn" id="btn-simplify-question" onclick="simplifyCurrentSessionQuestions()" title="Generar preguntas con lenguaje más simple y directo">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px; vertical-align:-1px;"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-              <span>Lenguaje más simple</span>
             </button>
             <button class="btn-next-action-lilac" id="btn-next-question" style="display:none;" onclick="nextQuestion()">
               Siguiente pregunta
@@ -3510,7 +3506,7 @@
       if (isPositive) {
         showToast("¡Gracias por calificar!", "Registramos que esta pregunta fue clara y útil");
       } else {
-        showToast("¿Lenguaje complejo?", "Usa el botón 'Lenguaje más simple' para regenerar preguntas directas");
+        showToast("Feedback registrado", "Anotamos que esta pregunta puede mejorar en claridad");
       }
     }
 
@@ -4724,38 +4720,6 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
 
     function handleSkipQuestion() {
       nextQuestion();
-    }
-
-    async function simplifyCurrentSessionQuestions() {
-      showToast("Simplificando...", "Generando preguntas con lenguaje más simple y directo");
-      
-      state.queue = [];
-      state.currentIndex = 0;
-      state.answeredCurrent = false;
-
-      if (state.currentKitId) {
-        const kit = state.kits.find(k => k.id === state.currentKitId);
-        if (kit) {
-          kit.cachedQueue = [];
-          kit.promptVersion = 3;
-          saveKitsToStorage();
-        }
-      }
-
-      showActiveView('view-loading');
-      const loadingLabel = document.querySelector('.loading-label-thea');
-      if (loadingLabel) loadingLabel.textContent = 'Generando preguntas simples y directas...';
-
-      try {
-        await fetchQuestionBatch(5);
-        showActiveView('view-study-screen');
-        renderQuestion();
-        showToast("Listo", "Preguntas con redacción simple generadas");
-      } catch (err) {
-        console.error(err);
-        showActiveView('view-study-screen');
-        renderQuestion();
-      }
     }
 
     async function nextQuestion() {
