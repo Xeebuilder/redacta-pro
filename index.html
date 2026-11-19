@@ -3,6 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <script>
+    (function() {
+      try {
+        var savedTheme = localStorage.getItem('synapse_theme');
+        if (savedTheme === 'dark') {
+          document.documentElement.classList.add('theme-dark');
+        }
+      } catch (e) {}
+    })();
     (function checkSharedKitForward() {
       var p = new URLSearchParams(window.location.search);
       if (p.has('kit') || p.has('share') || p.has('sk_data')) {
@@ -24,6 +32,7 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     
     :root {
+      /* REDACTAPRO MODO CLARO (Por defecto) */
       --bg-page: #E5D8C8;
       --bg-card: #FAF8F5;
       --bg-white: #FFFFFF;
@@ -35,6 +44,20 @@
       --border-color: rgba(43, 27, 23, 0.12);
       --border-strong: #2B1B17;
       --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body.theme-dark, html.theme-dark {
+      /* MODO OSCURO DE QUIZ / PERFIL */
+      --bg-page: #0B081D;
+      --bg-card: #130F2A;
+      --bg-white: #1A153A;
+      --bg-subtle: #181335;
+      --bg-contrast: #070512;
+      --color-primary: #FAF8F5;
+      --color-secondary: #CBD5E1;
+      --color-accent: #B8A2F8;
+      --border-color: rgba(184, 162, 248, 0.18);
+      --border-strong: #B8A2F8;
     }
 
     html {
@@ -50,6 +73,37 @@
       flex-direction: column;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    /* ─── BOTÓN CAMBIO DE TEMA NAVBAR ─── */
+    .theme-toggle-btn {
+      background: rgba(43, 27, 23, 0.06);
+      border: 1px solid rgba(43, 27, 23, 0.14);
+      color: var(--color-primary);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+      padding: 0;
+    }
+    .theme-toggle-btn:hover {
+      background: rgba(43, 27, 23, 0.12);
+      transform: translateY(-1px);
+    }
+    body.theme-dark .theme-toggle-btn {
+      background: rgba(184, 162, 248, 0.12);
+      border-color: rgba(184, 162, 248, 0.25);
+      color: #FAF8F5;
+    }
+    body.theme-dark .theme-toggle-btn:hover {
+      background: rgba(184, 162, 248, 0.22);
+      transform: translateY(-1px);
     }
 
     /* ─── NAVBAR ─── */
@@ -305,20 +359,22 @@
       z-index: 4;
     }
 
+    /* DESPLIEGUE DEL PERFIL (DROPDOWN) - ADAPTATIVO A MODO CLARO Y OSCURO */
     .thea-profile-dropdown {
       position: absolute;
       top: calc(100% + 8px);
       right: 0;
-      width: 240px;
-      background: #130F2A;
-      border: 1px solid rgba(167, 139, 250, 0.3);
+      width: 250px;
+      background: #FAF8F5;
+      border: 1.5px solid rgba(43, 27, 23, 0.14);
       border-radius: 16px;
       padding: 14px;
-      box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+      box-shadow: 0 16px 40px rgba(43, 27, 23, 0.15);
       display: none;
       flex-direction: column;
       z-index: 1001;
       animation: ddSlideIn 0.2s ease-out;
+      transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
     }
     @keyframes ddSlideIn {
       from { opacity: 0; transform: translateY(-6px); }
@@ -333,34 +389,55 @@
       flex-direction: column;
       gap: 3px;
     }
+    .thea-dd-name {
+      color: #2B1B17;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
     .thea-dd-email {
-      color: #94A3B8;
+      color: #705349;
       font-size: 0.78rem;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+    .thea-dd-level {
+      color: #D97706;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .thea-dd-hr {
+      border: none;
+      border-top: 1px solid rgba(43, 27, 23, 0.1);
+      margin: 8px 0;
+    }
     .thea-dd-link {
-      color: #FAF8F5;
+      color: #2B1B17;
       text-decoration: none;
       padding: 8px 10px;
       border-radius: 8px;
       font-size: 0.88rem;
       font-weight: 600;
-      transition: background 0.2s;
+      transition: background 0.2s, color 0.2s;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 9px;
+    }
+    .thea-dd-link svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      stroke: currentColor;
     }
     .thea-dd-link:hover {
-      background: rgba(184, 162, 248, 0.15);
-      color: #B8A2F8;
+      background: rgba(43, 27, 23, 0.08);
+      color: #8C6A53;
     }
     .thea-dd-logout {
       margin-top: 6px;
       background: transparent;
-      border: 1px solid rgba(239, 68, 68, 0.4);
-      color: #F87171;
+      border: 1px solid rgba(220, 38, 38, 0.35);
+      color: #DC2626;
       padding: 7px 10px;
       border-radius: 8px;
       font-size: 0.84rem;
@@ -368,10 +445,249 @@
       cursor: pointer;
       text-align: left;
       transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .thea-dd-logout svg {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+      stroke: currentColor;
     }
     .thea-dd-logout:hover {
+      background: rgba(220, 38, 38, 0.08);
+      border-color: #DC2626;
+    }
+
+    /* DROPDOWN EN MODO OSCURO */
+    body.theme-dark .thea-profile-dropdown {
+      background: #130F2A;
+      border: 1px solid rgba(167, 139, 250, 0.3);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+    }
+    body.theme-dark .thea-dd-name {
+      color: #FFFFFF;
+    }
+    body.theme-dark .thea-dd-email {
+      color: #94A3B8;
+    }
+    body.theme-dark .thea-dd-level {
+      color: #FACC15;
+    }
+    body.theme-dark .thea-dd-hr {
+      border-top-color: rgba(255, 255, 255, 0.1);
+    }
+    body.theme-dark .thea-dd-link {
+      color: #FAF8F5;
+    }
+    body.theme-dark .thea-dd-link:hover {
+      background: rgba(184, 162, 248, 0.15);
+      color: #B8A2F8;
+    }
+    body.theme-dark .thea-dd-logout {
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #F87171;
+    }
+    body.theme-dark .thea-dd-logout:hover {
       background: rgba(239, 68, 68, 0.15);
       border-color: #EF4444;
+    }
+
+    /* ─── AJUSTES ESPECÍFICOS MODO OSCURO PANTALLA PRINCIPAL ─── */
+    body.theme-dark .navbar {
+      background-color: rgba(19, 15, 42, 0.95);
+      border-bottom-color: rgba(184, 162, 248, 0.18);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+    body.theme-dark .brand-logo {
+      background: #130F2A;
+      border-color: rgba(184, 162, 248, 0.25);
+    }
+    body.theme-dark .nav-link {
+      color: #CBD5E1;
+    }
+    body.theme-dark .nav-link:hover {
+      color: #B8A2F8;
+      background-color: rgba(184, 162, 248, 0.1);
+    }
+    body.theme-dark .nav-btn-highlight {
+      background: #B8A2F8;
+      color: #0B081D !important;
+    }
+    body.theme-dark .nav-btn-highlight:hover {
+      background: #C8D1EC;
+    }
+    body.theme-dark .btn-thea-pill {
+      background: #1B1538;
+      color: #FAF8F5;
+      border-color: rgba(184, 162, 248, 0.25);
+    }
+    body.theme-dark .btn-thea-pill:hover {
+      background: #251D4E;
+    }
+    body.theme-dark .btn-login-nav {
+      background-color: #B8A2F8;
+      border-color: #B8A2F8;
+      color: #0B081D;
+    }
+    body.theme-dark .btn-login-nav:hover {
+      background-color: #C8D1EC;
+      border-color: #C8D1EC;
+    }
+    body.theme-dark .btn-hero-primary {
+      background-color: #B8A2F8;
+      border-color: #B8A2F8;
+      color: #0B081D;
+      box-shadow: 0 4px 16px rgba(184, 162, 248, 0.3);
+    }
+    body.theme-dark .btn-hero-primary:hover {
+      background-color: #C8D1EC;
+      border-color: #C8D1EC;
+    }
+    body.theme-dark .btn-hero-secondary {
+      border-color: rgba(184, 162, 248, 0.3);
+      color: #FAF8F5;
+    }
+    body.theme-dark .btn-hero-secondary:hover {
+      background-color: rgba(184, 162, 248, 0.12);
+      border-color: #B8A2F8;
+    }
+    body.theme-dark .metrics-strip {
+      background: #130F2A;
+      border-color: rgba(184, 162, 248, 0.18);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    body.theme-dark .pricing-card {
+      background: #130F2A;
+      border-color: rgba(184, 162, 248, 0.18);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+    body.theme-dark .pricing-card.featured {
+      background: #19143C;
+      border: 2px solid #B8A2F8;
+      box-shadow: 0 14px 40px rgba(184, 162, 248, 0.15);
+    }
+    body.theme-dark .badge-featured {
+      background: #B8A2F8;
+      color: #0B081D;
+    }
+    body.theme-dark .btn-pricing.primary,
+    body.theme-dark .btn-service.primary,
+    body.theme-dark .btn-action {
+      background-color: #B8A2F8;
+      border-color: #B8A2F8;
+      color: #0B081D;
+    }
+    body.theme-dark .btn-pricing.primary:hover,
+    body.theme-dark .btn-service.primary:hover,
+    body.theme-dark .btn-action:hover {
+      background-color: #C8D1EC;
+      border-color: #C8D1EC;
+    }
+    body.theme-dark .btn-pricing.outline {
+      border-color: #B8A2F8;
+      color: #FAF8F5;
+    }
+    body.theme-dark .btn-pricing.outline:hover {
+      background-color: #B8A2F8;
+      color: #0B081D;
+    }
+    body.theme-dark .service-card {
+      background: #130F2A;
+      border-color: rgba(184, 162, 248, 0.18);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+    body.theme-dark .service-icon-box {
+      background: #1B1538;
+      border-color: rgba(184, 162, 248, 0.2);
+    }
+    body.theme-dark .workspace-section {
+      background: #130F2A;
+      border-color: rgba(184, 162, 248, 0.18);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.3);
+    }
+    body.theme-dark .tab-btn.active {
+      background-color: #B8A2F8;
+      color: #0B081D;
+    }
+    body.theme-dark .form-control,
+    body.theme-dark textarea,
+    body.theme-dark select {
+      background-color: #181335;
+      border-color: rgba(184, 162, 248, 0.22);
+      color: #FAF8F5;
+    }
+    body.theme-dark .form-control:focus,
+    body.theme-dark textarea:focus,
+    body.theme-dark select:focus {
+      border-color: #B8A2F8;
+      box-shadow: 0 0 8px rgba(184, 162, 248, 0.2);
+    }
+    body.theme-dark .question-card {
+      background-color: #181335;
+      border-color: rgba(184, 162, 248, 0.18);
+    }
+    body.theme-dark .option-item {
+      background-color: #130F2A;
+      border-color: rgba(184, 162, 248, 0.18);
+      color: #FAF8F5;
+    }
+    body.theme-dark .option-item:hover {
+      background-color: #1E1742;
+    }
+    body.theme-dark .option-item.selected {
+      background-color: #1E1742;
+      border-color: #B8A2F8;
+    }
+    body.theme-dark .flashcard-face {
+      border-color: #B8A2F8;
+    }
+    body.theme-dark .flashcard-front {
+      background: #130F2A;
+    }
+    body.theme-dark .flashcard-back {
+      background: #1B1538;
+      border-color: #B8A2F8;
+    }
+    body.theme-dark .about-card {
+      background: #130F2A;
+      border-color: rgba(184, 162, 248, 0.18);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    body.theme-dark .pillar-box {
+      background: #1B1538;
+      border-color: rgba(184, 162, 248, 0.18);
+    }
+    body.theme-dark .faq-item {
+      background: #130F2A;
+      border-color: rgba(184, 162, 248, 0.18);
+    }
+    body.theme-dark .contact-card {
+      background: #130F2A;
+      border-color: rgba(184, 162, 248, 0.18);
+    }
+    body.theme-dark .footer {
+      background: #080614;
+      border-top: 1px solid rgba(184, 162, 248, 0.14);
+    }
+    body.theme-dark .modal-overlay {
+      background: rgba(8, 6, 20, 0.8);
+    }
+    body.theme-dark .modal-card {
+      background: #130F2A;
+      border-color: rgba(184, 162, 248, 0.25);
+      color: #FAF8F5;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    }
+    body.theme-dark .modal-close {
+      background: #1B1538;
+      border-color: rgba(184, 162, 248, 0.2);
+      color: #CBD5E1;
+    }
+    body.theme-dark .modal-close:hover {
+      color: #FFFFFF;
+      background: #251D4E;
     }
 
 
@@ -1495,7 +1811,15 @@
     </nav>
 
     <div class="nav-user">
-      <button class="nav-btn-highlight" id="btn-admin-panel" style="display:none; background:#8C6A53; border:none; padding:6px 12px; font-size:0.85rem;" onclick="openAdminModal()">👑 Panel Admin</button>
+      <button class="theme-toggle-btn" id="theme-toggle-btn" onclick="toggleTheme()" title="Cambiar a Modo Oscuro / Claro">
+        <svg class="theme-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="theme-icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+      </button>
+
+      <button class="nav-btn-highlight" id="btn-admin-panel" style="display:none; background:#8C6A53; border:none; padding:6px 12px; font-size:0.85rem;" onclick="openAdminModal()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="display:inline-block; vertical-align:-1px; margin-right:4px;"><polygon points="2 4 6 18 18 18 22 4 15 11 12 2 9 11 2 4"/></svg>
+        <span>Panel Admin</span>
+      </button>
 
       <!-- Thea Header UI: Invitar, Comentarios, Avatar Circular con Corona y Nivel -->
       <div id="user-logged-in-view" style="display:none; align-items:center; gap:8px;">
@@ -1512,7 +1836,7 @@
         <div class="thea-avatar-box">
           <a href="perfil/" class="thea-avatar-circle" id="nav-thea-avatar-circle" title="Ver mi perfil">
             <div class="thea-crown-badge">
-              <span>👑</span>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="2 4 6 18 18 18 22 4 15 11 12 2 9 11 2 4"/></svg>
               <span id="thea-nav-crown-num">1</span>
             </div>
             <div class="thea-notif-dot"></div>
@@ -1524,18 +1848,30 @@
           <!-- Dropdown al pasar cursor -->
           <div class="thea-profile-dropdown" id="thea-profile-dropdown">
             <div class="thea-dd-header">
-              <strong id="display-user-name" style="color:#FFFFFF; font-size:0.95rem;">Max</strong>
+              <strong class="thea-dd-name" id="display-user-name">Max</strong>
               <span class="thea-dd-email" id="user-email-display">usuario</span>
               <div style="display:flex; align-items:center; justify-content:space-between; margin-top:6px;">
-                <span id="display-user-level" style="color:#FACC15; font-size:0.75rem; font-weight:700;">Nivel 1 • 0 XP</span>
+                <span class="thea-dd-level" id="display-user-level">Nivel 1 • 0 XP</span>
                 <span class="badge-plan" id="user-plan-badge" style="font-size:0.68rem; padding:2px 8px;">FREE</span>
               </div>
             </div>
-            <hr style="border:none; border-top:1px solid rgba(255,255,255,0.1); margin:8px 0;">
-            <a href="perfil/" class="thea-dd-link">👤 Mi Perfil</a>
-            <a href="quiz/" class="thea-dd-link">⚡ Quiz Continuo</a>
-            <a href="redactapro/" class="thea-dd-link">📝 RedactaPro</a>
-            <button class="thea-dd-logout" onclick="logoutUser()">🚪 Cerrar Sesión</button>
+            <hr class="thea-dd-hr">
+            <a href="perfil/" class="thea-dd-link">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              <span>Mi Perfil</span>
+            </a>
+            <a href="quiz/" class="thea-dd-link">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+              <span>Quiz Continuo</span>
+            </a>
+            <a href="redactapro/" class="thea-dd-link">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              <span>RedactaPro</span>
+            </a>
+            <button class="thea-dd-logout" onclick="logoutUser()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+              <span>Cerrar Sesión</span>
+            </button>
           </div>
         </div>
       </div>
@@ -3115,6 +3451,58 @@ Responde ÚNICAMENTE en formato JSON plano (un array de objetos), sin bloques de
       }
     }
     updateTheaNavbar();
+
+    // ══════════════════════════════════════════════════════════════
+    // CONTROLADOR DE TEMAS: REDACTAPRO (MODO CLARO) & MODO OSCURO
+    // ══════════════════════════════════════════════════════════════
+    function toggleTheme() {
+      const isDark = document.body.classList.toggle('theme-dark');
+      if (isDark) {
+        document.documentElement.classList.add('theme-dark');
+      } else {
+        document.documentElement.classList.remove('theme-dark');
+      }
+      const theme = isDark ? 'dark' : 'light';
+      localStorage.setItem('synapse_theme', theme);
+      updateThemeUI(theme);
+      if (typeof showToast === 'function') {
+        showToast(
+          isDark ? "Modo Oscuro Activado" : "Modo RedactaPro Activado",
+          isDark ? "Pantalla principal adaptada al tema oscuro de quiz." : "Tema editorial cálido de RedactaPro activo."
+        );
+      }
+    }
+
+    function updateThemeUI(theme) {
+      const isDark = (theme === 'dark');
+      const moon = document.querySelector('.theme-icon-moon');
+      const sun = document.querySelector('.theme-icon-sun');
+      if (moon && sun) {
+        moon.style.display = isDark ? 'none' : 'inline-block';
+        sun.style.display = isDark ? 'inline-block' : 'none';
+      }
+    }
+
+    function initTheme() {
+      const saved = localStorage.getItem('synapse_theme');
+      if (saved === 'dark') {
+        document.body.classList.add('theme-dark');
+        document.documentElement.classList.add('theme-dark');
+        updateThemeUI('dark');
+      } else {
+        document.body.classList.remove('theme-dark');
+        document.documentElement.classList.remove('theme-dark');
+        updateThemeUI('light');
+      }
+    }
+
+    window.addEventListener('storage', function(e) {
+      if (e.key === 'synapse_theme') {
+        initTheme();
+      }
+    });
+
+    initTheme();
   </script>
 </body>
 </html>
