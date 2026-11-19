@@ -2608,52 +2608,78 @@
   <!-- ══════════════════════════════════════════════════════════════ -->
   <div class="milestone-overlay" id="import-kit-modal" style="display:none;">
     <div class="milestone-card" style="max-width: 540px; text-align:left;">
-      <div style="text-align:center; margin-bottom:1.2rem;">
-        <div class="milestone-badge" style="border-color:var(--accent-lilac); color:var(--accent-lilac); width:64px; height:64px; margin-bottom:0.8rem;">
+      
+      <!-- Estado 1: CARGANDO -->
+      <div id="import-modal-loading-state" style="display:none; text-align:center; padding:2rem 1rem;">
+        <div class="milestone-badge" style="border-color:var(--accent-lilac); color:var(--accent-lilac); width:64px; height:64px; margin:0 auto 1.2rem; animation: pulse 1.8s infinite;">
           <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
         </div>
-        <h3 style="font-size:1.45rem; font-weight:900; color:#fff; margin-bottom:4px;">¡Te compartieron un Kit de Estudio!</h3>
-        <p style="font-size:0.86rem; color:var(--text-dim);">Puedes guardarlo en tu computadora para estudiar a tu propio ritmo.</p>
+        <h3 style="font-size:1.35rem; font-weight:800; color:#fff; margin-bottom:6px;">Cargando Kit de Estudio Compartido...</h3>
+        <p style="font-size:0.86rem; color:var(--text-dim); margin:0;">Conectando con el material de estudio</p>
       </div>
 
-      <!-- Tarjeta del kit recibido -->
-      <div class="modal-summary-box">
-        <span style="font-size:0.75rem; text-transform:uppercase; font-weight:800; color:var(--accent-lilac); letter-spacing:0.5px;" id="import-modal-subject">Materia</span>
-        <h4 style="font-size:1.2rem; font-weight:800; color:#fff; margin:4px 0 8px;" id="import-modal-title">Título del Kit</h4>
-        <p style="font-size:0.85rem; color:#CBD5E1; line-height:1.5; margin-bottom:12px;" id="import-modal-summary">Resumen didáctico del kit...</p>
-
-        <div style="display:flex; gap:12px; font-size:0.8rem; color:var(--accent-lilac); flex-wrap:wrap; background:rgba(118,185,155,0.08); padding:8px 12px; border-radius:8px;">
-          <span style="display:inline-flex; align-items:center; gap:5px; font-weight:700;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="16" height="13" rx="2" ry="2"></rect><path d="M6 3h12a2 2 0 0 1 2 2v12"></path></svg>
-            <span id="import-modal-cards-count">0</span> Tarjetas de Estudio 3D
-          </span>
-          <span style="display:inline-flex; align-items:center; gap:5px; font-weight:700;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-            Quiz Personal (Nivel 1)
-          </span>
+      <!-- Estado 2: ERROR / NO ENCONTRADO -->
+      <div id="import-modal-error-state" style="display:none; text-align:center; padding:1.5rem 1rem;">
+        <div class="milestone-badge" style="border-color:#EF4444; color:#EF4444; width:64px; height:64px; margin:0 auto 1rem;">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+        </div>
+        <h3 style="font-size:1.35rem; font-weight:800; color:#fff; margin-bottom:6px;" id="import-error-title">No se pudo cargar el Kit</h3>
+        <p style="font-size:0.86rem; color:#CBD5E1; line-height:1.5; margin-bottom:1.5rem;" id="import-error-desc">No se encontró el kit de estudio o el enlace no es válido. Comprueba tu conexión a internet o solicita el enlace nuevamente.</p>
+        <div style="display:flex; gap:10px;">
+          <button class="btn-mat-submit" style="flex:1; margin:0; padding:10px;" onclick="retryCheckSharedKit()">Reintentar</button>
+          <button class="action-pill-btn" style="flex:1; padding:10px; border-radius:10px;" onclick="dismissImportSharedKit()">Cerrar</button>
         </div>
       </div>
 
-      <!-- Aviso de progreso personal e independiente -->
-      <div style="background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.25); border-radius:12px; padding:10px 12px; font-size:0.8rem; color:#86EFAC; line-height:1.45; margin-bottom:1.3rem;">
-        <strong style="color:#4ADE80;">Progreso 100% individual:</strong> Se guardará en tu navegador con tu propio nivel de dominio (0% de avance inicial) para que practiques a tu forma sin sincronizar respuestas ni alterar las de quien te lo envió.
-      </div>
+      <!-- Estado 3: LISTO PARA IMPORTAR (CONTENIDO) -->
+      <div id="import-modal-content-state">
+        <div style="text-align:center; margin-bottom:1.2rem;">
+          <div class="milestone-badge" style="border-color:var(--accent-lilac); color:var(--accent-lilac); width:64px; height:64px; margin-bottom:0.8rem;">
+            <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          </div>
+          <h3 style="font-size:1.45rem; font-weight:900; color:#fff; margin-bottom:4px;">¡Te compartieron un Kit de Estudio!</h3>
+          <p style="font-size:0.86rem; color:var(--text-dim);">Puedes guardarlo en tu computadora para estudiar a tu propio ritmo.</p>
+        </div>
 
-      <!-- Botones de Acción -->
-      <div style="display:flex; flex-direction:column; gap:8px;">
-        <button class="btn-mat-submit" style="width:100%; margin:0; padding:12px;" onclick="confirmImportSharedKit('quiz')">
-          Agregar a mis Kits y Empezar a Estudiar (Quiz)
-        </button>
-        <button class="btn-mat-submit" style="width:100%; margin:0; padding:11px; background:#1E1748; border-color:var(--border-purple); color:#fff;" onclick="confirmImportSharedKit('flashcards')">
-          Abrir Tarjetas de Estudio (Flashcards)
-        </button>
-        <div style="display:flex; gap:8px; margin-top:2px;">
-          <button class="action-pill-btn" style="flex:1; padding:8px; border-radius:10px;" onclick="confirmImportSharedKit('save_only')">
-            Solo Guardar en mis Kits
+        <!-- Tarjeta del kit recibido -->
+        <div class="modal-summary-box">
+          <span style="font-size:0.75rem; text-transform:uppercase; font-weight:800; color:var(--accent-lilac); letter-spacing:0.5px;" id="import-modal-subject">Materia</span>
+          <h4 style="font-size:1.2rem; font-weight:800; color:#fff; margin:4px 0 8px;" id="import-modal-title">Título del Kit</h4>
+          <p style="font-size:0.85rem; color:#CBD5E1; line-height:1.5; margin-bottom:12px;" id="import-modal-summary">Resumen didáctico del kit...</p>
+
+          <div style="display:flex; gap:12px; font-size:0.8rem; color:var(--accent-lilac); flex-wrap:wrap; background:rgba(118,185,155,0.08); padding:8px 12px; border-radius:8px;">
+            <span style="display:inline-flex; align-items:center; gap:5px; font-weight:700;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="16" height="13" rx="2" ry="2"></rect><path d="M6 3h12a2 2 0 0 1 2 2v12"></path></svg>
+              <span id="import-modal-cards-count">0</span> Tarjetas de Estudio 3D
+            </span>
+            <span style="display:inline-flex; align-items:center; gap:5px; font-weight:700;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              Quiz Personal (Nivel 1)
+            </span>
+          </div>
+        </div>
+
+        <!-- Aviso de progreso personal e independiente -->
+        <div style="background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.25); border-radius:12px; padding:10px 12px; font-size:0.8rem; color:#86EFAC; line-height:1.45; margin-bottom:1.3rem;">
+          <strong style="color:#4ADE80;">Progreso 100% individual:</strong> Se guardará en tu navegador con tu propio nivel de dominio (0% de avance inicial) para que practiques a tu forma sin sincronizar respuestas ni alterar las de quien te lo envió.
+        </div>
+
+        <!-- Botones de Acción -->
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <button class="btn-mat-submit" style="width:100%; margin:0; padding:12px;" onclick="confirmImportSharedKit('quiz')">
+            Agregar a mis Kits y Empezar a Estudiar (Quiz)
           </button>
-          <button class="action-pill-btn" style="flex:1; padding:8px; border-radius:10px; color:#94A3B8;" onclick="dismissImportSharedKit()">
-            Ignorar
+          <button class="btn-mat-submit" style="width:100%; margin:0; padding:11px; background:#1E1748; border-color:var(--border-purple); color:#fff;" onclick="confirmImportSharedKit('flashcards')">
+            Abrir Tarjetas de Estudio (Flashcards)
           </button>
+          <div style="display:flex; gap:8px; margin-top:2px;">
+            <button class="action-pill-btn" style="flex:1; padding:8px; border-radius:10px;" onclick="confirmImportSharedKit('save_only')">
+              Solo Guardar en mis Kits
+            </button>
+            <button class="action-pill-btn" style="flex:1; padding:8px; border-radius:10px; color:#94A3B8;" onclick="dismissImportSharedKit()">
+              Ignorar
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -5472,6 +5498,151 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       return _firebaseAuthPromise;
     }
 
+    // Decodificador de campos Firestore REST API para respuesta JSON estándar
+    function decodeFirestoreValue(val) {
+      if (!val || typeof val !== 'object') return val;
+      if ('stringValue' in val) return val.stringValue;
+      if ('booleanValue' in val) return val.booleanValue;
+      if ('integerValue' in val) return parseInt(val.integerValue, 10);
+      if ('doubleValue' in val) return parseFloat(val.doubleValue);
+      if ('timestampValue' in val) return val.timestampValue;
+      if ('nullValue' in val) return null;
+      if ('mapValue' in val) {
+        const res = {};
+        const fields = val.mapValue.fields || {};
+        for (const k in fields) res[k] = decodeFirestoreValue(fields[k]);
+        return res;
+      }
+      if ('arrayValue' in val) {
+        const list = val.arrayValue.values || [];
+        return list.map(decodeFirestoreValue);
+      }
+      return val;
+    }
+
+    function decodeFirestoreDoc(doc) {
+      if (!doc || !doc.fields) return null;
+      const obj = {};
+      for (const k in doc.fields) obj[k] = decodeFirestoreValue(doc.fields[k]);
+      return obj;
+    }
+
+    // Obtención robusta de token de autenticación (REST directo + fallback SDK)
+    async function getFirestoreToken() {
+      // 1. Sesión activa en SDK de Firebase
+      try {
+        if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
+          return await firebase.auth().currentUser.getIdToken();
+        }
+      } catch (e) {}
+
+      // 2. Token guardado en caché de sesión
+      try {
+        const cached = sessionStorage.getItem('synapse_fs_token');
+        const exp = sessionStorage.getItem('synapse_fs_token_exp');
+        if (cached && exp && Date.now() < parseInt(exp, 10)) {
+          return cached;
+        }
+      } catch (e) {}
+
+      // 3. Autenticación directa por REST API (ultra veloz, sin WebSockets ni cuelgues)
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4500);
+        const res = await fetch("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBsSRn76nxlCY6Fih1fYMXfdm7YPgN1KBI", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: "vota7-sync@synapse-suite.com",
+            password: "Vota7Sync2026PlatformAuth!",
+            returnSecureToken: true
+          }),
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.idToken) {
+            try {
+              sessionStorage.setItem('synapse_fs_token', data.idToken);
+              sessionStorage.setItem('synapse_fs_token_exp', (Date.now() + 3000 * 1000).toString());
+            } catch (e) {}
+            return data.idToken;
+          }
+        }
+      } catch (restErr) {
+        console.warn("REST direct auth attempt skipped:", restErr);
+      }
+
+      // 4. Fallback SDK signInWithEmailAndPassword con timeout estricto de 4s
+      try {
+        const user = await Promise.race([
+          ensureFirebaseAuth(),
+          new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout Firebase SDK Auth")), 4000))
+        ]);
+        if (user) {
+          const tok = await user.getIdToken();
+          if (tok) return tok;
+        }
+      } catch (e) {
+        console.warn("SDK Auth fallback error:", e);
+      }
+
+      return null;
+    }
+
+    // Descarga infalible de kits compartidos desde la nube
+    async function fetchSharedKitFromFirestore(shareId) {
+      if (!shareId) return null;
+
+      // Canal A: REST API directo con Token Bearer (Inmune a bloqueadores de rastreo, 200ms)
+      try {
+        const token = await getFirestoreToken();
+        if (token) {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 5000);
+          const url = `https://firestore.googleapis.com/v1/projects/studbud-373c4/databases/(default)/documents/shared_kits/${encodeURIComponent(shareId)}`;
+          const res = await fetch(url, {
+            headers: { "Authorization": `Bearer ${token}` },
+            signal: controller.signal
+          });
+          clearTimeout(timeoutId);
+          if (res.ok) {
+            const rawDoc = await res.json();
+            const decoded = decodeFirestoreDoc(rawDoc);
+            if (decoded && decoded.title) {
+              return decoded;
+            }
+          } else if (res.status === 404) {
+            console.warn("Kit no encontrado en Firestore (404)");
+            return null;
+          }
+        }
+      } catch (err) {
+        console.warn("REST fetch for shared kit encountered error, trying SDK:", err);
+      }
+
+      // Canal B: Fallback vía SDK Firebase Firestore con timeout de 4 segundos
+      try {
+        await ensureFirebaseAuth();
+        if (typeof firebase !== 'undefined' && firebase.firestore) {
+          const db = firebase.firestore();
+          const docPromise = db.collection("shared_kits").doc(shareId).get();
+          const doc = await Promise.race([
+            docPromise,
+            new Promise((_, reject) => setTimeout(() => reject(new Error("Firestore SDK timeout")), 4000))
+          ]);
+          if (doc && doc.exists) {
+            return doc.data();
+          }
+        }
+      } catch (sdkErr) {
+        console.warn("SDK Firestore fallback error:", sdkErr);
+      }
+
+      return null;
+    }
+
     async function shareKit(e, kitId) {
       if (e) {
         e.stopPropagation();
@@ -5498,12 +5669,13 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       const cleanPayload = {
         title: kit.title || "Kit de Estudio",
         subject: kit.subject || "General",
-        level: kit.level || "Bachillerato / Preparatoria",
+        level: kit.level || "Bachillerato / Preparatoria (15 - 17 años)",
         colorTheme: kit.colorTheme || "theme-blue",
         watermarkSvg: kit.watermarkSvg || '<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>',
         studyGuide: kit.studyGuide || null,
         flashcards: flashcardsDeck,
         cachedQueue: Array.isArray(kit.cachedQueue) ? kit.cachedQueue.slice(0, 10) : [],
+        promptVersion: 3,
         sharedAt: Date.now()
       };
 
@@ -5514,7 +5686,11 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
         await ensureFirebaseAuth();
         if (typeof firebase !== 'undefined' && firebase.firestore) {
           const db = firebase.firestore();
-          await db.collection("shared_kits").doc(shareId).set(cleanPayload);
+          const cleanDoc = JSON.parse(JSON.stringify(cleanPayload));
+          await Promise.race([
+            db.collection("shared_kits").doc(shareId).set(cleanDoc),
+            new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout guardando en Firestore")), 6000))
+          ]);
           const base = window.location.origin + window.location.pathname.replace(/\/+$/, '') + '/';
           shareUrl = `${base}?kit=${shareId}`;
         }
@@ -5609,6 +5785,40 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       }
     }
 
+    // Estados de UI para importación de kits compartidos
+    function showImportKitLoading() {
+      const modal = document.getElementById('import-kit-modal');
+      if (!modal) return;
+      const loadingState = document.getElementById('import-modal-loading-state');
+      const errorState = document.getElementById('import-modal-error-state');
+      const contentState = document.getElementById('import-modal-content-state');
+      if (loadingState) loadingState.style.display = 'block';
+      if (errorState) errorState.style.display = 'none';
+      if (contentState) contentState.style.display = 'none';
+      modal.style.display = 'flex';
+      modal.classList.add('active');
+    }
+
+    function showImportKitError(msg) {
+      const modal = document.getElementById('import-kit-modal');
+      if (!modal) return;
+      const loadingState = document.getElementById('import-modal-loading-state');
+      const errorState = document.getElementById('import-modal-error-state');
+      const contentState = document.getElementById('import-modal-content-state');
+      const descEl = document.getElementById('import-error-desc');
+      if (descEl && msg) descEl.textContent = msg;
+      if (loadingState) loadingState.style.display = 'none';
+      if (errorState) errorState.style.display = 'block';
+      if (contentState) contentState.style.display = 'none';
+      modal.style.display = 'flex';
+      modal.classList.add('active');
+      showToast("Error de Carga", "No se pudo obtener el kit de estudio");
+    }
+
+    function retryCheckSharedKit() {
+      checkForSharedKitParam();
+    }
+
     async function checkForSharedKitParam() {
       try {
         const urlParams = new URLSearchParams(window.location.search);
@@ -5617,7 +5827,8 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
 
         if (!shareId && !base64Data) return;
 
-        showToast("Cargando Kit...", "Obteniendo material de estudio compartido");
+        // Feedback visual inmediato para que el usuario sepa que está cargando
+        showImportKitLoading();
 
         let sharedKitData = null;
 
@@ -5631,36 +5842,32 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
         }
 
         if (!sharedKitData && shareId) {
-          try {
-            await ensureFirebaseAuth();
-            if (typeof firebase !== 'undefined' && firebase.firestore) {
-              const db = firebase.firestore();
-              const doc = await db.collection("shared_kits").doc(shareId).get();
-              if (doc.exists) {
-                sharedKitData = doc.data();
-              } else {
-                console.warn("Documento no encontrado en Firestore para shareId:", shareId);
-              }
-            }
-          } catch (err) {
-            console.error("Error al obtener kit de Firestore:", err);
-          }
+          sharedKitData = await fetchSharedKitFromFirestore(shareId);
         }
 
-        if (sharedKitData) {
+        if (sharedKitData && sharedKitData.title) {
           window._pendingImportKit = sharedKitData;
           openImportSharedKitModal(sharedKitData);
         } else {
-          showToast("Enlace No Válido", "No se encontró el kit de estudio o el enlace expiró");
+          showImportKitError("No se encontró el kit de estudio o el enlace no está disponible. Comprueba tu conexión a internet o solicita el enlace nuevamente.");
         }
       } catch (generalErr) {
         console.error("Error en checkForSharedKitParam:", generalErr);
+        showImportKitError("Ocurrió un error inesperado al procesar el enlace de estudio.");
       }
     }
 
     function openImportSharedKitModal(kitData) {
       const modal = document.getElementById('import-kit-modal');
       if (!modal) return;
+
+      const loadingState = document.getElementById('import-modal-loading-state');
+      const errorState = document.getElementById('import-modal-error-state');
+      const contentState = document.getElementById('import-modal-content-state');
+
+      if (loadingState) loadingState.style.display = 'none';
+      if (errorState) errorState.style.display = 'none';
+      if (contentState) contentState.style.display = 'block';
 
       const titleEl = document.getElementById('import-modal-title');
       const subjectEl = document.getElementById('import-modal-subject');
@@ -5671,10 +5878,15 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       if (subjectEl) subjectEl.textContent = kitData.subject || "Materia";
 
       let desc = "Kit didáctico listo para estudiar y practicar de forma personalizada.";
-      if (kitData.studyGuide && kitData.studyGuide.didacticOverview) {
+      if (kitData.studyGuide && kitData.studyGuide.resumen) {
+        desc = kitData.studyGuide.resumen;
+      } else if (kitData.studyGuide && kitData.studyGuide.didacticOverview) {
         desc = kitData.studyGuide.didacticOverview;
       } else if (kitData.studyGuide && kitData.studyGuide.topics && kitData.studyGuide.topics.length > 0) {
         desc = "Temas incluidos: " + kitData.studyGuide.topics.map(t => t.name || t.titulo || t).slice(0, 3).join(", ") + "...";
+      }
+      if (desc.length > 220) {
+        desc = desc.substring(0, 220).trim() + "...";
       }
       if (summaryEl) summaryEl.textContent = desc;
 
@@ -5702,6 +5914,7 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
         studyGuide: data.studyGuide || null,
         flashcards: Array.isArray(data.flashcards) ? JSON.parse(JSON.stringify(data.flashcards)) : [],
         cachedQueue: Array.isArray(data.cachedQueue) ? JSON.parse(JSON.stringify(data.cachedQueue)) : [],
+        promptVersion: 3,
         // INICIO LIMPIO INDEPENDIENTE:
         progress: 0,
         stageLevel: 1,
