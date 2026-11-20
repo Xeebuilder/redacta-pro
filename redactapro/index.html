@@ -26,21 +26,21 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     
     :root {
-      /* PALETA TOQUE SALVIA - MODO CLARO */
-      --bg-page: #F6F3EC;
-      --bg-card: #FCFBF8;
+      /* SYNAPSE TECH MODERNO (APPLE / LINEAR) - MODO CLARO */
+      --bg-page: #F8FAFC;
+      --bg-card: #FFFFFF;
       --bg-card-hover: #FFFFFF;
       --bg-white: #FFFFFF;
-      --bg-subtle: #EAE6DC;
-      --bg-sage-soft: #E5EDE8;
-      --bg-contrast: #1F2421;
-      --color-primary: #1F2421;
-      --color-secondary: #595E5A;
-      --color-accent: #2F5D4B;
-      --color-accent-hover: #254B3C;
-      --color-sage-mid: #3E7360;
-      --border-color: rgba(31, 36, 33, 0.11);
-      --border-strong: #2F5D4B;
+      --bg-subtle: #F1F5F9;
+      --bg-sage-soft: #ECFDF5;
+      --bg-contrast: #0F172A;
+      --color-primary: #0F172A;
+      --color-secondary: #64748B;
+      --color-accent: #059669;
+      --color-accent-hover: #047857;
+      --color-sage-mid: #10B981;
+      --border-color: rgba(15, 23, 42, 0.08);
+      --border-strong: #059669;
     }
 
     body.theme-dark, html.theme-dark {
@@ -84,7 +84,7 @@
     .btn-logout:hover { background: var(--bg-subtle); }
     
     .theme-toggle-btn {
-      background: rgba(31, 36, 33, 0.06);
+      background: rgba(15, 23, 42, 0.04);
       border: 1px solid var(--border-color);
       color: var(--color-primary);
       width: 36px;
@@ -125,7 +125,7 @@
     .radio-group { background-color: var(--bg-card); border: 1px solid var(--border-color); padding: 0.8rem 1.4rem; border-radius: 16px; box-shadow: 0 4px 14px rgba(0,0,0,0.02); margin-bottom: 1.5rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }
     .radio-group label { display: flex; align-items: center; gap: 0.5rem; font-weight: 500; cursor: pointer; margin: 0; }
     input[type="radio"] { accent-color: var(--color-accent); width: 18px; height: 18px; }
-    .btn { background-color: var(--color-accent); color: #FCFBF8; border: 2px solid var(--color-accent); border-radius: 10px; padding: 0.65rem 1.5rem; font-weight: 600; font-size: 1rem; width: 100%; cursor: pointer; transition: all 0.25s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 4px 10px rgba(47,93,75,0.2); margin-top: 0.75rem; }
+    .btn { background-color: var(--color-accent); color: #FFFFFF; border: 2px solid var(--color-accent); border-radius: 10px; padding: 0.65rem 1.5rem; font-weight: 600; font-size: 1rem; width: 100%; cursor: pointer; transition: all 0.25s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 4px 10px rgba(47,93,75,0.2); margin-top: 0.75rem; }
     .btn:hover { background-color: var(--color-accent-hover); border-color: var(--color-accent-hover); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(47,93,75,0.3); }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
     .btn-download { background-color: #3B7A9E; color: #FFFFFF; border: 2px solid #3B7A9E; border-radius: 10px; padding: 0.8rem; font-weight: 700; font-size: 1.05rem; width: 100%; cursor: pointer; box-shadow: 0 6px 20px rgba(59,122,158,0.25); transition: all 0.25s ease; margin-top: 1rem; text-decoration: none; display: block; text-align: center; }
@@ -133,7 +133,7 @@
     .tabs { display: flex; gap: 6px; margin-bottom: 0; }
     .tab-btn { background-color: var(--bg-card); color: var(--color-secondary); border: 1px solid var(--border-color); border-bottom: none; border-radius: 10px 10px 0 0; padding: 0.6rem 1.5rem; font-weight: 600; font-size: 1.05rem; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
     .tab-btn:hover { color: var(--color-primary); background-color: var(--bg-subtle); }
-    .tab-btn.active { background-color: var(--color-accent); color: #FCFBF8; border-color: var(--color-accent); }
+    .tab-btn.active { background-color: var(--color-accent); color: #FFFFFF; border-color: var(--color-accent); }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
     .tab-body { background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 0 16px 16px 16px; padding: 1.8rem; margin-bottom: 1.5rem; }
@@ -153,14 +153,14 @@
     .progress-wrap { background-color: var(--bg-subtle); border-radius: 999px; height: 10px; width: 100%; margin: 1rem 0; overflow: hidden; }
     .progress-bar { background-color: var(--color-accent); height: 100%; width: 0%; border-radius: 999px; transition: width 0.3s ease; }
     .status-text { font-size: 0.95rem; font-weight: 500; color: var(--color-primary); margin-bottom: 0.5rem; min-height: 1.5rem; }
-    #toast { position: fixed; bottom: 2rem; right: 2rem; background-color: var(--color-accent); color: #FCFBF8; padding: 0.85rem 1.4rem; border-radius: 12px; font-weight: 600; font-size: 0.95rem; box-shadow: 0 8px 24px rgba(0,0,0,0.2); opacity: 0; transform: translateY(10px); transition: opacity 0.3s, transform 0.3s; z-index: 9999; pointer-events: none; }
+    #toast { position: fixed; bottom: 2rem; right: 2rem; background-color: var(--color-accent); color: #FFFFFF; padding: 0.85rem 1.4rem; border-radius: 12px; font-weight: 600; font-size: 0.95rem; box-shadow: 0 8px 24px rgba(0,0,0,0.2); opacity: 0; transform: translateY(10px); transition: opacity 0.3s, transform 0.3s; z-index: 9999; pointer-events: none; }
     #toast.show { opacity: 1; transform: translateY(0); }
     .alert { border-radius: 10px; padding: 0.85rem 1.2rem; margin: 0.75rem 0; font-size: 0.95rem; font-weight: 500; }
     .alert p { margin: 0; }
     .alert-error   { background-color: #fde8e8; border-left: 4px solid #c0392b; color: #7b241c; }
     .alert-warning { background-color: #fef9e7; border-left: 4px solid #d4ac0d; color: #7d6608; }
     .quota-badge { background: var(--bg-sage-soft); color: var(--color-accent); padding: 2px 8px; border-radius: 12px; font-size: 0.85rem; margin-left: 10px; font-weight: 700; border: 1px solid var(--border-color); }
-    .tab-btn.active .quota-badge { background: rgba(255,255,255,0.2); color: #FCFBF8; border-color: rgba(255,255,255,0.3); }
+    .tab-btn.active .quota-badge { background: rgba(255,255,255,0.2); color: #FFFFFF; border-color: rgba(255,255,255,0.3); }
 
     /* ─── COOL LOADING ANIMATIONS ─── */
     .spinner {
@@ -203,7 +203,7 @@
     }
     .btn-secondary:hover { background: var(--bg-card-hover); }
     .btn-primary {
-      flex: 1; background: var(--color-accent); color: #FCFBF8; border: none; padding: 1rem;
+      flex: 1; background: var(--color-accent); color: #FFFFFF; border: none; padding: 1rem;
       border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 1rem;
     }
     .btn-primary:hover { background: var(--color-accent-hover); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(47,93,75,0.3); }
@@ -237,11 +237,11 @@
       <svg class="theme-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
       <svg class="theme-icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
     </button>
-    <a href="../" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; background:var(--color-accent); color:#FCFBF8; padding:7px 14px; border-radius:8px; font-weight:700; font-size:0.85rem; box-shadow:0 2px 8px rgba(47,93,75,0.18);">
+    <a href="../" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; background:var(--color-accent); color:#FFFFFF; padding:7px 14px; border-radius:8px; font-weight:700; font-size:0.85rem; box-shadow:0 2px 8px rgba(47,93,75,0.18);">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
       <span>Synapse Hub</span>
     </a>
-    <button id="admin-panel-btn" class="btn-logout" style="display:none; background:var(--color-accent); color:#FCFBF8; border:none;" onclick="openAdminPanel()">Panel Admin</button>
+    <button id="admin-panel-btn" class="btn-logout" style="display:none; background:var(--color-accent); color:#FFFFFF; border:none;" onclick="openAdminPanel()">Panel Admin</button>
     <span id="user-email" style="color:var(--color-secondary);">Cargando...</span>
     <button class="btn-logout" onclick="firebase.auth().signOut()">Salir</button>
   </div>
@@ -254,7 +254,7 @@
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('investigacion', this)">Modo Investigación <span id="quota-inv" class="quota-badge">0/0</span></button>
       <button class="tab-btn"        onclick="switchTab('informe', this)">Modo Informe Complejo <span id="quota-inf" class="quota-badge">0/0</span></button>
-      <button class="tab-btn" id="tab-btn-admin" onclick="switchTab('admin', this)" style="background:var(--color-accent); color:#FCFBF8;">Panel Admin & Pagos</button>
+      <button class="tab-btn" id="tab-btn-admin" onclick="switchTab('admin', this)" style="background:var(--color-accent); color:#FFFFFF;">Panel Admin & Pagos</button>
     </div>
 
     <div id="tab-investigacion" class="tab-panel active">
@@ -279,30 +279,30 @@
 
     <div id="tab-admin" class="tab-panel">
       <div class="tab-body">
-        <div class="header-banner" style="background: linear-gradient(135deg, #4A322B, #2B1B17); color: #fff; margin-bottom:1.5rem; padding: 1.5rem; border-radius: 12px;">
+        <div class="header-banner" style="background: linear-gradient(135deg, #047857, #059669); color: #fff; margin-bottom:1.5rem; padding: 1.5rem; border-radius: 12px;">
           <h1 style="color:#fff; margin-bottom: 0.5rem;">Panel de Control y Pagos (Admin)</h1>
           <p style="font-size:1rem; opacity:0.9; margin:0;">Registro en tiempo real de todos los pagos verificados por la IA y gestión de usuarios.</p>
         </div>
 
         <!-- TARJETA DE ESTADO ADMIN -->
-        <div style="background:#fff; border: 2px solid #2B1B17; border-radius: 12px; padding: 1.2rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div style="background:#fff; border: 2px solid #059669; border-radius: 12px; padding: 1.2rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
           <div>
-            <h4 style="margin:0; font-size:1.1rem; color:#2B1B17;">Cuenta Administradora: <span id="admin-account-display">maxrsilvagni@gmail.com</span></h4>
+            <h4 style="margin:0; font-size:1.1rem; color:#059669;">Cuenta Administradora: <span id="admin-account-display">maxrsilvagni@gmail.com</span></h4>
             <p style="margin:5px 0 0 0; font-size:0.9rem; opacity:0.8;">Estado: <strong id="admin-status-display" style="color:#27ae60; font-size:1rem;">Modo Admin Infinito (∞)</strong></p>
           </div>
-          <button class="btn" style="width:auto; margin:0; padding:0.6rem 1.4rem; background:#2B1B17; font-weight:bold;" onclick="forzarModoAdmin()">Forzar Modo Infinito</button>
+          <button class="btn" style="width:auto; margin:0; padding:0.6rem 1.4rem; background:#059669; font-weight:bold;" onclick="forzarModoAdmin()">Forzar Modo Infinito</button>
         </div>
 
         <div style="display:flex; gap:10px; margin-bottom: 1rem;">
-          <button class="btn" id="subtab-btn-pagos" style="flex:1; margin:0; background:#2B1B17; color:#fff;" onclick="switchAdminSubtab('pagos')">Historial de Pagos Verificados</button>
-          <button class="btn" id="subtab-btn-usuarios" style="flex:1; margin:0; background:#EAE2D5; color:#2B1B17; border: 1px solid #2B1B17;" onclick="switchAdminSubtab('usuarios')">Gestión de Usuarios</button>
+          <button class="btn" id="subtab-btn-pagos" style="flex:1; margin:0; background:#059669; color:#fff;" onclick="switchAdminSubtab('pagos')">Historial de Pagos Verificados</button>
+          <button class="btn" id="subtab-btn-usuarios" style="flex:1; margin:0; background:#EAE2D5; color:#059669; border: 1px solid #059669;" onclick="switchAdminSubtab('usuarios')">Gestión de Usuarios</button>
         </div>
 
         <!-- SECCIÓN PAGOS -->
         <div id="admin-section-pagos" style="background:#fff; border-radius:12px; padding:1.2rem; box-shadow:0 4px 12px rgba(0,0,0,0.05); overflow-x:auto;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
             <h3 style="margin:0;">Registro de Pagos Recibidos (IA)</h3>
-            <button class="btn" style="width:auto; margin:0; padding:0.4rem 0.8rem; font-size:0.85rem; background:#4A322B;" onclick="loadAdminPagos()">Actualizar Pagos</button>
+            <button class="btn" style="width:auto; margin:0; padding:0.4rem 0.8rem; font-size:0.85rem; background:#047857;" onclick="loadAdminPagos()">Actualizar Pagos</button>
           </div>
           <table style="width:100%; border-collapse: collapse; font-size: 0.95rem;">
             <thead>
@@ -323,12 +323,12 @@
             <h3 style="margin:0;">Control de Usuarios Registrados</h3>
             <div style="display:flex; gap:8px;">
               <button class="btn" style="width:auto; margin:0; padding:0.4rem 0.8rem; font-size:0.85rem; background:#c0392b; color:#fff;" onclick="manualResetAdmins()">Resetear otros Admins a Free</button>
-              <button class="btn" style="width:auto; margin:0; padding:0.4rem 0.8rem; font-size:0.85rem; background:#4A322B;" onclick="loadAdminUsuarios()">Actualizar Usuarios</button>
+              <button class="btn" style="width:auto; margin:0; padding:0.4rem 0.8rem; font-size:0.85rem; background:#047857;" onclick="loadAdminUsuarios()">Actualizar Usuarios</button>
             </div>
           </div>
 
           <div style="background:#FAF8F5; padding:10px 14px; border-radius:8px; margin-bottom:1rem; border:1px solid #EAE6DF; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-            <span style="font-size:0.85rem; font-weight:bold; color:#4A322B;">Activar Usuario por Correo:</span>
+            <span style="font-size:0.85rem; font-weight:bold; color:#047857;">Activar Usuario por Correo:</span>
             <input type="email" id="admin-manual-email-redacta" placeholder="correo_estudiante@gmail.com" style="flex:1; min-width:200px; padding:6px 10px; border:1px solid #ccc; border-radius:6px; font-size:0.85rem;" />
             <button class="btn" style="width:auto; margin:0; padding:0.4rem 0.8rem; font-size:0.8rem; background:#1d4ed8; color:#fff;" onclick="adminManualActivarRedacta('vota7')">+ Vota 7 (3d)</button>
             <button class="btn" style="width:auto; margin:0; padding:0.4rem 0.8rem; font-size:0.8rem; background:#f39c12; color:#fff;" onclick="adminManualActivarRedacta('premium7')">+ Premium (1 sem)</button>
@@ -379,11 +379,11 @@
 <div class="modal-overlay" id="download-modal-overlay">
   <div class="modal" style="max-width: 450px;">
     <div style="font-size: 2.8rem; margin-bottom: 15px; color:var(--color-accent); font-weight:800;">✓</div>
-    <h3 style="margin-bottom: 0.5rem; color:#2B1B17; font-weight:800;">¡Documento Listo!</h3>
+    <h3 style="margin-bottom: 0.5rem; color:#059669; font-weight:800;">¡Documento Listo!</h3>
     <p style="opacity: 0.8; margin-bottom: 1.5rem;">Tu redacción ha sido estructurada y optimizada con éxito.</p>
     
     <div style="background: #EAE2D5; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem;">
-      <h4 style="margin:0; color:#2B1B17; font-size:1.2rem;">Asignacion_<span id="download-modo-text"></span>.docx</h4>
+      <h4 style="margin:0; color:#059669; font-size:1.2rem;">Asignacion_<span id="download-modo-text"></span>.docx</h4>
       <p style="margin: 5px 0 0 0; font-size: 0.9rem; opacity: 0.7;">Formato Word • Lista para entregar</p>
     </div>
     
@@ -1165,16 +1165,16 @@ function switchAdminSubtab(subtab) {
   const btnPagos = document.getElementById('subtab-btn-pagos');
   const btnUsers = document.getElementById('subtab-btn-usuarios');
   if (subtab === 'pagos') {
-    btnPagos.style.background = '#2B1B17';
+    btnPagos.style.background = '#059669';
     btnPagos.style.color = '#fff';
     btnUsers.style.background = '#EAE2D5';
-    btnUsers.style.color = '#2B1B17';
+    btnUsers.style.color = '#059669';
     loadAdminPagos();
   } else {
-    btnUsers.style.background = '#2B1B17';
+    btnUsers.style.background = '#059669';
     btnUsers.style.color = '#fff';
     btnPagos.style.background = '#EAE2D5';
-    btnPagos.style.color = '#2B1B17';
+    btnPagos.style.color = '#059669';
     loadAdminUsuarios();
   }
 }
@@ -1249,7 +1249,7 @@ async function loadAdminPagos() {
         <td style="padding:12px 10px;">${dateStr}</td>
         <td style="padding:12px 10px;"><strong>${d.email}</strong></td>
         <td style="padding:12px 10px;"><span class="quota-badge" style="background:#27ae60; margin:0;">${d.plan}</span></td>
-        <td style="padding:12px 10px; font-weight:bold; color:#2B1B17;">${d.monto_bs} Bs.</td>
+        <td style="padding:12px 10px; font-weight:bold; color:#059669;">${d.monto_bs} Bs.</td>
       </tr>`;
     });
     tbody.innerHTML = html;
@@ -1316,7 +1316,7 @@ async function loadAdminUsuarios() {
       let isTempPremium = u.premium_until && u.premium_until > Date.now();
       
       let planDisplay = isThisOwner ? 'admin (propietario)' : (isVota7 ? 'vota 7 (3 días)' : (isTempPremium ? 'premium (temporal)' : (u.plan || 'free')));
-      let badgeColor = isThisOwner ? '#2B1B17' : (isVota7 ? '#1d4ed8' : ((planDisplay === 'premium' || isTempPremium) ? '#27ae60' : '#888'));
+      let badgeColor = isThisOwner ? '#059669' : (isVota7 ? '#1d4ed8' : ((planDisplay === 'premium' || isTempPremium) ? '#27ae60' : '#888'));
 
       let nombreExtra = u.nombre ? `<div style="font-size:0.78rem; color:var(--color-accent); font-weight:bold;">${u.nombre}</div>` : '';
 
