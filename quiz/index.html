@@ -653,45 +653,25 @@
       color: var(--color-primary);
     }
 
-    /* Loader & Fact Card en Modo Claro */
+    /* Loader & BotW Tip en Modo Claro */
     body:not(.theme-dark) .loading-label-thea {
       color: var(--color-primary);
     }
     body:not(.theme-dark) .loading-sublabel-thea {
       color: var(--color-secondary);
     }
-    body:not(.theme-dark) .vortex-glow-core {
-      background: radial-gradient(circle, rgba(16, 185, 129, 0.22) 0%, rgba(5, 150, 105, 0.08) 45%, transparent 70%);
+    body:not(.theme-dark) .origami-prism-pivot {
+      filter: drop-shadow(0 14px 20px rgba(15, 23, 42, 0.16));
     }
-    body:not(.theme-dark) .vortex-ring-1 {
-      border-color: rgba(5, 150, 105, 0.25);
+    body:not(.theme-dark) .botw-tip-divider::before,
+    body:not(.theme-dark) .botw-tip-divider::after {
+      background: linear-gradient(90deg, transparent, rgba(5, 150, 105, 0.25), transparent);
     }
-    body:not(.theme-dark) .vortex-ring-2 {
-      border-color: rgba(16, 185, 129, 0.35);
-    }
-    body:not(.theme-dark) .vortex-ring-3 {
-      border-top-color: rgba(5, 150, 105, 0.45);
-      border-bottom-color: rgba(5, 150, 105, 0.15);
-    }
-    body:not(.theme-dark) .study-fact-card {
-      background: #FFFFFF;
-      border: 1.5px solid rgba(5, 150, 105, 0.18);
-      box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
-    }
-    body:not(.theme-dark) .study-fact-card::before {
-      background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
-    }
-    body:not(.theme-dark) .study-fact-badge {
+    body:not(.theme-dark) .botw-tip-header {
       color: var(--color-accent);
     }
-    body:not(.theme-dark) .study-fact-text {
-      color: #334155;
-    }
-    body:not(.theme-dark) .study-fact-dot {
-      background: rgba(15, 23, 42, 0.12);
-    }
-    body:not(.theme-dark) .study-fact-dot.active {
-      background: var(--color-accent);
+    body:not(.theme-dark) .botw-tip-text {
+      color: #475569;
     }
 
     /* ─── NAVBAR SUPERIOR SYNAPSE ─── */
@@ -1270,120 +1250,104 @@
       box-shadow: 0 6px 26px rgba(118, 185, 155, 0.5);
     }
 
-    /* ─── VISTA: CARGANDO CON VÓRTICE 3D Y EVIDENCIA CIENTÍFICA ─── */
+    /* ─── VISTA: CARGANDO CON PRISMA ORIGAMI 3D Y TIP ZELDA BOTW ─── */
     #view-loading {
       display: none; /* Oculto por defecto */
       width: 100%;
-      min-height: calc(100vh - 100px);
+      min-height: calc(100vh - 80px);
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      text-align: center;
+      padding: 3.5rem 1.5rem 2.5rem;
+      position: relative;
+      box-sizing: border-box;
+    }
+
+    .loading-center-stage {
+      display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      padding: 2.5rem 1.5rem;
-      position: relative;
+      margin-top: auto;
+      margin-bottom: auto;
+      width: 100%;
     }
 
-    .vortex-stage {
-      position: relative;
-      width: 150px;
-      height: 150px;
+    /* 3D Scene Container */
+    .origami-3d-scene {
+      width: 130px;
+      height: 130px;
+      perspective: 750px;
+      perspective-origin: 50% 45%;
       display: flex;
       align-items: center;
       justify-content: center;
-      perspective: 900px;
-      margin-bottom: 1.8rem;
+      margin-bottom: 2rem;
     }
 
-    .vortex-glow-core {
-      position: absolute;
-      width: 130px;
-      height: 130px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(16, 185, 129, 0.32) 0%, rgba(5, 150, 105, 0.12) 45%, transparent 70%);
-      animation: corePulse 3s ease-in-out infinite alternate;
-      filter: blur(14px);
-      pointer-events: none;
-    }
-
-    .vortex-ring {
-      position: absolute;
-      border-radius: 50%;
-      pointer-events: none;
-    }
-    .vortex-ring-1 {
-      width: 126px;
-      height: 126px;
-      border: 1.5px dashed rgba(118, 185, 155, 0.35);
-      animation: spinRing1 7.5s linear infinite;
-    }
-    .vortex-ring-2 {
-      width: 96px;
-      height: 96px;
-      border: 1px dotted rgba(52, 211, 153, 0.45);
-      animation: spinRing2 5s linear infinite reverse;
-    }
-    .vortex-ring-3 {
-      width: 68px;
-      height: 68px;
-      border: 1.5px solid transparent;
-      border-top: 1.5px solid rgba(16, 185, 129, 0.55);
-      border-bottom: 1.5px solid rgba(16, 185, 129, 0.2);
-      animation: spinRing3 2.8s linear infinite;
-    }
-
-    .vortex-svg-wrap {
+    /* Rotating 3D Prism Pivot (4 Faces at 90deg) */
+    .origami-prism-pivot {
+      width: 86px;
+      height: 86px;
       position: relative;
-      z-index: 2;
+      transform-style: preserve-3d;
+      animation: origamiPrismSpin 6.5s linear infinite, origamiFloat 3.2s ease-in-out infinite;
+      filter: drop-shadow(0 16px 22px rgba(0, 0, 0, 0.45));
+    }
+
+    /* The 4 faces of the 3D Origami Column */
+    .prism-face {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 86px;
       height: 86px;
       display: flex;
       align-items: center;
       justify-content: center;
-      animation: vortexLevitate 3.2s ease-in-out infinite, vortexSpinPrecession 5.5s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
-      transform-style: preserve-3d;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      pointer-events: none;
     }
 
-    .vortex-svg-wrap svg {
+    .face-front  { transform: rotateY(0deg) translateZ(43px); }
+    .face-right  { transform: rotateY(90deg) translateZ(43px); }
+    .face-back   { transform: rotateY(180deg) translateZ(43px); }
+    .face-left   { transform: rotateY(270deg) translateZ(43px); }
+
+    .prism-face svg {
       width: 100%;
       height: 100%;
-      filter: drop-shadow(0 6px 18px rgba(5, 150, 105, 0.35));
+      display: block;
     }
 
-    @keyframes corePulse {
-      0% { transform: scale(0.85); opacity: 0.5; }
-      100% { transform: scale(1.25); opacity: 0.95; }
+    /* Realistic Origami 3D Shading */
+    .face-front svg { filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); }
+    .face-right svg { filter: brightness(0.88) drop-shadow(0 4px 8px rgba(0,0,0,0.2)); }
+    .face-back svg  { filter: brightness(0.76) drop-shadow(0 4px 8px rgba(0,0,0,0.2)); }
+    .face-left svg  { filter: brightness(0.92) drop-shadow(0 4px 8px rgba(0,0,0,0.2)); }
+
+    @keyframes origamiPrismSpin {
+      0% {
+        transform: rotateX(-12deg) rotateY(0deg);
+      }
+      100% {
+        transform: rotateX(-12deg) rotateY(360deg);
+      }
     }
 
-    @keyframes spinRing1 {
-      0% { transform: rotateX(68deg) rotateY(15deg) rotateZ(0deg); }
-      100% { transform: rotateX(68deg) rotateY(15deg) rotateZ(360deg); }
-    }
-
-    @keyframes spinRing2 {
-      0% { transform: rotateX(45deg) rotateY(-35deg) rotateZ(0deg); }
-      100% { transform: rotateX(45deg) rotateY(-35deg) rotateZ(360deg); }
-    }
-
-    @keyframes spinRing3 {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    @keyframes vortexLevitate {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-7px); }
-    }
-
-    @keyframes vortexSpinPrecession {
-      0% { transform: rotateY(0deg) rotateZ(0deg); }
-      25% { transform: rotateY(90deg) rotateZ(5deg) scale(0.96); }
-      50% { transform: rotateY(180deg) rotateZ(0deg) scale(0.92); }
-      75% { transform: rotateY(270deg) rotateZ(-5deg) scale(0.96); }
-      100% { transform: rotateY(360deg) rotateZ(0deg); }
+    @keyframes origamiFloat {
+      0%, 100% {
+        margin-top: 0px;
+      }
+      50% {
+        margin-top: -8px;
+      }
     }
 
     .loading-label-thea {
-      font-size: 1.28rem;
+      font-size: 1.25rem;
       font-weight: 700;
       color: var(--color-primary);
       letter-spacing: -0.3px;
@@ -1392,74 +1356,69 @@
     .loading-sublabel-thea {
       font-size: 0.88rem;
       color: var(--color-secondary);
-      margin-bottom: 2rem;
-      max-width: 480px;
+      max-width: 460px;
       line-height: 1.45;
     }
 
-    /* Tarjeta de Evidencia Científica */
-    .study-fact-card {
+    /* ─── ZELDA BOTW STYLE BOTTOM TIP SECTION ─── */
+    .botw-tip-section {
       width: 100%;
-      max-width: 530px;
-      background: rgba(18, 27, 23, 0.75);
-      border: 1px solid rgba(118, 185, 155, 0.25);
-      border-radius: 16px;
-      padding: 1.25rem 1.5rem;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
-      text-align: left;
+      max-width: 680px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
       position: relative;
-      overflow: hidden;
-      margin: 0 auto;
+      padding-top: 1.5rem;
+      margin-top: 2rem;
     }
-    .study-fact-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, #10B981, transparent);
-    }
-    .study-fact-badge {
+
+    .botw-tip-divider {
       display: flex;
       align-items: center;
-      gap: 7px;
-      font-size: 0.74rem;
+      justify-content: center;
+      gap: 14px;
+      width: 100%;
+      margin-bottom: 0.75rem;
+    }
+
+    .botw-tip-divider::before,
+    .botw-tip-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(118, 185, 155, 0.35), transparent);
+    }
+
+    .botw-tip-header {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: #34D399;
-      margin-bottom: 0.65rem;
+      letter-spacing: 2px;
+      color: #76B99B;
+      white-space: nowrap;
     }
-    .study-fact-text {
-      font-size: 0.88rem;
-      line-height: 1.55;
-      color: #E2E8F0;
-      min-height: 4.6rem;
-      transition: opacity 0.25s ease, transform 0.25s ease;
+
+    .botw-tip-icon {
+      display: inline-flex;
+      align-items: center;
     }
-    .study-fact-text.fact-fade {
+
+    .botw-tip-text {
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: #CBD5E1;
+      min-height: 3.5rem;
+      max-width: 620px;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .botw-tip-text.tip-fade {
       opacity: 0;
       transform: translateY(3px);
-    }
-    .study-fact-dots {
-      display: flex;
-      gap: 6px;
-      justify-content: center;
-      margin-top: 1rem;
-    }
-    .study-fact-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: rgba(118, 185, 155, 0.25);
-      transition: all 0.3s ease;
-    }
-    .study-fact-dot.active {
-      width: 20px;
-      border-radius: 999px;
-      background: #34D399;
     }
 
     /* ─── VISTA 2: ESTUDIO ACTIVO (OCULTO POR DEFECTO PARA NO VERSE ABAJO) ─── */
@@ -2887,59 +2846,99 @@
   </div>
 
   <!-- ══════════════════════════════════════════════════════════════ -->
-  <!-- VISTA: CARGANDO CON VÓRTICE 3D Y EVIDENCIA CIENTÍFICA         -->
+  <!-- VISTA: CARGANDO CON PRISMA ORIGAMI 3D Y TIP ZELDA BOTW       -->
   <!-- ══════════════════════════════════════════════════════════════ -->
   <section id="view-loading">
-    <div class="vortex-stage">
-      <div class="vortex-glow-core"></div>
-      <div class="vortex-ring vortex-ring-1"></div>
-      <div class="vortex-ring vortex-ring-2"></div>
-      <div class="vortex-ring vortex-ring-3"></div>
-
-      <div class="vortex-svg-wrap">
-        <svg viewBox="0 0 100 100" fill="none">
-          <defs>
-            <linearGradient id="v1-plate" x1="20" y1="10" x2="80" y2="90" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#FFFFFF"/>
-              <stop offset="60%" stop-color="#E2E8F0"/>
-              <stop offset="100%" stop-color="#CBD5E1"/>
-            </linearGradient>
-            <linearGradient id="v1-stroke" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#1E293B"/>
-              <stop offset="100%" stop-color="#0F172A"/>
-            </linearGradient>
-          </defs>
-          <path d="M 12 7 L 35 18 L 56 22 L 72 8 L 12 7 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
-          <path d="M 60 22 L 95 18 L 75 7 L 60 22 Z" fill="#CBD5E1" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
-          <path d="M 7 9 L 15 28 L 52 36 L 87 30 L 98 18 L 57 23 L 32 19 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
-          <path d="M 20 34 L 27 44 L 56 50 L 79 45 L 78 35 L 53 39 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
-          <path d="M 33 47 L 38 56 L 61 62 L 72 55 L 73 49 L 58 52 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
-          <path d="M 38 65 L 53 72 L 67 66 L 69 58 L 60 63 L 41 58 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
-          <path d="M 35 75 L 48 81 L 57 74 L 57 71 L 51 73 L 37 66 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
-          <path d="M 37 83 L 48 98 L 48 83 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
-          <path d="M 54 83 L 50 83 L 50 98 L 56 89 Z" fill="#94A3B8" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
-        </svg>
+    <div class="loading-center-stage">
+      <!-- 3D Origami Prism (4 Caras del Vórtice) -->
+      <div class="origami-3d-scene">
+        <div class="origami-prism-pivot">
+          <!-- Cara 1: Frontal -->
+          <div class="prism-face face-front">
+            <svg viewBox="0 0 100 100" fill="none">
+              <defs>
+                <linearGradient id="v1-plate" x1="20" y1="10" x2="80" y2="90" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#FFFFFF"/>
+                  <stop offset="60%" stop-color="#E2E8F0"/>
+                  <stop offset="100%" stop-color="#CBD5E1"/>
+                </linearGradient>
+                <linearGradient id="v1-stroke" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#1E293B"/>
+                  <stop offset="100%" stop-color="#0F172A"/>
+                </linearGradient>
+              </defs>
+              <path d="M 12 7 L 35 18 L 56 22 L 72 8 L 12 7 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 60 22 L 95 18 L 75 7 L 60 22 Z" fill="#CBD5E1" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 7 9 L 15 28 L 52 36 L 87 30 L 98 18 L 57 23 L 32 19 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 20 34 L 27 44 L 56 50 L 79 45 L 78 35 L 53 39 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 33 47 L 38 56 L 61 62 L 72 55 L 73 49 L 58 52 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 38 65 L 53 72 L 67 66 L 69 58 L 60 63 L 41 58 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 35 75 L 48 81 L 57 74 L 57 71 L 51 73 L 37 66 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 37 83 L 48 98 L 48 83 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 54 83 L 50 83 L 50 98 L 56 89 Z" fill="#94A3B8" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <!-- Cara 2: Derecha -->
+          <div class="prism-face face-right">
+            <svg viewBox="0 0 100 100" fill="none">
+              <path d="M 12 7 L 35 18 L 56 22 L 72 8 L 12 7 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 60 22 L 95 18 L 75 7 L 60 22 Z" fill="#CBD5E1" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 7 9 L 15 28 L 52 36 L 87 30 L 98 18 L 57 23 L 32 19 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 20 34 L 27 44 L 56 50 L 79 45 L 78 35 L 53 39 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 33 47 L 38 56 L 61 62 L 72 55 L 73 49 L 58 52 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 38 65 L 53 72 L 67 66 L 69 58 L 60 63 L 41 58 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 35 75 L 48 81 L 57 74 L 57 71 L 51 73 L 37 66 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 37 83 L 48 98 L 48 83 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 54 83 L 50 83 L 50 98 L 56 89 Z" fill="#94A3B8" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <!-- Cara 3: Trasera -->
+          <div class="prism-face face-back">
+            <svg viewBox="0 0 100 100" fill="none">
+              <path d="M 12 7 L 35 18 L 56 22 L 72 8 L 12 7 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 60 22 L 95 18 L 75 7 L 60 22 Z" fill="#CBD5E1" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 7 9 L 15 28 L 52 36 L 87 30 L 98 18 L 57 23 L 32 19 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 20 34 L 27 44 L 56 50 L 79 45 L 78 35 L 53 39 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 33 47 L 38 56 L 61 62 L 72 55 L 73 49 L 58 52 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 38 65 L 53 72 L 67 66 L 69 58 L 60 63 L 41 58 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 35 75 L 48 81 L 57 74 L 57 71 L 51 73 L 37 66 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 37 83 L 48 98 L 48 83 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 54 83 L 50 83 L 50 98 L 56 89 Z" fill="#94A3B8" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <!-- Cara 4: Izquierda -->
+          <div class="prism-face face-left">
+            <svg viewBox="0 0 100 100" fill="none">
+              <path d="M 12 7 L 35 18 L 56 22 L 72 8 L 12 7 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 60 22 L 95 18 L 75 7 L 60 22 Z" fill="#CBD5E1" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 7 9 L 15 28 L 52 36 L 87 30 L 98 18 L 57 23 L 32 19 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 20 34 L 27 44 L 56 50 L 79 45 L 78 35 L 53 39 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 33 47 L 38 56 L 61 62 L 72 55 L 73 49 L 58 52 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 38 65 L 53 72 L 67 66 L 69 58 L 60 63 L 41 58 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 35 75 L 48 81 L 57 74 L 57 71 L 51 73 L 37 66 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 37 83 L 48 98 L 48 83 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M 54 83 L 50 83 L 50 98 L 56 89 Z" fill="#94A3B8" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
       </div>
+
+      <div class="loading-label-thea" id="loading-main-label">Generando preguntas</div>
+      <div class="loading-sublabel-thea">Sintetizando conceptos clave y calibrando tu sesión inteligente</div>
     </div>
 
-    <div class="loading-label-thea" id="loading-main-label">Generando preguntas</div>
-    <div class="loading-sublabel-thea">Sintetizando conceptos clave y calibrando preguntas de estudio dinámico</div>
-
-    <div class="study-fact-card">
-      <div class="study-fact-badge">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-        <span>Evidencia Científica del Aprendizaje</span>
+    <!-- Información integrada estilo Zelda BotW al fondo de la pantalla -->
+    <div class="botw-tip-section">
+      <div class="botw-tip-divider">
+        <div class="botw-tip-header">
+          <span class="botw-tip-icon">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          </span>
+          <span>Evidencia Científica del Aprendizaje</span>
+        </div>
       </div>
-      <div class="study-fact-text" id="study-fact-content">
-        Dato científico: Investigaciones de Roediger &amp; Karpicke (Science) demuestran que practicar autoevaluación activa (Active Recall) incrementa la retención a largo plazo hasta en un 50% frente a la relectura pasiva.
-      </div>
-      <div class="study-fact-dots" id="study-fact-dots">
-        <span class="study-fact-dot active"></span>
-        <span class="study-fact-dot"></span>
-        <span class="study-fact-dot"></span>
-        <span class="study-fact-dot"></span>
-        <span class="study-fact-dot"></span>
-        <span class="study-fact-dot"></span>
+      <div class="botw-tip-text" id="study-fact-content">
+        Investigaciones de Roediger &amp; Karpicke (Science) demuestran que practicar autoevaluación activa (Active Recall) incrementa la retención a largo plazo hasta en un 50% frente a la relectura pasiva de apuntes.
       </div>
     </div>
   </section>
@@ -4354,14 +4353,14 @@
       }
     }
 
-    /* ─── CARRUSEL DE EVIDENCIA CIENTÍFICA EN PANTALLA DE CARGA ─── */
+    /* ─── CARRUSEL DE EVIDENCIA CIENTÍFICA EN PANTALLA DE CARGA (ESTILO BOTW) ─── */
     const SCIENTIFIC_STUDY_FACTS = [
-      "Dato científico: Investigaciones de Roediger & Karpicke (Science) demuestran que practicar autoevaluación activa (Active Recall) incrementa la retención a largo plazo hasta en un 50% frente a la relectura pasiva.",
-      "Dato científico: Un metaanálisis de Smith et al. (Cognitive Research) reveló que realizar simulacros de preguntas reduce la ansiedad ante exámenes en un 33% y aumenta la precisión bajo presión.",
-      "Dato científico: Según la curva del olvido de Ebbinghaus, espaciar los repasos en intervalos estratégicos reactiva los circuitos sinápticos y eleva la memoria permanente hasta en un 200%.",
-      "Dato científico: Estudios de Rohrer & Taylor evidencian que alternar diferentes temas y modalidades de preguntas mejora la capacidad de discriminar conceptos y eleva el rendimiento en un 43%.",
-      "Dato científico: Reconstruir y formular explicaciones con tus propias palabras (Efecto Feynman) estimula la corteza prefrontal, logrando una consolidación conceptual mucho más profunda.",
-      "Dato científico: Neurocientíficos de Harvard comprobaron que durante el sueño profundo NREM, el cerebro reproduce las redes neuronales del estudio dinámico, fijándolas de manera permanente."
+      "Investigaciones de Roediger & Karpicke (Science) demuestran que practicar autoevaluación activa (Active Recall) incrementa la retención a largo plazo hasta en un 50% frente a la relectura pasiva de apuntes.",
+      "Un metaanálisis de Smith et al. (Cognitive Research) reveló que realizar simulacros de preguntas reduce la ansiedad ante evaluaciones en un 33% y aumenta la agilidad mental bajo presión.",
+      "Según la curva del olvido de Ebbinghaus, espaciar los repasos en intervalos estratégicos reactiva las conexiones neuronales y eleva la memoria permanente hasta en un 200%.",
+      "Estudios de Rohrer & Taylor evidencian que intercalar diferentes tipos de preguntas en una misma sesión mejora la capacidad de discriminar conceptos y eleva el rendimiento en un 43%.",
+      "Reconstruir y formular explicaciones con tus propias palabras (Efecto Feynman) activa la corteza prefrontal, consolidando conexiones conceptuales mucho más duraderas.",
+      "Neurocientíficos de Harvard comprobaron que durante el sueño profundo NREM, el cerebro reproduce las redes neuronales del estudio dinámico, fijándolas definitivamente."
     ];
 
     let factsCarouselInterval = null;
@@ -4369,32 +4368,22 @@
 
     function renderActiveFact(index) {
       const factBody = document.getElementById('study-fact-content');
-      const dots = document.querySelectorAll('.study-fact-dot');
       if (!factBody) return;
-      factBody.classList.add('fact-fade');
+      factBody.classList.add('tip-fade');
       setTimeout(() => {
         factBody.textContent = SCIENTIFIC_STUDY_FACTS[index];
-        factBody.classList.remove('fact-fade');
-        dots.forEach((dot, idx) => {
-          dot.classList.toggle('active', idx === index);
-        });
-      }, 250);
+        factBody.classList.remove('tip-fade');
+      }, 300);
     }
 
     function startScientificFactsCarousel() {
       stopScientificFactsCarousel();
-      const dotsContainer = document.getElementById('study-fact-dots');
-      if (dotsContainer) {
-        dotsContainer.innerHTML = SCIENTIFIC_STUDY_FACTS.map((_, i) => 
-          `<span class="study-fact-dot ${i === 0 ? 'active' : ''}"></span>`
-        ).join('');
-      }
       currentFactIndex = 0;
       renderActiveFact(0);
       factsCarouselInterval = setInterval(() => {
         currentFactIndex = (currentFactIndex + 1) % SCIENTIFIC_STUDY_FACTS.length;
         renderActiveFact(currentFactIndex);
-      }, 3800);
+      }, 4500);
     }
 
     function stopScientificFactsCarousel() {
