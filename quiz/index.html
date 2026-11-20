@@ -1580,29 +1580,65 @@
 
     /* ─── TIPO 2: ORDENAR ELEMENTOS EN SECUENCIA ─── */
     .syn-sort-wrapper {
-      max-width: 720px;
+      max-width: 760px;
       margin: 0 auto 2rem;
       width: 100%;
     }
     .syn-sort-list {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
       width: 100%;
     }
     .syn-sort-item {
       background: var(--bg-option);
       border: 1.5px solid var(--border-purple);
       border-radius: var(--radius-md);
-      padding: 12px 16px;
+      padding: 14px 18px;
       display: flex;
       align-items: center;
       gap: 14px;
-      transition: all 0.2s ease;
+      transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+      cursor: grab;
+      user-select: none;
+      min-height: 64px;
+      box-sizing: border-box;
+    }
+    .syn-sort-item:hover:not(.state-correct):not(.state-incorrect) {
+      background: var(--bg-option-hover);
+      border-color: var(--border-purple-hover);
+      transform: translateY(-1px);
+    }
+    .syn-sort-item:active:not(.state-correct):not(.state-incorrect) {
+      cursor: grabbing;
+    }
+    .syn-sort-item.is-dragging,
+    .syn-sort-item.is-touch-dragging {
+      opacity: 0.45;
+      transform: scale(0.98);
+      border-color: var(--color-accent) !important;
+      background: rgba(118, 185, 155, 0.08) !important;
+    }
+    .syn-sort-item.drag-over-top {
+      border-top: 3px solid var(--color-accent) !important;
+    }
+    .syn-sort-item.drag-over-bottom {
+      border-bottom: 3px solid var(--color-accent) !important;
+    }
+    .syn-sort-num-box {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .syn-sort-num-pair {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
     }
     .syn-sort-num {
-      width: 32px;
-      height: 32px;
+      width: 34px;
+      height: 34px;
       border-radius: 8px;
       background: rgba(255, 255, 255, 0.08);
       color: var(--color-accent);
@@ -1612,49 +1648,60 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      transition: all 0.2s;
+    }
+    .syn-sort-num-correct {
+      background: rgba(118, 185, 155, 0.2);
+      color: var(--color-accent);
+      border: 1px solid var(--color-accent);
+    }
+    .syn-sort-num-wrong {
+      background: rgba(239, 68, 68, 0.2);
+      color: #F87171;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      text-decoration: line-through;
+    }
+    .syn-sort-num-target {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: rgba(118, 185, 155, 0.25);
+      color: var(--color-accent);
+      border: 1.5px solid var(--color-accent);
+      font-weight: 800;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 0 10px rgba(118, 185, 155, 0.35);
+      animation: synFigPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .syn-sort-arrow-icon {
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
     }
     .syn-sort-text {
       flex: 1;
       font-size: 1.02rem;
       font-weight: 600;
       color: var(--text-white);
-      line-height: 1.4;
+      line-height: 1.45;
     }
-    .syn-sort-controls {
-      display: flex;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-    .syn-sort-btn {
-      width: 34px;
-      height: 34px;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid var(--border-purple);
-      color: var(--text-white);
+    .syn-sort-drag-handle {
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      transition: all 0.15s ease;
+      color: var(--text-dim);
+      cursor: grab;
+      padding: 6px;
+      border-radius: 6px;
+      transition: color 0.15s ease;
+      flex-shrink: 0;
     }
-    .syn-sort-btn:hover:not(:disabled) {
-      background: rgba(255, 255, 255, 0.15);
-      border-color: var(--border-purple-hover);
-    }
-    .syn-sort-btn:disabled {
-      opacity: 0.25;
-      cursor: not-allowed;
-    }
-    .syn-sort-correct-banner {
-      background: rgba(118, 185, 155, 0.12);
-      border: 1px solid var(--color-accent);
-      border-radius: var(--radius-sm);
-      padding: 10px 14px;
-      margin-top: 12px;
-      font-size: 0.88rem;
-      color: var(--text-white);
-      line-height: 1.45;
+    .syn-sort-item:hover .syn-sort-drag-handle {
+      color: var(--color-accent);
     }
 
     /* ─── TIPO 3: SELECCIÓN MÚLTIPLE (VARIAS CORRECTAS) ─── */
@@ -1709,59 +1756,88 @@
 
     /* ─── TIPO 4: APAREAR / EMPAREJAR PAREJAS ─── */
     .syn-match-wrapper {
-      max-width: 860px;
+      max-width: 880px;
       margin: 0 auto 2rem;
       width: 100%;
     }
     .syn-match-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      gap: 16px;
       width: 100%;
+      align-items: stretch;
     }
     @media (max-width: 720px) {
-      .syn-match-grid { grid-template-columns: 1fr; gap: 16px; }
+      .syn-match-grid { grid-template-columns: 1fr; gap: 14px; }
     }
     .syn-match-col {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
+      height: 100%;
+      justify-content: space-between;
     }
     .syn-match-card {
       background: var(--bg-option);
       border: 1.5px solid var(--border-purple);
       border-radius: var(--radius-md);
-      padding: 14px 16px;
+      padding: 14px 18px;
       cursor: pointer;
-      transition: all 0.2s ease;
-      min-height: 64px;
+      transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+      min-height: 84px;
+      flex: 1 1 0px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
+      gap: 12px;
       font-size: 0.95rem;
       user-select: none;
+      box-sizing: border-box;
+      position: relative;
     }
-    .syn-match-card:hover {
+    .syn-match-card:hover:not(.is-paired) {
       background: var(--bg-option-hover);
       border-color: var(--border-purple-hover);
+      transform: translateY(-1px);
     }
     .syn-match-card.is-active-source {
       border-color: var(--cyan-spark) !important;
-      box-shadow: 0 0 14px rgba(125, 181, 214, 0.45) !important;
-      background: rgba(125, 181, 214, 0.1) !important;
+      box-shadow: 0 0 16px rgba(125, 181, 214, 0.5) !important;
+      background: rgba(125, 181, 214, 0.12) !important;
+      transform: scale(1.015);
     }
     .syn-match-card.is-paired {
-      border-color: var(--color-accent);
-      background: rgba(118, 185, 155, 0.08);
+      cursor: default;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
     }
-    .syn-match-badge {
-      font-size: 0.75rem;
-      font-weight: 800;
-      padding: 3px 10px;
-      border-radius: 999px;
+    .syn-match-card.is-wrong-shake {
+      animation: synShake 0.45s ease-in-out !important;
+      border-color: #EF4444 !important;
+      background: rgba(239, 68, 68, 0.15) !important;
+      box-shadow: 0 0 16px rgba(239, 68, 68, 0.4) !important;
+    }
+    .syn-match-figure-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       flex-shrink: 0;
-      letter-spacing: 0.3px;
+      border: 1.5px solid currentColor;
+      box-shadow: 0 0 10px currentColor;
+      animation: synFigPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes synFigPop {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes synShake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-8px); }
+      40% { transform: translateX(8px); }
+      60% { transform: translateX(-5px); }
+      80% { transform: translateX(5px); }
     }
 
     /* BOTÓN UNIVERSAL DE VERIFICACIÓN / CONFIRMACIÓN */
@@ -5280,6 +5356,8 @@ Devuelve ÚNICAMENTE un array JSON válido con ${count} objetos respetando estas
       state.currentMultiSelected = [];
       state.currentMatchedPairs = {};
       state.currentMatchSelectedTerm = null;
+      state.currentMatchSelectedDef = null;
+      state.matchMistakes = 0;
 
       updateProgress();
 
@@ -5328,6 +5406,8 @@ Devuelve ÚNICAMENTE un array JSON válido con ${count} objetos respetando estas
         container.className = 'syn-match-wrapper';
         state.currentMatchedPairs = {};
         state.currentMatchSelectedTerm = null;
+        state.currentMatchSelectedDef = null;
+        state.matchMistakes = 0;
         renderMatchingGame(container, q);
 
       } else {
@@ -5352,11 +5432,11 @@ Devuelve ÚNICAMENTE un array JSON válido con ${count} objetos respetando estas
       }
     }
 
-    /* ─── MOTOR INTERACTIVO: ORDENAR ELEMENTOS ─── */
+    /* ─── MOTOR INTERACTIVO: ORDENAR ELEMENTOS (DRAG & DROP) ─── */
     function renderSortList(container, q) {
       container.innerHTML = `
         <div style="font-size:0.86rem; color:var(--text-dim); margin-bottom:14px; text-align:center;">
-          Usa los botones para ordenar los elementos de arriba hacia abajo (1 es el primero):
+          Mantén presionado y arrastra para ordenar los elementos de arriba hacia abajo (1 es el primero):
         </div>
         <div class="syn-sort-list" id="sort-items-list"></div>
         <div style="display:flex; justify-content:center; margin-top:16px;">
@@ -5368,39 +5448,128 @@ Devuelve ÚNICAMENTE un array JSON válido con ${count} objetos respetando estas
       renderSortItems(q);
     }
 
+    let dragSrcIndex = null;
+    let touchSortItem = null;
+
     function renderSortItems(q) {
       const listEl = document.getElementById('sort-items-list');
       if (!listEl) return;
       listEl.innerHTML = '';
+
       state.currentOrderItems.forEach((itemText, idx) => {
         const row = document.createElement('div');
         row.className = 'syn-sort-item';
         row.id = `sort-item-${idx}`;
+        row.setAttribute('data-idx', idx);
+        row.setAttribute('draggable', state.answeredCurrent ? 'false' : 'true');
+
         row.innerHTML = `
-          <div class="syn-sort-num">${idx + 1}</div>
-          <div class="syn-sort-text">${itemText}</div>
-          <div class="syn-sort-controls">
-            <button class="syn-sort-btn" title="Subir" ${idx === 0 || state.answeredCurrent ? 'disabled' : ''} onclick="moveSortItem(${idx}, -1)">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
-            </button>
-            <button class="syn-sort-btn" title="Bajar" ${idx === state.currentOrderItems.length - 1 || state.answeredCurrent ? 'disabled' : ''} onclick="moveSortItem(${idx}, 1)">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
+          <div class="syn-sort-num-box" id="sort-num-box-${idx}">
+            <div class="syn-sort-num">${idx + 1}</div>
           </div>
+          <div class="syn-sort-text">${itemText}</div>
+          ${!state.answeredCurrent ? `
+            <div class="syn-sort-drag-handle" title="Arrastrar para ordenar">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="8" cy="6" r="2"/>
+                <circle cx="16" cy="6" r="2"/>
+                <circle cx="8" cy="12" r="2"/>
+                <circle cx="16" cy="12" r="2"/>
+                <circle cx="8" cy="18" r="2"/>
+                <circle cx="16" cy="18" r="2"/>
+              </svg>
+            </div>
+          ` : ''}
         `;
+
+        if (!state.answeredCurrent) {
+          // Eventos de arrastre para mouse / desktop
+          row.addEventListener('dragstart', (e) => {
+            dragSrcIndex = idx;
+            row.classList.add('is-dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            try { e.dataTransfer.setData('text/plain', idx); } catch(err) {}
+          });
+
+          row.addEventListener('dragend', () => {
+            row.classList.remove('is-dragging');
+            document.querySelectorAll('.syn-sort-item').forEach(el => el.classList.remove('drag-over-top', 'drag-over-bottom'));
+          });
+
+          row.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            const rect = row.getBoundingClientRect();
+            const mid = rect.top + rect.height / 2;
+            if (e.clientY < mid) {
+              row.classList.add('drag-over-top');
+              row.classList.remove('drag-over-bottom');
+            } else {
+              row.classList.add('drag-over-bottom');
+              row.classList.remove('drag-over-top');
+            }
+          });
+
+          row.addEventListener('dragleave', () => {
+            row.classList.remove('drag-over-top', 'drag-over-bottom');
+          });
+
+          row.addEventListener('drop', (e) => {
+            e.preventDefault();
+            row.classList.remove('drag-over-top', 'drag-over-bottom');
+            const fromIdx = dragSrcIndex;
+            const toIdx = idx;
+            if (fromIdx !== null && fromIdx !== undefined && fromIdx !== toIdx) {
+              const movedItem = state.currentOrderItems.splice(fromIdx, 1)[0];
+              state.currentOrderItems.splice(toIdx, 0, movedItem);
+              renderSortItems(q);
+            }
+          });
+
+          // Eventos táctiles para móviles / tablets
+          row.addEventListener('touchstart', (e) => {
+            touchSortItem = row;
+            row.classList.add('is-touch-dragging');
+          }, { passive: true });
+
+          row.addEventListener('touchmove', (e) => {
+            if (!touchSortItem) return;
+            const touchY = e.touches[0].clientY;
+            const elem = document.elementFromPoint(e.touches[0].clientX, touchY);
+            const targetRow = elem ? elem.closest('.syn-sort-item') : null;
+            document.querySelectorAll('.syn-sort-item').forEach(el => el.classList.remove('drag-over-top', 'drag-over-bottom'));
+            if (targetRow && targetRow !== touchSortItem) {
+              const rect = targetRow.getBoundingClientRect();
+              if (touchY < rect.top + rect.height / 2) {
+                targetRow.classList.add('drag-over-top');
+              } else {
+                targetRow.classList.add('drag-over-bottom');
+              }
+            }
+          }, { passive: true });
+
+          row.addEventListener('touchend', (e) => {
+            if (!touchSortItem) return;
+            row.classList.remove('is-touch-dragging');
+            const touchY = e.changedTouches[0].clientY;
+            const elem = document.elementFromPoint(e.changedTouches[0].clientX, touchY);
+            const targetRow = elem ? elem.closest('.syn-sort-item') : null;
+            document.querySelectorAll('.syn-sort-item').forEach(el => el.classList.remove('drag-over-top', 'drag-over-bottom'));
+            if (targetRow && targetRow !== row) {
+              const fromIdx = parseInt(row.getAttribute('data-idx'), 10);
+              const toIdx = parseInt(targetRow.getAttribute('data-idx'), 10);
+              if (!isNaN(fromIdx) && !isNaN(toIdx) && fromIdx !== toIdx) {
+                const movedItem = state.currentOrderItems.splice(fromIdx, 1)[0];
+                state.currentOrderItems.splice(toIdx, 0, movedItem);
+                renderSortItems(q);
+              }
+            }
+            touchSortItem = null;
+          });
+        }
+
         listEl.appendChild(row);
       });
-    }
-
-    function moveSortItem(idx, direction) {
-      if (state.answeredCurrent) return;
-      const targetIdx = idx + direction;
-      if (targetIdx < 0 || targetIdx >= state.currentOrderItems.length) return;
-      const temp = state.currentOrderItems[idx];
-      state.currentOrderItems[idx] = state.currentOrderItems[targetIdx];
-      state.currentOrderItems[targetIdx] = temp;
-      const q = state.queue[state.currentIndex];
-      renderSortItems(q);
     }
 
     function verifySortAnswer() {
@@ -5410,11 +5579,36 @@ Devuelve ÚNICAMENTE un array JSON válido con ${count} objetos respetando estas
 
       state.currentOrderItems.forEach((itemText, idx) => {
         const row = document.getElementById(`sort-item-${idx}`);
+        const numBox = document.getElementById(`sort-num-box-${idx}`);
+        const correctIdx = q.elementos.indexOf(itemText);
+        const isItemCorrect = (idx === correctIdx);
+
         if (row) {
-          if (itemText === q.elementos[idx]) {
+          row.setAttribute('draggable', 'false');
+          row.style.cursor = 'default';
+          const handle = row.querySelector('.syn-sort-drag-handle');
+          if (handle) handle.style.display = 'none';
+
+          if (isItemCorrect) {
             row.classList.add('state-correct');
+            if (numBox) {
+              numBox.innerHTML = `
+                <div class="syn-sort-num syn-sort-num-correct" title="Posición correcta">${idx + 1}</div>
+              `;
+            }
           } else {
             row.classList.add('state-incorrect');
+            if (numBox) {
+              numBox.innerHTML = `
+                <div class="syn-sort-num-pair">
+                  <div class="syn-sort-num syn-sort-num-wrong" title="Tu posición">${idx + 1}</div>
+                  <span class="syn-sort-arrow-icon">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                  </span>
+                  <div class="syn-sort-num syn-sort-num-target" title="Posición correcta">${correctIdx + 1}</div>
+                </div>
+              `;
+            }
           }
         }
       });
@@ -5422,13 +5616,9 @@ Devuelve ÚNICAMENTE un array JSON válido con ${count} objetos respetando estas
       const verifyBtn = document.getElementById('btn-verify-sort');
       if (verifyBtn) verifyBtn.style.display = 'none';
 
-      const listEl = document.getElementById('sort-items-list');
-      if (!isCorrect) {
-        const note = document.createElement('div');
-        note.className = 'syn-sort-correct-banner';
-        note.innerHTML = `<strong>Orden correcto:</strong> ${q.elementos.map((el, i) => `${i + 1}. ${el}`).join('  •  ')}`;
-        if (listEl) listEl.appendChild(note);
-      } else {
+      // No añadir banner inferior de explicación (pedido explícito del usuario)
+      if (isCorrect) {
+        const listEl = document.getElementById('sort-items-list');
         if (listEl) listEl.classList.add('syn-pulse-glow');
       }
 
@@ -5533,6 +5723,52 @@ Devuelve ÚNICAMENTE un array JSON válido con ${count} objetos respetando estas
       finishQuestionEvaluation(isCorrect, q.concepto || 'Selección Múltiple', chosenLabels, correctLabels);
     }
 
+    /* ─── FIGURAS GEOMÉTRICAS Y COLORES PARA EMPAREJAR (SIN TEXTO 'PAREJA X') ─── */
+    const SYN_MATCH_FIGURES = [
+      {
+        name: 'diamond',
+        color: '#34D399',
+        bg: 'rgba(52, 211, 153, 0.12)',
+        border: '#34D399',
+        svg: '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="12,2 22,12 12,22 2,12"/></svg>'
+      },
+      {
+        name: 'circle',
+        color: '#38BDF8',
+        bg: 'rgba(56, 189, 248, 0.12)',
+        border: '#38BDF8',
+        svg: '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg>'
+      },
+      {
+        name: 'triangle',
+        color: '#FBBF24',
+        bg: 'rgba(251, 191, 36, 0.12)',
+        border: '#FBBF24',
+        svg: '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="12,3 22,20 2,20"/></svg>'
+      },
+      {
+        name: 'hexagon',
+        color: '#A78BFA',
+        bg: 'rgba(167, 139, 250, 0.12)',
+        border: '#A78BFA',
+        svg: '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="12,2 21,7 21,17 12,22 3,17 3,7"/></svg>'
+      },
+      {
+        name: 'square',
+        color: '#FB7185',
+        bg: 'rgba(251, 113, 133, 0.12)',
+        border: '#FB7185',
+        svg: '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="3"/></svg>'
+      },
+      {
+        name: 'sparkle',
+        color: '#2DD4BF',
+        bg: 'rgba(45, 212, 191, 0.12)',
+        border: '#2DD4BF',
+        svg: '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5Z"/></svg>'
+      }
+    ];
+
     /* ─── MOTOR INTERACTIVO: APAREAR / EMPAREJAR CONCEPTOS ─── */
     function renderMatchingGame(container, q) {
       const defsShuffled = shuffleArray((q.pares || []).map((p, i) => ({ id: i, text: p.definicion })));
@@ -5540,16 +5776,11 @@ Devuelve ÚNICAMENTE un array JSON válido con ${count} objetos respetando estas
 
       container.innerHTML = `
         <div style="font-size:0.86rem; color:var(--text-dim); margin-bottom:14px; text-align:center;">
-          Toca un concepto de la izquierda y luego su definición a la derecha para emparejarlos:
+          Toca un concepto y su definición correspondiente para emparejarlos:
         </div>
         <div class="syn-match-grid">
           <div class="syn-match-col" id="match-col-terms"></div>
           <div class="syn-match-col" id="match-col-defs"></div>
-        </div>
-        <div style="display:flex; justify-content:center; margin-top:16px;">
-          <button class="btn-verify-action" id="btn-verify-match" onclick="verifyMatchAnswer()">
-            Comprobar Parejas
-          </button>
         </div>
       `;
 
@@ -5561,8 +5792,6 @@ Devuelve ÚNICAMENTE un array JSON válido con ${count} objetos respetando estas
       const defsCol = document.getElementById('match-col-defs');
       if (!termsCol || !defsCol) return;
 
-      const colorBadges = ['#34D399', '#38BDF8', '#FBBF24', '#A78BFA', '#FB7185'];
-
       termsCol.innerHTML = '';
       q.pares.forEach((pair, tIdx) => {
         const card = document.createElement('div');
@@ -5570,16 +5799,27 @@ Devuelve ÚNICAMENTE un array JSON válido con ${count} objetos respetando estas
         card.id = `match-term-${tIdx}`;
         card.onclick = () => selectMatchTerm(tIdx);
 
-        const pairedDefIdx = state.currentMatchedPairs[tIdx];
-        const isPaired = pairedDefIdx !== undefined;
-        const isSelected = state.currentMatchSelectedTerm === tIdx;
+        const pairInfo = state.currentMatchedPairs[tIdx];
+        const isPaired = !!pairInfo;
+        const isSelected = (state.currentMatchSelectedTerm === tIdx);
 
         if (isSelected) card.classList.add('is-active-source');
-        if (isPaired) card.classList.add('is-paired');
+        if (isPaired) {
+          card.classList.add('is-paired');
+          const fig = SYN_MATCH_FIGURES[pairInfo.figIdx % SYN_MATCH_FIGURES.length];
+          card.style.borderColor = fig.border;
+          card.style.background = fig.bg;
+        }
+
+        const figBadge = isPaired ? `
+          <div class="syn-match-figure-badge" style="color:${SYN_MATCH_FIGURES[pairInfo.figIdx % SYN_MATCH_FIGURES.length].color}; border-color:${SYN_MATCH_FIGURES[pairInfo.figIdx % SYN_MATCH_FIGURES.length].border};">
+            ${SYN_MATCH_FIGURES[pairInfo.figIdx % SYN_MATCH_FIGURES.length].svg}
+          </div>
+        ` : '';
 
         card.innerHTML = `
-          <span style="font-weight:700;">${pair.termino}</span>
-          ${isPaired ? `<span class="syn-match-badge" style="background:${colorBadges[tIdx % colorBadges.length]}; color:#0F172A;">Pareja ${tIdx + 1}</span>` : ''}
+          <span style="font-weight:700; flex:1;">${pair.termino}</span>
+          ${figBadge}
         `;
         termsCol.appendChild(card);
       });
@@ -5591,14 +5831,28 @@ Devuelve ÚNICAMENTE un array JSON válido con ${count} objetos respetando estas
         card.id = `match-def-${dIdx}`;
         card.onclick = () => selectMatchDef(dIdx);
 
-        const pairedTermIdx = Object.keys(state.currentMatchedPairs).find(k => state.currentMatchedPairs[k] === dIdx);
-        const isPaired = pairedTermIdx !== undefined;
+        const pairedTermKey = Object.keys(state.currentMatchedPairs).find(k => state.currentMatchedPairs[k].dIdx === dIdx);
+        const isPaired = pairedTermKey !== undefined;
+        const isSelected = (state.currentMatchSelectedDef === dIdx);
 
-        if (isPaired) card.classList.add('is-paired');
+        if (isSelected) card.classList.add('is-active-source');
+        if (isPaired) {
+          card.classList.add('is-paired');
+          const pairInfo = state.currentMatchedPairs[pairedTermKey];
+          const fig = SYN_MATCH_FIGURES[pairInfo.figIdx % SYN_MATCH_FIGURES.length];
+          card.style.borderColor = fig.border;
+          card.style.background = fig.bg;
+        }
+
+        const figBadge = isPaired ? `
+          <div class="syn-match-figure-badge" style="color:${SYN_MATCH_FIGURES[state.currentMatchedPairs[pairedTermKey].figIdx % SYN_MATCH_FIGURES.length].color}; border-color:${SYN_MATCH_FIGURES[state.currentMatchedPairs[pairedTermKey].figIdx % SYN_MATCH_FIGURES.length].border};">
+            ${SYN_MATCH_FIGURES[state.currentMatchedPairs[pairedTermKey].figIdx % SYN_MATCH_FIGURES.length].svg}
+          </div>
+        ` : '';
 
         card.innerHTML = `
-          <span style="font-size:0.92rem; line-height:1.4;">${dObj.text}</span>
-          ${isPaired ? `<span class="syn-match-badge" style="background:${colorBadges[Number(pairedTermIdx) % colorBadges.length]}; color:#0F172A;">Pareja ${Number(pairedTermIdx) + 1}</span>` : ''}
+          <span style="font-size:0.92rem; line-height:1.45; flex:1;">${dObj.text}</span>
+          ${figBadge}
         `;
         defsCol.appendChild(card);
       });
@@ -5606,73 +5860,87 @@ Devuelve ÚNICAMENTE un array JSON válido con ${count} objetos respetando estas
 
     function selectMatchTerm(tIdx) {
       if (state.answeredCurrent) return;
+      if (state.currentMatchedPairs[tIdx]) return;
+
+      const q = state.queue[state.currentIndex];
       if (state.currentMatchSelectedTerm === tIdx) {
         state.currentMatchSelectedTerm = null;
-      } else {
-        state.currentMatchSelectedTerm = tIdx;
+        renderMatchColumns(q);
+        return;
       }
-      const q = state.queue[state.currentIndex];
-      renderMatchColumns(q);
+
+      state.currentMatchSelectedTerm = tIdx;
+
+      if (state.currentMatchSelectedDef !== null) {
+        checkMatchPair(state.currentMatchSelectedTerm, state.currentMatchSelectedDef);
+      } else {
+        renderMatchColumns(q);
+      }
     }
 
     function selectMatchDef(dIdx) {
       if (state.answeredCurrent) return;
-      if (state.currentMatchSelectedTerm === null) {
-        const existingTermKey = Object.keys(state.currentMatchedPairs).find(k => state.currentMatchedPairs[k] === dIdx);
-        if (existingTermKey !== undefined) {
-          delete state.currentMatchedPairs[existingTermKey];
-          const q = state.queue[state.currentIndex];
-          renderMatchColumns(q);
-        }
+      const isAlreadyPaired = Object.values(state.currentMatchedPairs).some(p => p.dIdx === dIdx);
+      if (isAlreadyPaired) return;
+
+      const q = state.queue[state.currentIndex];
+      if (state.currentMatchSelectedDef === dIdx) {
+        state.currentMatchSelectedDef = null;
+        renderMatchColumns(q);
         return;
       }
 
-      const tIdx = state.currentMatchSelectedTerm;
-      const existingTermKey = Object.keys(state.currentMatchedPairs).find(k => state.currentMatchedPairs[k] === dIdx);
-      if (existingTermKey !== undefined) {
-        delete state.currentMatchedPairs[existingTermKey];
+      state.currentMatchSelectedDef = dIdx;
+
+      if (state.currentMatchSelectedTerm !== null) {
+        checkMatchPair(state.currentMatchSelectedTerm, state.currentMatchSelectedDef);
+      } else {
+        renderMatchColumns(q);
       }
-
-      state.currentMatchedPairs[tIdx] = dIdx;
-      state.currentMatchSelectedTerm = null;
-
-      const q = state.queue[state.currentIndex];
-      renderMatchColumns(q);
     }
 
-    function verifyMatchAnswer() {
-      if (state.answeredCurrent) return;
+    function checkMatchPair(tIdx, dIdx) {
       const q = state.queue[state.currentIndex];
-      const total = q.pares.length;
-      const pairedCount = Object.keys(state.currentMatchedPairs).length;
+      const chosenDefObj = q._defsShuffled[dIdx];
+      const isCorrect = chosenDefObj && (chosenDefObj.id === tIdx);
 
-      if (pairedCount < total) {
-        showToast("Parejas incompletas", `Empareja los ${total} conceptos antes de comprobar`);
-        return;
+      const termCard = document.getElementById(`match-term-${tIdx}`);
+      const defCard = document.getElementById(`match-def-${dIdx}`);
+
+      if (isCorrect) {
+        const figIdx = Object.keys(state.currentMatchedPairs).length;
+        state.currentMatchedPairs[tIdx] = { dIdx, figIdx };
+        state.currentMatchSelectedTerm = null;
+        state.currentMatchSelectedDef = null;
+
+        renderMatchColumns(q);
+
+        const updatedTerm = document.getElementById(`match-term-${tIdx}`);
+        const updatedDef = document.getElementById(`match-def-${dIdx}`);
+        if (updatedTerm) updatedTerm.classList.add('is-correct-pulse');
+        if (updatedDef) updatedDef.classList.add('is-correct-pulse');
+
+        const total = q.pares.length;
+        const completed = Object.keys(state.currentMatchedPairs).length;
+        if (completed === total) {
+          const grid = document.querySelector('.syn-match-grid');
+          if (grid) grid.classList.add('syn-pulse-glow');
+          finishQuestionEvaluation(state.matchMistakes === 0, q.concepto || 'Relación de Conceptos', 'Todas las parejas correctas', 'Pares completos');
+        }
+      } else {
+        state.matchMistakes = (state.matchMistakes || 0) + 1;
+        if (termCard) termCard.classList.add('is-wrong-shake');
+        if (defCard) defCard.classList.add('is-wrong-shake');
+        try {
+          if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
+        } catch(e) {}
+
+        setTimeout(() => {
+          state.currentMatchSelectedTerm = null;
+          state.currentMatchSelectedDef = null;
+          renderMatchColumns(q);
+        }, 450);
       }
-
-      let allCorrect = true;
-      q.pares.forEach((p, tIdx) => {
-        const chosenDefIdx = state.currentMatchedPairs[tIdx];
-        const chosenDefObj = q._defsShuffled[chosenDefIdx];
-        const isPairCorrect = chosenDefObj && (chosenDefObj.id === tIdx);
-        if (!isPairCorrect) allCorrect = false;
-
-        const termCard = document.getElementById(`match-term-${tIdx}`);
-        const defCard = document.getElementById(`match-def-${chosenDefIdx}`);
-        if (termCard) termCard.classList.add(isPairCorrect ? 'state-correct' : 'state-incorrect');
-        if (defCard) defCard.classList.add(isPairCorrect ? 'state-correct' : 'state-incorrect');
-      });
-
-      const verifyBtn = document.getElementById('btn-verify-match');
-      if (verifyBtn) verifyBtn.style.display = 'none';
-
-      if (allCorrect) {
-        const grid = document.querySelector('.syn-match-grid');
-        if (grid) grid.classList.add('syn-pulse-glow');
-      }
-
-      finishQuestionEvaluation(allCorrect, q.concepto || 'Relación de Conceptos', 'Parejas emparejadas', 'Pares completos');
     }
 
     /* ─── EVALUACIÓN UNIFICADA DE RESPUESTA (SIN CONFETTI, FEEDBACK TECNOLÓGICO) ─── */
@@ -5833,10 +6101,10 @@ Devuelve ÚNICAMENTE un array JSON válido con ${count} objetos respetando estas
         state.currentMatchedPairs = {};
         q.pares.forEach((p, tIdx) => {
           const matchIdx = q._defsShuffled.findIndex(d => d.id === tIdx);
-          if (matchIdx >= 0) state.currentMatchedPairs[tIdx] = matchIdx;
+          if (matchIdx >= 0) state.currentMatchedPairs[tIdx] = { dIdx: matchIdx, figIdx: tIdx };
         });
         renderMatchColumns(q);
-        verifyMatchAnswer();
+        finishQuestionEvaluation(false, q.concepto || 'Relación de Conceptos', 'Solución mostrada', 'Pares completos');
       } else {
         handleAnswer(-1);
       }
