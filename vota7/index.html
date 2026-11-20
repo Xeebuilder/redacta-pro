@@ -749,15 +749,6 @@
       // 1. Guardar en Firestore garantizando autenticación de sesión
       try {
         if (typeof firebase !== 'undefined' && firebase.firestore) {
-          // Si no hay sesión activa, autenticar con el agente de sincronización de campaña
-          if (firebase.auth && !firebase.auth().currentUser) {
-            try {
-              await firebase.auth().signInWithEmailAndPassword('vota7-sync@synapse-suite.com', 'Vota7Sync2026PlatformAuth!');
-            } catch (aErr) {
-              console.warn("Aviso autenticación sincronizada:", aErr);
-            }
-          }
-
           const db = firebase.firestore();
 
           // A) Registrar en vota7_registros para auditoría de campaña

@@ -4026,7 +4026,24 @@
       const authLoggedOut = document.getElementById('nav-auth-logged-out');
       const avatarCircle = document.getElementById('nav-avatar-circle');
 
-      const isRealUser = authUser || (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser && firebase.auth().currentUser.email !== 'vota7-sync@synapse-suite.com');
+      // Purgar cualquier residuo de vota7-sync
+      if (localStorage.getItem('synapse_email') === 'vota7-sync@synapse-suite.com') {
+        localStorage.removeItem('synapse_email');
+      }
+
+      const savedEmail = localStorage.getItem('synapse_email');
+      const hasValidSavedEmail = savedEmail && savedEmail !== 'vota7-sync@synapse-suite.com' && savedEmail !== 'Sin cuenta activa' && !savedEmail.includes('vota7-sync');
+
+      let currentFbUser = null;
+      if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
+        if (firebase.auth().currentUser.email === 'vota7-sync@synapse-suite.com') {
+          firebase.auth().signOut().catch(console.error);
+        } else {
+          currentFbUser = firebase.auth().currentUser;
+        }
+      }
+
+      const isRealUser = authUser || currentFbUser || hasValidSavedEmail;
 
       if (isRealUser) {
         if (authLoggedOut) authLoggedOut.style.display = 'none';
@@ -6134,13 +6151,18 @@ Devuelve ÚNICAMENTE un array JSON válido con ${count} objetos respetando estas
 
     if (typeof firebase !== 'undefined' && firebase.auth) {
       firebase.auth().onAuthStateChanged((u) => {
-        if (u && u.email && u.email !== 'vota7-sync@synapse-suite.com') {
-          updateNavbar(u);
-          if (!localStorage.getItem('synapse_email')) {
-            localStorage.setItem('synapse_email', u.email);
+        if (u && u.email === 'vota7-sync@synapse-suite.com') {
+          firebase.auth().signOut().catch(console.error);
+          if (localStorage.getItem('synapse_email') === 'vota7-sync@synapse-suite.com') {
+            localStorage.removeItem('synapse_email');
           }
+          u = null;
+        }
+        if (u && u.email) {
+          updateNavbar(u);
+          localStorage.setItem('synapse_email', u.email);
         } else {
-          updateNavbar(null);
+          updateNavbar();
         }
       });
     }
@@ -6668,66 +6690,16 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       return obj;
     }
 
-    // Obtención robusta de token de autenticación (REST directo + fallback SDK)
+    // Obtención de token de sesión activa del usuario
     async function getFirestoreToken() {
-      // 1. Sesión activa en SDK de Firebase
       try {
         if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
-          return await firebase.auth().currentUser.getIdToken();
-        }
-      } catch (e) {}
-
-      // 2. Token guardado en caché de sesión
-      try {
-        const cached = sessionStorage.getItem('synapse_fs_token');
-        const exp = sessionStorage.getItem('synapse_fs_token_exp');
-        if (cached && exp && Date.now() < parseInt(exp, 10)) {
-          return cached;
-        }
-      } catch (e) {}
-
-      // 3. Autenticación directa por REST API (ultra veloz, sin WebSockets ni cuelgues)
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 4500);
-        const res = await fetch("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBsSRn76nxlCY6Fih1fYMXfdm7YPgN1KBI", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: "vota7-sync@synapse-suite.com",
-            password: "Vota7Sync2026PlatformAuth!",
-            returnSecureToken: true
-          }),
-          signal: controller.signal
-        });
-        clearTimeout(timeoutId);
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.idToken) {
-            try {
-              sessionStorage.setItem('synapse_fs_token', data.idToken);
-              sessionStorage.setItem('synapse_fs_token_exp', (Date.now() + 3000 * 1000).toString());
-            } catch (e) {}
-            return data.idToken;
+          const u = firebase.auth().currentUser;
+          if (u.email && u.email !== "vota7-sync@synapse-suite.com") {
+            return await u.getIdToken();
           }
         }
-      } catch (restErr) {
-        console.warn("REST direct auth attempt skipped:", restErr);
-      }
-
-      // 4. Fallback SDK signInWithEmailAndPassword con timeout estricto de 4s
-      try {
-        const user = await Promise.race([
-          ensureFirebaseAuth(),
-          new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout Firebase SDK Auth")), 4000))
-        ]);
-        if (user) {
-          const tok = await user.getIdToken();
-          if (tok) return tok;
-        }
-      } catch (e) {
-        console.warn("SDK Auth fallback error:", e);
-      }
+      } catch (e) {}
 
       return null;
     }
@@ -6736,28 +6708,29 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
     async function fetchSharedKitFromFirestore(shareId) {
       if (!shareId) return null;
 
-      // Canal A: REST API directo con Token Bearer (Inmune a bloqueadores de rastreo, 200ms)
+      // Canal A: REST API directo
       try {
         const token = await getFirestoreToken();
-        if (token) {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 5000);
-          const url = `https://firestore.googleapis.com/v1/projects/studbud-373c4/databases/(default)/documents/shared_kits/${encodeURIComponent(shareId)}`;
-          const res = await fetch(url, {
-            headers: { "Authorization": `Bearer ${token}` },
-            signal: controller.signal
-          });
-          clearTimeout(timeoutId);
-          if (res.ok) {
-            const rawDoc = await res.json();
-            const decoded = decodeFirestoreDoc(rawDoc);
-            if (decoded && decoded.title) {
-              return decoded;
-            }
-          } else if (res.status === 404) {
-            console.warn("Kit no encontrado en Firestore (404)");
-            return null;
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        const baseUrl = `https://firestore.googleapis.com/v1/projects/studbud-373c4/databases/(default)/documents/shared_kits/${encodeURIComponent(shareId)}`;
+        const url = token ? baseUrl : `${baseUrl}?key=AIzaSyBsSRn76nxlCY6Fih1fYMXfdm7YPgN1KBI`;
+        const headers = token ? { "Authorization": `Bearer ${token}` } : {};
+
+        const res = await fetch(url, {
+          headers: headers,
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        if (res.ok) {
+          const rawDoc = await res.json();
+          const decoded = decodeFirestoreDoc(rawDoc);
+          if (decoded && decoded.title) {
+            return decoded;
           }
+        } else if (res.status === 404) {
+          console.warn("Kit no encontrado en Firestore (404)");
+          return null;
         }
       } catch (err) {
         console.warn("REST fetch for shared kit encountered error, trying SDK:", err);
