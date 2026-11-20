@@ -338,18 +338,34 @@
     body:not(.theme-dark) .q-text-centered {
       color: var(--color-primary);
     }
-    body:not(.theme-dark) .syn-option-btn {
+    body:not(.theme-dark) .syn-option-btn,
+    body:not(.theme-dark) .syn-tf-btn,
+    body:not(.theme-dark) .syn-sort-item,
+    body:not(.theme-dark) .syn-checkbox-btn,
+    body:not(.theme-dark) .syn-match-card {
       background: #FFFFFF;
       border: 1.5px solid rgba(43, 27, 23, 0.14);
       color: var(--color-primary);
       box-shadow: 0 2px 8px rgba(43, 27, 23, 0.03);
     }
-    body:not(.theme-dark) .syn-option-btn:hover:not(:disabled) {
+    body:not(.theme-dark) .syn-option-btn:hover:not(:disabled),
+    body:not(.theme-dark) .syn-tf-btn:hover:not(:disabled),
+    body:not(.theme-dark) .syn-checkbox-btn:hover:not(:disabled),
+    body:not(.theme-dark) .syn-match-card:hover {
       background: var(--bg-card);
       border-color: var(--color-primary);
       box-shadow: 0 6px 16px rgba(43, 27, 23, 0.07);
     }
-    body:not(.theme-dark) .syn-option-num {
+    body:not(.theme-dark) .syn-sort-btn {
+      background: rgba(31, 36, 33, 0.06);
+      border: 1px solid rgba(31, 36, 33, 0.15);
+      color: var(--color-primary);
+    }
+    body:not(.theme-dark) .syn-sort-btn:hover:not(:disabled) {
+      background: rgba(31, 36, 33, 0.12);
+    }
+    body:not(.theme-dark) .syn-option-num,
+    body:not(.theme-dark) .syn-sort-num {
       background: var(--bg-subtle);
       color: var(--color-primary);
     }
@@ -362,12 +378,14 @@
       background: var(--bg-subtle);
       color: var(--color-primary);
     }
-    body:not(.theme-dark) .btn-next-action-lilac {
+    body:not(.theme-dark) .btn-next-action-lilac,
+    body:not(.theme-dark) .btn-verify-action {
       background: #2B1B17;
       color: #FFFFFF;
       box-shadow: 0 4px 14px rgba(43, 27, 23, 0.2);
     }
-    body:not(.theme-dark) .btn-next-action-lilac:hover {
+    body:not(.theme-dark) .btn-next-action-lilac:hover,
+    body:not(.theme-dark) .btn-verify-action:hover {
       background: #4A322B;
     }
     body:not(.theme-dark) .explanation-bullets-box {
@@ -1471,25 +1489,402 @@
       justify-content: center;
       flex-shrink: 0;
     }
-    .syn-option-btn.state-correct {
+    /* ─── ANIMACIÓN GLOW MODERNA PARA ACIERTOS (MÁS COOL, SIN CONFETTI) ─── */
+    @keyframes synEmeraldPulse {
+      0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(118, 185, 155, 0);
+      }
+      50% {
+        transform: scale(1.02);
+        box-shadow: 0 0 24px 4px rgba(118, 185, 155, 0.45);
+      }
+      100% {
+        transform: scale(1);
+        box-shadow: 0 0 16px rgba(118, 185, 155, 0.3);
+      }
+    }
+    .syn-pulse-glow {
+      animation: synEmeraldPulse 0.5s ease-out;
+    }
+
+    /* ESTADOS GENÉRICOS DE VALIDACIÓN */
+    .state-correct,
+    .syn-option-btn.state-correct,
+    .syn-tf-btn.state-correct,
+    .syn-sort-item.state-correct,
+    .syn-checkbox-btn.state-correct,
+    .syn-match-card.state-correct {
       border: 2px solid var(--correct-border) !important;
-      box-shadow: 0 0 16px rgba(34, 197, 94, 0.35) !important;
       background: var(--correct-bg) !important;
       color: var(--correct-text) !important;
+      box-shadow: 0 0 16px rgba(118, 185, 155, 0.35) !important;
     }
-    .syn-option-btn.state-correct .syn-option-num {
+    .syn-option-btn.state-correct .syn-option-num,
+    .syn-sort-item.state-correct .syn-sort-num {
       background: var(--correct-border) !important;
       color: #0F172A !important;
     }
-    .syn-option-btn.state-incorrect {
+    .state-incorrect,
+    .syn-option-btn.state-incorrect,
+    .syn-tf-btn.state-incorrect,
+    .syn-sort-item.state-incorrect,
+    .syn-checkbox-btn.state-incorrect,
+    .syn-match-card.state-incorrect {
       border: 2px solid var(--incorrect-border) !important;
-      box-shadow: 0 0 16px rgba(239, 68, 68, 0.35) !important;
       background: var(--incorrect-bg) !important;
       color: var(--incorrect-text) !important;
+      box-shadow: 0 0 16px rgba(239, 68, 68, 0.35) !important;
     }
-    .syn-option-btn.state-incorrect .syn-option-num {
+    .syn-option-btn.state-incorrect .syn-option-num,
+    .syn-sort-item.state-incorrect .syn-sort-num {
       background: var(--incorrect-border) !important;
       color: #FFFFFF !important;
+    }
+
+    /* ─── TIPO 1: VERDADERO O FALSO (DISEÑO EQUILIBRADO Y MODERNO) ─── */
+    .syn-tf-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      width: 100%;
+    }
+    @media (max-width: 600px) {
+      .syn-tf-grid { grid-template-columns: 1fr; gap: 14px; }
+    }
+    .syn-tf-btn {
+      background: var(--bg-option);
+      border: 1.5px solid var(--border-purple);
+      border-radius: var(--radius-md);
+      padding: 1.6rem 1.4rem;
+      color: var(--text-white);
+      font-size: 1.2rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      transition: all 0.2s ease;
+      min-height: 84px;
+    }
+    .syn-tf-btn:hover:not(:disabled) {
+      background: var(--bg-option-hover);
+      border-color: var(--border-purple-hover);
+      transform: translateY(-2px);
+    }
+    .syn-tf-btn.is-true svg { color: var(--color-accent); }
+    .syn-tf-btn.is-false svg { color: #f87171; }
+
+    /* ─── TIPO 2: ORDENAR ELEMENTOS EN SECUENCIA ─── */
+    .syn-sort-wrapper {
+      max-width: 720px;
+      margin: 0 auto 2rem;
+      width: 100%;
+    }
+    .syn-sort-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+    }
+    .syn-sort-item {
+      background: var(--bg-option);
+      border: 1.5px solid var(--border-purple);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: all 0.2s ease;
+    }
+    .syn-sort-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--color-accent);
+      font-weight: 800;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .syn-sort-text {
+      flex: 1;
+      font-size: 1.02rem;
+      font-weight: 600;
+      color: var(--text-white);
+      line-height: 1.4;
+    }
+    .syn-sort-controls {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .syn-sort-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-purple);
+      color: var(--text-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .syn-sort-btn:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: var(--border-purple-hover);
+    }
+    .syn-sort-btn:disabled {
+      opacity: 0.25;
+      cursor: not-allowed;
+    }
+    .syn-sort-correct-banner {
+      background: rgba(118, 185, 155, 0.12);
+      border: 1px solid var(--color-accent);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      margin-top: 12px;
+      font-size: 0.88rem;
+      color: var(--text-white);
+      line-height: 1.45;
+    }
+
+    /* ─── TIPO 3: SELECCIÓN MÚLTIPLE (VARIAS CORRECTAS) ─── */
+    .syn-multi-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+      margin-bottom: 1.8rem;
+    }
+    .syn-checkbox-btn {
+      background: var(--bg-option);
+      border: 1.5px solid var(--border-purple);
+      border-radius: var(--radius-md);
+      padding: 1.15rem 1.4rem;
+      color: var(--text-white);
+      text-align: left;
+      font-size: 1.05rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: all 0.15s ease;
+      min-height: 72px;
+    }
+    .syn-checkbox-btn:hover:not(:disabled) {
+      background: var(--bg-option-hover);
+      border-color: var(--border-purple-hover);
+      transform: translateY(-2px);
+    }
+    .syn-checkbox-indicator {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      border: 2px solid var(--border-purple);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+    .syn-checkbox-btn.is-selected {
+      border-color: var(--color-accent);
+      background: rgba(118, 185, 155, 0.08);
+    }
+    .syn-checkbox-btn.is-selected .syn-checkbox-indicator {
+      background: var(--color-accent);
+      border-color: var(--color-accent);
+      color: #0F172A;
+    }
+
+    /* ─── TIPO 4: APAREAR / EMPAREJAR PAREJAS ─── */
+    .syn-match-wrapper {
+      max-width: 860px;
+      margin: 0 auto 2rem;
+      width: 100%;
+    }
+    .syn-match-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      width: 100%;
+    }
+    @media (max-width: 720px) {
+      .syn-match-grid { grid-template-columns: 1fr; gap: 16px; }
+    }
+    .syn-match-col {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .syn-match-card {
+      background: var(--bg-option);
+      border: 1.5px solid var(--border-purple);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.95rem;
+      user-select: none;
+    }
+    .syn-match-card:hover {
+      background: var(--bg-option-hover);
+      border-color: var(--border-purple-hover);
+    }
+    .syn-match-card.is-active-source {
+      border-color: var(--cyan-spark) !important;
+      box-shadow: 0 0 14px rgba(125, 181, 214, 0.45) !important;
+      background: rgba(125, 181, 214, 0.1) !important;
+    }
+    .syn-match-card.is-paired {
+      border-color: var(--color-accent);
+      background: rgba(118, 185, 155, 0.08);
+    }
+    .syn-match-badge {
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 999px;
+      flex-shrink: 0;
+      letter-spacing: 0.3px;
+    }
+
+    /* BOTÓN UNIVERSAL DE VERIFICACIÓN / CONFIRMACIÓN */
+    .btn-verify-action {
+      background: var(--accent-lilac);
+      color: #0F172A;
+      border: none;
+      padding: 11px 32px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.98rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 16px rgba(118, 185, 155, 0.35);
+    }
+    .btn-verify-action:hover {
+      background: var(--color-accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(118, 185, 155, 0.45);
+    }
+    .btn-verify-action:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* ─── MODAL DE HITO: FORTALEZAS Y ÁREAS DE REFUERZO (ESTRICTAMENTE SIN EMOJIS) ─── */
+    .milestone-diagnostics-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 1.6rem;
+      text-align: left;
+      width: 100%;
+    }
+    @media (max-width: 600px) {
+      .milestone-diagnostics-container { grid-template-columns: 1fr; }
+    }
+    .milestone-diag-group {
+      background: rgba(26, 29, 27, 0.65);
+      border: 1px solid var(--border-purple);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .milestone-diag-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+    .milestone-diag-header.strengths {
+      color: #34d399;
+    }
+    .milestone-diag-header.weaknesses {
+      color: #f87171;
+    }
+    .milestone-pills-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-height: 32px;
+      align-items: center;
+    }
+    .milestone-pill {
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 999px;
+      line-height: 1.3;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .milestone-pill.strength {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(52, 211, 153, 0.35);
+      color: #6ee7b7;
+    }
+    .milestone-pill.weakness {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(248, 113, 113, 0.35);
+      color: #fca5a5;
+    }
+    .milestone-diag-empty {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      font-style: italic;
+    }
+    .milestone-diag-empty-positive {
+      font-size: 0.8rem;
+      color: #34d399;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    body:not(.theme-dark) .milestone-diag-group {
+      background: #FFFFFF;
+      border: 1.5px solid rgba(31, 36, 33, 0.11);
+    }
+    body:not(.theme-dark) .milestone-diag-header.strengths {
+      color: #2F5D4B;
+    }
+    body:not(.theme-dark) .milestone-diag-header.weaknesses {
+      color: #DC2626;
+    }
+    body:not(.theme-dark) .milestone-pill.strength {
+      background: rgba(47, 93, 75, 0.1);
+      border-color: #2F5D4B;
+      color: #254B3C;
+    }
+    body:not(.theme-dark) .milestone-pill.weakness {
+      background: rgba(220, 38, 38, 0.1);
+      border-color: #DC2626;
+      color: #B91C1C;
     }
 
     /* Barra Inferior de Acciones */
@@ -1755,7 +2150,7 @@
       background: var(--bg-card);
       border: 1px solid var(--border-purple);
       border-radius: var(--radius-lg);
-      max-width: 500px;
+      max-width: 640px;
       width: 100%;
       padding: 2.2rem 2.4rem;
       text-align: center;
@@ -2502,6 +2897,34 @@
         </div>
       </div>
 
+      <!-- Diagnóstico de Fortalezas y Refuerzo (ESTRICTAMENTE SIN EMOJIS) -->
+      <div class="milestone-diagnostics-container">
+        <!-- Fortalezas -->
+        <div class="milestone-diag-group">
+          <div class="milestone-diag-header strengths">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <polyline points="9 12 11 14 15 10"/>
+            </svg>
+            <span>Fortalezas Consolidadas</span>
+          </div>
+          <div class="milestone-pills-wrap" id="m-strengths-pills"></div>
+        </div>
+
+        <!-- Áreas de Refuerzo -->
+        <div class="milestone-diag-group">
+          <div class="milestone-diag-header weaknesses">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <span>Áreas de Refuerzo</span>
+          </div>
+          <div class="milestone-pills-wrap" id="m-weaknesses-pills"></div>
+        </div>
+      </div>
+
       <div class="modal-summary-box" style="text-align:left; margin-bottom:1.8rem;">
         <span style="font-size:0.85rem; font-weight:700; color:var(--accent-lilac);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px; margin-right:4px;"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg> Diagnóstico de Progreso:</span>
         <p id="m-diagnostic-text" style="font-size:0.9rem; color:var(--text-white); margin-top:4px;">
@@ -2956,73 +3379,77 @@
         level: "Bachillerato / Preparatoria (15 - 17 años)",
         cachedQueue: [
           {
-            pregunta: "¿Qué causa el movimiento de nutación de la Tierra?",
+            tipo: "multiple_choice",
+            concepto: "Nutación terrestre",
+            pregunta: "¿Qué causa principalmente el movimiento de nutación de la Tierra?",
             opciones: [
-              "La gravedad de la Luna y el Sol sobre el ecuador",
-              "El roce de las mareas con el fondo marino",
-              "El viento solar en el campo magnético",
-              "La distancia entre afelio y perihelio"
+              "La gravedad de la Luna y el Sol sobre el abultamiento ecuatorial",
+              "El roce de las mareas oceánicas con el lecho marino",
+              "El choque continuo del viento solar con la magnetosfera",
+              "La diferencia de distancia entre afelio y perihelio"
             ],
             correcta: 0,
             bullets: [
-              "La nutación es un leve cabeceo superpuesto al giro de la Tierra.",
-              "Tiene un ciclo de 18.6 años producido por la órbita de la Luna."
+              "La nutación es una pequeña oscilación periódica que se superpone a la precesión.",
+              "Dato clave para el examen: Su ciclo es de 18.6 años y se debe a la inclinación de la órbita lunar."
             ]
           },
           {
-            pregunta: "¿Qué movimiento de la Tierra produce el día y la noche?",
-            opciones: [
-              "La rotación sobre su propio eje de oeste a este",
-              "La traslación alrededor del Sol",
-              "El bamboleo de los polos",
-              "La inclinación del eje terrestre"
-            ],
+            tipo: "verdadero_falso",
+            concepto: "Ciclos de Milankovitch",
+            pregunta: "La precesión de los equinoccios completa un ciclo de variación climática aproximadamente cada 21.000 a 26.000 años.",
+            opciones: ["Verdadero", "Falso"],
             correcta: 0,
             bullets: [
-              "La rotación dura casi 24 horas (23h 56m 4s).",
-              "Al girar de oeste a este, el Sol ilumina distintas zonas sucesivamente."
+              "El bamboleo del eje terrestre altera la insolación periódica en los hemisferios.",
+              "Dato clave para el examen: Es uno de los tres parámetros orbitales clave de los ciclos de Milankovitch."
             ]
           },
           {
-            pregunta: "¿Por qué se producen las cuatro estaciones del año?",
-            opciones: [
-              "Por la inclinación de 23.5° del eje terrestre y la traslación",
-              "Por la distancia variable entre la Tierra y el Sol",
-              "Por las tormentas y manchas solares",
-              "Por la gravedad de la Luna en verano"
+            tipo: "ordenar",
+            concepto: "Capas de la atmósfera",
+            pregunta: "Ordena las capas de la atmósfera desde la superficie terrestre hacia el espacio exterior:",
+            elementos: [
+              "Troposfera",
+              "Estratosfera",
+              "Mesosfera",
+              "Termosfera",
+              "Exosfera"
             ],
-            correcta: 0,
             bullets: [
-              "La inclinación de 23.5° cambia el ángulo con el que llegan los rayos de Sol durante el año.",
-              "Dato clave de examen: La distancia al Sol no causa las estaciones; en enero la Tierra está más cerca del Sol y es invierno en el norte."
+              "La troposfera contiene el 80% de la masa de aire y la exosfera marca el límite con el espacio exterior.",
+              "Dato clave para el examen: La capa de ozono protectora se sitúa dentro de la estratosfera."
             ]
           },
           {
-            pregunta: "¿Qué es la precesión de los equinoccios?",
+            tipo: "multiple_correct",
+            concepto: "Movimientos terrestres",
+            pregunta: "¿Cuáles de los siguientes son movimientos reales que experimenta el planeta Tierra? (Selecciona todas las correctas)",
             opciones: [
-              "El giro cónico lento del eje terrestre, como un trompo",
-              "Un cambio repentino en los polos magnéticos",
-              "El movimiento de vaivén por terremotos",
-              "La aceleración de la Tierra cerca de Júpiter"
+              "Nutación periódica",
+              "Precesión de los equinoccios",
+              "Fisión orbital periódica",
+              "Traslación alrededor del Sol"
             ],
-            correcta: 0,
+            correctas: [0, 1, 3],
             bullets: [
-              "La precesión tarda unos 25,776 años en dar una vuelta completa.",
-              "Ocurre porque el Sol y la Luna tiran del ecuador abultado de la Tierra."
+              "La Tierra realiza rotación, traslación, precesión y nutación simultáneamente.",
+              "Dato clave para el examen: La 'fisión orbital' no es un fenómeno astronómico real."
             ]
           },
           {
-            pregunta: "¿Cuál es la diferencia entre el perihelio y el afelio?",
-            opciones: [
-              "El perihelio es el punto más cercano al Sol y el afelio el más lejano",
-              "El afelio ocurre en enero y el perihelio en julio",
-              "El perihelio marca la velocidad de la Luna",
-              "En el afelio hace más calor que en el perihelio"
+            tipo: "aparear",
+            concepto: "Dinámica orbital",
+            pregunta: "Empareja cada concepto orbital o geofísico con su característica correspondiente:",
+            pares: [
+              { termino: "Perihelio", definicion: "Punto más cercano al Sol y de máxima velocidad orbital" },
+              { termino: "Afelio", definicion: "Punto más lejano al Sol y de mínima velocidad orbital" },
+              { termino: "Coriolis", definicion: "Desviación inercial de fluidos por la rotación terrestre" },
+              { termino: "Nutación", definicion: "Oscilación periódica del eje de 18.6 años inducida por la Luna" }
             ],
-            correcta: 0,
             bullets: [
-              "La órbita de la Tierra es elíptica, por lo que la distancia varía unos 5 millones de km.",
-              "Perihelio ocurre a inicios de enero (máxima velocidad) y afelio a inicios de julio (mínima velocidad)."
+              "En el perihelio (enero) la Tierra alcanza ~109.000 km/h por la 2.ª ley de Kepler.",
+              "Dato clave para el examen: El efecto Coriolis desvía los vientos a la derecha en el hemisferio norte."
             ]
           }
         ],
@@ -3539,6 +3966,17 @@
       stageProgress: 0,
       stageAnswered: 0,
       stageCorrect: 0,
+      stageMasteredConcepts: [],
+      stageNeedsPracticeConcepts: [],
+
+      // Control de timers y limpieza para evitar respuestas lingering
+      explanationTimer: null,
+
+      // Estado para motores interactivos (ordenar, selec. múltiple, aparear)
+      currentOrderItems: [],
+      currentMultiSelected: [],
+      currentMatchedPairs: {},
+      currentMatchSelectedTerm: null,
 
       // Flashcards Thea Style
       currentStudyMode: 'quiz',
@@ -3666,9 +4104,9 @@
         try {
           state.kits = JSON.parse(saved);
           state.kits.forEach(k => {
-            if (k.promptVersion !== 3) {
+            if (k.promptVersion !== 4) {
               k.cachedQueue = [];
-              k.promptVersion = 3;
+              k.promptVersion = 4;
             }
             const def = DEFAULT_KITS.find(d => d.id === k.id);
             if (def) {
@@ -4183,21 +4621,49 @@
       return data.candidates[0].content.parts[0].text;
     }
 
-    /* ─── ALEATORIZACIÓN MATEMÁTICA 100% UNIFORME DE OPCIONES ─── */
-    function randomizeQuestionOptions(q) {
-      if (!Array.isArray(q.opciones) || q.opciones.length < 2) return q;
-      const correctText = q.opciones[q.correcta];
-
-      // Fisher-Yates shuffle
-      for (let i = q.opciones.length - 1; i > 0; i--) {
+    /* ─── ALEATORIZACIÓN MATEMÁTICA SEGÚN FORMATO DE PREGUNTA ─── */
+    function shuffleArray(arr) {
+      if (!Array.isArray(arr)) return [];
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        const temp = q.opciones[i];
-        q.opciones[i] = q.opciones[j];
-        q.opciones[j] = temp;
+        const temp = copy[i];
+        copy[i] = copy[j];
+        copy[j] = temp;
+      }
+      return copy;
+    }
+
+    function randomizeQuestionOptions(q) {
+      if (!q) return q;
+      // Normalizar tipo si no viene explícito
+      if (!q.tipo) {
+        if (Array.isArray(q.elementos) && q.elementos.length >= 3) q.tipo = "ordenar";
+        else if (Array.isArray(q.pares) && q.pares.length >= 2) q.tipo = "aparear";
+        else if (Array.isArray(q.correctas) && q.correctas.length >= 1) q.tipo = "multiple_correct";
+        else if (Array.isArray(q.opciones) && q.opciones.length === 2 && q.opciones[0].toLowerCase().includes("verdader")) q.tipo = "verdadero_falso";
+        else q.tipo = "multiple_choice";
       }
 
-      // Re-indexar posición de la respuesta correcta
-      q.correcta = q.opciones.indexOf(correctText);
+      // No alterar el orden de opciones fijas en verdadero/falso, ordenar o aparear
+      if (q.tipo === 'verdadero_falso' || q.tipo === 'ordenar' || q.tipo === 'aparear') {
+        return q;
+      }
+
+      if (!Array.isArray(q.opciones) || q.opciones.length < 2 || typeof q.correcta !== 'number') return q;
+      const correctText = q.opciones[q.correcta];
+
+      // Fisher-Yates shuffle para multiple_choice
+      const copy = [...q.opciones];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const temp = copy[i];
+        copy[i] = copy[j];
+        copy[j] = temp;
+      }
+
+      q.opciones = copy;
+      q.correcta = copy.indexOf(correctText);
       return q;
     }
 
@@ -4487,14 +4953,17 @@ REGLAS OBLIGATORIAS PARA "flashcards":
       state.stageProgress = kit.stageProgress || 0;
       state.stageAnswered = 0;
       state.stageCorrect = 0;
+      state.stageMasteredConcepts = [];
+      state.stageNeedsPracticeConcepts = [];
       state.history = [];
+      clearPendingExplanation();
 
       if (!kit.askedQuestions) kit.askedQuestions = [];
 
-      // Si el kit tenía preguntas con la versión antigua/rebuscada, invalidamos la cola
-      if (kit.promptVersion !== 3) {
+      // Si el kit tenía preguntas con la versión antigua o repetitiva, invalidamos la cola para generar lote variado
+      if (kit.promptVersion !== 4) {
         kit.cachedQueue = [];
-        kit.promptVersion = 3;
+        kit.promptVersion = 4;
         saveKitsToStorage();
       }
 
@@ -4529,6 +4998,7 @@ REGLAS OBLIGATORIAS PARA "flashcards":
     }
 
     function returnToDashboard() {
+      clearPendingExplanation();
       if (state.currentKitId) {
         const kit = state.kits.find(k => k.id === state.currentKitId);
         if (kit) {
@@ -4591,64 +5061,102 @@ Puntos Examen: ${JSON.stringify(state.studyGuide.puntosExamen || [])}
 `;
         }
 
-        const systemInstruction = `Eres un tutor de secundaria y bachillerato amigable, claro y directo.
-Tu prioridad número uno es la SIMPLICIDAD Y CLARIDAD:
-- Prohibido terminantemente sonar como un artículo científico o tesis doctoral.
-- NUNCA uses frases infladas como "En el marco de la geodinámica terrestre", "la fuente de energía motriz que impulsa fundamentalmente", "al hallarse en el punto de mayor proximidad".
-- Formula preguntas breves (máximo 15 palabras), naturales y directas al grano.
-- Opciones cortas (entre 2 y 6 palabras cada una), directas y sin tecnicismos innecesarios.
-- Mantén el rigor conceptual de la materia, pero con vocabulario simple y accesible para cualquier joven.
-- Responde estrictamente con un JSON válido.`;
+        const systemInstruction = `Eres un tutor pedagógico escolar y universitario, motivador, riguroso, claro y directo.
+Tu prioridad es formular preguntas variadas, dinámicas y sin rodeos innecesarios.
+REGLAS ESTRICTAS DE REDACCIÓN:
+- Prohibido el lenguaje de tesis doctoral o frases infladas como "En el marco de la geodinámica terrestre", "la fuente de energía motriz que impulsa fundamentalmente", "al hallarse en el punto de mayor proximidad".
+- Formula enunciados directos, claros y formales.
+- NUNCA uses emojis en tus preguntas, opciones ni explicaciones.
+- Responde estrictamente con un JSON válido (array de objetos).`;
 
-        const prompt = `Genera ${count} preguntas de estudio sencillas, directas y variadas sobre: "${state.topic}".
-Nivel: "${state.level}".
-Etapa actual: Nivel ${state.stageLevel}.
+        const prompt = `Genera ${count} preguntas de estudio altamente variadas sobre el tema: "${state.topic}".
+Nivel académico del estudiante: "${state.level}".
+Etapa actual de la sesión: Nivel ${state.stageLevel}.
 ${guideContext}
 ${avoidList}
 
-PAUTAS CRÍTICAS DE LENGUAJE (OBLIGATORIAS):
-1. LENGUAJE SIMPLE, DIRECTO Y FORMAL:
-   - Prohibido el lenguaje rebuscado, barroco o de tesis doctoral.
-   - Enunciados cortos (máximo 15 palabras). Ve directo a lo que se pregunta.
-2. OPCIONES CORTAS Y FÁCILES:
-   - 4 opciones breves (máximo 6 palabras por opción). Sin textos largos dentro de los botones.
-   - Exactamente 1 respuesta correcta.
-3. ALEATORIEDAD:
-   - La opción correcta DEBE estar distribuida al azar en el índice 0, 1, 2 o 3.
-4. EXPLICACIÓN EN VIÑETAS ("bullets"):
-   - 2 viñetas muy breves y claras explicando por qué es la respuesta correcta en lenguaje simple, más un dato clave para el examen.
-5. NO REPETIR: Prohibido repetir preguntas de la lista previa.
+PAUTAS CRÍTICAS DE DIVERSIDAD Y FORMATOS (OBLIGATORIAS):
+1. AMPLITUD CONCEPTUAL Y PREVENCIÓN DE REPETICIÓN:
+   - Prohibido hacer todas las preguntas sobre el mismo dato o concepto aislado.
+   - Desarrolla el tema conectándolo con todos sus fenómenos, leyes, parámetros y subtemas científicos o académicos adyacentes sin salirte del marco curricular.
+   - Si el tema es por ejemplo "Movimientos Terrestres y Husos Horarios", abarca:
+     * Rotación (eje, duración 23h 56m, sentido antihorario/oeste a este, efecto Coriolis, sucesión día/noche).
+     * Traslación y Órbita (afelio, perihelio, velocidad orbital variable ~105.000 a 109.000 km/h, 2.ª Ley de Kepler).
+     * Inclinación del eje (23.5°, solsticios, equinoccios, estaciones del año).
+     * Precesión de los equinoccios (bamboleo del eje con ciclo de ~26.000 años).
+     * Nutación (oscilación periódica lunar de 18.6 años).
+     * Ciclos climáticos de Milankovitch (precesión de 21.000 a 26.000 años, excentricidad y oblicuidad).
+     * Husos horarios (15° de longitud por hora, 24 husos, meridiano de Greenwich, línea internacional).
+   - Aplica esta misma exhaustividad y riqueza temática para cualquier otro tema académico evaluado.
 
-EJEMPLOS DE ESTILO A SEGUIR:
+2. COMBINACIÓN DE FORMATOS INTERACTIVOS (EN ESTE LOTE DEBE HABER AL MENOS 3 O 4 TIPOS DIFERENTES):
+   - "multiple_choice": Selección simple clásica (4 opciones breves, 1 correcta).
+   - "verdadero_falso": Afirmación clara donde la respuesta es "Verdadero" (índice 0) o "Falso" (índice 1).
+   - "ordenar": Secuencia física, cronológica o jerárquica de 4 o 5 elementos que se deben ordenar (proporcionar en "elementos" en el orden correcto).
+   - "multiple_correct": Pregunta con 4 opciones donde 2 o más son correctas (especificar en "correctas" un array de índices numéricos).
+   - "aparear": Relación de 3 o 4 conceptos con sus respectivas definiciones o características (array de objetos "pares" con "termino" y "definicion").
 
-PROHIBIDO (REBUSCADO / COMPLEJO):
-Pregunta: "En el marco de la geodinámica terrestre, ¿cuál es la fuente de energía motriz que impulsa fundamentalmente los procesos exógenos?"
-Opciones: ["Las corrientes convectivas del núcleo externo que generan la magnetosfera", "La liberación de energía elástica acumulada a lo largo de fallas activas", "El calor geotérmico remanente generado en el manto y núcleo terrestre", "La radiación solar en combinación directa con la fuerza de la gravedad"]
+3. IDENTIFICADOR DE CONCEPTO ("concepto"):
+   - En CADA pregunta incluye la propiedad "concepto" (un término corto de 2 a 4 palabras, ej: "Nutación terrestre", "Precesión", "Leyes de Kepler", "Capas de la atmósfera"). Esto se utiliza para diagnosticar las fortalezas y áreas de refuerzo del alumno.
 
-CORRECTO (SIMPLE, DIRECTO Y FORMAL):
-Pregunta: "¿Cuál es la principal fuente de energía de los procesos externos de la Tierra?"
-Opciones: ["La energía solar y la gravedad", "El calor interno de la Tierra", "Las corrientes del manto", "El magnetismo terrestre"]
+4. EXPLICACIÓN DIDÁCTICA ("bullets"):
+   - Exactamente 2 viñetas concisas y directas: explicación del porqué y dato clave para el examen.
 
-PROHIBIDO (REBUSCADO / COMPLEJO):
-Pregunta: "De acuerdo con la 2.ª Ley de Kepler aplicada a la traslación terrestre, ¿en qué punto de su órbita la Tierra registra su velocidad máxima de desplazamiento?"
-Opciones: ["En el perihelio, al hallarse en el punto de mayor proximidad al Sol", "En el afelio, al encontrarse a la distancia más lejana del Sol"]
-
-CORRECTO (SIMPLE, DIRECTO Y FORMAL):
-Pregunta: "Según la 2.ª Ley de Kepler, ¿en qué momento la Tierra se mueve más rápido en su órbita?"
-Opciones: ["En el perihelio (más cerca del Sol)", "En el afelio (más lejos del Sol)", "Durante los equinoccios", "Durante los solsticios"]
-
-Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
-[
+ESQUEMAS JSON POR FORMATO:
+- Tipo multiple_choice:
   {
-    "pregunta": "¿Pregunta corta, directa y simple?",
-    "opciones": ["Opción breve A", "Opción breve B", "Opción breve C", "Opción breve D"],
-    "correcta": 1,
-    "bullets": [
-      "Explicación directa y sin rodeos...",
-      "Dato clave para el examen: ..."
-    ]
+    "tipo": "multiple_choice",
+    "concepto": "Leyes de Kepler",
+    "pregunta": "¿En qué punto de su órbita la Tierra alcanza su máxima velocidad orbital?",
+    "opciones": ["En el perihelio (más cerca del Sol)", "En el afelio (más lejos del Sol)", "En los equinoccios", "En el solsticio de verano"],
+    "correcta": 0,
+    "bullets": ["Según la segunda ley de Kepler, los planetas aceleran en el perihelio.", "Dato clave: La velocidad alcanza unos 109.000 km/h en enero."]
   }
-]`;
+
+- Tipo verdadero_falso:
+  {
+    "tipo": "verdadero_falso",
+    "concepto": "Ciclos de Milankovitch",
+    "pregunta": "La precesión de los equinoccios es un movimiento del eje terrestre que dura aproximadamente 26.000 años.",
+    "opciones": ["Verdadero", "Falso"],
+    "correcta": 0,
+    "bullets": ["El eje terrestre describe un cono en el espacio con un periodo de unos 25.772 a 26.000 años.", "Dato clave: Es clave para los ciclos climáticos de la Tierra a largo plazo."]
+  }
+
+- Tipo ordenar:
+  {
+    "tipo": "ordenar",
+    "concepto": "Estructura atmosférica",
+    "pregunta": "Ordena las capas de la atmósfera desde la superficie hacia el espacio exterior:",
+    "elementos": ["Troposfera", "Estratosfera", "Mesosfera", "Termosfera", "Exosfera"],
+    "bullets": ["La troposfera es la capa donde vivimos y la exosfera el límite exterior.", "Dato clave: La capa de ozono protectora se sitúa en la estratosfera."]
+  }
+
+- Tipo multiple_correct:
+  {
+    "tipo": "multiple_correct",
+    "concepto": "Movimientos terrestres",
+    "pregunta": "¿Cuáles de los siguientes son movimientos reales que experimenta el planeta Tierra? (Selecciona todas las correctas)",
+    "opciones": ["Nutación", "Precesión de los equinoccios", "Fisión tectónica orbital", "Traslación alrededor del Sol"],
+    "correctas": [0, 1, 3],
+    "bullets": ["La Tierra experimenta rotación, traslación, precesión y nutación.", "Dato clave: La fisión tectónica orbital es un término ficticio."]
+  }
+
+- Tipo aparear:
+  {
+    "tipo": "aparear",
+    "concepto": "Dinámica orbital",
+    "pregunta": "Empareja cada concepto orbital con su característica principal:",
+    "pares": [
+      { "termino": "Perihelio", "definicion": "Punto de mayor cercanía al Sol y máxima velocidad" },
+      { "termino": "Afelio", "definicion": "Punto de mayor lejanía al Sol y mínima velocidad" },
+      { "termino": "Nutación", "definicion": "Pequeño cabeceo del eje causado por la gravedad lunar" },
+      { "termino": "Efecto Coriolis", "definicion": "Desviación aparente de fluidos debido a la rotación" }
+    ],
+    "bullets": ["Identificar perihelio vs afelio es esencial en mecánica celeste.", "Dato clave: Coriolis desvía los vientos a la derecha en el hemisferio norte."]
+  }
+
+Devuelve ÚNICAMENTE un array JSON válido con ${count} objetos respetando estas estructuras. Sin texto adicional ni bloques markdown.`;
 
         try {
           const raw = await askGemini(prompt, systemInstruction);
@@ -4719,8 +5227,29 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       }
     }
 
-    /* ─── RENDERIZAR PREGUNTA ACTUAL ─── */
+    /* ─── LIMPIEZA INMEDIATA DE EXPLICACIONES Y TIMERS PENDIENTES ─── */
+    function clearPendingExplanation() {
+      if (state.explanationTimer) {
+        clearTimeout(state.explanationTimer);
+        state.explanationTimer = null;
+      }
+      const expBox = document.getElementById('q-explanation-box');
+      const skelBox = document.getElementById('q-skeleton-box');
+      const bulletsList = document.getElementById('q-bullets-list');
+      if (expBox) expBox.style.display = 'none';
+      if (skelBox) skelBox.style.display = 'none';
+      if (bulletsList) bulletsList.innerHTML = '';
+
+      const thumbUp = document.querySelector('.thumb-btn.up');
+      const thumbDown = document.querySelector('.thumb-btn.down');
+      if (thumbUp) thumbUp.style.opacity = '1';
+      if (thumbDown) thumbDown.style.opacity = '1';
+    }
+
+    /* ─── RENDERIZAR PREGUNTA ACTUAL (SOPORTE 5 FORMATOS DINÁMICOS) ─── */
     function renderQuestion() {
+      clearPendingExplanation();
+
       const q = state.queue[state.currentIndex];
       if (!q) {
         fetchQuestionBatch(5).then(() => {
@@ -4730,6 +5259,11 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       }
 
       state.answeredCurrent = false;
+      state.currentOrderItems = [];
+      state.currentMultiSelected = [];
+      state.currentMatchedPairs = {};
+      state.currentMatchSelectedTerm = null;
+
       updateProgress();
 
       document.getElementById('q-text').textContent = q.pregunta;
@@ -4739,23 +5273,61 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       document.getElementById('btn-skip-question').style.display = 'block';
       document.getElementById('btn-next-question').style.display = 'none';
 
-      document.getElementById('q-skeleton-box').style.display = 'none';
-      document.getElementById('q-explanation-box').style.display = 'none';
-
       const container = document.getElementById('q-options-container');
       container.innerHTML = '';
 
-      q.opciones.forEach((optText, idx) => {
-        const btn = document.createElement('button');
-        btn.className = 'syn-option-btn';
-        btn.id = `opt-${idx}`;
-        btn.onclick = () => handleAnswer(idx);
-        btn.innerHTML = `
-          <span class="syn-option-num" id="opt-num-${idx}">${idx + 1}</span>
-          <span style="flex:1;">${optText}</span>
-        `;
-        container.appendChild(btn);
-      });
+      // Determinar formato
+      const tipo = q.tipo || (Array.isArray(q.elementos) ? 'ordenar' : (Array.isArray(q.pares) ? 'aparear' : (Array.isArray(q.correctas) ? 'multiple_correct' : 'multiple_choice')));
+
+      if (tipo === 'verdadero_falso') {
+        container.className = 'syn-tf-grid';
+        const tfOptions = Array.isArray(q.opciones) && q.opciones.length === 2 ? q.opciones : ['Verdadero', 'Falso'];
+        tfOptions.forEach((optText, idx) => {
+          const btn = document.createElement('button');
+          btn.className = `syn-tf-btn ${idx === 0 ? 'is-true' : 'is-false'}`;
+          btn.id = `opt-${idx}`;
+          btn.onclick = () => handleAnswer(idx);
+          const iconSvg = idx === 0
+            ? '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>'
+            : '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+          btn.innerHTML = `${iconSvg}<span>${optText}</span>`;
+          container.appendChild(btn);
+        });
+
+      } else if (tipo === 'ordenar') {
+        container.className = 'syn-sort-wrapper';
+        state.currentOrderItems = shuffleArray([...q.elementos]);
+        if (q.elementos.length > 2 && JSON.stringify(state.currentOrderItems) === JSON.stringify(q.elementos)) {
+          state.currentOrderItems.reverse();
+        }
+        renderSortList(container, q);
+
+      } else if (tipo === 'multiple_correct') {
+        container.className = 'syn-multi-grid';
+        state.currentMultiSelected = [];
+        renderMultiCorrectOptions(container, q);
+
+      } else if (tipo === 'aparear') {
+        container.className = 'syn-match-wrapper';
+        state.currentMatchedPairs = {};
+        state.currentMatchSelectedTerm = null;
+        renderMatchingGame(container, q);
+
+      } else {
+        // Opción múltiple clásica
+        container.className = 'options-grid-2x2';
+        (q.opciones || []).forEach((optText, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'syn-option-btn';
+          btn.id = `opt-${idx}`;
+          btn.onclick = () => handleAnswer(idx);
+          btn.innerHTML = `
+            <span class="syn-option-num" id="opt-num-${idx}">${idx + 1}</span>
+            <span style="flex:1;">${optText}</span>
+          `;
+          container.appendChild(btn);
+        });
+      }
 
       // Si quedan 4 o menos preguntas por responder en cola, iniciamos prefetch en background
       if (state.queue.length - state.currentIndex <= 4) {
@@ -4763,30 +5335,338 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       }
     }
 
-    /* ─── EVALUAR RESPUESTA ─── */
-    function handleAnswer(selectedIdx) {
+    /* ─── MOTOR INTERACTIVO: ORDENAR ELEMENTOS ─── */
+    function renderSortList(container, q) {
+      container.innerHTML = `
+        <div style="font-size:0.86rem; color:var(--text-dim); margin-bottom:14px; text-align:center;">
+          Usa los botones para ordenar los elementos de arriba hacia abajo (1 es el primero):
+        </div>
+        <div class="syn-sort-list" id="sort-items-list"></div>
+        <div style="display:flex; justify-content:center; margin-top:16px;">
+          <button class="btn-verify-action" id="btn-verify-sort" onclick="verifySortAnswer()">
+            Verificar Orden
+          </button>
+        </div>
+      `;
+      renderSortItems(q);
+    }
+
+    function renderSortItems(q) {
+      const listEl = document.getElementById('sort-items-list');
+      if (!listEl) return;
+      listEl.innerHTML = '';
+      state.currentOrderItems.forEach((itemText, idx) => {
+        const row = document.createElement('div');
+        row.className = 'syn-sort-item';
+        row.id = `sort-item-${idx}`;
+        row.innerHTML = `
+          <div class="syn-sort-num">${idx + 1}</div>
+          <div class="syn-sort-text">${itemText}</div>
+          <div class="syn-sort-controls">
+            <button class="syn-sort-btn" title="Subir" ${idx === 0 || state.answeredCurrent ? 'disabled' : ''} onclick="moveSortItem(${idx}, -1)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+            </button>
+            <button class="syn-sort-btn" title="Bajar" ${idx === state.currentOrderItems.length - 1 || state.answeredCurrent ? 'disabled' : ''} onclick="moveSortItem(${idx}, 1)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+          </div>
+        `;
+        listEl.appendChild(row);
+      });
+    }
+
+    function moveSortItem(idx, direction) {
+      if (state.answeredCurrent) return;
+      const targetIdx = idx + direction;
+      if (targetIdx < 0 || targetIdx >= state.currentOrderItems.length) return;
+      const temp = state.currentOrderItems[idx];
+      state.currentOrderItems[idx] = state.currentOrderItems[targetIdx];
+      state.currentOrderItems[targetIdx] = temp;
+      const q = state.queue[state.currentIndex];
+      renderSortItems(q);
+    }
+
+    function verifySortAnswer() {
+      if (state.answeredCurrent) return;
+      const q = state.queue[state.currentIndex];
+      const isCorrect = JSON.stringify(state.currentOrderItems) === JSON.stringify(q.elementos);
+
+      state.currentOrderItems.forEach((itemText, idx) => {
+        const row = document.getElementById(`sort-item-${idx}`);
+        if (row) {
+          if (itemText === q.elementos[idx]) {
+            row.classList.add('state-correct');
+          } else {
+            row.classList.add('state-incorrect');
+          }
+        }
+      });
+
+      const verifyBtn = document.getElementById('btn-verify-sort');
+      if (verifyBtn) verifyBtn.style.display = 'none';
+
+      const listEl = document.getElementById('sort-items-list');
+      if (!isCorrect) {
+        const note = document.createElement('div');
+        note.className = 'syn-sort-correct-banner';
+        note.innerHTML = `<strong>Orden correcto:</strong> ${q.elementos.map((el, i) => `${i + 1}. ${el}`).join('  •  ')}`;
+        if (listEl) listEl.appendChild(note);
+      } else {
+        if (listEl) listEl.classList.add('syn-pulse-glow');
+      }
+
+      finishQuestionEvaluation(
+        isCorrect,
+        q.concepto || 'Secuencia y ordenación',
+        state.currentOrderItems.join(' → '),
+        q.elementos.join(' → ')
+      );
+    }
+
+    /* ─── MOTOR INTERACTIVO: SELECCIÓN MÚLTIPLE (VARIAS CORRECTAS) ─── */
+    function renderMultiCorrectOptions(container, q) {
+      container.innerHTML = '';
+      const grid = document.createElement('div');
+      grid.className = 'options-grid-2x2';
+
+      (q.opciones || []).forEach((optText, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'syn-checkbox-btn';
+        btn.id = `multi-opt-${idx}`;
+        btn.onclick = () => toggleMultiOption(idx);
+        btn.innerHTML = `
+          <div class="syn-checkbox-indicator" id="multi-check-${idx}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" style="display:none;"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <span style="flex:1;">${optText}</span>
+        `;
+        grid.appendChild(btn);
+      });
+      container.appendChild(grid);
+
+      const submitWrap = document.createElement('div');
+      submitWrap.style.cssText = 'display:flex; justify-content:center; margin-top:14px;';
+      submitWrap.innerHTML = `
+        <button class="btn-verify-action" id="btn-submit-multi" onclick="submitMultiAnswer()">
+          Confirmar Selección (0)
+        </button>
+      `;
+      container.appendChild(submitWrap);
+    }
+
+    function toggleMultiOption(idx) {
+      if (state.answeredCurrent) return;
+      const pos = state.currentMultiSelected.indexOf(idx);
+      if (pos >= 0) {
+        state.currentMultiSelected.splice(pos, 1);
+      } else {
+        state.currentMultiSelected.push(idx);
+      }
+
+      const btn = document.getElementById(`multi-opt-${idx}`);
+      const check = document.getElementById(`multi-check-${idx}`);
+      if (btn && check) {
+        const isSelected = state.currentMultiSelected.includes(idx);
+        btn.classList.toggle('is-selected', isSelected);
+        const svg = check.querySelector('svg');
+        if (svg) svg.style.display = isSelected ? 'block' : 'none';
+      }
+
+      const submitBtn = document.getElementById('btn-submit-multi');
+      if (submitBtn) {
+        submitBtn.textContent = `Confirmar Selección (${state.currentMultiSelected.length})`;
+      }
+    }
+
+    function submitMultiAnswer() {
+      if (state.answeredCurrent) return;
+      const q = state.queue[state.currentIndex];
+      if (state.currentMultiSelected.length === 0) {
+        showToast("Selección vacía", "Elige al menos una opción antes de confirmar");
+        return;
+      }
+
+      const userSel = [...state.currentMultiSelected].sort((a,b) => a - b);
+      const correct = [...(q.correctas || [])].sort((a,b) => a - b);
+      const isCorrect = JSON.stringify(userSel) === JSON.stringify(correct);
+
+      (q.opciones || []).forEach((opt, idx) => {
+        const btn = document.getElementById(`multi-opt-${idx}`);
+        if (btn) {
+          btn.disabled = true;
+          if (correct.includes(idx)) {
+            btn.classList.add('state-correct');
+          } else if (userSel.includes(idx)) {
+            btn.classList.add('state-incorrect');
+          }
+        }
+      });
+
+      const submitBtn = document.getElementById('btn-submit-multi');
+      if (submitBtn) submitBtn.style.display = 'none';
+
+      if (isCorrect) {
+        const grid = document.querySelector('.syn-multi-grid .options-grid-2x2');
+        if (grid) grid.classList.add('syn-pulse-glow');
+      }
+
+      const chosenLabels = userSel.map(i => q.opciones[i]).join(', ');
+      const correctLabels = correct.map(i => q.opciones[i]).join(', ');
+
+      finishQuestionEvaluation(isCorrect, q.concepto || 'Selección Múltiple', chosenLabels, correctLabels);
+    }
+
+    /* ─── MOTOR INTERACTIVO: APAREAR / EMPAREJAR CONCEPTOS ─── */
+    function renderMatchingGame(container, q) {
+      const defsShuffled = shuffleArray((q.pares || []).map((p, i) => ({ id: i, text: p.definicion })));
+      q._defsShuffled = defsShuffled;
+
+      container.innerHTML = `
+        <div style="font-size:0.86rem; color:var(--text-dim); margin-bottom:14px; text-align:center;">
+          Toca un concepto de la izquierda y luego su definición a la derecha para emparejarlos:
+        </div>
+        <div class="syn-match-grid">
+          <div class="syn-match-col" id="match-col-terms"></div>
+          <div class="syn-match-col" id="match-col-defs"></div>
+        </div>
+        <div style="display:flex; justify-content:center; margin-top:16px;">
+          <button class="btn-verify-action" id="btn-verify-match" onclick="verifyMatchAnswer()">
+            Comprobar Parejas
+          </button>
+        </div>
+      `;
+
+      renderMatchColumns(q);
+    }
+
+    function renderMatchColumns(q) {
+      const termsCol = document.getElementById('match-col-terms');
+      const defsCol = document.getElementById('match-col-defs');
+      if (!termsCol || !defsCol) return;
+
+      const colorBadges = ['#34D399', '#38BDF8', '#FBBF24', '#A78BFA', '#FB7185'];
+
+      termsCol.innerHTML = '';
+      q.pares.forEach((pair, tIdx) => {
+        const card = document.createElement('div');
+        card.className = 'syn-match-card';
+        card.id = `match-term-${tIdx}`;
+        card.onclick = () => selectMatchTerm(tIdx);
+
+        const pairedDefIdx = state.currentMatchedPairs[tIdx];
+        const isPaired = pairedDefIdx !== undefined;
+        const isSelected = state.currentMatchSelectedTerm === tIdx;
+
+        if (isSelected) card.classList.add('is-active-source');
+        if (isPaired) card.classList.add('is-paired');
+
+        card.innerHTML = `
+          <span style="font-weight:700;">${pair.termino}</span>
+          ${isPaired ? `<span class="syn-match-badge" style="background:${colorBadges[tIdx % colorBadges.length]}; color:#0F172A;">Pareja ${tIdx + 1}</span>` : ''}
+        `;
+        termsCol.appendChild(card);
+      });
+
+      defsCol.innerHTML = '';
+      q._defsShuffled.forEach((dObj, dIdx) => {
+        const card = document.createElement('div');
+        card.className = 'syn-match-card';
+        card.id = `match-def-${dIdx}`;
+        card.onclick = () => selectMatchDef(dIdx);
+
+        const pairedTermIdx = Object.keys(state.currentMatchedPairs).find(k => state.currentMatchedPairs[k] === dIdx);
+        const isPaired = pairedTermIdx !== undefined;
+
+        if (isPaired) card.classList.add('is-paired');
+
+        card.innerHTML = `
+          <span style="font-size:0.92rem; line-height:1.4;">${dObj.text}</span>
+          ${isPaired ? `<span class="syn-match-badge" style="background:${colorBadges[Number(pairedTermIdx) % colorBadges.length]}; color:#0F172A;">Pareja ${Number(pairedTermIdx) + 1}</span>` : ''}
+        `;
+        defsCol.appendChild(card);
+      });
+    }
+
+    function selectMatchTerm(tIdx) {
+      if (state.answeredCurrent) return;
+      if (state.currentMatchSelectedTerm === tIdx) {
+        state.currentMatchSelectedTerm = null;
+      } else {
+        state.currentMatchSelectedTerm = tIdx;
+      }
+      const q = state.queue[state.currentIndex];
+      renderMatchColumns(q);
+    }
+
+    function selectMatchDef(dIdx) {
+      if (state.answeredCurrent) return;
+      if (state.currentMatchSelectedTerm === null) {
+        const existingTermKey = Object.keys(state.currentMatchedPairs).find(k => state.currentMatchedPairs[k] === dIdx);
+        if (existingTermKey !== undefined) {
+          delete state.currentMatchedPairs[existingTermKey];
+          const q = state.queue[state.currentIndex];
+          renderMatchColumns(q);
+        }
+        return;
+      }
+
+      const tIdx = state.currentMatchSelectedTerm;
+      const existingTermKey = Object.keys(state.currentMatchedPairs).find(k => state.currentMatchedPairs[k] === dIdx);
+      if (existingTermKey !== undefined) {
+        delete state.currentMatchedPairs[existingTermKey];
+      }
+
+      state.currentMatchedPairs[tIdx] = dIdx;
+      state.currentMatchSelectedTerm = null;
+
+      const q = state.queue[state.currentIndex];
+      renderMatchColumns(q);
+    }
+
+    function verifyMatchAnswer() {
+      if (state.answeredCurrent) return;
+      const q = state.queue[state.currentIndex];
+      const total = q.pares.length;
+      const pairedCount = Object.keys(state.currentMatchedPairs).length;
+
+      if (pairedCount < total) {
+        showToast("Parejas incompletas", `Empareja los ${total} conceptos antes de comprobar`);
+        return;
+      }
+
+      let allCorrect = true;
+      q.pares.forEach((p, tIdx) => {
+        const chosenDefIdx = state.currentMatchedPairs[tIdx];
+        const chosenDefObj = q._defsShuffled[chosenDefIdx];
+        const isPairCorrect = chosenDefObj && (chosenDefObj.id === tIdx);
+        if (!isPairCorrect) allCorrect = false;
+
+        const termCard = document.getElementById(`match-term-${tIdx}`);
+        const defCard = document.getElementById(`match-def-${chosenDefIdx}`);
+        if (termCard) termCard.classList.add(isPairCorrect ? 'state-correct' : 'state-incorrect');
+        if (defCard) defCard.classList.add(isPairCorrect ? 'state-correct' : 'state-incorrect');
+      });
+
+      const verifyBtn = document.getElementById('btn-verify-match');
+      if (verifyBtn) verifyBtn.style.display = 'none';
+
+      if (allCorrect) {
+        const grid = document.querySelector('.syn-match-grid');
+        if (grid) grid.classList.add('syn-pulse-glow');
+      }
+
+      finishQuestionEvaluation(allCorrect, q.concepto || 'Relación de Conceptos', 'Parejas emparejadas', 'Pares completos');
+    }
+
+    /* ─── EVALUACIÓN UNIFICADA DE RESPUESTA (SIN CONFETTI, FEEDBACK TECNOLÓGICO) ─── */
+    function finishQuestionEvaluation(isCorrect, concepto, chosenText, correctText) {
       if (state.answeredCurrent) return;
       state.answeredCurrent = true;
       state.totalAnswered++;
       state.stageAnswered++;
 
       const q = state.queue[state.currentIndex];
-      const isCorrect = (selectedIdx === q.correcta);
-
-      state.history.push({
-        pregunta: q.pregunta,
-        elegida: selectedIdx >= 0 ? q.opciones[selectedIdx] : 'Respuesta mostrada',
-        correcta: q.opciones[q.correcta],
-        isCorrect: isCorrect
-      });
-
-      const allBtns = document.querySelectorAll(".syn-option-btn");
-      allBtns.forEach(b => b.disabled = true);
-
-      const selectedBtn = selectedIdx >= 0 ? document.getElementById(`opt-${selectedIdx}`) : null;
-      const selectedNum = selectedIdx >= 0 ? document.getElementById(`opt-num-${selectedIdx}`) : null;
-      const correctBtn = document.getElementById(`opt-${q.correcta}`);
-      const correctNum = document.getElementById(`opt-num-${q.correcta}`);
+      const conceptName = concepto || q.concepto || (q.pregunta ? q.pregunta.replace(/^[¿?¡!]+|[¿?¡!]+$/g, '').slice(0, 32) : 'Concepto evaluado');
 
       if (isCorrect) {
         state.streak++;
@@ -4795,26 +5675,21 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
         state.stageCorrect++;
         addXP(25);
 
-        // Escalado pedagógico de dificultad (calibrado al 60% de dificultad):
-        // Nivel 1: Cada pregunta correcta sube entre 8% y 13% (~9-10 aciertos para completar)
-        // Nivel 2: Más complejo, cada pregunta correcta sube entre 5% y 8% (~15 aciertos)
-        // Nivel 3: Aún más complejo, cada pregunta sube entre 4% y 5% (~22 aciertos)
-        // Nivel 4+: 3% a 4% (~28-30 aciertos)
-        let increment = 0;
-        if (state.stageLevel === 1) {
-          increment = Math.floor(Math.random() * 6) + 8; // 8, 9, 10, 11, 12 o 13%
-        } else if (state.stageLevel === 2) {
-          increment = Math.floor(Math.random() * 4) + 5; // 5, 6, 7 u 8%
-        } else if (state.stageLevel === 3) {
-          increment = Math.floor(Math.random() * 2) + 4; // 4 o 5%
-        } else {
-          increment = Math.random() < 0.6 ? 3 : 4;       // 3 o 4%
+        if (!state.stageMasteredConcepts.includes(conceptName)) {
+          state.stageMasteredConcepts.push(conceptName);
         }
 
+        let increment = 0;
+        if (state.stageLevel === 1) {
+          increment = Math.floor(Math.random() * 6) + 8; // 8 - 13%
+        } else if (state.stageLevel === 2) {
+          increment = Math.floor(Math.random() * 4) + 5; // 5 - 8%
+        } else if (state.stageLevel === 3) {
+          increment = Math.floor(Math.random() * 2) + 4; // 4 - 5%
+        } else {
+          increment = Math.random() < 0.6 ? 3 : 4;
+        }
         state.stageProgress = Math.min(100, state.stageProgress + increment);
-
-        if (selectedBtn) selectedBtn.classList.add("state-correct");
-        if (selectedNum) selectedNum.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>';
 
         if (state.streak === 3) showToast("¡Racha en Fuego!", "3 respuestas correctas consecutivas");
         else if (state.streak === 5) showToast("¡Gran Concentración!", "5 aciertos seguidos en Estudio Inteligente");
@@ -4823,12 +5698,17 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
 
       } else {
         state.streak = 0;
-        if (selectedBtn) selectedBtn.classList.add("state-incorrect");
-        if (selectedNum) selectedNum.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>';
-
-        if (correctBtn) correctBtn.classList.add("state-correct");
-        if (correctNum) correctNum.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>';
+        if (!state.stageNeedsPracticeConcepts.includes(conceptName)) {
+          state.stageNeedsPracticeConcepts.push(conceptName);
+        }
       }
+
+      state.history.push({
+        pregunta: q.pregunta,
+        elegida: chosenText || (isCorrect ? 'Correcta' : 'Incorrecta'),
+        correcta: correctText || 'Respuesta verificada',
+        isCorrect: isCorrect
+      });
 
       // Persistir progreso y cola en kit activo
       if (state.currentKitId) {
@@ -4852,39 +5732,107 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       const skeletonBox = document.getElementById("q-skeleton-box");
       if (skeletonBox) skeletonBox.style.display = "block";
 
-      setTimeout(() => {
+      state.explanationTimer = setTimeout(() => {
+        state.explanationTimer = null;
         if (skeletonBox) skeletonBox.style.display = "none";
 
         const expBox = document.getElementById("q-explanation-box");
         const bulletsList = document.getElementById("q-bullets-list");
-        bulletsList.innerHTML = '';
+        if (bulletsList) bulletsList.innerHTML = '';
 
         const bullets = q.bullets || [
           isCorrect ? "Bien pensado, diste con la respuesta correcta." : "Ojo con este concepto fundamental para no confundirte.",
           "Este principio es clave para resolver preguntas parecidas en el examen."
         ];
 
-        bullets.forEach(b => {
-          const li = document.createElement('li');
-          li.textContent = b;
-          bulletsList.appendChild(li);
-        });
+        if (bulletsList) {
+          bullets.forEach(b => {
+            const li = document.createElement('li');
+            li.textContent = b;
+            bulletsList.appendChild(li);
+          });
+        }
 
-        expBox.style.display = "block";
-        document.getElementById("btn-next-question").focus();
-      }, 1000);
+        if (expBox) expBox.style.display = "block";
+        const nextBtn = document.getElementById("btn-next-question");
+        if (nextBtn) nextBtn.focus();
+      }, 750);
+    }
+
+    /* ─── EVALUAR OPCIÓN MÚLTIPLE O VERDADERO/FALSO ─── */
+    function handleAnswer(selectedIdx) {
+      if (state.answeredCurrent) return;
+      const q = state.queue[state.currentIndex];
+      const isCorrect = (selectedIdx === q.correcta);
+
+      const allBtns = document.querySelectorAll(".syn-option-btn, .syn-tf-btn");
+      allBtns.forEach(b => b.disabled = true);
+
+      const selectedBtn = selectedIdx >= 0 ? document.getElementById(`opt-${selectedIdx}`) : null;
+      const selectedNum = selectedIdx >= 0 ? document.getElementById(`opt-num-${selectedIdx}`) : null;
+      const correctBtn = document.getElementById(`opt-${q.correcta}`);
+      const correctNum = document.getElementById(`opt-num-${q.correcta}`);
+
+      if (isCorrect) {
+        if (selectedBtn) {
+          selectedBtn.classList.add("state-correct", "syn-pulse-glow");
+        }
+        if (selectedNum) {
+          selectedNum.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>';
+        }
+      } else {
+        if (selectedBtn) {
+          selectedBtn.classList.add("state-incorrect");
+        }
+        if (selectedNum) {
+          selectedNum.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>';
+        }
+        if (correctBtn) {
+          correctBtn.classList.add("state-correct");
+        }
+        if (correctNum) {
+          correctNum.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>';
+        }
+      }
+
+      const chosenText = selectedIdx >= 0 ? (q.opciones ? q.opciones[selectedIdx] : (selectedIdx === 0 ? 'Verdadero' : 'Falso')) : 'Respuesta mostrada';
+      const correctText = q.opciones ? q.opciones[q.correcta] : (q.correcta === 0 ? 'Verdadero' : 'Falso');
+
+      finishQuestionEvaluation(isCorrect, q.concepto, chosenText, correctText);
     }
 
     function handleShowAnswer() {
       if (state.answeredCurrent) return;
-      handleAnswer(-1);
+      const q = state.queue[state.currentIndex];
+      const tipo = q.tipo || (Array.isArray(q.elementos) ? 'ordenar' : (Array.isArray(q.pares) ? 'aparear' : (Array.isArray(q.correctas) ? 'multiple_correct' : 'multiple_choice')));
+
+      if (tipo === 'ordenar') {
+        state.currentOrderItems = [...q.elementos];
+        verifySortAnswer();
+      } else if (tipo === 'multiple_correct') {
+        state.currentMultiSelected = [...(q.correctas || [])];
+        submitMultiAnswer();
+      } else if (tipo === 'aparear') {
+        state.currentMatchedPairs = {};
+        q.pares.forEach((p, tIdx) => {
+          const matchIdx = q._defsShuffled.findIndex(d => d.id === tIdx);
+          if (matchIdx >= 0) state.currentMatchedPairs[tIdx] = matchIdx;
+        });
+        renderMatchColumns(q);
+        verifyMatchAnswer();
+      } else {
+        handleAnswer(-1);
+      }
     }
 
     function handleSkipQuestion() {
+      clearPendingExplanation();
       nextQuestion();
     }
 
     async function nextQuestion() {
+      clearPendingExplanation();
+
       if (state.stageProgress >= 100) {
         showMilestoneModal();
         return;
@@ -4911,8 +5859,10 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       renderQuestion();
     }
 
-    /* ─── MODAL DE HITO DE NIVEL ─── */
+    /* ─── MODAL DE HITO DE NIVEL: DIAGNÓSTICO SIN EMOJIS CON ESTILO LIMPIO ─── */
     function showMilestoneModal() {
+      clearPendingExplanation();
+
       const modal = document.getElementById('milestone-modal');
       const title = document.getElementById('m-modal-title');
       const subtitle = document.getElementById('m-modal-subtitle');
@@ -4922,7 +5872,7 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
       const diagText = document.getElementById('m-diagnostic-text');
       const continueBtn = document.getElementById('m-btn-continue');
 
-      const accPct = Math.round((state.stageCorrect / state.stageAnswered) * 100);
+      const accPct = state.stageAnswered > 0 ? Math.round((state.stageCorrect / state.stageAnswered) * 100) : 100;
       answered.textContent = state.stageAnswered;
       accuracy.textContent = `${accPct}%`;
 
@@ -4938,16 +5888,53 @@ Responde ÚNICAMENTE en JSON plano válido (un array de objetos):
         : `Bases iniciales comprendidas. En la siguiente etapa reforzaremos lo necesario para asegurar el examen.`;
       continueBtn.textContent = `Avanzar a Nivel ${state.stageLevel + 1} →`;
 
+      // Renderizar Fortalezas Consolidadas y Áreas de Refuerzo (ESTRICTAMENTE SIN EMOJIS)
+      const strengthsWrap = document.getElementById('m-strengths-pills');
+      const weaknessesWrap = document.getElementById('m-weaknesses-pills');
+
+      if (strengthsWrap) {
+        strengthsWrap.innerHTML = '';
+        const uniqueStrengths = Array.from(new Set(state.stageMasteredConcepts.filter(Boolean)));
+        if (uniqueStrengths.length > 0) {
+          uniqueStrengths.forEach(c => {
+            const pill = document.createElement('span');
+            pill.className = 'milestone-pill strength';
+            pill.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg><span>${c}</span>`;
+            strengthsWrap.appendChild(pill);
+          });
+        } else {
+          strengthsWrap.innerHTML = `<span class="milestone-diag-empty">Sin fortalezas registradas en este nivel</span>`;
+        }
+      }
+
+      if (weaknessesWrap) {
+        weaknessesWrap.innerHTML = '';
+        const uniqueWeaknesses = Array.from(new Set(state.stageNeedsPracticeConcepts.filter(Boolean)));
+        if (uniqueWeaknesses.length > 0) {
+          uniqueWeaknesses.forEach(c => {
+            const pill = document.createElement('span');
+            pill.className = 'milestone-pill weakness';
+            pill.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg><span>${c}</span>`;
+            weaknessesWrap.appendChild(pill);
+          });
+        } else {
+          weaknessesWrap.innerHTML = `<span class="milestone-diag-empty-positive"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>¡Dominio absoluto! Sin errores registrados en esta fase.</span>`;
+        }
+      }
+
       modal.style.display = 'flex';
     }
 
     async function continueToNextStage() {
+      clearPendingExplanation();
       document.getElementById('milestone-modal').style.display = 'none';
 
       state.stageLevel++;
       state.stageProgress = 0;
       state.stageAnswered = 0;
       state.stageCorrect = 0;
+      state.stageMasteredConcepts = [];
+      state.stageNeedsPracticeConcepts = [];
       state.currentIndex++;
 
       if (state.currentKitId) {
