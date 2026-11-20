@@ -1,7 +1,30 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
-  <rect width="100" height="100" rx="22" fill="#FCFBF8"/>
-  <path d="M68 25 C52 14, 30 20, 31 36 C32 50, 68 50, 69 66 C70 82, 46 88, 30 76" stroke="#2A5344" stroke-width="7.5" stroke-linecap="round"/>
-  <path d="M40 31 C38 42, 60 47, 60 63" stroke="#2A5344" stroke-width="3.6" stroke-linecap="round" opacity="0.88"/>
-  <circle cx="69" cy="26" r="8.5" fill="#3B7A9E"/>
-  <circle cx="29" cy="75" r="8.5" fill="#3B7A9E"/>
+  <defs>
+    <linearGradient id="v1-plate" x1="20" y1="10" x2="80" y2="90" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="60%" stop-color="#E2E8F0"/>
+      <stop offset="100%" stop-color="#CBD5E1"/>
+    </linearGradient>
+    <linearGradient id="v1-stroke" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+  </defs>
+  <rect width="100" height="100" rx="22" fill="#14231E" stroke="rgba(118,185,155,0.25)" stroke-width="2"/>
+  <!-- Tier 1 Top shards -->
+  <path d="M 12 7 L 35 18 L 56 22 L 72 8 L 12 7 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+  <path d="M 60 22 L 95 18 L 75 7 L 60 22 Z" fill="#CBD5E1" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+  <!-- Tier 2 Main wide plate -->
+  <path d="M 7 9 L 15 28 L 52 36 L 87 30 L 98 18 L 57 23 L 32 19 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+  <!-- Tier 3 Plate -->
+  <path d="M 20 34 L 27 44 L 56 50 L 79 45 L 78 35 L 53 39 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+  <!-- Tier 4 Plate -->
+  <path d="M 33 47 L 38 56 L 61 62 L 72 55 L 73 49 L 58 52 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+  <!-- Tier 5 Plate -->
+  <path d="M 38 65 L 53 72 L 67 66 L 69 58 L 60 63 L 41 58 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+  <!-- Tier 6 Plate -->
+  <path d="M 35 75 L 48 81 L 57 74 L 57 71 L 51 73 L 37 66 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+  <!-- Tier 7 Apex Needle -->
+  <path d="M 37 83 L 48 98 L 48 83 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
+  <path d="M 54 83 L 50 83 L 50 98 L 56 89 Z" fill="#94A3B8" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
 </svg>
