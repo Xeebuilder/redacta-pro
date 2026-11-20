@@ -10,7 +10,6 @@
       <stop offset="100%" stop-color="#0F172A"/>
     </linearGradient>
   </defs>
-  <rect width="100" height="100" rx="22" fill="#14231E" stroke="rgba(118,185,155,0.25)" stroke-width="2"/>
   <!-- Tier 1 Top shards -->
   <path d="M 12 7 L 35 18 L 56 22 L 72 8 L 12 7 Z" fill="url(#v1-plate)" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>
   <path d="M 60 22 L 95 18 L 75 7 L 60 22 Z" fill="#CBD5E1" stroke="url(#v1-stroke)" stroke-width="1.6" stroke-linejoin="round"/>

@@ -138,10 +138,10 @@
     .brand-logo {
       width: 42px;
       height: 42px;
-      border-radius: 10px;
-      object-fit: cover;
-      border: 1px solid var(--border-color);
-      background: var(--bg-card);
+      border-radius: 0;
+      object-fit: contain;
+      border: none;
+      background: transparent;
     }
 
     .brand-text h1 {
@@ -508,8 +508,8 @@
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
     }
     body.theme-dark .brand-logo {
-      background: #1E201F;
-      border-color: rgba(118, 185, 155, 0.28);
+      background: transparent;
+      border: none;
     }
     body.theme-dark .nav-link {
       color: #AEB5B1;
@@ -2289,7 +2289,7 @@
       <button class="modal-close" onclick="closeAuthModal()">✕</button>
       
       <div style="text-align:center; margin-bottom:1.5rem;">
-        <img src="synapse-logo.svg" alt="Synapse" style="width:48px; height:48px; border-radius:12px; margin-bottom:8px; border:1px solid var(--border-color);">
+        <img src="synapse-logo.svg" alt="Synapse" style="width:48px; height:48px; margin-bottom:8px; object-fit:contain;">
         <h3 style="font-size:1.6rem; color:var(--color-primary); font-weight:800;" id="modal-title">Bienvenido a Synapse</h3>
         <p style="color:var(--color-secondary); font-size:0.92rem; opacity:0.85;">Tu suite de estudio e investigación con IA</p>
       </div>
