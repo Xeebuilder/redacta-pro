@@ -228,8 +228,8 @@
       <img src="../synapse-logo.svg" alt="Synapse" style="width:38px; height:38px; object-fit:contain;">
     </a>
     <div>
-      <h2 style="margin:0; font-size:1.35rem; line-height:1.2; color:var(--color-primary);">RedactaPro</h2>
-      <span style="font-size:0.75rem; color:var(--color-accent); font-weight:700;">Parte de Synapse Suite</span>
+      <h2 style="margin:0; font-size:1.35rem; font-weight:800; line-height:1.15; letter-spacing:-0.5px; color:var(--color-primary);">SYNAPSE</h2>
+      <span style="font-size:0.72rem; color:var(--color-accent); font-weight:700; letter-spacing:0.5px; text-transform:uppercase;">Academic & Research Suite</span>
     </div>
   </div>
   <div class="user-info">
@@ -844,7 +844,7 @@ async function cargarTemas(modo) {
   const btn     = document.querySelector(`#text-panel-${modo} button`);
   
   if (!entrada) {
-    msgEl.innerHTML = '<div class="alert alert-warning">⚠️ El campo de texto está vacío.</div>';
+    msgEl.innerHTML = '<div class="alert alert-warning">El campo de texto está vacío.</div>';
     return;
   }
   
@@ -869,14 +869,14 @@ async function cargarTemas(modo) {
     state.temas[modo] = contenido.split(',').map(t => t.trim()).filter(Boolean);
     renderTemas(modo);
     hideCoolLoading('msg-' + modo);
-    showToast('✅ Temas organizados. Generando documento...');
+    showToast('Temas organizados. Generando documento...');
     await generarDocumento(modo);
   } catch(e) {
     hideCoolLoading('msg-' + modo);
-    msgEl.innerHTML = `<div class="alert alert-error"><p>❌ Error procesando el texto: ${e.message}</p></div>`;
+    msgEl.innerHTML = `<div class="alert alert-error"><p>Error procesando el texto: ${e.message}</p></div>`;
   } finally {
     btn.disabled = false;
-    btn.textContent = '⚙️ Cargar y Organizar Temas';
+    btn.textContent = 'Cargar y Organizar Temas';
   }
 }
 
@@ -1077,7 +1077,7 @@ async function generarDocumento(modo) {
     try {
       await buildAndDownloadDocx(bloques, modo, downloadSec);
     } catch (e) {
-      statusEl.innerHTML = `<span style="color:#c0392b;">❌ Error creando el Word: ${e.message}</span>`;
+      statusEl.innerHTML = `<span style="color:#c0392b;">Error creando el Word: ${e.message}</span>`;
       console.error(e);
     }
   }
@@ -1418,6 +1418,7 @@ function toggleTheme() {
   const theme = isDark ? 'dark' : 'light';
   localStorage.setItem('synapse_theme', theme);
   updateThemeUI(theme);
+  showToast(isDark ? "Modo Oscuro Activado" : "Modo Claro Activado");
 }
 
 function updateThemeUI(theme) {

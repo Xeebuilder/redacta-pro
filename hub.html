@@ -3459,10 +3459,7 @@ Responde ÚNICAMENTE en formato JSON plano (un array de objetos), sin bloques de
       localStorage.setItem('synapse_theme', theme);
       updateThemeUI(theme);
       if (typeof showToast === 'function') {
-        showToast(
-          isDark ? "Modo Oscuro Activado" : "Modo RedactaPro Activado",
-          isDark ? "Pantalla principal adaptada al tema oscuro de quiz." : "Tema editorial cálido de RedactaPro activo."
-        );
+        showToast(isDark ? "Modo Oscuro Activado" : "Modo Claro Activado");
       }
     }
 
