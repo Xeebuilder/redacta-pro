@@ -4204,7 +4204,8 @@
       <div style="margin-bottom:1.4rem; text-align:left;">
         <label style="display:block; font-size:0.82rem; font-weight:700; color:var(--color-primary); margin-bottom:6px;">Voz Seleccionada:</label>
         <select id="elevenlabs-voice-select" class="modal-select-input" style="width:100%; font-size:0.88rem;">
-          <option value="21m00Tcm4TlvDq8ikWAM" selected>Rachel (Español Multilingual v2 - Femenina, Clara)</option>
+          <option value="htFfPSZGJwjBv1CL0aMD" selected>Voz Preferida Synapse (Español Multilingual v2)</option>
+          <option value="21m00Tcm4TlvDq8ikWAM">Rachel (Español Multilingual v2 - Femenina, Clara)</option>
           <option value="pNInz6obpgDQGcFmaJgB">Adam (Español Multilingual v2 - Masculina, Dinámica)</option>
           <option value="ErXwobaYiN019PkySvjV">Antoni (Español Multilingual v2 - Narrativa)</option>
           <option value="ThT5KcBeYPX3keUQqHPh">Dorothy (Español Multilingual v2 - Juvenil)</option>
@@ -5453,15 +5454,11 @@ REGLAS:
     }
 
     async function playRepasoAudio() {
-      const apiKey = localStorage.getItem('synapse_elevenlabs_key');
-      if (!apiKey) {
-        showElevenLabsConfigModal(true);
-        return;
-      }
+      const apiKey = localStorage.getItem('synapse_elevenlabs_key') || 'sk_061bc382356e5f557e7427acc9597775c0712d063bbd13c2';
+      const voiceId = localStorage.getItem('synapse_elevenlabs_voice') || 'htFfPSZGJwjBv1CL0aMD';
 
       updateRepasoAudioUI('loading');
       try {
-        const voiceId = localStorage.getItem('synapse_elevenlabs_voice') || '21m00Tcm4TlvDq8ikWAM';
         const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
           method: 'POST',
           headers: {
@@ -5637,14 +5634,23 @@ REGLAS:
       });
     }
 
+    function initElevenLabsDefaults() {
+      if (!localStorage.getItem('synapse_elevenlabs_key')) {
+        localStorage.setItem('synapse_elevenlabs_key', 'sk_061bc382356e5f557e7427acc9597775c0712d063bbd13c2');
+      }
+      if (!localStorage.getItem('synapse_elevenlabs_voice')) {
+        localStorage.setItem('synapse_elevenlabs_voice', 'htFfPSZGJwjBv1CL0aMD');
+      }
+    }
+
     function showElevenLabsConfigModal(promptToPlay = false) {
       const modal = document.getElementById('modal-elevenlabs-config');
       const keyInput = document.getElementById('elevenlabs-api-key-input');
       const voiceSelect = document.getElementById('elevenlabs-voice-select');
       const noteEl = document.getElementById('elevenlabs-prompt-note');
 
-      if (keyInput) keyInput.value = localStorage.getItem('synapse_elevenlabs_key') || '';
-      if (voiceSelect) voiceSelect.value = localStorage.getItem('synapse_elevenlabs_voice') || '21m00Tcm4TlvDq8ikWAM';
+      if (keyInput) keyInput.value = localStorage.getItem('synapse_elevenlabs_key') || 'sk_061bc382356e5f557e7427acc9597775c0712d063bbd13c2';
+      if (voiceSelect) voiceSelect.value = localStorage.getItem('synapse_elevenlabs_voice') || 'htFfPSZGJwjBv1CL0aMD';
       if (noteEl) noteEl.style.display = promptToPlay ? 'block' : 'none';
 
       modal.style.display = 'flex';
@@ -5654,12 +5660,12 @@ REGLAS:
       const keyInput = document.getElementById('elevenlabs-api-key-input');
       const voiceSelect = document.getElementById('elevenlabs-voice-select');
       const val = (keyInput ? keyInput.value : '').trim();
-      const voice = (voiceSelect ? voiceSelect.value : '21m00Tcm4TlvDq8ikWAM');
+      const voice = (voiceSelect ? voiceSelect.value : 'htFfPSZGJwjBv1CL0aMD');
 
       if (val) {
         localStorage.setItem('synapse_elevenlabs_key', val);
         localStorage.setItem('synapse_elevenlabs_voice', voice);
-        showBottomToast("Llave de ElevenLabs guardada correctamente");
+        showBottomToast("Configuración de voz guardada correctamente");
       } else {
         localStorage.removeItem('synapse_elevenlabs_key');
         showBottomToast("Se utilizará la voz del navegador");
@@ -8163,6 +8169,7 @@ Devuelve ÚNICAMENTE un array JSON válido con ${count} objetos respetando estas
     /* ─── INICIALIZACIÓN ─── */
     initTheme();
     initSmartGlossary();
+    initElevenLabsDefaults();
     updateNavbar();
     loadKitsFromStorage();
     renderDashboard();
