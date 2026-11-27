@@ -3380,6 +3380,95 @@
       color: var(--color-primary);
     }
 
+    /* ─── BURBUJAS DE CONVERSACIÓN EN VIVO TIPO CHATGPT / GEMINI LIVE ─── */
+    .live-chat-stream {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 1.4rem;
+      max-height: 380px;
+      overflow-y: auto;
+      padding: 6px;
+    }
+    .live-bubble {
+      max-width: 85%;
+      border-radius: 16px;
+      padding: 12px 18px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      animation: fadeInSlide 0.2s ease-out;
+    }
+    .live-bubble-profe {
+      align-self: flex-start;
+      background: var(--modal-card-inner);
+      border: 1.5px solid var(--border-purple);
+      color: var(--color-primary);
+      border-bottom-left-radius: 4px;
+    }
+    .live-bubble-student {
+      align-self: flex-end;
+      background: rgba(118, 185, 155, 0.18);
+      border: 1.5px solid var(--color-accent);
+      color: var(--color-primary);
+      border-bottom-right-radius: 4px;
+    }
+    .live-bubble-role {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .live-bubble-profe .live-bubble-role { color: var(--color-accent); }
+    .live-bubble-student .live-bubble-role { color: #8DC9AE; }
+    
+    .live-interruption-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 1.2rem;
+      padding: 10px 14px;
+      background: rgba(239, 68, 68, 0.06);
+      border: 1px dashed rgba(239, 68, 68, 0.25);
+      border-radius: 14px;
+    }
+    .btn-interrupt {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1.5px solid #EF4444;
+      color: #F87171;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-interrupt:hover {
+      background: #EF4444;
+      color: #FFFFFF;
+      transform: scale(1.03);
+    }
+    .btn-interrupt.listening {
+      background: #EF4444;
+      color: #FFFFFF;
+      animation: micPulse 1.2s infinite;
+    }
+    .quick-ask-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      min-width: 240px;
+    }
+
   </style>
 </head>
 <body>
@@ -3842,10 +3931,29 @@
             </div>
           </div>
 
-          <!-- Bocadillo de Diálogo del Profe Castillo -->
-          <div class="verbal-speech-bubble" id="verbal-speech-bubble">
-            <div class="verbal-speech-quote" id="verbal-teacher-speech">
-              Cargando pregunta oral...
+          <!-- Stream de Diálogo Conversacional Tipo ChatGPT / Gemini Live -->
+          <div class="live-chat-stream" id="verbal-conversation-stream">
+            <div class="live-bubble live-bubble-profe" id="verbal-opening-bubble">
+              <div class="live-bubble-role">
+                <span class="verbal-badge-pill">Profesor Castillo</span>
+              </div>
+              <div class="verbal-speech-quote" id="verbal-teacher-speech">
+                Cargando pregunta oral...
+              </div>
+            </div>
+          </div>
+
+          <!-- Barra de Interrupción en Tiempo Real -->
+          <div class="live-interruption-controls" id="live-interruption-bar">
+            <button class="btn-interrupt" id="btn-live-interrupt" onclick="triggerStudentInterruption()" title="Interrumpe al profesor en cualquier momento para hacer una pregunta o pedir una aclaratoria">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+              <span id="btn-live-interrupt-label">Interrumpir y Preguntar</span>
+            </button>
+            <div class="quick-ask-input-wrap">
+              <input type="text" id="live-interrupt-input" class="modal-text-input" placeholder="Pregúntale al Profe (ej: ¿Qué es población rural?)..." style="font-size:0.85rem; padding:8px 14px; margin:0;" onkeydown="if(event.key==='Enter') submitQuickAskText()" />
+              <button class="action-pill-btn" onclick="submitQuickAskText()" style="padding:8px 14px; border-radius:10px; font-weight:700;">
+                Preguntar
+              </button>
             </div>
           </div>
 
@@ -4457,6 +4565,11 @@
             </div>
           </div>
         </div>
+
+        <button class="btn-interrupt" onclick="interrumpirCharlaConDuda()" title="Interrumpir al Profe para hacerle una pregunta o pedir una aclaratoria" style="padding:6px 14px; font-size:0.78rem; border-radius:8px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+          <span>Interrumpir</span>
+        </button>
 
         <button class="action-pill-btn" onclick="showElevenLabsConfigModal(false)" title="Configurar clave de ElevenLabs" style="padding:6px 12px; font-size:0.78rem; gap:5px; border-radius:8px;">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-1.5 1.5L12 11l-4-4 5.5-5.5a2.12 2.12 0 0 1 3 0l4.5 4.5z"></path><path d="M3 21l3-3"></path><path d="M9 15l2 2"></path></svg>
@@ -5854,9 +5967,6 @@ REGLAS:
 
     /* ─── VOZ PROFUNDA ELEVENLABS Y PERSONALIDAD PROFESOR CASTILLO ─── */
     let audioCtxDeep = null;
-    let currentRepasoAudio = null;
-    let isElevenLabsPlaying = false;
-    let currentRepasoText = "";
     let currentProfeCharlaData = null;
 
     function playAudioDeepFilter(audioObj) {
@@ -6153,23 +6263,56 @@ REGLAS:
       openKitStudyMode(null, state.currentKitId, 'verbal');
     }
 
-    function enviarReflexionAlProfe() {
+    function interrumpirCharlaConDuda() {
+      stopRepasoAudio();
+      const input = document.getElementById('profe-input-reflexion');
+      if (input) {
+        input.placeholder = "¿Qué no entendiste o quieres que el Profe te aclare? Escribe aquí...";
+        input.focus();
+      }
+      showToast("Charla pausada", "Escribe tu duda y presiona Responder para que el Profe te la aclare");
+    }
+
+    async function enviarReflexionAlProfe() {
       const input = document.getElementById('profe-input-reflexion');
       const feedback = document.getElementById('profe-feedback-reflexion');
       const val = (input ? input.value : '').trim();
       if (!val) {
-        showToast("Escribe o habla", "Comparte tu reflexión sobre lo que dijo el Profe");
+        showToast("Escribe o habla", "Comparte tu reflexión o duda sobre lo que dijo el Profe");
         return;
       }
 
       stopRepasoAudio();
 
-      const teacherReplies = [
-        `¡Exactamente, diste en el punto clave! Justo como dices: cuando eso ocurre, las dinámicas de la ciudad y de la economía cambian de golpe. En el examen fíjense bien cómo relacionan este fenómeno con las tasas de natalidad y mortalidad. ¡Muy bien pensado!`,
-        `¡Buenísima reflexión, muchacho! Eso que mencionas es lo que diferencia memorizar de realmente entender la materia. En Geografía todo está conectado: los hospitales, los trabajos y las familias.`,
-        `¡Excelente punto, muchachos! Por ahí van los tiros. Imagínense que si no analizamos esa variable, las estadísticas no nos dicen toda la verdad. Con ese criterio van a sacar 20 en la prueba.`
-      ];
-      const reply = teacherReplies[Math.floor(Math.random() * teacherReplies.length)];
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.innerHTML = `<strong>Profesor Castillo:</strong> <em>El Profe está preparando su respuesta...</em>`;
+      }
+
+      const kit = state.kits.find(k => k.id === state.currentKitId);
+      const subject = (kit && kit.subject) || "Geografía";
+      const topic = (kit && kit.title) || state.topic || "Geografía";
+
+      let reply = "";
+      try {
+        const prompt = `El alumno dijo o preguntó: "${val}".\nContexto: Charla de clase de ${subject} sobre ${topic}.`;
+        const systemPrompt = `Eres el Profesor Castillo, un profesor de Geografía carismático, cercano, comprensivo y pedagógico (estilo aula venezolana/latinoamericana, sin jerga pesada, culto y ameno). Responde al alumno de forma natural, en 2 o 3 oraciones sencillas, resolviendo su duda o retroalimentando su reflexión con una analogía clara del día a día. CERO emojis. Tono oral y directo.`;
+        const aiResponse = await askGemini(prompt, systemPrompt);
+        if (aiResponse && aiResponse.trim()) {
+          reply = aiResponse.trim().replace(/[*_#]/g, '');
+        }
+      } catch (err) {
+        console.warn("Error en respuesta de reflexión:", err);
+      }
+
+      if (!reply) {
+        const teacherReplies = [
+          `¡Exactamente, diste en el punto clave! Justo como dices: cuando eso ocurre, las dinámicas de la ciudad y de la economía cambian de golpe. En el examen fíjense bien cómo relacionan este fenómeno con las tasas de natalidad y mortalidad. ¡Muy bien pensado!`,
+          `¡Buenísima reflexión, muchacho! Eso que mencionas es lo que diferencia memorizar de realmente entender la materia. En Geografía todo está conectado: los hospitales, los trabajos y las familias.`,
+          `¡Excelente punto, muchachos! Por ahí van los tiros. Imagínense que si no analizamos esa variable, las estadísticas no nos dicen toda la verdad. Con ese criterio van a sacar 20 en la prueba.`
+        ];
+        reply = teacherReplies[Math.floor(Math.random() * teacherReplies.length)];
+      }
 
       if (feedback) {
         feedback.style.display = 'block';
@@ -6201,6 +6344,192 @@ REGLAS:
       rec.onend = () => { if (btn) btn.classList.remove('listening'); };
       rec.onerror = () => { if (btn) btn.classList.remove('listening'); };
       rec.start();
+    }
+
+    /* ─── SISTEMA CONVERSACIONAL EN VIVO E INTERRUPCIONES DEL PROFE CASTILLO ─── */
+    let liveStudentSpeechRec = null;
+    let isStudentInterrupting = false;
+
+    function appendLiveBubble(role, text, isHtml = false) {
+      const stream = document.getElementById('verbal-conversation-stream');
+      if (!stream) return null;
+
+      const bubble = document.createElement('div');
+      bubble.className = `live-bubble ${role === 'profe' ? 'live-bubble-profe' : 'live-bubble-student'}`;
+
+      const roleHeader = document.createElement('div');
+      roleHeader.className = 'live-bubble-role';
+      if (role === 'profe') {
+        roleHeader.innerHTML = `<span class="verbal-badge-pill">Profesor Castillo</span>`;
+      } else {
+        roleHeader.innerHTML = `<span>Tú (Estudiante)</span>`;
+      }
+      bubble.appendChild(roleHeader);
+
+      const content = document.createElement('div');
+      content.className = 'live-bubble-content';
+      if (isHtml) {
+        content.innerHTML = text;
+      } else {
+        content.textContent = text;
+      }
+      bubble.appendChild(content);
+
+      stream.appendChild(bubble);
+      stream.scrollTop = stream.scrollHeight;
+      return bubble;
+    }
+
+    function triggerStudentInterruption() {
+      stopVerbalAudio();
+      stopRepasoAudio();
+      stopVerbalSpeechRecognition();
+
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const btn = document.getElementById('btn-live-interrupt');
+      const label = document.getElementById('btn-live-interrupt-label');
+      const input = document.getElementById('live-interrupt-input');
+      const subtitleEl = document.getElementById('verbal-subtitle-status');
+
+      if (!SpeechRec) {
+        if (input) {
+          input.focus();
+          showToast("Interrupción activa", "Escribe tu duda para que el Profe Castillo te la responda");
+        }
+        return;
+      }
+
+      if (isStudentInterrupting) {
+        stopStudentInterruption();
+        return;
+      }
+
+      isStudentInterrupting = true;
+      if (btn) btn.classList.add('listening');
+      if (label) label.textContent = 'Escuchando tu duda...';
+      if (subtitleEl) subtitleEl.textContent = 'Dile al Profe Castillo lo que no entendiste (ej: "¿Qué es población rural?")...';
+
+      liveStudentSpeechRec = new SpeechRec();
+      liveStudentSpeechRec.lang = 'es-ES';
+      liveStudentSpeechRec.interimResults = false;
+
+      liveStudentSpeechRec.onresult = (e) => {
+        const text = e.results[0][0].transcript;
+        stopStudentInterruption();
+        if (input) input.value = text;
+        answerStudentInterruption(text);
+      };
+
+      liveStudentSpeechRec.onerror = () => {
+        stopStudentInterruption();
+        if (input) input.focus();
+      };
+
+      liveStudentSpeechRec.onend = () => {
+        stopStudentInterruption();
+      };
+
+      try {
+        liveStudentSpeechRec.start();
+      } catch (err) {
+        stopStudentInterruption();
+        if (input) input.focus();
+      }
+    }
+
+    function stopStudentInterruption() {
+      isStudentInterrupting = false;
+      const btn = document.getElementById('btn-live-interrupt');
+      const label = document.getElementById('btn-live-interrupt-label');
+      if (btn) btn.classList.remove('listening');
+      if (label) label.textContent = 'Interrumpir y Preguntar';
+      if (liveStudentSpeechRec) {
+        try { liveStudentSpeechRec.stop(); } catch (e) {}
+        liveStudentSpeechRec = null;
+      }
+    }
+
+    function submitQuickAskText() {
+      const input = document.getElementById('live-interrupt-input');
+      if (!input) return;
+      const text = input.value.trim();
+      if (!text) {
+        showToast("Escribe tu duda", "Indica qué término o concepto quieres que el Profe Castillo te explique");
+        return;
+      }
+      input.value = '';
+      stopVerbalAudio();
+      stopRepasoAudio();
+      stopStudentInterruption();
+      answerStudentInterruption(text);
+    }
+
+    async function answerStudentInterruption(userQuestion) {
+      appendLiveBubble('student', userQuestion);
+
+      const subtitleEl = document.getElementById('verbal-subtitle-status');
+      if (subtitleEl) subtitleEl.textContent = 'El Profe Castillo te está preparando la respuesta...';
+
+      const teacherBubble = appendLiveBubble('profe', 'Déjame explicártelo de forma sencilla...');
+
+      const currentQ = currentVerbalQ;
+      const currentKit = state.kits.find(k => k.id === state.currentKitId);
+      const subject = (currentKit && currentKit.subject) || "Geografía";
+      const topic = (currentKit && currentKit.title) || state.topic || "Geografía";
+
+      let answerText = "";
+
+      try {
+        const prompt = `Pregunta del alumno que interrumpió: "${userQuestion}".\nContexto: Clase de ${subject} sobre ${topic}.\nPregunta de quiz en curso: "${currentQ ? currentQ.question : ''}".`;
+        const systemPrompt = `Eres el Profesor Castillo, profesor de Geografía cálido, ameno, carismático y con gran vocación docente de aula (estilo venezolano/latinoamericano cercano pero correcto, respetuoso y pedagógico). El estudiante te acaba de interrumpir a mitad de la clase para preguntarte una duda específica sobre un concepto o palabra. Explícasela con tus propias palabras en 2 o 3 oraciones cortas y directas, usando una analogía cotidiana o de la vida real muy fácil de entender, y remata preguntándole si le quedó claro o si volvemos a la pregunta. CERO emojis. Tono oral, fluido y natural.`;
+
+        const reply = await askGemini(prompt, systemPrompt);
+        if (reply && reply.trim()) {
+          answerText = reply.trim().replace(/[*_#]/g, '');
+        }
+      } catch (err) {
+        console.warn("Error consultando a Gemini para interrupción:", err);
+      }
+
+      if (!answerText) {
+        const lowerQ = userQuestion.toLowerCase();
+        let matchedGlossary = null;
+        for (const [term, def] of Object.entries(SMART_GLOSSARY)) {
+          if (lowerQ.includes(term.toLowerCase())) {
+            matchedGlossary = { term, def };
+            break;
+          }
+        }
+        if (matchedGlossary) {
+          answerText = `Fíjate muchacho: ${matchedGlossary.term} se refiere a ${matchedGlossary.def}. Imagínatelo como algo del día a día. ¿Se entiende mejor ahora?`;
+        } else {
+          answerText = `Buena pregunta. En esta materia, cuando hablamos de ese concepto nos referimos a cómo se organizan las personas y los recursos en el territorio. Imagínate que cada grupo cumple una función vital en el país. ¿Te queda más claro para responder la pregunta?`;
+        }
+      }
+
+      if (teacherBubble) {
+        const contentEl = teacherBubble.querySelector('.live-bubble-content');
+        if (contentEl) contentEl.textContent = answerText;
+      }
+
+      const wavesEl = document.getElementById('verbal-audio-waves');
+      playDeepVoiceAudio(
+        answerText,
+        () => {
+          if (wavesEl) wavesEl.style.display = 'flex';
+          if (subtitleEl) subtitleEl.textContent = 'El Profe Castillo te está respondiendo...';
+        },
+        () => {
+          if (wavesEl) wavesEl.style.display = 'none';
+          if (subtitleEl) subtitleEl.textContent = 'Selecciona tu respuesta o vuelve a preguntar si te quedó alguna duda';
+        },
+        () => {
+          if (wavesEl) wavesEl.style.display = 'none';
+          if (subtitleEl) subtitleEl.textContent = 'Selecciona tu respuesta o vuelve a preguntar';
+        }
+      ).then(aud => {
+        currentVerbalAudio = aud;
+      });
     }
 
     /* ─── MOTOR DE QUIZ VERBAL CONTINUO Y TUTORÍA HABLADA ─── */
@@ -6242,6 +6571,21 @@ REGLAS:
         bubbleEl.innerHTML = `
           <div style="font-weight:700; color:var(--color-accent); font-size:0.85rem; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px;">Pregunta Oral #${state.currentIndex + 1}</div>
           <div style="font-size:1.15rem; font-weight:700; color:var(--color-primary); line-height:1.4;">${escapeHtml(q.question)}</div>
+        `;
+      }
+
+      const stream = document.getElementById('verbal-conversation-stream');
+      if (stream) {
+        stream.innerHTML = `
+          <div class="live-bubble live-bubble-profe">
+            <div class="live-bubble-role">
+              <span class="verbal-badge-pill">Profesor Castillo</span>
+            </div>
+            <div class="live-bubble-content">
+              <div style="font-weight:700; color:var(--color-accent); font-size:0.85rem; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px;">Pregunta Oral #${state.currentIndex + 1}</div>
+              <div style="font-size:1.15rem; font-weight:700; color:var(--color-primary); line-height:1.4;">${escapeHtml(q.question)}</div>
+            </div>
+          </div>
         `;
       }
 
@@ -6356,6 +6700,8 @@ REGLAS:
           if (feedbackText) feedbackText.textContent = q.explanation || "Revisa la explicación para reforzar.";
         }
       }
+
+      appendLiveBubble('profe', feedbackVoice);
 
       if (subtitleEl) subtitleEl.textContent = 'El Profe Castillo te está dando retroalimentación...';
       if (wavesEl) wavesEl.style.display = 'flex';
@@ -6506,9 +6852,6 @@ REGLAS:
       }
       const wavesEl = document.getElementById('verbal-audio-waves');
       if (wavesEl) wavesEl.style.display = 'none';
-    }
-
-      switchRepasoTab('simples');
     }
 
     function switchRepasoTab(tabId) {
@@ -6794,6 +7137,9 @@ REGLAS:
       if (saved) {
         try {
           state.kits = JSON.parse(saved);
+          if (!Array.isArray(state.kits) || state.kits.length === 0) {
+            state.kits = JSON.parse(JSON.stringify(DEFAULT_KITS));
+          }
           state.kits.forEach(k => {
             if (k.promptVersion !== 4) {
               k.cachedQueue = [];
@@ -6827,17 +7173,16 @@ REGLAS:
           });
           saveKitsToStorage();
         } catch (e) {
-          state.kits = [];
+          state.kits = JSON.parse(JSON.stringify(DEFAULT_KITS));
+          saveKitsToStorage();
         }
       } else {
-        const urlParams = new URLSearchParams(window.location.search);
-        const isOpeningSharedKit = urlParams.has('kit') || urlParams.has('share') || urlParams.has('sk_data');
-        if (!isOpeningSharedKit) {
-          state.kits = JSON.parse(JSON.stringify(DEFAULT_KITS));
-          localStorage.setItem('synapse_study_kits', JSON.stringify(state.kits));
-        } else {
-          state.kits = [];
-        }
+        state.kits = JSON.parse(JSON.stringify(DEFAULT_KITS));
+        saveKitsToStorage();
+      }
+      if (!Array.isArray(state.kits) || state.kits.length === 0) {
+        state.kits = JSON.parse(JSON.stringify(DEFAULT_KITS));
+        saveKitsToStorage();
       }
     }
 
@@ -6850,20 +7195,27 @@ REGLAS:
       if (!container) return;
       container.innerHTML = '';
 
+      if (!Array.isArray(state.kits) || state.kits.length === 0) {
+        state.kits = JSON.parse(JSON.stringify(DEFAULT_KITS));
+        saveKitsToStorage();
+      }
+
       const grouped = {};
       state.kits.forEach(k => {
-        if (filterQuery && !k.title.toLowerCase().includes(filterQuery.toLowerCase()) && !k.subject.toLowerCase().includes(filterQuery.toLowerCase())) {
+        const title = k.title || "Kit sin título";
+        const subject = k.subject || "General";
+        if (filterQuery && !title.toLowerCase().includes(filterQuery.toLowerCase()) && !subject.toLowerCase().includes(filterQuery.toLowerCase())) {
           return;
         }
-        if (!grouped[k.subject]) grouped[k.subject] = [];
-        grouped[k.subject].push(k);
+        if (!grouped[subject]) grouped[subject] = [];
+        grouped[subject].push(k);
       });
 
       const subjects = Object.keys(grouped);
       if (subjects.length === 0) {
         container.innerHTML = `
           <div style="text-align:center; padding:3rem; color:var(--text-dim);">
-            <div style="font-weight:700; font-size:1.1rem; color:#fff;">No se encontraron kits de estudio</div>
+            <div style="font-weight:700; font-size:1.1rem; color:var(--color-primary);">No se encontraron kits de estudio</div>
             <p style="font-size:0.9rem; margin-top:6px;">Prueba con otra búsqueda o crea uno nuevo con el botón de arriba.</p>
           </div>
         `;
