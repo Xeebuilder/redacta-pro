@@ -2707,36 +2707,49 @@
     body.glossary-enabled .glossary-term {
       text-decoration: underline dotted var(--color-accent);
       text-underline-offset: 4px;
-      text-decoration-thickness: 1.5px;
+      text-decoration-thickness: 2px;
+      background: rgba(118, 185, 155, 0.12);
+      border-radius: 5px;
+      padding: 1px 6px;
       cursor: help;
       position: relative;
       display: inline;
       transition: all 0.2s ease;
+      color: inherit;
     }
     body.glossary-enabled .glossary-term:hover,
-    body.glossary-enabled .glossary-term:focus {
-      background: rgba(118, 185, 155, 0.15);
-      border-radius: 4px;
+    body.glossary-enabled .glossary-term:focus,
+    body.glossary-enabled .glossary-term.is-open {
+      background: rgba(118, 185, 155, 0.28);
+      color: #FFFFFF;
+      outline: none;
+    }
+    body:not(.theme-dark).glossary-enabled .glossary-term {
+      background: rgba(5, 150, 105, 0.09);
+      text-decoration: underline dotted #059669;
+      color: #0F172A;
     }
     body:not(.theme-dark).glossary-enabled .glossary-term:hover,
-    body:not(.theme-dark).glossary-enabled .glossary-term:focus {
-      background: rgba(5, 150, 105, 0.12);
+    body:not(.theme-dark).glossary-enabled .glossary-term:focus,
+    body:not(.theme-dark).glossary-enabled .glossary-term.is-open {
+      background: rgba(5, 150, 105, 0.18);
+      color: #047857;
     }
 
     .glossary-popover {
       position: absolute;
-      bottom: calc(100% + 8px);
+      bottom: calc(100% + 9px);
       left: 50%;
       transform: translateX(-50%) translateY(4px);
-      width: 270px;
-      max-width: 85vw;
+      width: 290px;
+      max-width: 88vw;
       background: #111C18;
-      border: 1px solid rgba(118, 185, 155, 0.35);
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
-      border-radius: 10px;
-      padding: 10px 14px;
-      font-size: 0.84rem;
-      line-height: 1.45;
+      border: 1px solid rgba(118, 185, 155, 0.45);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      line-height: 1.5;
       color: #E2E8F0;
       text-align: left;
       pointer-events: none;
@@ -2759,40 +2772,102 @@
     }
     body:not(.theme-dark) .glossary-popover {
       background: #FFFFFF;
-      border: 1px solid rgba(5, 150, 105, 0.25);
-      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.15);
+      border: 1px solid rgba(5, 150, 105, 0.3);
+      box-shadow: 0 16px 36px rgba(15, 23, 42, 0.18);
       color: #334155;
     }
     body:not(.theme-dark) .glossary-popover::after {
       border-color: #FFFFFF transparent transparent transparent;
     }
     body.glossary-enabled .glossary-term:hover .glossary-popover,
-    body.glossary-enabled .glossary-term:focus .glossary-popover {
+    body.glossary-enabled .glossary-term:focus .glossary-popover,
+    body.glossary-enabled .glossary-term.is-open .glossary-popover {
       opacity: 1;
       visibility: visible;
       pointer-events: auto;
       transform: translateX(-50%) translateY(0);
     }
+    .glossary-pop-header {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      margin-bottom: 5px;
+      opacity: 0.95;
+    }
     .glossary-pop-title {
       display: block;
       font-weight: 800;
-      font-size: 0.82rem;
+      font-size: 0.86rem;
       color: #34D399;
       text-transform: capitalize;
       margin-bottom: 4px;
       letter-spacing: 0.2px;
     }
     body:not(.theme-dark) .glossary-pop-title {
-      color: var(--color-accent);
+      color: #059669;
     }
     .glossary-pop-desc {
       display: block;
-      font-size: 0.82rem;
+      font-size: 0.83rem;
       color: #CBD5E1;
-      line-height: 1.4;
+      line-height: 1.45;
     }
     body:not(.theme-dark) .glossary-pop-desc {
       color: #475569;
+    }
+
+    /* ─── BOTÓN FLOTANTE PARA DEFINIR CUALQUIER PALABRA SELECCIONADA ─── */
+    .floating-term-lookup {
+      position: absolute;
+      transform: translate(-50%, -100%);
+      background: #0D1714;
+      border: 1px solid var(--color-accent);
+      color: var(--color-accent);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      gap: 6px;
+      z-index: 2000;
+      animation: popIn 0.15s ease-out;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+    .floating-term-lookup:hover {
+      background: var(--color-accent);
+      color: #FFFFFF;
+      transform: translate(-50%, -100%) scale(1.04);
+    }
+    body:not(.theme-dark) .floating-term-lookup {
+      background: #FFFFFF;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15);
+    }
+    body:not(.theme-dark) .floating-term-lookup:hover {
+      background: var(--color-accent);
+      color: #FFFFFF;
+    }
+
+    /* ─── MODAL RÁPIDO DE DEFINICIÓN DE TÉRMINO ─── */
+    .term-result-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-purple);
+      border-radius: 16px;
+      width: 90%;
+      max-width: 440px;
+      padding: 1.4rem;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.55);
+      animation: popIn 0.2s ease-out;
+      box-sizing: border-box;
+      position: relative;
     }
 
     /* ─── MODAL: KIT READY (ELECCIÓN INICIAL) ─── */
@@ -4147,6 +4222,32 @@
     </div>
   </div>
 
+  <!-- Botón flotante al seleccionar texto en pantalla -->
+  <div id="floating-term-lookup" class="floating-term-lookup" onclick="triggerLookupSelectedText()">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+    <span id="floating-term-label">Definir con Synapse</span>
+  </div>
+
+  <!-- Modal rápido de definición de término -->
+  <div class="modal-materials-overlay" id="modal-term-result" style="display:none;" onclick="this.style.display='none'">
+    <div class="term-result-card" onclick="event.stopPropagation()">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+        <div style="display:inline-flex; align-items:center; gap:5px; font-size:0.72rem; font-weight:800; color:var(--color-accent); text-transform:uppercase; letter-spacing:0.6px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          <span>Glosario Pedagógico Synapse</span>
+        </div>
+        <button class="modal-mat-close-btn" onclick="document.getElementById('modal-term-result').style.display='none'" title="Cerrar"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+      </div>
+      <h3 id="term-result-word" style="font-size:1.15rem; font-weight:800; color:var(--color-primary); margin:0 0 8px 0; text-transform:capitalize;">Término</h3>
+      <p id="term-result-def" style="font-size:0.9rem; line-height:1.55; color:var(--color-secondary); margin:0 0 14px 0;"></p>
+      <div style="display:flex; justify-content:flex-end;">
+        <button class="action-pill-btn" style="padding:6px 14px; font-size:0.8rem; border-radius:10px;" onclick="document.getElementById('modal-term-result').style.display='none'">
+          Entendido
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Firebase Scripts para Sincronización y Compartir Kits en la Nube -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
@@ -4868,47 +4969,143 @@
 
     /* ─── DICCIONARIO BASE DE TÉRMINOS Y VOCABULARIO ACADÉMICO ─── */
     const BUILTIN_GLOSSARY = {
+      // Población, Demografía y Sociedad
+      "población económicamente activa": "Conjunto de personas en edad laboral que están ocupadas o buscan activamente empleo.",
+      "poblacion economicamente activa": "Conjunto de personas en edad laboral que están ocupadas o buscan activamente empleo.",
+      "PEA": "Población Económicamente Activa: personas en edad productiva que trabajan o buscan empleo formal o informal.",
+      "población económicamente inactiva": "Personas en edad laboral que no trabajan ni buscan empleo (estudiantes, personas dedicadas al hogar, jubilados).",
+      "poblacion economicamente inactiva": "Personas en edad laboral que no trabajan ni buscan empleo (estudiantes, personas dedicadas al hogar, jubilados).",
+      "PEI": "Población Económicamente Inactiva: personas fuera de la fuerza laboral que no participan en el mercado de trabajo.",
+      "población activa": "Fuerza laboral de un país integrada por personas con empleo y desocupados en búsqueda activa.",
+      "poblacion activa": "Fuerza laboral de un país integrada por personas con empleo y desocupados en búsqueda activa.",
+      "población inactiva": "Sector poblacional que no realiza ni busca una actividad económica remunerada.",
+      "poblacion inactiva": "Sector poblacional que no realiza ni busca una actividad económica remunerada.",
+      "fuerza laboral": "Total de personas capacitadas y disponibles en una sociedad para la producción de bienes y servicios.",
+      "mercado laboral": "Espacio económico donde confluyen la oferta de trabajadores y la demanda de empleo de empresas e instituciones.",
+      "empadronados": "Habitantes inscritos formalmente en el registro oficial o censo de residencia de una localidad.",
+      "empadronado": "Ciudadano inscrito en el padrón o registro administrativo de su municipio de residencia.",
+      "empadronamiento": "Registro oficial administrativo obligatorio donde se declara el domicilio habitual de una persona.",
+      "padrón municipal": "Registro público local donde figuran todos los vecinos que residen habitualmente en un municipio.",
+      "censo": "Recuento demográfico, económico y social exhaustivo y oficial de todos los habitantes y hogares de un país.",
+      "jubilados": "Personas que han cesado su actividad laboral definitiva tras cumplir la edad y años de cotización legalmente requeridos.",
+      "jubilado": "Trabajador retirado de la vida laboral activa que recibe una pensión económica periódica.",
+      "jubilación": "Retiro definitivo de la vida laboral activa que da derecho a percibir una pensión contributiva del Estado.",
+      "pensiones": "Prestaciones económicas periódicas que el sistema de seguridad social otorga a personas en retiro o invalidez.",
+      "pensión": "Pago económico regular otorgado a una persona por retiro laboral, incapacidad o viudez.",
+      "áreas metropolitanas": "Aglomeraciones urbanas conformadas por una metrópoli central y sus municipios periféricos vinculados.",
+      "área metropolitana": "Región urbana que abarca una ciudad principal y las zonas residenciales o periféricas que la rodean.",
+      "areas metropolitanas": "Aglomeraciones urbanas conformadas por una metrópoli central y sus municipios periféricos vinculados.",
+      "area metropolitana": "Región urbana que abarca una ciudad principal y las zonas residenciales o periféricas que la rodean.",
+      "conurbación": "Unión física continua de dos o más ciudades independientes debido a su expansión urbana recíproca.",
+      "metrópoli": "Ciudad central de gran tamaño que concentra poder económico, financiero y servicios de alto nivel.",
+      "megalópolis": "Cadena continua de grandes áreas metropolitanas densamente pobladas e interconectadas.",
+      "pirámide poblacional": "Gráfico de barras que representa la estructura demográfica de un país según rangos de edad y sexo.",
+      "pirámide de población": "Representación gráfica de la composición demográfica de un territorio por edades y género.",
+      "tasa de natalidad": "Número de nacimientos con vida ocurridos por cada mil habitantes durante un año en un territorio.",
+      "tasa de mortalidad": "Número de personas fallecidas por cada mil habitantes registradas a lo largo de un año.",
+      "tasa de fecundidad": "Promedio estimado de hijos que tendría una mujer a lo largo de su periodo fértil reproductivo.",
+      "tasa de morbilidad": "Frecuencia con la que ocurren enfermedades o padecimientos dentro de una población específica.",
+      "esperanza de vida": "Cantidad media de años que se estima que vivirá una persona desde su nacimiento según las condiciones socio-sanitarias.",
+      "densidad poblacional": "Número de habitantes que residen en promedio por cada kilómetro cuadrado de superficie.",
+      "densidad demográfica": "Medida que indica la concentración de población humana por unidad de área territorial.",
+      "crecimiento vegetativo": "Diferencia matemática entre el total de nacimientos y el de defunciones en un periodo anual.",
+      "saldo migratorio": "Diferencia matemática entre la cantidad de inmigrantes y la cantidad de emigrantes en un país.",
+      "migración": "Desplazamiento geográfico de individuos o grupos que implica un cambio de residencia habitual.",
+      "emigración": "Salida voluntaria o forzada de personas de su país o región de origen para establecerse en otro lugar.",
+      "inmigración": "Llegada y asentamiento de personas procedentes de otro territorio en una nueva comunidad receptora.",
+      "éxodo rural": "Emigración masiva de personas desde zonas campesinas hacia las grandes urbes en búsqueda de oportunidades.",
+      "urbanización": "Crecimiento y concentración progresiva de la población humana e infraestructuras en ciudades.",
+      "gentrificación": "Transformación urbana de un barrio tradicional por personas de mayor poder adquisitivo, encareciendo viviendas y servicios.",
+      "segregación espacial": "Separación territorial de sectores sociales dentro de una ciudad según su nivel socioeconómico.",
+
+      // Economía y Comercio
       "remesas": "Envíos de dinero que los trabajadores transfieren desde el país donde laboran hacia sus familias en su país de origen.",
       "remesa": "Envío de dinero o fondos que una persona hace desde el extranjero hacia sus familiares en su país de origen.",
-      "aranceles": "Impuestos o tarifas que se cobran sobre los bienes y productos importados o exportados entre naciones.",
+      "aranceles": "Impuestos o tarifas aduaneras que se cobran sobre los bienes y productos importados o exportados entre naciones.",
       "arancel": "Impuesto o tarifa oficial aplicada a los productos extranjeros cuando ingresan o salen de un país.",
       "superávit": "Diferencia favorable cuando los ingresos obtenidos superan los gastos realizados durante un periodo determinado.",
-      "déficit": "Situación económica en la cual los gastos o pérdidas superan los ingresos disponibles.",
+      "déficit": "Situación económica en la cual los gastos o deudas superan a los ingresos disponibles.",
+      "déficit fiscal": "Escenario en el que los gastos del Estado sobrepasan los ingresos recaudados por impuestos y tributos.",
       "inflación": "Aumento sostenido y generalizado de los precios de los productos y servicios a lo largo del tiempo.",
+      "deflación": "Descenso generalizado y prolongado del nivel de precios originado por una contracción del consumo.",
+      "hiperinflación": "Inflación extremadamente elevada y fuera de control donde la moneda pierde casi todo su valor en poco tiempo.",
+      "PIB": "Producto Interno Bruto: valor monetario total de los bienes y servicios finales producidos por un país en un año.",
+      "PNB": "Producto Nacional Bruto: valor económico de los bienes producidos por ciudadanos o empresas de un país, dentro o fuera de él.",
+      "PIB per cápita": "Ingreso promedio por habitante, calculado dividiendo el PIB nacional entre el número total de habitantes.",
+      "subsidio": "Ayuda económica o beneficio tributario que el Estado otorga para abaratar costos o incentivar actividades.",
+      "subsidios": "Fondos públicos concedidos por el gobierno para apoyar sectores productivos o aliviar el precio al consumidor.",
+      "monopolio": "Estructura de mercado donde un único oferente vende un producto o servicio sin competencia directa.",
+      "oligopolio": "Mercado dominado por pocas empresas de gran tamaño que influyen fuertemente en precios y condiciones.",
+      "monopsonio": "Estructura de mercado caracterizada por la existencia de un solo comprador frente a múltiples vendedores.",
+      "divisas": "Monedas extranjeras aceptadas y utilizadas de forma regular en transacciones y comercio internacional.",
+      "balanza comercial": "Diferencia matemática entre el total de exportaciones y el total de importaciones de una economía.",
+      "balanza de pagos": "Registro contable global de todas las transacciones económicas y financieras de un país con el resto del mundo.",
+      "devaluación": "Pérdida voluntaria o forzada del valor de una moneda nacional frente a monedas extranjeras.",
+      "apreciación": "Aumento del valor de una moneda local en comparación con divisas internacionales en el mercado de cambios.",
+      "recesión": "Fase de contracción económica con caídas sostenidas en la producción, ventas, inversiones y empleo.",
+      "proteccionismo": "Doctrina económica que busca proteger las industrias nacionales gravando bienes importados.",
       "coo-petición": "Estrategia donde empresas rivales compiten en el mercado pero colaboran en áreas técnicas o logísticas específicas.",
+      "coopetición": "Estrategia donde empresas rivales compiten en el mercado pero colaboran en áreas técnicas o logísticas específicas.",
       "patente": "Derecho legal exclusivo otorgado a un creador para fabricar y explotar su invención comercialmente.",
       "patentes": "Derechos legales exclusivos que protegen las invenciones para impedir que terceros las copien sin permiso.",
+      "propiedad intelectual": "Protección jurídica de las creaciones del ingenio humano (invenciones, marcas, obras artísticas, software).",
       "litigio": "Disputa o conflicto judicial formal que se somete a resolución ante un tribunal o juez competente.",
       "litigios": "Conflictos judiciales o demandas legales que enfrentan a dos o más partes ante la ley.",
+      "cadena de suministro": "Red coordinada de procesos que lleva un producto desde la materia prima hasta las manos del consumidor.",
+      "cadenas de suministro": "Estructuras logísticas que articulan producción, transporte y comercialización de bienes.",
+      "ecosistema cerrado": "Estrategia donde dispositivos y software están vinculados entre sí, restringiendo la compatibilidad con otras marcas.",
+      "costo de oportunidad": "Valor del mejor beneficio o alternativa a la que se renuncia cuando se toma una decisión económica.",
+      "poder adquisitivo": "Capacidad económica real que tiene una persona o moneda para adquirir bienes y servicios según los precios vigentes.",
+      "bienes de capital": "Maquinarias, inmuebles, vehículos y herramientas duraderas empleadas para la producción de otros bienes.",
+      "materias primas": "Recursos naturales no transformados que se extraen para servir de base a procesos industriales.",
+      "tasa de interés": "Precio que se paga por disponer de dinero prestado o remuneración que se recibe por ahorrarlo.",
+      "liquidez": "Facilidad con la que un bien o activo financiero puede transformarse rápidamente en dinero en efectivo.",
+      "diversificación": "Estrategia empresarial o financiera de ampliar mercados o productos para reducir riesgos.",
+      "rentabilidad": "Capacidad de una actividad o inversión de generar ganancias superiores al capital invertido.",
+
+      // Ciencias Políticas, Derecho y Sociedad
+      "soberanía": "Poder supremo, perpetuo e inalienable de una nación para autodeterminarse sin sumisión a mandatos externos.",
+      "estado de derecho": "Principio republicano donde gobernantes y ciudadanos están sometidos por igual a las leyes constitucionales.",
+      "constitución": "Ley suprema y fundamental de un Estado que define derechos ciudadanos y estructura los poderes públicos.",
+      "supremacía constitucional": "Principio jurídico que ubica a la Constitución por encima de cualquier otra ley, decreto o tratado ordinario.",
+      "referéndum": "Procedimiento jurídico por el cual se somete al voto popular directo la aprobación o derogación de una ley.",
+      "poder legislativo": "Órgano representativo del pueblo encargado de deliberar, redactar, sancionar y derogar las leyes.",
+      "poder ejecutivo": "Poder del Estado liderado por el gobierno y presidencia encargado de administrar el país y aplicar leyes.",
+      "poder judicial": "Poder público autónomo encargado de administrar justicia y sancionar el incumplimiento normativo.",
+      "jurisprudencia": "Conjunto de sentencias e interpretaciones reiteradas dictadas por los tribunales supremos de justicia.",
+      "derechos inalienables": "Derechos inherentes a la condición humana que no pueden ser transferidos, vendidos ni renunciados.",
+      "ministerio público": "Órgano público que defiende los intereses de la sociedad y dirige la investigación penal en juicios.",
+      "estratificación social": "División de la sociedad en capas o jerarquías diferenciadas por nivel socioeconómico y prestigio.",
+      "movilidad social": "Posibilidad y frecuencia con la que los miembros de una sociedad cambian de estrato o clase social.",
+      "oligarquía": "Forma de gobierno donde el poder político reside en manos de un pequeño grupo elitista o privilegiado.",
+      "autocracia": "Sistema político en el que una sola persona ejerce el poder absoluto sin controles constitucionales.",
+      "plutocracia": "Régimen en el que los individuos más ricos ejercen una influencia preponderante sobre el gobierno.",
+      "secularización": "Paso de una esfera o institución pública desde la tutela o doctrina religiosa hacia el ámbito civil y laico.",
+      "teocracia": "Forma de gobierno donde los líderes religiosos ejercen el poder invocando mandatos divinos.",
+
+      // Geografía Física y Ciencias Naturales
       "antecos": "Puntos de la Tierra ubicados sobre el mismo meridiano con igual latitud, pero en hemisferios opuestos.",
       "antípodas": "Puntos de la superficie terrestre diametralmente opuestos entre sí en la esfera del planeta.",
       "perigeo": "Punto de la órbita de la Luna o un satélite en el que se encuentra a la menor distancia posible de la Tierra.",
+      "apogeo": "Punto de la órbita lunar o satelital en el que el cuerpo se halla a la mayor distancia de la Tierra.",
       "afelio": "Punto de la órbita de un planeta o cuerpo celeste en el que se encuentra a la máxima distancia del Sol.",
       "perihelio": "Punto de la órbita de un planeta en el que se encuentra más cerca del Sol.",
       "precesión": "Movimiento giroscópico y cónico muy lento que realiza el eje de rotación de la Tierra cada 25.776 años.",
       "nutación": "Leve balanceo u oscilación periódica del eje terrestre causada principalmente por la gravedad de la Luna.",
       "albedo": "Porcentaje de radiación luminosa o solar que refleja una superficie respecto al total de luz recibido.",
-      "entropía": "Magnitud científica que mide el grado de desorden molecular o energía no aprovechable de un sistema.",
-      "endotérmico": "Proceso químico que necesita absorber calor del entorno para poder producirse.",
-      "endotérmica": "Reacción química que absorbe energía térmica del exterior durante su transformación.",
-      "exotérmico": "Reacción que libera energía hacia el entorno exterior en forma de calor o luz.",
-      "exotérmica": "Reacción química que desprende calor o energía al exterior mientras transcurre.",
-      "mitosis": "División de una célula madre para dar origen a dos células hijas con el mismo material genético idéntico.",
-      "meiosis": "División celular especializada que reduce a la mitad los cromosomas para formar óvulos o espermatozoides.",
-      "isótopos": "Átomos del mismo elemento químico que poseen igual cantidad de protones pero diferente número de neutrones.",
-      "cadena de suministro": "Red coordinada de procesos que lleva un producto desde la materia prima hasta las manos del consumidor.",
-      "cadenas de suministro": "Estructuras logísticas que articulan producción, transporte y comercialización de bienes.",
-      "ecosistema cerrado": "Estrategia donde dispositivos y software están vinculados entre sí, restringiendo la compatibilidad con otras marcas.",
-      "PIB": "Producto Interno Bruto: valor monetario total de los bienes y servicios finales producidos por un país en un año.",
-      "subsidio": "Ayuda económica o beneficio tributario que el Estado otorga para abaratar costos o incentivar actividades.",
-      "subsidios": "Fondos públicos concedidos por el gobierno para apoyar sectores productivos o aliviar el precio al consumidor.",
-      "monopolio": "Estructura de mercado donde un único oferente vende un producto o servicio sin competencia directa.",
-      "oligopolio": "Mercado dominado por pocas empresas de gran tamaño que influyen fuertemente en precios y condiciones.",
-      "divisas": "Monedas extranjeras aceptadas y utilizadas de forma regular en transacciones y comercio internacional.",
-      "balanza comercial": "Diferencia matemática entre el total de exportaciones y el total de importaciones de una economía.",
-      "devaluación": "Pérdida voluntaria o forzada del valor de una moneda nacional frente a monedas extranjeras.",
-      "recesión": "Fase de contracción económica con caídas sostenidas en la producción, ventas, inversiones y empleo.",
-      "proteccionismo": "Doctrina económica que busca proteger las industrias nacionales gravando bienes importados.",
+      "efecto coriolis": "Fuerza aparente causada por la rotación terrestre que desvía los vientos y corrientes marinas.",
+      "solsticio": "Momento del año en que el Sol alcanza su posición más extrema norte o sur, marcando el día más largo o corto.",
+      "equinoccio": "Fecha del año en que el Sol se sitúa en el plano del ecuador y el día y la noche duran exactamente lo mismo.",
+      "traslación": "Movimiento elíptico de la Tierra alrededor del Sol que dura 365 días y da lugar a las estaciones del año.",
+      "rotación": "Giro de la Tierra sobre su propio eje que tarda 24 horas y causa la alternancia entre el día y la noche.",
+      "huso horario": "Cada una de las 24 zonas horarias longitudinales de 15° en que se divide convencionalmente la Tierra.",
+      "meridiano": "Semicírculo imaginario de polo a polo utilizado como referencia longitudinal (ej: meridiano de Greenwich).",
+      "paralelo": "Círculo imaginario perpendicular al eje terrestre usado como referencia para medir la latitud geográfica.",
+      "latitud": "Distancia angular medida en grados desde la línea ecuatorial hasta cualquier punto de la superficie terrestre.",
+      "longitud": "Distancia angular medida en grados desde el meridiano de Greenwich hasta cualquier punto del planeta.",
+      "altitud": "Distancia vertical medida en metros desde un punto terrestre respecto al nivel del mar.",
+      "relieve": "Conjunto de irregularidades, desniveles y formas que presenta la corteza terrestre superficial.",
+      "cuenca hidrográfica": "Territorio drenado por un río principal y sus afluentes cuyas aguas vierten a un mismo mar o lago.",
       "estratosfera": "Capa atmosférica que contiene la capa de ozono y protege a la Tierra de los rayos ultravioleta.",
       "troposfera": "Capa más baja de la atmósfera donde se concentra el aire que respiramos y se forma el clima.",
       "anomalía térmica": "Diferencia numérica entre la temperatura observada y el promedio histórico de referencia.",
@@ -4918,13 +5115,23 @@
       "antropogénico": "Que tiene su origen o ha sido causado directamente por la actividad o intervención del ser humano.",
       "antropogénica": "Impacto o efecto derivado de las actividades humanas sobre el medio ambiente o el clima.",
       "bamboleo de chandler": "Pequeña oscilación irregular del eje de rotación terrestre con un periodo aproximado de 433 días.",
-      "solsticio": "Momento del año en que el Sol alcanza su posición más extrema norte o sur, marcando el día más largo o corto.",
-      "equinoccio": "Fecha del año en que el Sol se sitúa en el plano del ecuador y el día y la noche duran exactamente lo mismo.",
-      "traslación": "Movimiento elíptico de la Tierra alrededor del Sol que dura 365 días y da lugar a las estaciones del año.",
-      "rotación": "Giro de la Tierra sobre su propio eje que tarda 24 horas y causa la alternancia entre el día y la noche.",
-      "clave dicotómica": "Secuencia pedagógica de preguntas pareadas y excluyentes para identificar y clasificar especies biológicas.",
-      "diversificación": "Estrategia empresarial o financiera de ampliar mercados o productos para reducir riesgos.",
-      "rentabilidad": "Capacidad de una actividad o inversión de generar ganancias superiores al capital invertido."
+      "entropía": "Magnitud científica que mide el grado de desorden molecular o energía no aprovechable de un sistema.",
+      "endotérmico": "Proceso químico que necesita absorber calor del entorno para poder producirse.",
+      "endotérmica": "Reacción química que absorbe energía térmica del exterior durante su transformación.",
+      "exotérmico": "Reacción que libera energía hacia el entorno exterior en forma de calor o luz.",
+      "exotérmica": "Reacción química que desprende calor o energía al exterior mientras transcurre.",
+      "mitosis": "División de una célula madre para dar origen a dos células hijas con el mismo material genético idéntico.",
+      "meiosis": "División celular especializada que reduce a la mitad los cromosomas para formar óvulos o espermatozoides.",
+      "isótopos": "Átomos del mismo elemento químico que poseen igual cantidad de protones pero diferente número de neutrones.",
+      "fotosíntesis": "Proceso bioquímico mediante el cual las plantas capturan luz solar y CO2 para producir glucosa y oxígeno.",
+      "homeostasis": "Capacidad de autorregulación que tienen los seres vivos para conservar un medio interno estable.",
+      "ósmosis": "Difusión pasiva del agua a través de membranas semipermeables hacia regiones de mayor concentración de soluto.",
+      "energía cinética": "Energía que posee un cuerpo en movimiento asociada directamente a su velocidad y masa.",
+      "energía potencial": "Energía almacenada en un objeto debido a su posición en un campo de fuerzas (como la gravedad).",
+      "catalizador": "Sustancia que incrementa sustancialmente la velocidad de una reacción química sin consumirse.",
+      "enlace covalente": "Atracción química fuerte donde dos átomos comparten uno o más pares de electrones.",
+      "enlace iónico": "Unión electrostática entre iones con cargas eléctricas opuestas tras la transferencia de electrones.",
+      "clave dicotómica": "Secuencia pedagógica de preguntas pareadas y excluyentes para identificar y clasificar especies biológicas."
     };
 
     function escapeHtml(str) {
@@ -4942,7 +5149,7 @@
     }
 
     function getActiveGlossaryMap() {
-      const dict = { ...BUILTIN_GLOSSARY };
+      const dict = { ...BUILTIN_GLOSSARY, ...(state.runtimeGlossary || {}) };
       if (state.studyGuide && Array.isArray(state.studyGuide.conceptosClave)) {
         state.studyGuide.conceptosClave.forEach(item => {
           if (item && item.termino && item.definicion) {
@@ -4980,7 +5187,7 @@
         if (def) {
           const cleanDef = escapeHtml(def);
           const cleanTerm = escapeHtml(term);
-          parts.push(`<span class="glossary-term" tabindex="0">${cleanTerm}<span class="glossary-popover"><span class="glossary-pop-title">${cleanTerm}</span><span class="glossary-pop-desc">${cleanDef}</span></span></span>`);
+          parts.push(`<span class="glossary-term" tabindex="0">${cleanTerm}<span class="glossary-popover"><span class="glossary-pop-header"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg><span>Glosario Synapse</span></span><span class="glossary-pop-title">${cleanTerm}</span><span class="glossary-pop-desc">${cleanDef}</span></span></span>`);
         } else {
           parts.push(escapeHtml(term));
         }
@@ -5007,15 +5214,137 @@
       document.body.classList.toggle('glossary-enabled', state.smartGlossaryEnabled);
       const btn = document.getElementById('btn-glossary-toggle');
       if (btn) btn.classList.toggle('active', state.smartGlossaryEnabled);
+      setupSelectionGlossaryLookup();
     }
 
-    // Interceptar clics en términos del glosario para evitar activación accidental de opciones al tocar una palabra
+    // Interceptar clics en términos del glosario para mantenerlos abiertos o cerrarlos sin activar opciones
     document.addEventListener('click', function(e) {
       const termEl = e.target.closest('.glossary-term');
       if (termEl && document.body.classList.contains('glossary-enabled')) {
         e.stopPropagation();
+        document.querySelectorAll('.glossary-term.is-open').forEach(el => {
+          if (el !== termEl) el.classList.remove('is-open');
+        });
+        termEl.classList.toggle('is-open');
+      } else {
+        document.querySelectorAll('.glossary-term.is-open').forEach(el => el.classList.remove('is-open'));
       }
     }, true);
+
+    /* ─── CONSULTA INSTANTÁNEA DE PALABRAS SELECCIONADAS ─── */
+    let _selectedLookupText = "";
+
+    function setupSelectionGlossaryLookup() {
+      const floatEl = document.getElementById('floating-term-lookup');
+      if (!floatEl) return;
+
+      document.addEventListener('selectionchange', () => {
+        if (!state.smartGlossaryEnabled) {
+          floatEl.style.display = 'none';
+          return;
+        }
+        const sel = window.getSelection();
+        if (!sel || sel.isCollapsed) {
+          floatEl.style.display = 'none';
+          return;
+        }
+        const str = sel.toString().trim();
+        if (str.length < 2 || str.length > 50 || str.includes('\n')) {
+          floatEl.style.display = 'none';
+          return;
+        }
+
+        const studyBox = document.getElementById('view-study-screen');
+        if (!studyBox) {
+          floatEl.style.display = 'none';
+          return;
+        }
+
+        try {
+          const range = sel.getRangeAt(0);
+          if (!studyBox.contains(range.commonAncestorContainer)) {
+            floatEl.style.display = 'none';
+            return;
+          }
+
+          const rect = range.getBoundingClientRect();
+          if (rect.width === 0 && rect.height === 0) {
+            floatEl.style.display = 'none';
+            return;
+          }
+
+          _selectedLookupText = str;
+          const label = document.getElementById('floating-term-label');
+          if (label) {
+            const displayStr = str.length > 22 ? str.slice(0, 20) + '...' : str;
+            label.textContent = `¿Qué es "${displayStr}"?`;
+          }
+
+          floatEl.style.top = `${window.scrollY + rect.top - 10}px`;
+          floatEl.style.left = `${window.scrollX + rect.left + (rect.width / 2)}px`;
+          floatEl.style.display = 'inline-flex';
+        } catch (err) {
+          floatEl.style.display = 'none';
+        }
+      });
+
+      document.addEventListener('mousedown', (e) => {
+        if (!e.target.closest('#floating-term-lookup')) {
+          setTimeout(() => {
+            const sel = window.getSelection();
+            if (!sel || sel.isCollapsed) floatEl.style.display = 'none';
+          }, 150);
+        }
+      });
+    }
+
+    async function triggerLookupSelectedText() {
+      const term = _selectedLookupText.trim();
+      const floatEl = document.getElementById('floating-term-lookup');
+      if (floatEl) floatEl.style.display = 'none';
+      if (!term) return;
+
+      const dict = getActiveGlossaryMap();
+      const lower = term.toLowerCase();
+
+      if (dict[lower] || dict[term]) {
+        const def = dict[lower] || dict[term];
+        showGlossaryResultModal(term, def);
+        return;
+      }
+
+      showBottomToast(`Consultando "${term}"...`);
+      try {
+        const prompt = `Define en español en una sola frase clara, directa y didáctica para un estudiante escolar o universitario qué es o qué significa: "${term}".
+REGLAS:
+- Máximo 25 palabras.
+- Responde estrictamente la definición sin introducciones como "Es un concepto que..." o saludos.
+- Lenguaje simple pero formal. Cero emojis.`;
+        const res = await askGemini(prompt, "Eres un diccionario pedagógico conciso. Responde solo con la definición directa.");
+        const cleanDef = res.replace(/[\*\#\`]/g, '').trim();
+
+        if (!state.runtimeGlossary) state.runtimeGlossary = {};
+        state.runtimeGlossary[lower] = cleanDef;
+        showGlossaryResultModal(term, cleanDef);
+
+        // Actualizar visualmente la pregunta para que ahora quede subrayada con su popover
+        const q = state.queue[state.currentIndex];
+        if (q) {
+          document.getElementById('q-text').innerHTML = formatTextWithGlossary(q.pregunta);
+        }
+      } catch (err) {
+        console.error("Error consultando término:", err);
+        showBottomToast(`No se pudo obtener la definición de "${term}"`);
+      }
+    }
+
+    function showGlossaryResultModal(term, def) {
+      const modal = document.getElementById('modal-term-result');
+      if (!modal) return;
+      document.getElementById('term-result-word').textContent = term;
+      document.getElementById('term-result-def').textContent = def;
+      modal.style.display = 'flex';
+    }
 
     /* ─── CONTROLADOR DE REPASO BREVE Y VOZ ELEVENLABS ─── */
     let currentRepasoAudio = null;
@@ -5346,6 +5675,7 @@
     /* ─── ESTADO GLOBAL ─── */
     const state = {
       smartGlossaryEnabled: true,
+      runtimeGlossary: {},
       apiKey: atob('QVEuQWI4Uk42SnBsdlYxX0F3RzdJYWVfWWlLZFpDTFlidFBvRUV0WEVjX2pWczdFRFFPaXc='),
       kits: [],
       currentKitId: null,
