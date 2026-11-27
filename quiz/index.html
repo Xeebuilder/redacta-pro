@@ -3440,9 +3440,9 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
         <span>Inicio</span>
       </button>
-      <button class="sidebar-nav-btn" onclick="openGuideDrawer()" title="Ver materiales extraídos">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-        <span>Materiales</span>
+      <button class="sidebar-nav-btn" onclick="openEditKitModal(null, state.currentKitId)" title="Modificar kit o añadir nuevos apuntes">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+        <span>Modificar kit</span>
       </button>
       <button class="sidebar-nav-btn active" id="sidebar-btn-smart-study" onclick="switchStudyMode('quiz')" title="Preguntas y Active Recall">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
@@ -3660,6 +3660,10 @@
           <h2 style="font-size:1.45rem; font-weight:900; color:#fff;" id="guide-doc-title">Guía de Estudio</h2>
         </div>
         <div style="display:flex; align-items:center; gap:8px;">
+          <button class="fc-tool-pill" onclick="closeGuideDrawer(); openEditKitModal(null, state.currentKitId);" style="margin:0; background:rgba(118,185,155,0.12); border-color:var(--border-purple);" title="Añadir más apuntes a este kit">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            <span>Añadir Apuntes</span>
+          </button>
           <button class="fc-tool-pill" onclick="shareCurrentKit()" style="margin:0; background:rgba(118,185,155,0.12); border-color:var(--border-purple);">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
             <span>Compartir Kit</span>
@@ -4244,6 +4248,115 @@
       <div style="display:flex; justify-content:flex-end;">
         <button class="action-pill-btn" style="padding:6px 14px; font-size:0.8rem; border-radius:10px;" onclick="document.getElementById('modal-term-result').style.display='none'">
           Entendido
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- MODAL: MODIFICAR KIT Y AÑADIR NUEVA INFORMACIÓN               -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="modal-materials-overlay" id="modal-edit-kit" style="display:none;" onclick="closeEditKitModal()">
+    <div class="modal-materials-card" onclick="event.stopPropagation()" style="max-width:560px;">
+      <div class="modal-mat-header">
+        <div class="modal-mat-title-box">
+          <h2 class="modal-mat-title">Modificar Kit de Estudio</h2>
+          <span style="font-size:0.75rem; color:var(--color-accent); font-weight:700;">Añadir más apuntes o regenerar preguntas</span>
+        </div>
+        <button class="modal-mat-close-btn" onclick="closeEditKitModal()" title="Cerrar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+      </div>
+
+      <input type="hidden" id="edit-kit-target-id" value="" />
+
+      <!-- Campos de Título y Materia -->
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:1.2rem;">
+        <div>
+          <label style="display:block; font-size:0.82rem; font-weight:700; color:var(--color-primary); margin-bottom:6px;">Título del Kit:</label>
+          <input type="text" id="edit-kit-title" class="modal-text-input" style="width:100%; box-sizing:border-box; font-size:0.88rem;" />
+        </div>
+        <div>
+          <label style="display:block; font-size:0.82rem; font-weight:700; color:var(--color-primary); margin-bottom:6px;">Materia:</label>
+          <input type="text" id="edit-kit-subject" class="modal-text-input" style="width:100%; box-sizing:border-box; font-size:0.88rem;" />
+        </div>
+      </div>
+
+      <!-- Métodos para añadir información complementaria: Subir fotos vs Pegar texto -->
+      <div style="margin-bottom:0.8rem;">
+        <span style="display:block; font-size:0.84rem; font-weight:700; color:var(--color-primary); margin-bottom:6px;">
+          ¿Deseas incorporar nuevo contenido o apuntes?
+        </span>
+        <div class="materials-grid-options" style="margin-bottom:1rem;">
+          <div class="mat-option-btn active" id="btn-edit-method-paste" onclick="switchEditMaterialMethod('paste')">
+            <div class="mat-opt-icon">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+              </svg>
+            </div>
+            <div class="mat-opt-label" style="font-size:0.92rem;">Pegar Apuntes</div>
+            <div class="mat-opt-sub">Nuevos textos o temario</div>
+          </div>
+
+          <div class="mat-option-btn" id="btn-edit-method-upload" onclick="switchEditMaterialMethod('upload')">
+            <div class="mat-opt-icon">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
+                <polyline points="12 12 12 17"></polyline>
+                <polyline points="9 14 12 11 15 14"></polyline>
+              </svg>
+            </div>
+            <div class="mat-opt-label" style="font-size:0.92rem;">Subir Fotos</div>
+            <div class="mat-opt-sub">Imágenes de cuadernos o guías</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel Pegar Texto Adicional -->
+      <div id="panel-edit-method-paste" style="display:block; margin-bottom:1.2rem;">
+        <textarea id="edit-kit-paste-textarea" class="mat-textarea-box" placeholder="Pega aquí los nuevos apuntes, datos adicionales o fórmulas que quieras sumar al kit (se combinarán con lo que ya tenías)..." style="height:120px;"></textarea>
+      </div>
+
+      <!-- Panel Subir Imágenes Adicionales -->
+      <div id="panel-edit-method-upload" style="display:none; margin-bottom:1.2rem;">
+        <input type="file" id="edit-kit-file-input" accept="image/*" multiple style="display:none;" onchange="handleEditKitFileSelect(event)" />
+        <div class="mat-dropzone-box" id="edit-kit-dropzone" onclick="document.getElementById('edit-kit-file-input').click()" style="padding:1.4rem;">
+          <div style="color:var(--color-accent); margin-bottom:6px;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+          </div>
+          <div style="font-weight:700; font-size:0.95rem; color:var(--text-white);">Haz clic o arrastra fotos de tus nuevos apuntes</div>
+          <div style="font-size:0.8rem; color:var(--text-dim);">PNG, JPG o WEBP (máximo 8 fotos adicionales)</div>
+        </div>
+
+        <div id="edit-kit-files-preview" style="display:none; margin-top:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span style="font-size:0.78rem; font-weight:700; color:var(--color-accent); text-transform:uppercase;">
+              Fotos añadidas (<span id="edit-kit-files-count">0</span>)
+            </span>
+            <button type="button" onclick="document.getElementById('edit-kit-file-input').click()" style="background:rgba(118,185,155,0.12); border:1px solid rgba(118,185,155,0.3); color:var(--color-accent); font-size:0.75rem; font-weight:700; border-radius:6px; padding:3px 10px; cursor:pointer;">
+              Añadir más fotos
+            </button>
+          </div>
+          <div id="edit-kit-files-list" style="max-height:140px; overflow-y:auto; display:flex; flex-direction:column; gap:6px;"></div>
+        </div>
+      </div>
+
+      <!-- Opciones de actualización -->
+      <div style="background:rgba(255,255,255,0.04); border:1px solid var(--border-purple); border-radius:12px; padding:12px; margin-bottom:1.4rem; font-size:0.82rem; color:var(--color-secondary); line-height:1.45;">
+        <label style="display:flex; align-items:flex-start; gap:8px; cursor:pointer;">
+          <input type="checkbox" id="edit-kit-regen-questions" checked style="margin-top:3px;" />
+          <span><strong>Regenerar preguntas y tarjetas de estudio:</strong> La IA unirá el contenido nuevo con el anterior, actualizará la guía y creará un lote fresco de preguntas con los nuevos temas.</span>
+        </label>
+      </div>
+
+      <div style="display:flex; gap:10px;">
+        <button class="action-pill-btn" style="padding:11px 18px; border-radius:12px;" onclick="closeEditKitModal()">
+          Cancelar
+        </button>
+        <button class="btn-mat-submit" style="flex:1; margin:0; padding:12px;" onclick="submitUpdateKit()">
+          <span>Actualizar Kit y Regenerar</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
         </button>
       </div>
     </div>
@@ -6031,6 +6144,10 @@ REGLAS:
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="7" width="16" height="13" rx="2" ry="2"></rect><path d="M6 3h12a2 2 0 0 1 2 2v12"></path></svg>
                 <span>Tarjetas de Estudio</span>
               </button>
+              <button class="kit-menu-item" onclick="openEditKitModal(event, '${kit.id}')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                <span>Modificar Kit y Añadir Info</span>
+              </button>
               <button class="kit-menu-item" onclick="shareKit(event, '${kit.id}')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
                 <span>Compartir kit (Copiar link)</span>
@@ -6100,6 +6217,290 @@ REGLAS:
       saveKitsToStorage();
       renderDashboard();
       showToast("Kit Eliminado", "Se removió de tu lista de kits de estudio");
+    }
+
+    /* ─── MODAL Y CONTROLADOR PARA MODIFICAR KITS DE ESTUDIO ─── */
+    let editKitSelectedFiles = [];
+    let editKitMethod = 'paste';
+
+    function openEditKitModal(event, kitId) {
+      if (event) event.stopPropagation();
+      const targetId = kitId || state.currentKitId;
+      const menu = document.getElementById(`menu-${targetId}`);
+      if (menu) {
+        menu.classList.remove('active');
+        menu.style.display = 'none';
+      }
+
+      const kit = state.kits.find(k => k.id === targetId);
+      if (!kit) {
+        showToast("Kit no encontrado", "Selecciona un kit de estudio para modificar");
+        return;
+      }
+
+      document.getElementById('edit-kit-target-id').value = kit.id;
+      document.getElementById('edit-kit-title').value = kit.title || '';
+      document.getElementById('edit-kit-subject').value = kit.subject || 'General';
+      document.getElementById('edit-kit-paste-textarea').value = '';
+      editKitSelectedFiles = [];
+      renderEditKitFilesList();
+      switchEditMaterialMethod('paste');
+      document.getElementById('edit-kit-regen-questions').checked = true;
+
+      document.getElementById('modal-edit-kit').style.display = 'flex';
+    }
+
+    function closeEditKitModal() {
+      document.getElementById('modal-edit-kit').style.display = 'none';
+      editKitSelectedFiles = [];
+    }
+
+    function switchEditMaterialMethod(method) {
+      editKitMethod = method;
+      const btnPaste = document.getElementById('btn-edit-method-paste');
+      const btnUpload = document.getElementById('btn-edit-method-upload');
+      const panelPaste = document.getElementById('panel-edit-method-paste');
+      const panelUpload = document.getElementById('panel-edit-method-upload');
+
+      if (btnPaste && btnUpload && panelPaste && panelUpload) {
+        btnPaste.classList.toggle('active', method === 'paste');
+        btnUpload.classList.toggle('active', method === 'upload');
+        panelPaste.style.display = (method === 'paste') ? 'block' : 'none';
+        panelUpload.style.display = (method === 'upload') ? 'block' : 'none';
+      }
+    }
+
+    function handleEditKitFileSelect(e) {
+      const files = e.target.files;
+      if (!files || files.length === 0) return;
+      processEditKitFiles(Array.from(files));
+      e.target.value = '';
+    }
+
+    async function processEditKitFiles(filesList) {
+      const imageFiles = filesList.filter(f => f.type && f.type.startsWith('image/'));
+      if (imageFiles.length === 0) return;
+
+      for (const file of imageFiles.slice(0, 8)) {
+        try {
+          const opt = await optimizeImageFile(file, 1600, 0.85);
+          if (opt && opt.base64) {
+            editKitSelectedFiles.push({
+              name: file.name,
+              size: (file.size / 1024 / 1024).toFixed(2) + ' MB',
+              mimeType: opt.mimeType || file.type || 'image/jpeg',
+              base64: opt.base64,
+              dataUrl: opt.dataUrl
+            });
+          }
+        } catch (err) {
+          console.error("Error optimizando imagen para kit:", err);
+        }
+      }
+      renderEditKitFilesList();
+    }
+
+    function renderEditKitFilesList() {
+      const preview = document.getElementById('edit-kit-files-preview');
+      const listEl = document.getElementById('edit-kit-files-list');
+      const countEl = document.getElementById('edit-kit-files-count');
+      if (!preview || !listEl) return;
+
+      if (editKitSelectedFiles.length === 0) {
+        preview.style.display = 'none';
+        return;
+      }
+
+      preview.style.display = 'block';
+      if (countEl) countEl.textContent = editKitSelectedFiles.length;
+      listEl.innerHTML = editKitSelectedFiles.map((f, i) => `
+        <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.06); padding:6px 10px; border-radius:8px; font-size:0.8rem;">
+          <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:280px; color:var(--color-primary);">${f.name}</span>
+          <button type="button" onclick="removeEditKitFile(${i})" style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.35); color:#F87171; border-radius:6px; width:26px; height:26px; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function removeEditKitFile(index) {
+      editKitSelectedFiles.splice(index, 1);
+      renderEditKitFilesList();
+    }
+
+    const editDropZone = document.getElementById('edit-kit-dropzone');
+    const editUploadPanel = document.getElementById('panel-edit-method-upload');
+    [editDropZone, editUploadPanel].forEach(zone => {
+      if (!zone) return;
+      ['dragenter', 'dragover'].forEach(name => {
+        zone.addEventListener(name, (e) => {
+          e.preventDefault(); e.stopPropagation();
+          if (editDropZone) editDropZone.classList.add('dragover');
+        });
+      });
+      ['dragleave'].forEach(name => {
+        zone.addEventListener(name, (e) => {
+          e.preventDefault(); e.stopPropagation();
+          if (editDropZone) editDropZone.classList.remove('dragover');
+        });
+      });
+      zone.addEventListener('drop', (e) => {
+        e.preventDefault(); e.stopPropagation();
+        if (editDropZone) editDropZone.classList.remove('dragover');
+        const dt = e.dataTransfer;
+        if (dt && dt.files && dt.files.length > 0) {
+          processEditKitFiles(Array.from(dt.files));
+        }
+      });
+    });
+
+    async function submitUpdateKit() {
+      const kitId = document.getElementById('edit-kit-target-id').value;
+      const kit = state.kits.find(k => k.id === kitId);
+      if (!kit) {
+        showToast("Error", "No se encontró el kit a modificar");
+        return;
+      }
+
+      const newTitle = document.getElementById('edit-kit-title').value.trim();
+      const newSubject = document.getElementById('edit-kit-subject').value.trim();
+      const newText = (editKitMethod === 'paste') ? document.getElementById('edit-kit-paste-textarea').value.trim() : '';
+      const hasNewImages = (editKitMethod === 'upload' && editKitSelectedFiles.length > 0);
+      const regenQuestions = document.getElementById('edit-kit-regen-questions').checked;
+
+      if (!newTitle) {
+        showToast("Falta Título", "El título del kit no puede estar vacío");
+        return;
+      }
+
+      kit.title = newTitle;
+      if (newSubject) kit.subject = newSubject;
+
+      // Si no hay nuevo material (texto o imágenes), solo guardamos título y materia
+      if (!newText && !hasNewImages) {
+        saveKitsToStorage();
+        renderDashboard();
+        closeEditKitModal();
+        showToast("Kit Actualizado", `Se guardaron los cambios de "${kit.title}"`);
+        return;
+      }
+
+      // Si hay nuevo material:
+      closeEditKitModal();
+      showActiveView('view-loading');
+      const loadingLabel = document.querySelector('.loading-label-thea');
+      if (loadingLabel) loadingLabel.textContent = 'Integrando nuevo material y regenerando preguntas...';
+
+      try {
+        const existingGuideJson = JSON.stringify({
+          tema: kit.studyGuide ? kit.studyGuide.tema : kit.title,
+          resumen: kit.studyGuide ? kit.studyGuide.resumen : '',
+          secciones: kit.studyGuide ? kit.studyGuide.secciones : [],
+          conceptosClave: kit.studyGuide ? kit.studyGuide.conceptosClave : []
+        }, null, 2);
+
+        const prompt = `Actúa como profesor y pedagogo experto.
+Tienes un kit de estudio escolar/universitario que el estudiante está actualizando con nueva información.
+Tema: "${kit.title}". Materia: "${kit.subject || 'General'}". Nivel: "${kit.level || state.level}".
+
+GUÍA Y CONTENIDO EXISTENTE DEL KIT:
+${existingGuideJson}
+
+NUEVO MATERIAL / APUNTES ADICIONALES AÑADIDOS POR EL ESTUDIANTE:
+"${newText || 'Analiza detalladamente las imágenes de apuntes adjuntas.'}"
+
+REGLAS ESTRICTAS DE INTEGRACIÓN Y ENRIQUECIMIENTO:
+1. Fusiona y complementa de forma armónica lo existente con lo nuevo.
+2. NO descartes lo aprendido previamente: amplía y profundiza el tema uniendo ambos conocimientos.
+3. Actualiza el "resumen" (2 párrafos pedagógicos claros y directos).
+4. Actualiza las "secciones" y bloques con los nuevos subtemas, fórmulas, leyes o procesos añadidos.
+5. Amplía la lista de "conceptosClave" agregando los nuevos términos y conservando los anteriores pertinentes.
+6. Genera un mazo completo de "flashcards" (12 a 18 tarjetas) que cubra tanto los conceptos esenciales anteriores como los nuevos.
+7. Prohibido usar palabras rebuscadas, redundantes o relleno.
+8. NUNCA uses emojis.
+9. Responde ÚNICAMENTE en JSON plano válido con esta estructura:
+{
+  "tema": "${kit.title}",
+  "materia": "${kit.subject}",
+  "resumen": "Resumen integrado de dos párrafos pedagógicos claros",
+  "secciones": [
+    {
+      "titulo": "Nombre del bloque",
+      "puntos": ["Punto clave 1", "Punto 2"],
+      "explicacion": "Explicación directa"
+    }
+  ],
+  "conceptosClave": [
+    { "termino": "Concepto", "definicion": "Definición clara", "importancia": "Por qué es relevante" }
+  ],
+  "datosRelevantes": ["Dato 1", "Dato 2"],
+  "puntosExamen": ["Punto clave para examen 1", "Punto 2"],
+  "flashcards": [
+    {
+      "termino": "Concepto",
+      "pregunta": "¿Qué define este concepto?",
+      "definicion": "Definición pedagógica",
+      "detalle": "Dato o regla práctica"
+    }
+  ]
+}`;
+
+        let rawResponse = "";
+        if (hasNewImages) {
+          rawResponse = await askGemini(prompt, "Eres un profesor pedagógico. Responde estrictamente en JSON.", editKitSelectedFiles);
+        } else {
+          rawResponse = await askGemini(prompt, "Eres un profesor pedagógico. Responde estrictamente en JSON.");
+        }
+
+        const clean = rawResponse.replace(/```json/gi, "").replace(/```/gi, "").trim();
+        const updatedGuide = JSON.parse(clean);
+
+        kit.studyGuide = updatedGuide;
+        kit.title = updatedGuide.tema || kit.title;
+        kit.subject = updatedGuide.materia || kit.subject;
+        let cards = updatedGuide.flashcards && Array.isArray(updatedGuide.flashcards) && updatedGuide.flashcards.length >= 6
+          ? updatedGuide.flashcards
+          : (kit.flashcards || []);
+        kit.flashcards = cards;
+
+        // Si se solicitó regenerar preguntas:
+        if (regenQuestions) {
+          kit.cachedQueue = [];
+          kit.askedQuestions = [];
+          kit.progress = 5;
+          kit.stageLevel = 1;
+          kit.stageProgress = 0;
+
+          state.currentKitId = kit.id;
+          state.topic = kit.title;
+          state.studyGuide = updatedGuide;
+          state.flashcardsDeck = cards;
+          state.queue = [];
+          state.history = [];
+          state.currentIndex = 0;
+          state.stageLevel = 1;
+          state.stageProgress = 0;
+          state.stageAnswered = 0;
+          state.stageCorrect = 0;
+
+          await fetchQuestionBatch(5);
+          kit.cachedQueue = [...state.queue];
+        }
+
+        saveKitsToStorage();
+        renderDashboard();
+        showActiveView('view-dashboard');
+        showKitReadyModal(kit);
+        showToast("Kit Actualizado", `Se integró el nuevo material y se recalibraron las preguntas de "${kit.title}"`);
+
+      } catch (err) {
+        console.error("Error actualizando kit:", err);
+        showActiveView('view-dashboard');
+        showToast("Error al actualizar", "No se pudo procesar la nueva información: " + err.message);
+      } finally {
+        if (loadingLabel) loadingLabel.textContent = 'Generando preguntas';
+        editKitSelectedFiles = [];
+      }
     }
 
     /* ─── MODAL PROPORCIONA TUS MATERIALES ─── */
