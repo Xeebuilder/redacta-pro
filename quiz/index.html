@@ -970,9 +970,11 @@
       cursor: pointer;
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-      overflow: hidden;
       background: var(--bg-card);
       border: 1px solid var(--border-purple);
+    }
+    .kit-card-syn.menu-open {
+      z-index: 60 !important;
     }
     .kit-card-syn:hover {
       transform: translateY(-4px) scale(1.015);
@@ -1028,12 +1030,12 @@
       border: 1.5px solid var(--border-purple);
       border-radius: 12px;
       padding: 6px;
-      z-index: 20;
+      z-index: 70;
       display: none;
       flex-direction: column;
       gap: 4px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
-      min-width: 170px;
+      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.85);
+      min-width: 220px;
       animation: fadeInSlide 0.15s ease-out;
     }
     .kit-menu-dropdown.active { display: flex; }
@@ -1059,13 +1061,15 @@
     /* Watermark vectorial sutil en la tarjeta (Cero emojis) */
     .kit-card-watermark {
       position: absolute;
-      bottom: -10px;
-      right: -10px;
-      width: 110px;
-      height: 110px;
+      bottom: 6px;
+      right: 6px;
+      width: 90px;
+      height: 90px;
       opacity: 0.07;
       pointer-events: none;
       z-index: 1;
+      overflow: hidden;
+      border-radius: 0 0 16px 0;
       color: var(--color-accent);
     }
     .kit-card-watermark svg { width: 100%; height: 100%; stroke: currentColor; fill: none; }
@@ -6183,16 +6187,26 @@ REGLAS:
     function toggleKitMenu(e, kitId) {
       e.stopPropagation();
       const allMenus = document.querySelectorAll('.kit-menu-dropdown');
+      const allCards = document.querySelectorAll('.kit-card-syn');
       allMenus.forEach(m => {
         if (m.id !== `menu-${kitId}`) m.classList.remove('active');
       });
+      allCards.forEach(c => c.classList.remove('menu-open'));
+
       const targetMenu = document.getElementById(`menu-${kitId}`);
-      if (targetMenu) targetMenu.classList.toggle('active');
+      if (targetMenu) {
+        const isOpen = targetMenu.classList.toggle('active');
+        const parentCard = targetMenu.closest('.kit-card-syn');
+        if (parentCard && isOpen) {
+          parentCard.classList.add('menu-open');
+        }
+      }
     }
 
     // Cerrar menús al hacer clic fuera
     window.addEventListener('click', () => {
       document.querySelectorAll('.kit-menu-dropdown').forEach(m => m.classList.remove('active'));
+      document.querySelectorAll('.kit-card-syn').forEach(c => c.classList.remove('menu-open'));
     });
 
     function resetKitProgress(e, kitId) {
